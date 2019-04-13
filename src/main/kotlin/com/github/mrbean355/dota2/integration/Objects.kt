@@ -1,4 +1,4 @@
-package com.github.mrbean355
+package com.github.mrbean355.dota2.integration
 
 data class GameState(
         val provider: Provider,
@@ -145,22 +145,22 @@ data class Hero(
         val `break`: Boolean
 )
 
-data class Abilities(
-        val ability0: Ability,
-        val ability1: Ability,
-        val ability2: Ability,
-        val ability3: Ability
-)
-
-data class Ability(
-        val name: String,
-        val level: Int,
-        val can_cast: Boolean,
-        val passive: Boolean,
-        val ability_active: Boolean,
-        val cooldown: Float,
-        val ultimate: Boolean
-)
+//data class Abilities(
+//        val ability0: Ability,
+//        val ability1: Ability,
+//        val ability2: Ability,
+//        val ability3: Ability
+//)
+//
+//data class Ability(
+//        val name: String,
+//        val level: Int,
+//        val can_cast: Boolean,
+//        val passive: Boolean,
+//        val ability_active: Boolean,
+//        val cooldown: Float,
+//        val ultimate: Boolean
+//)
 
 data class Items(
         val slot0: Item,

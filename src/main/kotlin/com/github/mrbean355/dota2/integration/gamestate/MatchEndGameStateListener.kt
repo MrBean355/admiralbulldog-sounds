@@ -1,10 +1,11 @@
-package com.github.mrbean355.plugin
+package com.github.mrbean355.dota2.integration.gamestate
 
-import com.github.mrbean355.GameState
-import com.github.mrbean355.SoundEffect
+import com.github.mrbean355.dota2.integration.GameState
+import com.github.mrbean355.dota2.integration.SoundEffect
+import com.github.mrbean355.dota2.integration.gamestate.util.TEAM_NONE
 
 /** Sound effect on victory or defeat. */
-class MatchEndGamePlugin : GamePlugin {
+class MatchEndGameStateListener : GameStateListener {
 
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {
         if (newState.map!!.win_team != TEAM_NONE && previousState.map!!.win_team == TEAM_NONE) {
@@ -14,9 +15,5 @@ class MatchEndGamePlugin : GamePlugin {
                 SoundEffect.WE_LOST.play()
             }
         }
-    }
-
-    private companion object {
-        private const val TEAM_NONE = "none"
     }
 }

@@ -1,15 +1,16 @@
-package com.github.mrbean355.plugin
+package com.github.mrbean355.dota2.integration.gamestate
 
-import com.github.mrbean355.GameState
-import com.github.mrbean355.SoundEffect
-import com.github.mrbean355.plugin.util.oneInThreeChance
+import com.github.mrbean355.dota2.integration.GameState
+import com.github.mrbean355.dota2.integration.SoundEffect
+import com.github.mrbean355.dota2.integration.gamestate.util.UNINITIALISED
+import com.github.mrbean355.dota2.integration.gamestate.util.oneInThreeChance
 
 /** Sound effect on heal (sometimes). */
-class HealGamePlugin : GamePlugin {
-    private var coolDownUntil = -1L
+class HealGameStateListener : GameStateListener {
+    private var coolDownUntil = UNINITIALISED
 
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = newState.map!!.clock_time
         if (currentTime < coolDownUntil) {
             return
         }
@@ -25,6 +26,6 @@ class HealGamePlugin : GamePlugin {
     }
 
     private companion object {
-        private const val COOL_DOWN_PERIOD = 60 * 1000
+        private const val COOL_DOWN_PERIOD = 30 // seconds
     }
 }

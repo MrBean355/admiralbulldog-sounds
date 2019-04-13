@@ -1,11 +1,11 @@
-package com.github.mrbean355.plugin
+package com.github.mrbean355.dota2.integration.gamestate
 
-import com.github.mrbean355.GameState
-import com.github.mrbean355.Item
-import com.github.mrbean355.SoundEffect
+import com.github.mrbean355.dota2.integration.GameState
+import com.github.mrbean355.dota2.integration.Item
+import com.github.mrbean355.dota2.integration.SoundEffect
 
 /** Sound effect when Hand of Midas is off cooldown. */
-class MidasGamePlugin : GamePlugin {
+class MidasGameStateListener : GameStateListener {
     private var played = false
 
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {

@@ -1,10 +1,10 @@
-package com.github.mrbean355.plugin
+package com.github.mrbean355.dota2.integration.gamestate
 
-import com.github.mrbean355.GameState
-import com.github.mrbean355.SoundEffect
+import com.github.mrbean355.dota2.integration.GameState
+import com.github.mrbean355.dota2.integration.SoundEffect
 
 /** Sound effect on Smoke of Deceit used. */
-class SmokeOfDeceitGamePlugin : GamePlugin {
+class SmokeOfDeceitGameStateListener : GameStateListener {
 
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {
         if (newState.hero!!.smoked && !previousState.hero!!.smoked) {
