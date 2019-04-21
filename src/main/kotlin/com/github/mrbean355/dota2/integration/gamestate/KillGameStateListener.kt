@@ -16,16 +16,14 @@ class KillGameStateListener : GameStateListener {
     private companion object {
         private val POSSIBILITIES = listOf(
                 SoundEffect.BLBLBL,
-                SoundEffect.FOURHEAD,
-                SoundEffect.HANDS_UP,
-                SoundEffect.DUMB_SHIT_PLEB,
-                SoundEffect.IM_COMING,
-                SoundEffect.KREYGASM,
+                SoundEffect.BULLDOG4HEAD,
+                SoundEffect.BULLDOGHANDSUP,
+                SoundEffect.DUMBSHITPLEB,
+                SoundEffect.IMCOMING,
                 SoundEffect.LULDOG,
-                SoundEffect.MOTHER_COMES,
-                SoundEffect.OH_MY_GOD,
-                SoundEffect.OMEGA_EZ,
-                SoundEffect.THATS_POWER,
-                SoundEffect.UNLIMITED_POWER)
+                SoundEffect.OHMYGOD,
+                SoundEffect.OMEGAEZ,
+                SoundEffect.THATSPOWER,
+                SoundEffect.UNLIMITEDPOWER)
     }
 }

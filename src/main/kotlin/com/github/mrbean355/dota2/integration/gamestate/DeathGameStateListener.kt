@@ -15,13 +15,15 @@ class DeathGameStateListener : GameStateListener {
 
     private companion object {
         private val POSSIBILITIES = listOf(
-                SoundEffect.AAAH,
                 SoundEffect.AWOO,
-                SoundEffect.BABY_RAGE,
-                SoundEffect.CANT_BELIEVE_IT,
+                SoundEffect.BABYRAGE,
+                SoundEffect.BERRYDISGUSTING,
+                SoundEffect.BULLDOGAAAH,
                 SoundEffect.HELP,
-                SoundEffect.NOT_LIKE_THIS,
+                SoundEffect.ICANTBELIEVEIT,
+                SoundEffect.NOTLIKETHIS,
                 SoundEffect.RUN,
-                SoundEffect.WTF_MAN)
+                SoundEffect.WASHEDUP,
+                SoundEffect.WTFMAN)
     }
 }

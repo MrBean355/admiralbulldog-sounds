@@ -1,5 +1,7 @@
 package com.github.mrbean355.dota2.integration
 
+import com.github.mrbean355.dota2.integration.download.AssetDownloader
+import com.github.mrbean355.dota2.integration.download.EnumGenerator
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -13,6 +15,8 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
 fun main(args: Array<String>) {
+    AssetDownloader("bulldog", "other").run()
+    EnumGenerator("bulldog", "other").run()
     val gameStateMonitor = GameStateMonitor()
     val server = embeddedServer(Netty, port = 12345) {
         install(ContentNegotiation) {

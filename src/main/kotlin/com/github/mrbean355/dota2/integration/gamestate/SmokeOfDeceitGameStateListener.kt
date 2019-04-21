@@ -8,7 +8,7 @@ class SmokeOfDeceitGameStateListener : GameStateListener {
 
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {
         if (newState.hero!!.smoked && !previousState.hero!!.smoked) {
-            SoundEffect.SMOKE_WEED.play()
+            SoundEffect.WEED.play()
         }
     }
 }

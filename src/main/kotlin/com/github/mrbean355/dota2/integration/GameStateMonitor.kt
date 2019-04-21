@@ -19,7 +19,7 @@ class GameStateMonitor {
     init {
         // Preload
         javafx.embed.swing.JFXPanel()
-        SoundEffect.HANDS_UP.play()
+        SoundEffect.BULLDOGHANDSUP.play()
     }
 
     fun onUpdate(newState: GameState) {
