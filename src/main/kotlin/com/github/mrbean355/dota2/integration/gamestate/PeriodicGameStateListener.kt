@@ -28,18 +28,14 @@ class PeriodicGameStateListener : GameStateListener {
                 SoundByte.DENMARK,
                 SoundByte.FEELSGOODMAN,
                 SoundByte.HOBBITS,
-                SoundByte.MOTHERCOMES,
                 SoundByte.MOVEYOURASS,
                 SoundByte.NUTS,
                 SoundByte.PERMABAN,
                 SoundByte.PLEBSAREDISGUSTING,
                 SoundByte.PRAISE,
-                SoundByte.RONNIE,
                 SoundByte.SAUSAGE,
                 SoundByte.SIKE,
                 SoundByte.SLOWDOWN,
-                SoundByte.SURPRISE,
-                SoundByte.UGANDA,
-                SoundByte.WARRIA)
+                SoundByte.SURPRISE)
     }
 }

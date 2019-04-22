@@ -10,10 +10,11 @@ class GameStateMonitor {
             HealGameStateListener(),
             KillGameStateListener(),
             MatchEndGameStateListener(),
-            SmokeOfDeceitGameStateListener(),
-            RunesGameStateListener(),
             MidasGameStateListener(),
-            PeriodicGameStateListener()
+            PeriodicGameStateListener(),
+            RespawnGameStateListener(),
+            RunesGameStateListener(),
+            SmokeOfDeceitGameStateListener()
     )
 
     init {
