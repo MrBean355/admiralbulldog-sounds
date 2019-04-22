@@ -15,15 +15,20 @@ class DeathGameStateListener : GameStateListener {
 
     private companion object {
         private val POSSIBILITIES = listOf(
+                SoundByte.AHAHA4HEAD,
                 SoundByte.AWOO,
                 SoundByte.BABYRAGE,
                 SoundByte.BERRYDISGUSTING,
                 SoundByte.BULLDOGAAAH,
+                SoundByte.FOURHEAD,
+                SoundByte.GODDAMNPEPEGA,
                 SoundByte.HELP,
                 SoundByte.ICANTBELIEVEIT,
                 SoundByte.NOTLIKETHIS,
+                SoundByte.OHNONONO,
                 SoundByte.RUN,
                 SoundByte.WASHEDUP,
-                SoundByte.WTFMAN)
+                SoundByte.WTFMAN,
+                SoundByte.YIKES)
     }
 }

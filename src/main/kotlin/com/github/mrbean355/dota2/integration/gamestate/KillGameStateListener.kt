@@ -19,10 +19,15 @@ class KillGameStateListener : GameStateListener {
                 SoundByte.BULLDOG4HEAD,
                 SoundByte.BULLDOGHANDSUP,
                 SoundByte.DUMBSHITPLEB,
+                SoundByte.ELEGIGGLE,
+                SoundByte.FEELSBADMAN,
+                SoundByte.GODDAMNBABOONS,
                 SoundByte.IMCOMING,
+                SoundByte.KREYGASM,
                 SoundByte.LULDOG,
                 SoundByte.OHMYGOD,
                 SoundByte.OMEGAEZ,
+                SoundByte.SEEYA,
                 SoundByte.THATSPOWER,
                 SoundByte.UNLIMITEDPOWER)
     }
