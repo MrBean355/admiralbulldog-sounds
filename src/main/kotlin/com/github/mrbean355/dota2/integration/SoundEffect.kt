@@ -68,6 +68,7 @@ enum class SoundEffect(private val fileName: String) {
     SURPRISE("sounds/other/surprise.mp3"),
     SYNDLUL("sounds/bulldog/syndlul.mp3"),
     THATSPOWER("sounds/bulldog/thatspower.mp3"),
+    TP("sounds/bulldog/tp.mp3"),
     UGANDA("sounds/other/uganda.mp3"),
     UNLIMITEDPOWER("sounds/bulldog/unlimitedpower.mp3"),
     VIVON("sounds/other/vivon.mp3"),
