@@ -2,9 +2,8 @@ package com.github.mrbean355.dota2.integration
 
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer
-import java.util.Date
 
-enum class SoundEffect(private val fileName: String) {
+enum class SoundByte(private val fileName: String) {
     // Special
     USE_MIDAS("useyourmidas.wav"),
     WE_LOST("wefuckinglost.wav"),
@@ -83,7 +82,6 @@ enum class SoundEffect(private val fileName: String) {
     YOUKILLEDMYPEOPLE("sounds/other/youkilledmypeople.mp3");
 
     fun play() {
-        println("[${Date()}] Playing: $this")
         val resource = javaClass.classLoader.getResource(fileName)
         val media = Media(resource.toURI().toString())
         mediaPlayer = MediaPlayer(media).apply {
@@ -96,5 +94,9 @@ enum class SoundEffect(private val fileName: String) {
         private const val VOLUME = 0.20
         /* Prevent garbage collection. */
         private var mediaPlayer: MediaPlayer? = null
+
+        init {
+            javafx.embed.swing.JFXPanel()
+        }
     }
 }

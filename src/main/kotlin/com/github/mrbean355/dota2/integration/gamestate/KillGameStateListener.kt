@@ -1,10 +1,10 @@
 package com.github.mrbean355.dota2.integration.gamestate
 
 import com.github.mrbean355.dota2.integration.GameState
-import com.github.mrbean355.dota2.integration.SoundEffect
+import com.github.mrbean355.dota2.integration.SoundByte
 import com.github.mrbean355.dota2.integration.gamestate.util.oneInThreeChance
 
-/** Random sound effect on kills (sometimes). */
+/** Random sound byte on kills (sometimes). */
 class KillGameStateListener : GameStateListener {
 
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {
@@ -15,15 +15,15 @@ class KillGameStateListener : GameStateListener {
 
     private companion object {
         private val POSSIBILITIES = listOf(
-                SoundEffect.BLBLBL,
-                SoundEffect.BULLDOG4HEAD,
-                SoundEffect.BULLDOGHANDSUP,
-                SoundEffect.DUMBSHITPLEB,
-                SoundEffect.IMCOMING,
-                SoundEffect.LULDOG,
-                SoundEffect.OHMYGOD,
-                SoundEffect.OMEGAEZ,
-                SoundEffect.THATSPOWER,
-                SoundEffect.UNLIMITEDPOWER)
+                SoundByte.BLBLBL,
+                SoundByte.BULLDOG4HEAD,
+                SoundByte.BULLDOGHANDSUP,
+                SoundByte.DUMBSHITPLEB,
+                SoundByte.IMCOMING,
+                SoundByte.LULDOG,
+                SoundByte.OHMYGOD,
+                SoundByte.OMEGAEZ,
+                SoundByte.THATSPOWER,
+                SoundByte.UNLIMITEDPOWER)
     }
 }

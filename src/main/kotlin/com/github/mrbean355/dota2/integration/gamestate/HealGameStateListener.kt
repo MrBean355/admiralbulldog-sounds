@@ -1,11 +1,11 @@
 package com.github.mrbean355.dota2.integration.gamestate
 
 import com.github.mrbean355.dota2.integration.GameState
-import com.github.mrbean355.dota2.integration.SoundEffect
+import com.github.mrbean355.dota2.integration.SoundByte
 import com.github.mrbean355.dota2.integration.gamestate.util.UNINITIALISED
 import com.github.mrbean355.dota2.integration.gamestate.util.oneInThreeChance
 
-/** Sound effect on heal (sometimes). */
+/** Sound byte on heal (sometimes). */
 class HealGameStateListener : GameStateListener {
     private var coolDownUntil = UNINITIALISED
 
@@ -21,7 +21,7 @@ class HealGameStateListener : GameStateListener {
                 oneInThreeChance()) {
 
             coolDownUntil = currentTime + COOL_DOWN_PERIOD
-            SoundEffect.EEL.play()
+            SoundByte.EEL.play()
         }
     }
 

@@ -1,10 +1,10 @@
 package com.github.mrbean355.dota2.integration.gamestate
 
 import com.github.mrbean355.dota2.integration.GameState
-import com.github.mrbean355.dota2.integration.SoundEffect
+import com.github.mrbean355.dota2.integration.SoundByte
 import com.github.mrbean355.dota2.integration.gamestate.util.UNINITIALISED
 
-/** Sound effect shortly before the bounty runes spawn. */
+/** Sound byte shortly before the bounty runes spawn. */
 class RunesGameStateListener : GameStateListener {
     private var cooldownUntil = UNINITIALISED
 
@@ -13,16 +13,16 @@ class RunesGameStateListener : GameStateListener {
         if (newState.map!!.clock_time <= 0 || newState.map.clock_time < cooldownUntil) {
             return
         }
-        val secondsLeft = (newState.map.clock_time + WARNING_PERIOD) % SOUND_EFFECT_PERIOD
+        val secondsLeft = (newState.map.clock_time + WARNING_PERIOD) % SOUND_BYTE_PERIOD
         if (secondsLeft == 0L) {
             cooldownUntil = newState.map.clock_time + COOL_DOWN_PERIOD
-            SoundEffect.ROONS.play()
+            SoundByte.ROONS.play()
         }
     }
 
     private companion object {
         /** How often runes spawn (seconds) */
-        private const val SOUND_EFFECT_PERIOD = 5 * 60 // seconds
+        private const val SOUND_BYTE_PERIOD = 5 * 60 // seconds
         /** How many seconds ahead of the spawn time to play the sound. */
         private const val WARNING_PERIOD = 15 // seconds
         /** Duration (milliseconds) to wait before playing the sound again. */
