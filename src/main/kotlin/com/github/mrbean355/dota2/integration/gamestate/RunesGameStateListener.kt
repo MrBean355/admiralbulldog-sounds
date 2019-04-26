@@ -3,29 +3,40 @@ package com.github.mrbean355.dota2.integration.gamestate
 import com.github.mrbean355.dota2.integration.GameState
 import com.github.mrbean355.dota2.integration.assets.SoundByte
 import com.github.mrbean355.dota2.integration.gamestate.util.UNINITIALISED
+import kotlin.math.ceil
 
 /** Sound byte shortly before the bounty runes spawn. */
 class RunesGameStateListener : GameStateListener {
-    private var cooldownUntil = UNINITIALISED
+    private var nextPlayTime = UNINITIALISED
 
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {
-        /* We get updates more than once a second, which causes the sound to play more than expected. */
-        if (newState.map!!.clock_time <= 0 || newState.map.clock_time < cooldownUntil) {
-            return
+        val currentTime = newState.map!!.clock_time
+        if (nextPlayTime == UNINITIALISED) {
+            nextPlayTime = findIteration(currentTime)
         }
-        val secondsLeft = (newState.map.clock_time + WARNING_PERIOD) % SOUND_BYTE_PERIOD
-        if (secondsLeft == 0L) {
-            cooldownUntil = newState.map.clock_time + COOL_DOWN_PERIOD
-            SoundByte.ROONS.play()
+        if (currentTime >= nextPlayTime) {
+            if (currentTime - nextPlayTime <= WARNING_PERIOD) {
+                SoundByte.ROONS.play()
+            } else {
+                println("[WARN] Tried to play ROONS late! currentTime=$currentTime, nextPlayTime=$nextPlayTime")
+            }
+            nextPlayTime = UNINITIALISED
         }
+    }
+
+    private fun findIteration(clockTime: Long): Long {
+        val iteration = ceil((clockTime + WARNING_PERIOD) / SOUND_BYTE_PERIOD.toFloat()).toInt()
+        val nextPlayTime = iteration * SOUND_BYTE_PERIOD - WARNING_PERIOD
+        if (nextPlayTime <= -WARNING_PERIOD) {
+            return -WARNING_PERIOD
+        }
+        return nextPlayTime
     }
 
     private companion object {
         /** How often runes spawn (seconds) */
-        private const val SOUND_BYTE_PERIOD = 5 * 60 // seconds
+        private const val SOUND_BYTE_PERIOD = 5 * 60L // seconds
         /** How many seconds ahead of the spawn time to play the sound. */
-        private const val WARNING_PERIOD = 15 // seconds
-        /** Duration (milliseconds) to wait before playing the sound again. */
-        private const val COOL_DOWN_PERIOD = 4 * 60 // seconds
+        private const val WARNING_PERIOD = 15L // seconds
     }
 }
