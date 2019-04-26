@@ -1,4 +1,4 @@
-package com.github.mrbean355.dota2.integration.download
+package com.github.mrbean355.dota2.integration.assets
 
 import com.google.gson.JsonObject
 import okhttp3.ResponseBody
@@ -11,7 +11,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 /** Download all sounds for some groups. */
-class AssetDownloader(private vararg val groups: String) {
+class SoundByteDownloader(private vararg val groups: String) {
     private val playSoundService = Retrofit.Builder()
             .baseUrl(HOST_PLAY_SOUNDS)
             .addConverterFactory(GsonConverterFactory.create())
@@ -64,12 +64,12 @@ class AssetDownloader(private vararg val groups: String) {
         println("Downloaded: $name.$FILE_TYPE")
     }
 
-    companion object {
+    private companion object {
         private const val HOST_PLAY_SOUNDS = "http://178.128.205.181:7379/"
         private const val HOST_NUULS = "https://i.nuuls.com/"
         private const val MEMBER_NAME = "HGETALL"
-        const val DEST_DIR = "src/main/resources/sounds"
-        const val FILE_TYPE = "mp3"
+        private const val DEST_DIR = "src/main/resources/sounds"
+        private const val FILE_TYPE = "mp3"
     }
 
     private interface PlaySoundService {

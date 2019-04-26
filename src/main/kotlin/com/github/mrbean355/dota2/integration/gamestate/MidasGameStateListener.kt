@@ -2,7 +2,7 @@ package com.github.mrbean355.dota2.integration.gamestate
 
 import com.github.mrbean355.dota2.integration.GameState
 import com.github.mrbean355.dota2.integration.Item
-import com.github.mrbean355.dota2.integration.SoundByte
+import com.github.mrbean355.dota2.integration.assets.SoundByte
 
 /** Sound byte when Hand of Midas is off cooldown. */
 class MidasGameStateListener : GameStateListener {

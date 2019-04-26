@@ -1,7 +1,7 @@
 package com.github.mrbean355.dota2.integration.gamestate
 
 import com.github.mrbean355.dota2.integration.GameState
-import com.github.mrbean355.dota2.integration.SoundByte
+import com.github.mrbean355.dota2.integration.assets.SoundByte
 
 class RespawnGameStateListener : GameStateListener {
 

@@ -1,4 +1,4 @@
-package com.github.mrbean355.dota2.integration
+package com.github.mrbean355.dota2.integration.assets
 
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer

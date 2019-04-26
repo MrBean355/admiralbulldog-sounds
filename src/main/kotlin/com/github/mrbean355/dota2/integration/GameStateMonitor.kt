@@ -1,5 +1,6 @@
 package com.github.mrbean355.dota2.integration
 
+import com.github.mrbean355.dota2.integration.assets.SoundByte
 import com.github.mrbean355.dota2.integration.gamestate.*
 
 /** Notify registered plugins when the game state changes. */
