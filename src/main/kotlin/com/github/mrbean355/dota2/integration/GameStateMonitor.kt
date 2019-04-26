@@ -13,7 +13,6 @@ class GameStateMonitor {
             MatchEndGameStateListener(),
             MidasGameStateListener(),
             PeriodicGameStateListener(),
-            RespawnGameStateListener(),
             RunesGameStateListener(),
             SmokeOfDeceitGameStateListener()
     )
