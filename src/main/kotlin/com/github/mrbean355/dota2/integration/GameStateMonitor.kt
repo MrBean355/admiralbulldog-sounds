@@ -28,7 +28,11 @@ class GameStateMonitor {
             val prevMatch = previousState.map?.matchid
             val curMatch = newState.map?.matchid
             if (prevMatch != curMatch) {
-                println("Reset listeners; prevMatch=$prevMatch, curMatch=$curMatch")
+                if (curMatch == null) {
+                    println("Left match $prevMatch")
+                } else {
+                    println("Entered match $curMatch")
+                }
                 gameStateListeners.forEach {
                     it.reset()
                 }
