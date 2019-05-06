@@ -57,6 +57,7 @@ enum class SoundByte(private val fileName: String) {
     PRAISE("sounds/bulldog/praise.mp3"),
     QUAS("sounds/other/quas.mp3"),
     RED("sounds/bulldog/red.mp3"),
+    RANK135("sounds/bulldog/rank135.mp3"),
     RONNIE("sounds/bulldog/ronnie.mp3"),
     ROONS("sounds/bulldog/roons.mp3"),
     RUN("sounds/bulldog/run.mp3"),
