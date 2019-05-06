@@ -18,16 +18,17 @@ class PeriodicGameStateListener : GameStateListener {
         }
     }
 
+    override fun reset() {
+        nextPlayClockTime = UNINITIALISED
+    }
+
     private companion object {
         private const val MIN = 5 * 60 // seconds
         private const val MAX = 10 * 60 // seconds
         private val POSSIBILITIES = listOf(
                 SoundByte.ADMIRALC,
                 SoundByte.ALLIANCE,
-                SoundByte.BRUH,
-                SoundByte.DENMARK,
                 SoundByte.FEELSGOODMAN,
-                SoundByte.HOBBITS,
                 SoundByte.MOTHERCOMES,
                 SoundByte.MOVEYOURASS,
                 SoundByte.NUTS,
@@ -36,8 +37,6 @@ class PeriodicGameStateListener : GameStateListener {
                 SoundByte.PRAISE,
                 SoundByte.RONNIE,
                 SoundByte.SAUSAGE,
-                SoundByte.SIKE,
-                SoundByte.SLOWDOWN,
-                SoundByte.SURPRISE)
+                SoundByte.SLOWDOWN)
     }
 }

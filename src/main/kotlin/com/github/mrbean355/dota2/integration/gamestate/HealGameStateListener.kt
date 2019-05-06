@@ -25,6 +25,10 @@ class HealGameStateListener : GameStateListener {
         }
     }
 
+    override fun reset() {
+        coolDownUntil = UNINITIALISED
+    }
+
     private companion object {
         private const val COOL_DOWN_PERIOD = 30 // seconds
     }

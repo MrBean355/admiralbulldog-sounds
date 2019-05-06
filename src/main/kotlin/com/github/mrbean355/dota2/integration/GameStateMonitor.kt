@@ -24,6 +24,16 @@ class GameStateMonitor {
 
     fun onUpdate(newState: GameState) {
         val previousState = previousState
+        if (previousState != null) {
+            val prevMatch = previousState.map?.matchid
+            val curMatch = newState.map?.matchid
+            if (prevMatch != curMatch) {
+                println("Reset listeners; prevMatch=$prevMatch, curMatch=$curMatch")
+                gameStateListeners.forEach {
+                    it.reset()
+                }
+            }
+        }
         if (previousState != null && previousState.hasValidProperties() && newState.hasValidProperties()) {
             gameStateListeners.forEach {
                 it.onGameStateUpdated(previousState, newState)

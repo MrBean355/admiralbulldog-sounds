@@ -17,6 +17,10 @@ class MidasGameStateListener : GameStateListener {
         checkInventorySlot(newState.items.slot5)
     }
 
+    override fun reset() {
+        played = false
+    }
+
     private fun checkInventorySlot(item: Item?) {
         if (item != null && item.name == "item_hand_of_midas") {
             if (item.cooldown == 0F) {

@@ -11,4 +11,6 @@ class SmokeOfDeceitGameStateListener : GameStateListener {
             SoundByte.WEED.play()
         }
     }
+
+    override fun reset() {}
 }

@@ -11,6 +11,9 @@ class RunesGameStateListener : GameStateListener {
 
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {
         val currentTime = newState.map!!.clock_time
+        if (currentTime <= 0) {
+            return
+        }
         if (nextPlayTime == UNINITIALISED) {
             nextPlayTime = findIteration(currentTime)
         }
@@ -22,6 +25,10 @@ class RunesGameStateListener : GameStateListener {
             }
             nextPlayTime = UNINITIALISED
         }
+    }
+
+    override fun reset() {
+        nextPlayTime = UNINITIALISED
     }
 
     private fun findIteration(clockTime: Long): Long {

@@ -13,6 +13,8 @@ class DeathGameStateListener : GameStateListener {
         }
     }
 
+    override fun reset() {}
+
     private companion object {
         private val POSSIBILITIES = listOf(
                 SoundByte.AHAHA4HEAD,

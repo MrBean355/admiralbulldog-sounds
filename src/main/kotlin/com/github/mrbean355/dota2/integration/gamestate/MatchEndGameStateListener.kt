@@ -16,4 +16,6 @@ class MatchEndGameStateListener : GameStateListener {
             }
         }
     }
+
+    override fun reset() {}
 }
