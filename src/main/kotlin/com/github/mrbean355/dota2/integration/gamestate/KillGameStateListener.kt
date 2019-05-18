@@ -27,6 +27,7 @@ class KillGameStateListener : GameStateListener {
                 SoundByte.IMCOMING,
                 SoundByte.KREYGASM,
                 SoundByte.LULDOG,
+                SoundByte.MONKAGIGA,
                 SoundByte.OHMYGOD,
                 SoundByte.OMEGAEZ,
                 SoundByte.SEEYA,

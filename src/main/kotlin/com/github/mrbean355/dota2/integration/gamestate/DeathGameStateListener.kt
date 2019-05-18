@@ -22,6 +22,7 @@ class DeathGameStateListener : GameStateListener {
                 SoundByte.BABYRAGE,
                 SoundByte.BERRYDISGUSTING,
                 SoundByte.BULLDOGAAAH,
+                SoundByte.BULLDOGAAAH2,
                 SoundByte.FOURHEAD,
                 SoundByte.GODDAMNPEPEGA,
                 SoundByte.HELP,
