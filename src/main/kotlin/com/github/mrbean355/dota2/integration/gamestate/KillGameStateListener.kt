@@ -18,6 +18,8 @@ class KillGameStateListener : GameStateListener {
 
     private companion object {
         private val POSSIBILITIES = listOf(
+                SoundByte._12345DEAD,
+                SoundByte.BERRYDISGUSTING,
                 SoundByte.BLBLBL,
                 SoundByte.BULLDOG4HEAD,
                 SoundByte.BULLDOGHANDSUP,
@@ -28,11 +30,14 @@ class KillGameStateListener : GameStateListener {
                 SoundByte.IMCOMING,
                 SoundByte.KREYGASM,
                 SoundByte.LULDOG,
+                SoundByte.LULWJEBAITED,
                 SoundByte.MONKAGIGA,
                 SoundByte.OHMYGOD,
                 SoundByte.OMEGAEZ,
                 SoundByte.SEEYA,
+                SoundByte.SKADOOSH,
                 SoundByte.THATSPOWER,
-                SoundByte.UNLIMITEDPOWER)
+                SoundByte.UNLIMITEDPOWER,
+                SoundByte.WTFF)
     }
 }

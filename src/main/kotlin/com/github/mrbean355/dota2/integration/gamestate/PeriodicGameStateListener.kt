@@ -25,19 +25,28 @@ class PeriodicGameStateListener : GameStateListener {
 
     private companion object {
         private const val MIN = 5 * 60 // seconds
-        private const val MAX = 10 * 60 // seconds
+        private const val MAX = 15 * 60 // seconds
         private val POSSIBILITIES = listOf(
                 SoundByte.ADMIRALC,
                 SoundByte.ALLIANCE,
+                SoundByte.AYAWUTFACE,
+                SoundByte.BRUH,
+                SoundByte.CEB,
+                SoundByte.EXPECT,
                 SoundByte.FEELSGOODMAN,
+                SoundByte.HISHEAD,
+                SoundByte.LIPS,
                 SoundByte.MOTHERCOMES,
-                SoundByte.MOVEYOURASS,
                 SoundByte.NUTS,
                 SoundByte.PERMABAN,
                 SoundByte.PLEBSAREDISGUSTING,
                 SoundByte.PRAISE,
+                SoundByte.PSST,
                 SoundByte.RONNIE,
                 SoundByte.SAUSAGE,
-                SoundByte.SLOWDOWN)
+                SoundByte.SLOWDOWN,
+                SoundByte.SMART,
+                SoundByte.STOP,
+                SoundByte.TEAMPEPEGA)
     }
 }
