@@ -44,7 +44,7 @@ class SoundByteEnumGenerator extends DefaultTask {
         }
         output += "}\n"
 
-        final gen = project.file("/src/main/kotlin/${packageName.replaceAll("\\.", "/")}/${className}.kt")
+        final gen = project.file("src/main/kotlin/${packageName.replaceAll("\\.", "/")}/${className}.kt")
         gen.createNewFile()
         gen.setText(output)
     }
