@@ -1,6 +1,5 @@
 package com.github.mrbean355.dota2.integration
 
-import com.github.mrbean355.dota2.integration.assets.SoundByteDownloader
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -16,7 +15,6 @@ import io.ktor.server.netty.Netty
 private const val PORT = 12345
 
 fun main(args: Array<String>) {
-    SoundByteDownloader("bulldog", "other").run()
     val gameStateMonitor = GameStateMonitor()
     val server = embeddedServer(Netty, port = PORT) {
         install(ContentNegotiation) {

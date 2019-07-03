@@ -2,6 +2,7 @@ package com.github.mrbean355.dota2.integration.gamestate
 
 import com.github.mrbean355.dota2.integration.GameState
 import com.github.mrbean355.dota2.integration.assets.SoundByte
+import com.github.mrbean355.dota2.integration.assets.play
 import com.github.mrbean355.dota2.integration.gamestate.util.oneInThreeChance
 
 /** Random sound byte on death (sometimes). */
@@ -31,7 +32,6 @@ class DeathGameStateListener : GameStateListener {
                 SoundByte.OHNONONO,
                 SoundByte.RUN,
                 SoundByte.WASHEDUP,
-                SoundByte.WTFMAN,
-                SoundByte.YIKES)
+                SoundByte.WTFMAN)
     }
 }
