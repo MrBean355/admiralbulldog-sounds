@@ -52,7 +52,6 @@ enum class SoundByte(override val fileName: String) : FileName {
 	ELEGIGGLE("monitored/elegiggle.mp3"),
 	EXORT("monitored/exort.mp3"),
 	EXPECT("monitored/expect.mp3"),
-	EXPLOSION("monitored/explosion.mp3"),
 	FAPTOGACHI("monitored/faptogachi.mp3"),
 	FATCOCK("monitored/fatcock.mp3"),
 	FEELSBADMAN("monitored/feelsbadman.mp3"),
