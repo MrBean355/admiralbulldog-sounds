@@ -1,4 +1,5 @@
 language: java
+install: true
 jdk: oraclejdk8
 
 cache:
@@ -6,6 +7,11 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-script:
+before_script:
   - chmod +x gradlew
+
+script:
   - ./gradlew --no-daemon clean build
+
+after_success:
+  - sh .ci/git-push.sh
