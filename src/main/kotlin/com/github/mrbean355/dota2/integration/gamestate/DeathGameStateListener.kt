@@ -28,6 +28,8 @@ class DeathGameStateListener : GameStateListener {
                 SoundByte.ITHURTS,
                 SoundByte.LOOL4HEAD,
                 SoundByte.NOTLIKETHIS,
+                SoundByte.OHNO,
+                SoundByte.OHNONO,
                 SoundByte.OHNONONO,
                 SoundByte.OHNONONO07,
                 SoundByte.RUN,
