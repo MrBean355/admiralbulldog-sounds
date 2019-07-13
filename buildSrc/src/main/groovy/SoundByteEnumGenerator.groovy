@@ -2,7 +2,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 /**
- * Generates the an enum class for each downloaded sound byte.
+ * Generates an enum class containing a value for each downloaded sound byte.
  */
 class SoundByteEnumGenerator extends DefaultTask {
     String packageName
@@ -31,6 +31,7 @@ class SoundByteEnumGenerator extends DefaultTask {
                 return name.endsWith(".mp3")
             }
         }).collect { it.name.replace(".mp3", "") }
+                .sort()
 
         def output = "package $packageName\n" +
                 "\n" +
@@ -40,7 +41,7 @@ class SoundByteEnumGenerator extends DefaultTask {
             if (Character.isDigit(name.charAt(0))) {
                 name = "_$name"
             }
-            output += "\t$name(\"$soundsDir/${it}.mp3\"),\n"
+            output += "    $name(\"$soundsDir/${it}.mp3\"),\n"
         }
         output += "}\n"
 
