@@ -19,6 +19,8 @@ dependencies {
     compile 'org.slf4j:slf4j-nop:1.7.26'
 }
 
+sourceSets.main.kotlin.srcDirs 'build/generated/kotlin'
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
@@ -46,7 +48,8 @@ task downloadSoundBytes(type: SoundByteDownloader) {
 task generateSoundBytes(type: SoundByteEnumGenerator, dependsOn: downloadSoundBytes) {
     packageName = "com.github.mrbean355.dota2.integration.assets"
     className = "SoundByte"
-    soundsDir = "monitored"
+    monitoredSoundsDir = "monitored"
+    unmonitoredSoundsDir = "unmonitored"
 }
 
 compileKotlin.dependsOn("generateSoundBytes")

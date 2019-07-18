@@ -2,7 +2,7 @@ package com.github.mrbean355.dota2.integration.gamestate
 
 import com.github.mrbean355.dota2.integration.GameState
 import com.github.mrbean355.dota2.integration.Item
-import com.github.mrbean355.dota2.integration.assets.SpecialSoundByte
+import com.github.mrbean355.dota2.integration.assets.SoundByte
 import com.github.mrbean355.dota2.integration.assets.play
 
 /** Sound byte when Hand of Midas is off cooldown. */
@@ -27,7 +27,7 @@ class MidasGameStateListener : GameStateListener {
             if (item.cooldown == 0F) {
                 if (!played) {
                     played = true
-                    SpecialSoundByte.USE_MIDAS.play()
+                    SoundByte.USEYOURMIDAS.play()
                 }
             } else {
                 played = false

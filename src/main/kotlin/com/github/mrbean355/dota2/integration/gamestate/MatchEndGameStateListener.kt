@@ -2,7 +2,6 @@ package com.github.mrbean355.dota2.integration.gamestate
 
 import com.github.mrbean355.dota2.integration.GameState
 import com.github.mrbean355.dota2.integration.assets.SoundByte
-import com.github.mrbean355.dota2.integration.assets.SpecialSoundByte
 import com.github.mrbean355.dota2.integration.assets.play
 import com.github.mrbean355.dota2.integration.gamestate.util.TEAM_NONE
 
@@ -14,7 +13,7 @@ class MatchEndGameStateListener : GameStateListener {
             if (newState.player!!.team_name == newState.map.win_team) {
                 SoundByte.VIVON.play()
             } else {
-                SpecialSoundByte.WE_LOST.play()
+                SoundByte.WEFUCKINGLOST.play()
             }
         }
     }

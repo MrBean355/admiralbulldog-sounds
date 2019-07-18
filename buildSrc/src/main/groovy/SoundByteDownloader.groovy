@@ -27,6 +27,7 @@ class SoundByteDownloader extends DefaultTask {
             .build()
             .create(NuulsService.class)
 
+    /** Directory within 'resources' to place downloaded sounds. */
     String soundsDir
 
     @TaskAction
