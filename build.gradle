@@ -41,15 +41,11 @@ jar {
     }
 }
 
-task downloadSoundBytes(type: SoundByteDownloader) {
-    soundsDir = "monitored"
-}
-
-task generateSoundBytes(type: SoundByteEnumGenerator, dependsOn: downloadSoundBytes) {
+task downloadSoundBytes(type: DownloadSoundBytesTask) {
     packageName = "com.github.mrbean355.dota2.integration.assets"
     className = "SoundByte"
     monitoredSoundsDir = "monitored"
     unmonitoredSoundsDir = "unmonitored"
 }
 
-compileKotlin.dependsOn("generateSoundBytes")
+compileKotlin.dependsOn("downloadSoundBytes")
