@@ -2,21 +2,11 @@ package com.github.mrbean355.dota2.integration
 
 import com.github.mrbean355.dota2.integration.assets.SoundByte
 import com.github.mrbean355.dota2.integration.assets.play
-import com.github.mrbean355.dota2.integration.gamestate.*
+import com.github.mrbean355.dota2.integration.gamestate.GameStateListener
 
 /** Notify registered plugins when the game state changes. */
-class GameStateMonitor {
+class GameStateMonitor(private val gameStateListeners: List<GameStateListener>) {
     private var previousState: GameState? = null
-    private val gameStateListeners: List<GameStateListener> = listOf(
-            DeathGameStateListener(),
-            HealGameStateListener(),
-            KillGameStateListener(),
-            MatchEndGameStateListener(),
-            MidasGameStateListener(),
-            PeriodicGameStateListener(),
-            RunesGameStateListener(),
-            SmokeOfDeceitGameStateListener()
-    )
 
     init {
         // Preload
