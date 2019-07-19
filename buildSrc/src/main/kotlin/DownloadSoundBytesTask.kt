@@ -51,10 +51,13 @@ open class DownloadSoundBytesTask : DefaultTask() {
                 }
 
         // Generate the enum class:
-        val sounds = project.files(monitoredFile.listFiles(), unmonitoredFile.listFiles()).map {
+        val monitoredSounds = monitoredFile.listFiles().orEmpty().map {
             SoundEnum(it.name, monitoredSoundsDir)
         }
-        val length = project.generateSourceFile(packageName, className, sounds)
+        val unmonitoredSounds = unmonitoredFile.listFiles().orEmpty().map {
+            SoundEnum(it.name, unmonitoredSoundsDir)
+        }
+        val length = project.generateSourceFile(packageName, className, monitoredSounds + unmonitoredSounds)
         println("Wrote $length lines to source file: $packageName.$className")
     }
 }
