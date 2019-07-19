@@ -1,5 +1,7 @@
 # Dota 2 Integration
 
+[![Build Status](https://travis-ci.org/MrBean355/dota2-integration.svg?branch=master)](https://travis-ci.org/MrBean355/dota2-integration)
+
 Plays various AdmiralBulldog sound bytes for different in-game events:
 - Death (33% chance)
 - Kill (33% chance)
