@@ -13,5 +13,5 @@ before_script:
 script:
   - ./gradlew --no-daemon clean build
 
-after_success:
+after_script:
   - sh .ci/git-push.sh
