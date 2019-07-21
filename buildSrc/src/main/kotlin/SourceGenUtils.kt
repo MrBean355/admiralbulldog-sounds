@@ -17,7 +17,7 @@ fun Project.generateSourceFile(packageName: String, className: String, enums: Li
             lines.joinToString(separator = "").removeSuffix(",\n") + "\n" +
             "}\n"
 
-    val destination = "build/generated/kotlin/${packageName.replace('.', '/')}"
+    val destination = "src/main/kotlin/${packageName.replace('.', '/')}"
     project.file(destination).mkdirs()
     project.file("$destination/$className.kt").writeText(text)
 
