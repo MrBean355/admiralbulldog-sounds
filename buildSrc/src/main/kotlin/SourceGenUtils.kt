@@ -13,6 +13,7 @@ fun Project.generateSourceFile(packageName: String, className: String, enums: Li
 
     val text = "package $packageName\n" +
             "\n" +
+            "@Suppress(\"SpellCheckingInspection\", \"EnumEntryName\")\n" +
             "enum class SoundByte(override val fileName: String) : FileName {\n" +
             lines.joinToString(separator = "").removeSuffix(",\n") + "\n" +
             "}\n"
