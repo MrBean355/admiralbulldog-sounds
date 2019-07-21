@@ -48,6 +48,7 @@ class PeriodicGameStateListener : GameStateListener {
                 SoundByte.SLOWDOWN,
                 SoundByte.SMART,
                 SoundByte.STOP,
-                SoundByte.TEAMPEPEGA)
+                SoundByte.TEAMPEPEGA,
+                SoundByte.WATCHDOTA)
     }
 }

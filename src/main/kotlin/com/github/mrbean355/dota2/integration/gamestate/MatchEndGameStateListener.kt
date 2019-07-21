@@ -11,7 +11,7 @@ class MatchEndGameStateListener : GameStateListener {
     override fun onGameStateUpdated(previousState: GameState, newState: GameState) {
         if (newState.map!!.win_team != TEAM_NONE && previousState.map!!.win_team == TEAM_NONE) {
             if (newState.player!!.team_name == newState.map.win_team) {
-                SoundByte.VIVON.play()
+                WIN_POSSIBILITIES.random().play()
             } else {
                 SoundByte.WEFUCKINGLOST.play()
             }
@@ -19,4 +19,10 @@ class MatchEndGameStateListener : GameStateListener {
     }
 
     override fun reset() {}
+
+    private companion object {
+        private val WIN_POSSIBILITIES = listOf(
+                SoundByte.OMEGAEZ,
+                SoundByte.VIVON)
+    }
 }

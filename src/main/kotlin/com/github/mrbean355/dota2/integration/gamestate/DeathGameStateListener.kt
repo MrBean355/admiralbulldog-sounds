@@ -20,8 +20,10 @@ class DeathGameStateListener : GameStateListener {
         private val POSSIBILITIES = listOf(
                 SoundByte.AWOO,
                 SoundByte.BABYRAGE,
+                SoundByte.BANTER,
                 SoundByte.BULLDOGAAAH,
                 SoundByte.BULLDOGAAAH2,
+                SoundByte.FUCKRIGHTOFF,
                 SoundByte.GODDAMNPEPEGA,
                 SoundByte.HELP,
                 SoundByte.ICANTBELIEVEIT,
@@ -32,6 +34,7 @@ class DeathGameStateListener : GameStateListener {
                 SoundByte.OHNONO,
                 SoundByte.OHNONONO,
                 SoundByte.OHNONONO07,
+                SoundByte.PERMASMASH,
                 SoundByte.RUN,
                 SoundByte.TP,
                 SoundByte.WTFMAN)
