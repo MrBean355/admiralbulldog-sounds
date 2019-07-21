@@ -8,7 +8,7 @@ import java.io.FileOutputStream
 
 data class SoundFile(val fileName: String, val url: String)
 
-/** Scrape the PlaySounds web page and collect a list of sound byte names and URLs. */
+/** Scrape the PlaySounds web page and collect a list of sound file names and URLs. */
 fun listRemoteFiles(): List<SoundFile> {
     val response = playSoundsService.getHtml().execute()
     val responseBody = response.body()

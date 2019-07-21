@@ -9,17 +9,13 @@ private const val VOLUME = 0.20
 private val initialised = AtomicBoolean(false)
 private val players = CopyOnWriteArrayList<MediaPlayer>()
 
-interface FileName {
-    val fileName: String
-}
-
-fun FileName.play() {
+fun SoundFile.play() {
     if (!initialised.getAndSet(true)) {
         javafx.embed.swing.JFXPanel()
     }
-    val resource = javaClass.classLoader.getResource(fileName)
+    val resource = javaClass.classLoader.getResource(path)
     if (resource == null) {
-        println("!! Error playing: $fileName")
+        println("!! Error playing: $path")
         return
     }
     val media = Media(resource.toURI().toString())
