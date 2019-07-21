@@ -36,7 +36,6 @@ class PeriodicGameStateListener : GameStateListener {
                 SoundByte.FEELSGOODMAN,
                 SoundByte.FOOD,
                 SoundByte.HABIBI,
-                SoundByte.HISHEAD,
                 SoundByte.LIPS,
                 SoundByte.MOTHERCOMES,
                 SoundByte.NUTS,
