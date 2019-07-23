@@ -41,11 +41,11 @@ jar {
     }
 }
 
-task downloadSoundBytes(type: DownloadSoundBytesTask) {
+task downloadSoundFiles(type: DownloadSoundFilesTask) {
     packageName = "com.github.mrbean355.dota2.integration.assets"
-    className = "SoundByte"
+    className = "SoundFile"
     monitoredSoundsDir = "monitored"
     unmonitoredSoundsDir = "unmonitored"
 }
 
-compileKotlin.dependsOn("downloadSoundBytes")
+compileKotlin.dependsOn("downloadSoundFiles")

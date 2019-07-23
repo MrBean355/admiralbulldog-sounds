@@ -1,7 +1,7 @@
 package com.github.mrbean355.dota2.integration.assets
 
 @Suppress("SpellCheckingInspection", "EnumEntryName")
-enum class SoundByte(override val fileName: String) : FileName {
+enum class SoundFile(val path: String) {
     `12345DEAD`("monitored/12345dead.mp3"),
     `3HEAD`("monitored/3head.mp3"),
     AAAH("monitored/aaah.mp3"),

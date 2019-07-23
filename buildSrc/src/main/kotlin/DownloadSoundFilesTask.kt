@@ -4,12 +4,12 @@ import org.gradle.api.tasks.TaskAction
 private const val BASE_TARGET_DIR = "src/main/resources/"
 
 /**
- * Scrapes the PlaySounds web page and collects a list of sound bytes.
- * Downloads sound bytes that don't exist locally.
- * Deletes local sound bytes that don't exist remotely.
- * Generates an enum class with entries for each sound byte.
+ * Scrapes the PlaySounds web page and collects a list of sound files.
+ * Downloads sound files that don't exist locally.
+ * Deletes local sound files that don't exist remotely.
+ * Generates an enum class with entries for each sound files.
  */
-open class DownloadSoundBytesTask : DefaultTask() {
+open class DownloadSoundFilesTask : DefaultTask() {
     /** Generated class's package name. */
     var packageName = ""
     /** Generated class's name. */
