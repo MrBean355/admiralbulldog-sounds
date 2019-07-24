@@ -30,7 +30,7 @@ class GameStateMonitor {
 
         // Play sound bytes that want to be played:
         val previousState = previousState
-        if (previousState != null && previousState.hasValidProperties() && currentState.hasValidProperties()) {
+        if (previousState != null && previousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
             soundBytes.forEach {
                 if (it.shouldPlay(previousState, currentState)) {
                     if (it is RandomSoundByte) {
