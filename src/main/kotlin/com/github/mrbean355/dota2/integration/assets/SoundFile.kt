@@ -181,6 +181,7 @@ enum class SoundFile(val path: String) {
     UNCLENOX("monitored/unclenox.mp3"),
     UNLIMITEDPOWER("monitored/unlimitedpower.mp3"),
     USEYOURMIDAS("unmonitored/useyourmidas.wav"),
+    VIS("monitored/vis.mp3"),
     VIVON("monitored/vivon.mp3"),
     WARRIA("monitored/warria.mp3"),
     WASHEDUP("monitored/washedup.mp3"),
