@@ -11,7 +11,7 @@ before_script:
   - chmod +x gradlew
 
 script:
-  - ./gradlew --no-daemon clean build
+  - ./gradlew --no-daemon clean downloadSoundFiles build
 
 after_script:
   - sh .ci/git-push.sh

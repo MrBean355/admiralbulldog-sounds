@@ -47,5 +47,3 @@ task downloadSoundFiles(type: DownloadSoundFilesTask) {
     monitoredSoundsDir = "monitored"
     unmonitoredSoundsDir = "unmonitored"
 }
-
-compileKotlin.dependsOn("downloadSoundFiles")
