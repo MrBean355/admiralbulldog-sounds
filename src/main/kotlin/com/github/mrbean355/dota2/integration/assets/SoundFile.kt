@@ -124,6 +124,7 @@ enum class SoundFile(val path: String) {
     OHSHIT("monitored/ohshit.mp3"),
     OMAEWA("monitored/omaewa.mp3"),
     OMEGAEZ("monitored/omegaez.mp3"),
+    OMEGAWOW("monitored/omegawow.mp3"),
     ONECLAP("monitored/oneclap.mp3"),
     ONIICHAN("monitored/oniichan.mp3"),
     ONIICHAN2("monitored/oniichan2.mp3"),
