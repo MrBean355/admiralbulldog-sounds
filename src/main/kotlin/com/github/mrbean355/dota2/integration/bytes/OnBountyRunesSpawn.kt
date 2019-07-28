@@ -22,7 +22,7 @@ class OnBountyRunesSpawn : SoundByte {
         }
         if (currentTime >= nextPlayTime) {
             val diff = currentTime - nextPlayTime
-            nextPlayTime = UNINITIALISED
+            nextPlayTime = findIteration(currentTime + 10)
             if (diff <= warningPeriod) {
                 return true
             }
