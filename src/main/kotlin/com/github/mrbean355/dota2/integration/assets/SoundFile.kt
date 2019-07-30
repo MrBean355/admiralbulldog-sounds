@@ -79,6 +79,7 @@ enum class SoundFile(val path: String) {
     HANDSUP("monitored/handsup.mp3"),
     HELP("monitored/help.mp3"),
     HIGHFUCKYOU("monitored/highfuckyou.mp3"),
+    HISHEAD("monitored/hishead.mp3"),
     HOBBITS("monitored/hobbits.mp3"),
     HOMOSAPIEN("monitored/homosapien.mp3"),
     ICANTBELIEVEIT("monitored/icantbelieveit.mp3"),
