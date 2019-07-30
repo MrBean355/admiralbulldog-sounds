@@ -1,6 +1,5 @@
 package com.github.mrbean355.dota2.integration
 
-import com.github.mrbean355.dota2.integration.assets.SoundFile
 import com.github.mrbean355.dota2.integration.assets.play
 import com.github.mrbean355.dota2.integration.bytes.RandomSoundByte
 import com.github.mrbean355.dota2.integration.bytes.SOUND_BYTE_TYPES
@@ -11,11 +10,6 @@ import kotlin.reflect.full.createInstance
 class GameStateMonitor {
     private val soundBytes = mutableListOf<SoundByte>()
     private var previousState: GameState? = null
-
-    init {
-        // Welcome!
-        SoundFile.BULLDOGHANDSUP.play()
-    }
 
     fun onUpdate(currentState: GameState) {
         val previousMatchId = previousState?.map?.matchid
