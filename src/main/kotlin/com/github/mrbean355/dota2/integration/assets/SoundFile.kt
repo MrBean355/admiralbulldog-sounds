@@ -134,6 +134,7 @@ enum class SoundFile(val path: String) {
     PANTS("monitored/pants.mp3"),
     PASSIVEMIDAS("monitored/passivemidas.mp3"),
     PEACEPEACE("monitored/peacepeace.mp3"),
+    PEPEGA("monitored/pepega.mp3"),
     PEPEHANDS("monitored/pepehands.mp3"),
     PERMABAN("monitored/permaban.mp3"),
     PERMASMASH("monitored/permasmash.mp3"),
