@@ -17,6 +17,7 @@ class Periodically : SoundByte {
             SoundFile.FEELSGOODMAN,
             SoundFile.FOOD,
             SoundFile.HABIBI,
+            SoundFile.HISHEAD,
             SoundFile.LIPS,
             SoundFile.MOTHERCOMES,
             SoundFile.NUTS,
