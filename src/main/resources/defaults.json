@@ -1,0 +1,100 @@
+{
+  "onBountyRunesSpawn": [
+    "ROONS"
+  ],
+  "onDeath": [
+    "AWOO",
+    "BABYRAGE",
+    "BANTER",
+    "BULLDOGAAAH",
+    "BULLDOGAAAH2",
+    "FUCKRIGHTOFF",
+    "GODDAMNPEPEGA",
+    "HELP",
+    "ICANTBELIEVEIT",
+    "ITHURTS",
+    "LOOL4HEAD",
+    "NOTLIKETHIS",
+    "OHNO",
+    "OHNONO",
+    "OHNONONO",
+    "OHNONONO07",
+    "PEPEGA",
+    "PERMASMASH",
+    "RUN",
+    "TP",
+    "WTFMAN"
+  ],
+  "onDefeat": [
+    "WEFUCKINGLOST"
+  ],
+  "onHeal": [
+    "EEL"
+  ],
+  "onKill": [
+    "12345DEAD",
+    "AREDOINGIT",
+    "BERRYDISGUSTING",
+    "BLBLBL",
+    "BLBLBL2",
+    "BULLDOG4HEAD",
+    "BULLDOGHANDSUP",
+    "DUMBSHITPLEB",
+    "ELEGIGGLE",
+    "FEELSBADMAN",
+    "GODDAMNBABOONS",
+    "IMCOMING",
+    "KREYGASM",
+    "LULDOG",
+    "LULWJEBAITED",
+    "MONKAGIGA",
+    "NAMASTE",
+    "OHMYGOD",
+    "OMEGAEZ",
+    "SEEYA",
+    "SKADOOSH",
+    "THATSPOWER",
+    "UNLIMITEDPOWER",
+    "WTFF"
+  ],
+  "onMatchStart": [
+    "TEAMPEPEGA"
+  ],
+  "onMidasReady": [
+    "PASSIVEMIDAS",
+    "USEYOURMIDAS"
+  ],
+  "onSmoked": [
+    "WEED"
+  ],
+  "onVictory": [
+    "OMEGAEZ",
+    "VIVON"
+  ],
+  "periodically": [
+    "ADMIRALC",
+    "ALLIANCE",
+    "AYAWUTFACE",
+    "BRUH",
+    "CEB",
+    "EXPECT",
+    "FEELSGOODMAN",
+    "FOOD",
+    "HABIBI",
+    "HISHEAD",
+    "LIPS",
+    "MOTHERCOMES",
+    "NUTS",
+    "PERMABAN",
+    "PLEBSAREDISGUSTING",
+    "PRAISE",
+    "PSST",
+    "RONNIE",
+    "SAUSAGE",
+    "SLOWDOWN",
+    "SMART",
+    "STOP",
+    "TEAMPEPEGA",
+    "WATCHDOTA"
+  ]
+}

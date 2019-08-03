@@ -1,7 +1,6 @@
 package com.github.mrbean355.dota2.integration.bytes
 
 import com.github.mrbean355.dota2.integration.GameState
-import com.github.mrbean355.dota2.integration.assets.SoundFile
 
 val SOUND_BYTE_TYPES = setOf(
         OnBountyRunesSpawn::class,
@@ -16,9 +15,6 @@ val SOUND_BYTE_TYPES = setOf(
         Periodically::class)
 
 interface SoundByte {
-    /** Pick a random sound byte to play. */
-    val choices: Collection<SoundFile>
-
     /** Examine the states and decide if a should should be played. */
     fun shouldPlay(previous: GameState, current: GameState): Boolean
 }

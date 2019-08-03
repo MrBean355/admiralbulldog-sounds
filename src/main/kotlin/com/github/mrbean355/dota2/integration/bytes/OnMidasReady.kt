@@ -3,10 +3,8 @@ package com.github.mrbean355.dota2.integration.bytes
 import com.github.mrbean355.dota2.integration.GameState
 import com.github.mrbean355.dota2.integration.Item
 import com.github.mrbean355.dota2.integration.Items
-import com.github.mrbean355.dota2.integration.assets.SoundFile
 
 class OnMidasReady : SoundByte {
-    override val choices = listOf(SoundFile.USEYOURMIDAS, SoundFile.PASSIVEMIDAS)
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         return previous.items.isMidasOnCooldown() && current.items.isMidasOffCooldown()

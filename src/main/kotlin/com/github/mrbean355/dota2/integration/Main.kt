@@ -1,5 +1,6 @@
 package com.github.mrbean355.dota2.integration
 
+import com.github.mrbean355.dota2.integration.assets.SoundFileRegistry
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -13,6 +14,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
 fun main() {
+    SoundFileRegistry.initialise()
     val gameStateMonitor = GameStateMonitor()
     val server = embeddedServer(Netty, port = 12345) {
         install(ContentNegotiation) {

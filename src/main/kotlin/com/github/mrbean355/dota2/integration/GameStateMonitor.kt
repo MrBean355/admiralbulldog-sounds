@@ -1,9 +1,11 @@
 package com.github.mrbean355.dota2.integration
 
+import com.github.mrbean355.dota2.integration.assets.SoundFileRegistry
 import com.github.mrbean355.dota2.integration.assets.play
 import com.github.mrbean355.dota2.integration.bytes.RandomSoundByte
 import com.github.mrbean355.dota2.integration.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.dota2.integration.bytes.SoundByte
+import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 /** Play sound bytes that want to be played. */
@@ -29,14 +31,21 @@ class GameStateMonitor {
                 if (it.shouldPlay(previousState, currentState)) {
                     if (it is RandomSoundByte) {
                         if (random.nextFloat() < it.chance) {
-                            it.choices.random().play()
+                            playSound(it::class)
                         }
                     } else {
-                        it.choices.random().play()
+                        playSound(it::class)
                     }
                 }
             }
         }
         this.previousState = currentState
+    }
+
+    private fun playSound(key: KClass<out SoundByte>) {
+        val choices = SoundFileRegistry.get(key)
+        if (choices.isNotEmpty()) {
+            choices.random().play()
+        }
     }
 }

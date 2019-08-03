@@ -2,12 +2,10 @@ package com.github.mrbean355.dota2.integration.bytes
 
 import com.github.mrbean355.dota2.integration.GameState
 import com.github.mrbean355.dota2.integration.UNINITIALISED
-import com.github.mrbean355.dota2.integration.assets.SoundFile
 import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 
 class OnBountyRunesSpawn : SoundByte {
-    override val choices = listOf(SoundFile.ROONS)
     private val howOften = TimeUnit.MINUTES.toSeconds(5)
     private val warningPeriod = TimeUnit.SECONDS.toSeconds(15)
     private var nextPlayTime = UNINITIALISED
