@@ -22,6 +22,7 @@ class OnDeath : RandomSoundByte {
             SoundFile.OHNONO,
             SoundFile.OHNONONO,
             SoundFile.OHNONONO07,
+            SoundFile.PEPEGA,
             SoundFile.PERMASMASH,
             SoundFile.RUN,
             SoundFile.TP,
