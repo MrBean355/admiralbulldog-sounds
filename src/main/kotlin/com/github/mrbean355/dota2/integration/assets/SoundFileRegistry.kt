@@ -27,7 +27,7 @@ object SoundFileRegistry {
             file.writeText(defaults)
             println("Created new config file: $CONFIG_FILE_NAME")
         }
-        val config = Gson().fromJson(file.readText(), SoundEffectToggles::class.java)
+        val config = Gson().fromJson(file.readText(), SoundByteToggles::class.java)
 
         // Iterate through each existing SoundByte.
         // Try to look up a field in the config file with the same name.
@@ -35,7 +35,7 @@ object SoundFileRegistry {
         SOUND_BYTE_TYPES.forEach { type ->
             val entryName = type.simpleName!!
             val fieldName = entryName.toSentenceCase()
-            val field = SoundEffectToggles::class.declaredMemberProperties.firstOrNull { it.name.equals(fieldName, ignoreCase = true) }
+            val field = SoundByteToggles::class.declaredMemberProperties.firstOrNull { it.name.equals(fieldName, ignoreCase = true) }
             val value = field?.get(config)
             if (value is List<*>) {
                 save(type, value.map {

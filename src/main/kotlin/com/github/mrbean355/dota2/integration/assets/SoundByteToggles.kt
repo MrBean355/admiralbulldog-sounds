@@ -1,7 +1,7 @@
 package com.github.mrbean355.dota2.integration.assets
 
 /** Deserialised `config.json` file. */
-data class SoundEffectToggles(
+data class SoundByteToggles(
         var onBountyRunesSpawn: List<String>?,
         var onDeath: List<String>?,
         var onDefeat: List<String>?,
