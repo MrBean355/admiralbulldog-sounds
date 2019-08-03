@@ -1,6 +1,7 @@
 package com.github.mrbean355.dota2.integration.assets
 
-@Suppress("SpellCheckingInspection", "EnumEntryName")
+@javax.annotation.Generated("DownloadSoundFilesTask", date = "Sat Aug 03 18:46:21 CAT 2019")
+@Suppress("SpellCheckingInspection", "EnumEntryName", "Unused")
 enum class SoundFile(val path: String) {
     `12345DEAD`("monitored/12345dead.mp3"),
     `3HEAD`("monitored/3head.mp3"),
@@ -212,3 +213,4 @@ enum class SoundFile(val path: String) {
     YEEHAW("monitored/yeehaw.mp3"),
     YOUKILLEDMYPEOPLE("monitored/youkilledmypeople.mp3")
 }
+        
