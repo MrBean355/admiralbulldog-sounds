@@ -32,7 +32,7 @@ javafx {
     modules = ['javafx.controls', 'javafx.media']
 }
 
-mainClassName = 'com.github.mrbean355.dota2.integration.MainKt'
+mainClassName = 'com.github.mrbean355.dota2.integration.DotaApplicationKt'
 
 jar {
     from {
