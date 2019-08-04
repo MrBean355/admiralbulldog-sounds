@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<VBox minWidth="300" alignment="CENTER" spacing="8"
+      fx:controller="com.github.mrbean355.dota2.integration.MainController"
+      xmlns:fx="http://javafx.com/fxml">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+    <Label fx:id="title" text="Waiting for first update from Dota 2...">
+        <font>
+            <Font size="18"/>
+        </font>
+    </Label>
+    <ProgressBar fx:id="progressBar"/>
+    <Label fx:id="description" text="You need to be in a match. Try entering Hero Demo mode."/>
+    <Hyperlink text="Need help?" onAction="#needHelpClicked"/>
+    <HBox fx:id="newVersion" alignment="CENTER" visible="false">
+        <Label text="New version available!"/>
+        <Hyperlink text="Download" onAction="#downloadClicked"/>
+    </HBox>
+</VBox>

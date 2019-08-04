@@ -31,7 +31,7 @@ compileTestKotlin {
 
 javafx {
     version = "12.0.1"
-    modules = ['javafx.controls', 'javafx.media']
+    modules = ['javafx.controls', 'javafx.media', 'javafx.fxml']
 }
 
 mainClassName = 'com.github.mrbean355.dota2.integration.DotaApplicationKt'
