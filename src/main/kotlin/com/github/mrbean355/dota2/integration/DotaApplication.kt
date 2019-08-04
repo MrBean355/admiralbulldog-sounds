@@ -11,6 +11,7 @@ import javafx.scene.control.Hyperlink
 import javafx.scene.control.Label
 import javafx.scene.control.ProgressBar
 import javafx.scene.image.Image
+import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
 import javafx.stage.Stage
@@ -19,6 +20,7 @@ import kotlin.system.exitProcess
 private const val GSI_PORT = 12345
 private const val ICON_RESOURCE_NAME = "bulldog.jpg"
 private const val NEED_HELP_URL = "https://github.com/MrBean355/dota2-integration"
+private const val DOWNLOAD_URL = "https://github.com/MrBean355/dota2-integration/releases"
 
 private const val MIN_WIDTH = 300.0
 private const val LARGE_FONT_SIZE = 18.0
@@ -66,6 +68,20 @@ class DotaApplication : Application() {
         needHelp = Hyperlink("Need help?").apply {
             setOnAction { hostServices.showDocument(NEED_HELP_URL) }
             root.children += this
+        }
+        val newVersionContainer = HBox(SMALL_PADDING).apply {
+            alignment = Pos.CENTER
+        }
+        Label("New version available!").apply {
+            newVersionContainer.children += this
+        }
+        Hyperlink("Download").apply {
+            setOnAction { hostServices.showDocument(DOWNLOAD_URL) }
+            newVersionContainer.children += this
+        }
+
+        checkForNewVersion {
+            Platform.runLater { root.children += newVersionContainer }
         }
 
         primaryStage.scene = Scene(root)
