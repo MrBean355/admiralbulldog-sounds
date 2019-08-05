@@ -16,6 +16,8 @@ class MainController {
     var hostServices: HostServices? = null
     private val firstUpdate = AtomicBoolean(true)
     @FXML
+    private lateinit var root: Pane
+    @FXML
     private lateinit var title: Label
     @FXML
     private lateinit var progressBar: ProgressBar
@@ -35,6 +37,7 @@ class MainController {
         checkForNewVersion {
             Platform.runLater { newVersion.isVisible = true }
         }
+        progressBar.prefWidthProperty().bind(root.widthProperty())
         progressBar.managedProperty().bind(progressBar.visibleProperty())
         newVersion.managedProperty().bind(newVersion.visibleProperty())
     }
