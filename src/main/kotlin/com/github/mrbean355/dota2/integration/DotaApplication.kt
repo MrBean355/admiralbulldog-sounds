@@ -26,7 +26,7 @@ class DotaApplication : Application() {
         loader.getController<MainController>().hostServices = hostServices
         primaryStage.apply {
             scene = Scene(parent)
-            icons.add(Image(javaClass.classLoader.getResourceAsStream("bulldog.jpg")))
+            icons.add(Image(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg")))
             title = "Dota 2 Integration"
             isResizable = false
             setOnCloseRequest { exitProcess(0) }
