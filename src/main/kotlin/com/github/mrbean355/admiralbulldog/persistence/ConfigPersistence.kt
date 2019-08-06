@@ -30,7 +30,11 @@ object ConfigPersistence {
     }
 
     fun getSoundsForType(type: KClass<out SoundByte>): List<String> {
-        return reflect(type)?.sounds.orEmpty()
+        val toggle = reflect(type) ?: return emptyList()
+        if (toggle.enabled) {
+            return toggle.sounds
+        }
+        return emptyList()
     }
 
     fun saveSoundsForType(type: KClass<out SoundByte>, selection: List<String>) {
