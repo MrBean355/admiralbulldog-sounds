@@ -1,11 +1,11 @@
 package com.github.mrbean355.admiralbulldog.game
 
-import com.github.mrbean355.admiralbulldog.assets.SoundFileRegistry
-import com.github.mrbean355.admiralbulldog.assets.play
+import com.github.mrbean355.admiralbulldog.DotaApplication
 import com.github.mrbean355.admiralbulldog.bytes.RandomSoundByte
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.github.mrbean355.admiralbulldog.bytes.random
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -17,6 +17,9 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import javafx.scene.media.Media
+import javafx.scene.media.MediaPlayer
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -75,8 +78,31 @@ private fun processGameState(currentState: GameState) {
 }
 
 private fun playSoundForType(type: KClass<out SoundByte>) {
-    val choices = SoundFileRegistry.get(type)
+    val choices = ConfigPersistence.getSoundsForType(type)
     if (choices.isNotEmpty()) {
-        choices.random().play()
+        playSound(choices.random())
+    }
+}
+
+private const val VOLUME = 0.20
+private val players = CopyOnWriteArrayList<MediaPlayer>()
+
+private fun playSound(path: String) {
+    val resource = DotaApplication::class.java.classLoader.getResource(path)
+    if (resource == null) {
+        println("!! Error playing: $path")
+        return
+    }
+    val media = Media(resource.toURI().toString())
+    MediaPlayer(media).apply {
+        volume = VOLUME
+        onEndOfMedia = Runnable {
+            dispose()
+            players.remove(this)
+        }
+        // Keep a strong reference to players until they finish.
+        // Prevents sounds stopping early due to garbage collection.
+        players += this
+        play()
     }
 }

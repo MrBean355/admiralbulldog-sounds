@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.assets.SoundFileRegistry
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.fxml.FXMLLoader
@@ -17,7 +17,7 @@ fun main() {
 class DotaApplication : Application() {
 
     override fun init() {
-        SoundFileRegistry.initialise()
+        ConfigPersistence.initialise()
     }
 
     override fun start(primaryStage: Stage) {

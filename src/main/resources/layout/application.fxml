@@ -18,6 +18,7 @@
     </Label>
     <ProgressBar fx:id="progressBar"/>
     <Label fx:id="description" text="You need to be in a match. Try entering Hero Demo mode."/>
+    <Button text="Configure sounds" onMouseClicked="#configureClicked"/>
     <Hyperlink text="Need help?" onAction="#needHelpClicked"/>
     <HBox fx:id="newVersion" alignment="CENTER" visible="false">
         <Label text="New version available!"/>

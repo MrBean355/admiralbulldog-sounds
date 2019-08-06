@@ -43,6 +43,10 @@ class MainController {
         hostServices?.showDocument(DOWNLOAD_URL)
     }
 
+    fun configureClicked() {
+        ToggleSoundBytesStage().show()
+    }
+
     private fun onNewGameState() {
         if (firstUpdate.getAndSet(false)) {
             Platform.runLater {
