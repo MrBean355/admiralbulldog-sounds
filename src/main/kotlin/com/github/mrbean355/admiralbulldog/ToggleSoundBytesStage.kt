@@ -26,10 +26,12 @@ class ToggleSoundBytesStage : Stage() {
         root.padding = Insets(16.0)
 
         SOUND_BYTE_TYPES.forEachIndexed { i, type ->
-            root.add(CheckBox(type.simpleName).apply {
+            val checkBox = CheckBox(type.simpleName).apply {
                 selectedProperty().bindBidirectional(toggles[type])
-            }, 0, i)
+            }
+            root.add(checkBox, 0, i)
             root.add(Button("", ImageView("settings_black.png")).apply {
+                disableProperty().bind(checkBox.selectedProperty().not())
                 setOnAction { configureClicked(type) }
             }, 1, i)
         }
