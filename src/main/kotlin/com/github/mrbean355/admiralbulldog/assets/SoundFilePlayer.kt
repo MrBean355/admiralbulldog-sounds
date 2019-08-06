@@ -1,4 +1,4 @@
-package com.github.mrbean355.dota2.integration.assets
+package com.github.mrbean355.admiralbulldog.assets
 
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer

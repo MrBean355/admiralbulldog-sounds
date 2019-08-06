@@ -1,11 +1,10 @@
-package com.github.mrbean355.dota2.integration
+package com.github.mrbean355.admiralbulldog.game
 
 data class GameState(
         val provider: Provider,
         val map: DotaMap?,
         val player: Player?,
         val hero: Hero?,
-//        val abilities: Abilities,
         val items: Items?) {
 
     fun hasValidProperties(): Boolean {
@@ -49,7 +48,7 @@ data class Player(
         val denies: Int,
         val kill_streak: Int,
         val commands_issued: Long,
-        val kill_list: KillList,
+        val kill_list: Any,
         val team_name: String,
         val gold: Int,
         val gold_reliable: Int,
@@ -61,54 +60,6 @@ data class Player(
         val gpm: Float,
         val xpm: Float
 )
-
-//data class SpectatedPlayer(
-//        val team2: Team,
-//        val team3: Team
-//)
-//
-//data class Team(
-//        val player: TeamPlayer
-//)
-
-//data class TeamPlayer(
-//        private val steamid: String?,
-//        private val name: String?,
-//        private val activity: String?,
-//        private val kills: Float,
-//        private val deaths: Float,
-//        private val assists: Float,
-//        private val last_hits: Float,
-//        private val denies: Float,
-//        private val kill_streak: Float,
-//        private val commands_issued: Float,
-//        private val Kill_listObject: Any?,
-//        private val team_name: String?,
-//        private val gold: Float,
-//        private val gold_reliable: Float,
-//        private val gold_unreliable: Float,
-//        private val gold_from_hero_kills: Float,
-//        private val gold_from_creep_kills: Float,
-//        private val gold_from_income: Float,
-//        private val gold_from_shared: Float,
-//        private val gpm: Float,
-//        private val xpm: Float,
-//        private val net_worth: Float,
-//        private val hero_damage: Float,
-//        private val wards_purchased: Float,
-//        private val wards_placed: Float,
-//        private val wards_destroyed: Float,
-//        private val runes_activated: Float,
-//        private val camps_stacked: Float,
-//        private val support_gold_spent: Float,
-//        private val consumable_gold_spent: Float,
-//        private val item_gold_spent: Float,
-//        private val gold_lost_to_death: Float,
-//        private val gold_spent_on_buybacks: Float
-//)
-
-/* TODO: Find out the rest of the fields. */
-class KillList
 
 data class Hero(
         val xpos: Float,
@@ -144,23 +95,6 @@ data class Hero(
         val talent_8: Boolean,
         val `break`: Boolean
 )
-
-//data class Abilities(
-//        val ability0: Ability,
-//        val ability1: Ability,
-//        val ability2: Ability,
-//        val ability3: Ability
-//)
-//
-//data class Ability(
-//        val name: String,
-//        val level: Int,
-//        val can_cast: Boolean,
-//        val passive: Boolean,
-//        val ability_active: Boolean,
-//        val cooldown: Float,
-//        val ultimate: Boolean
-//)
 
 data class Items(
         val slot0: Item,

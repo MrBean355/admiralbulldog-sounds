@@ -1,8 +1,8 @@
-package com.github.mrbean355.dota2.integration.bytes
+package com.github.mrbean355.admiralbulldog.bytes
 
-import com.github.mrbean355.dota2.integration.GameState
-import com.github.mrbean355.dota2.integration.Item
-import com.github.mrbean355.dota2.integration.Items
+import com.github.mrbean355.admiralbulldog.game.GameState
+import com.github.mrbean355.admiralbulldog.game.Item
+import com.github.mrbean355.admiralbulldog.game.Items
 
 class OnMidasReady : SoundByte {
 

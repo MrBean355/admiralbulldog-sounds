@@ -1,4 +1,4 @@
-package com.github.mrbean355.dota2.integration
+package com.github.mrbean355.admiralbulldog
 
 import retrofit2.Call
 import retrofit2.Callback

@@ -1,7 +1,7 @@
-package com.github.mrbean355.dota2.integration.assets
+package com.github.mrbean355.admiralbulldog.assets
 
-import com.github.mrbean355.dota2.integration.bytes.SOUND_BYTE_TYPES
-import com.github.mrbean355.dota2.integration.bytes.SoundByte
+import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
+import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.google.gson.Gson
 import java.io.File
 import kotlin.reflect.KClass
@@ -25,7 +25,6 @@ object SoundFileRegistry {
             val defaults = SoundFileRegistry::class.java.classLoader.getResource(DEFAULTS_FILE_NAME)?.readText()
                     ?: throw IllegalStateException("Unable to load $DEFAULTS_FILE_NAME")
             file.writeText(defaults)
-            println("Created new config file: $CONFIG_FILE_NAME")
         }
         val config = Gson().fromJson(file.readText(), SoundByteToggles::class.java)
 

@@ -1,6 +1,6 @@
-package com.github.mrbean355.dota2.integration
+package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.dota2.integration.assets.SoundFileRegistry
+import com.github.mrbean355.admiralbulldog.assets.SoundFileRegistry
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.fxml.FXMLLoader
@@ -27,7 +27,7 @@ class DotaApplication : Application() {
         primaryStage.apply {
             scene = Scene(parent)
             icons.add(Image(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg")))
-            title = "Dota 2 Integration"
+            title = "AdmiralBulldog"
             isResizable = false
             setOnCloseRequest { exitProcess(0) }
             show()

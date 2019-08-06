@@ -1,4 +1,4 @@
-package com.github.mrbean355.dota2.integration.assets
+package com.github.mrbean355.admiralbulldog.assets
 
 @Suppress("SpellCheckingInspection", "EnumEntryName", "Unused")
 enum class SoundFile(val path: String) {

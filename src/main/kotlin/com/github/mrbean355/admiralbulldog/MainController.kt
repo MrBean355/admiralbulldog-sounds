@@ -1,5 +1,6 @@
-package com.github.mrbean355.dota2.integration
+package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -27,19 +28,11 @@ class MainController {
     private lateinit var newVersion: Pane
 
     fun initialize() {
-        val gameStateMonitor = GameStateMonitor()
-        GameStateIntegrationServer(GSI_PORT) {
-            if (firstUpdate.getAndSet(false)) {
-                Platform.runLater { firstUpdateReceived() }
-            }
-            gameStateMonitor.onUpdate(it)
-        }.start()
-        checkForNewVersion {
-            Platform.runLater { newVersion.isVisible = true }
-        }
         progressBar.prefWidthProperty().bind(root.widthProperty())
         progressBar.managedProperty().bind(progressBar.visibleProperty())
         newVersion.managedProperty().bind(newVersion.visibleProperty())
+        monitorGameStateUpdates(GSI_PORT) { onNewGameState() }
+        checkForNewVersion { Platform.runLater { newVersion.isVisible = true } }
     }
 
     fun needHelpClicked() {
@@ -50,10 +43,14 @@ class MainController {
         hostServices?.showDocument(DOWNLOAD_URL)
     }
 
-    private fun firstUpdateReceived() {
-        progressBar.isVisible = false
-        title.text = "Connected to Dota 2!"
-        description.text = "Ready to play sounds during your matches!"
-        description.scene.window.sizeToScene()
+    private fun onNewGameState() {
+        if (firstUpdate.getAndSet(false)) {
+            Platform.runLater {
+                progressBar.isVisible = false
+                title.text = "Connected to Dota 2!"
+                description.text = "Ready to play sounds during your matches!"
+                description.scene.window.sizeToScene()
+            }
+        }
     }
 }

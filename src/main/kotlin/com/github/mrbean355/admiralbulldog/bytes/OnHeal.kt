@@ -1,6 +1,6 @@
-package com.github.mrbean355.dota2.integration.bytes
+package com.github.mrbean355.admiralbulldog.bytes
 
-import com.github.mrbean355.dota2.integration.GameState
+import com.github.mrbean355.admiralbulldog.game.GameState
 
 class OnHeal : RandomSoundByte {
     override val chance = 0.33f

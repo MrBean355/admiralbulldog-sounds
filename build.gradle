@@ -34,7 +34,7 @@ javafx {
     modules = ['javafx.controls', 'javafx.media', 'javafx.fxml']
 }
 
-mainClassName = 'com.github.mrbean355.dota2.integration.DotaApplicationKt'
+mainClassName = 'com.github.mrbean355.admiralbulldog.DotaApplicationKt'
 
 jar {
     from {
@@ -48,7 +48,7 @@ jar {
 }
 
 task downloadSoundFiles(type: DownloadSoundFilesTask) {
-    packageName = "com.github.mrbean355.dota2.integration.assets"
+    packageName = "com.github.mrbean355.admiralbulldog.assets"
     className = "SoundFile"
     monitoredSoundsDir = "monitored"
     unmonitoredSoundsDir = "unmonitored"
