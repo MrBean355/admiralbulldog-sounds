@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.game
 
 import com.github.mrbean355.admiralbulldog.DotaApplication
+import com.github.mrbean355.admiralbulldog.assets.SoundFile
 import com.github.mrbean355.admiralbulldog.bytes.RandomSoundByte
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
@@ -88,7 +89,8 @@ private const val VOLUME = 0.20
 private val players = CopyOnWriteArrayList<MediaPlayer>()
 
 private fun playSound(path: String) {
-    val resource = DotaApplication::class.java.classLoader.getResource(path)
+    val soundFile = SoundFile.valueOf(path)
+    val resource = DotaApplication::class.java.classLoader.getResource(soundFile.path)
     if (resource == null) {
         println("!! Error playing: $path")
         return
