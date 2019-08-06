@@ -3,8 +3,8 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.value.ObservableValue
 import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.control.Button
@@ -17,7 +17,7 @@ import javafx.stage.Stage
 import kotlin.reflect.KClass
 
 class ToggleSoundBytesStage : Stage() {
-    private val toggles: Map<KClass<out SoundByte>, ObservableValue<Boolean>> = loadToggles()
+    private val toggles: Map<KClass<out SoundByte>, BooleanProperty> = loadToggles()
 
     init {
         val root = GridPane()
@@ -27,25 +27,14 @@ class ToggleSoundBytesStage : Stage() {
 
         SOUND_BYTE_TYPES.forEachIndexed { i, type ->
             root.add(CheckBox(type.simpleName).apply {
-                // FIXME: Can't be bound
-                //                isSelected = ConfigPersistence.isSoundByteEnabled(type)
-                selectedProperty().bind(toggles[type])
-//                selectedProperty().addListener { _, _, newValue ->
-//                    ConfigPersistence.toggleSoundByte(type, newValue)
-//                }
+                selectedProperty().bindBidirectional(toggles[type])
             }, 0, i)
             root.add(Button("", ImageView("settings_black.png")).apply {
-                setOnAction {
-                    ChooseSoundFilesStage(type).show()
-                }
+                setOnAction { configureClicked(type) }
             }, 1, i)
         }
         root.add(Button("Save").apply {
-            setOnAction {
-                toggles.forEach { (t, u) ->
-                    ConfigPersistence.toggleSoundByte(t, u.value)
-                }
-            }
+            setOnAction { saveClicked() }
         }, 0, root.children.size / 2)
 
         title = "Configure Sounds"
@@ -57,9 +46,20 @@ class ToggleSoundBytesStage : Stage() {
         }
     }
 
-    private fun loadToggles(): Map<KClass<out SoundByte>, ObservableValue<Boolean>> {
+    private fun loadToggles(): Map<KClass<out SoundByte>, BooleanProperty> {
         return SOUND_BYTE_TYPES.associateWith {
             SimpleBooleanProperty(ConfigPersistence.isSoundByteEnabled(it))
         }
+    }
+
+    private fun configureClicked(type: KClass<out SoundByte>) {
+        ChooseSoundFilesStage(type).show()
+    }
+
+    private fun saveClicked() {
+        toggles.forEach { (t, u) ->
+            ConfigPersistence.toggleSoundByte(t, u.value)
+        }
+        close()
     }
 }
