@@ -3,12 +3,16 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
+import com.github.mrbean355.admiralbulldog.persistence.MIN_VOLUME
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
+import javafx.scene.control.Label
+import javafx.scene.control.Slider
 import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -31,6 +35,18 @@ class ToggleSoundBytesStage : Stage() {
             hgrow = Priority.ALWAYS
         })
 
+        root.add(Label(LABEL_VOLUME), 0, 0, 2, 1)
+        root.add(Slider(MIN_VOLUME, MAX_VOLUME, ConfigPersistence.getVolume()).apply {
+            isShowTickLabels = true
+            isShowTickMarks = true
+            majorTickUnit = VOLUME_MAJOR_TICK_UNIT
+            minorTickCount = VOLUME_MINOR_TICK_COUNT
+            isSnapToTicks = true
+            valueProperty().addListener { _, _, newValue ->
+                ConfigPersistence.setVolume(newValue.toDouble())
+            }
+        }, 0, 1, 2, 1)
+
         SOUND_BYTE_TYPES.forEachIndexed { i, type ->
             val checkBox = CheckBox(type.simpleName).apply {
                 selectedProperty().bindBidirectional(toggles[type])
@@ -38,11 +54,11 @@ class ToggleSoundBytesStage : Stage() {
                     ConfigPersistence.toggleSoundByte(type, newValue)
                 }
             }
-            root.add(checkBox, 0, i)
+            root.add(checkBox, 0, i + 2)
             root.add(Button("", ImageView(settingsIcon())).apply {
                 disableProperty().bind(checkBox.selectedProperty().not())
                 setOnAction { configureClicked(type) }
-            }, 1, i)
+            }, 1, i + 2)
         }
 
         title = TITLE_TOGGLE_SOUND_BYTES

@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import javafx.scene.image.Image
 
 /* Dimensions */
@@ -23,6 +24,9 @@ const val URL_DOWNLOAD = "https://github.com/MrBean355/dota2-integration/release
 
 /* Toggle Sound Bytes */
 const val TITLE_TOGGLE_SOUND_BYTES = "Enable sounds"
+const val LABEL_VOLUME = "Volume"
+const val VOLUME_MAJOR_TICK_UNIT = MAX_VOLUME / 5.0
+const val VOLUME_MINOR_TICK_COUNT = 3
 
 /* Choose Sound Files */
 const val ACTION_SAVE = "Save"

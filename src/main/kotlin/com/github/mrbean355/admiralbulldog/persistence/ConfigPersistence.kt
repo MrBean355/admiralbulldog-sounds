@@ -3,12 +3,14 @@ package com.github.mrbean355.admiralbulldog.persistence
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import java.io.File
 import kotlin.reflect.KClass
 
 private const val FILE_NAME = "config.json"
 private const val DEFAULTS_PATH = "defaults/%s.json"
+const val MIN_VOLUME = 0.0
+const val MAX_VOLUME = 100.0
+private const val DEFAULT_VOLUME = 20.0
 
 /**
  * Facilitates saving & loading the configuration of the sound bytes from a file.
@@ -18,6 +20,7 @@ private const val DEFAULTS_PATH = "defaults/%s.json"
  */
 object ConfigPersistence {
     private val gson = GsonBuilder().setPrettyPrinting().create()
+    private var volume = MIN_VOLUME
     private lateinit var config: MutableMap<String, Toggle>
 
     /** Load config from file into memory. */
@@ -25,13 +28,25 @@ object ConfigPersistence {
         val file = File(FILE_NAME)
         if (!file.exists()) {
             file.createNewFile()
-            config = loadAllDefaults().toMutableMap()
+            val defaults = loadAllDefaults()
+            volume = defaults.volume
+            config = defaults.sounds.toMutableMap()
             save()
         } else {
-            val typeToken = TypeToken.getParameterized(Map::class.java, String::class.java, Toggle::class.java)
-            config = gson.fromJson(file.readText(), typeToken.type)
+            val loaded = gson.fromJson(file.readText(), Config::class.java)
+            volume = loaded.volume
+            config = loaded.sounds.toMutableMap()
         }
         checkConfig()
+    }
+
+    /** @return the current volume, in the range `[0.0, 100.0]`. */
+    fun getVolume() = volume
+
+    /** Set the current volume. Will be clamped to the range `[0.0, 100.0]`. */
+    fun setVolume(volume: Double) {
+        this.volume = volume.coerceAtLeast(MIN_VOLUME).coerceAtMost(MAX_VOLUME)
+        save()
     }
 
     /** @return `true` if the sound byte is enabled; `false` otherwise. */
@@ -66,14 +81,14 @@ object ConfigPersistence {
         if (!file.exists()) {
             file.createNewFile()
         }
-        file.writeText(gson.toJson(config))
+        file.writeText(gson.toJson(Config(volume, config)))
     }
 
     /** Load the default configs for all sound bytes. */
-    private fun loadAllDefaults(): Map<String, Toggle> {
-        return SOUND_BYTE_TYPES.associateWith {
-            loadDefaults(it)
-        }.mapKeys { it.key.simpleName!! }
+    private fun loadAllDefaults(): Config {
+        val sounds = SOUND_BYTE_TYPES.associateWith { loadDefaults(it) }
+                .mapKeys { it.key.simpleName!! }
+        return Config(DEFAULT_VOLUME, sounds)
     }
 
     /** Load the default config for a given sound byte `type`. */
@@ -97,6 +112,8 @@ object ConfigPersistence {
             save()
         }
     }
+
+    data class Config(val volume: Double, val sounds: Map<String, Toggle>)
 
     data class Toggle(var enabled: Boolean, var sounds: List<String>)
 }

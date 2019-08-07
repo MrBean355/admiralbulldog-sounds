@@ -87,7 +87,6 @@ private fun playSoundForType(type: KClass<out SoundByte>) {
     }
 }
 
-private const val VOLUME = 0.20
 private val players = CopyOnWriteArrayList<MediaPlayer>()
 
 fun playSound(name: String) {
@@ -99,7 +98,7 @@ fun playSound(name: String) {
     }
     val media = Media(resource.toURI().toString())
     MediaPlayer(media).apply {
-        volume = VOLUME
+        volume = ConfigPersistence.getVolume() / 100.0
         onEndOfMedia = Runnable {
             dispose()
             players.remove(this)
