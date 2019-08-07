@@ -19,10 +19,17 @@ import javafx.scene.layout.VBox
 import javafx.scene.text.Font
 import javafx.stage.Modality
 import javafx.stage.Stage
+import java.io.File
+import java.io.PrintStream
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
 fun main() {
+    Thread.setDefaultUncaughtExceptionHandler { t, e ->
+        val file = File("crash_log.txt")
+        e.printStackTrace(PrintStream(file))
+        file.appendText(t.toString())
+    }
     launch(DotaApplication::class.java)
 }
 
