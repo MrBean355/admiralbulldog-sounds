@@ -12,7 +12,10 @@ import javafx.scene.control.CheckBox
 import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
+import javafx.scene.layout.Priority
+import javafx.stage.Modality
 import javafx.stage.Stage
 import kotlin.reflect.KClass
 
@@ -21,26 +24,31 @@ class ToggleSoundBytesStage : Stage() {
 
     init {
         val root = GridPane()
-        root.hgap = 8.0
-        root.vgap = 8.0
-        root.padding = Insets(16.0)
+        root.hgap = PADDING_SMALL
+        root.vgap = PADDING_SMALL
+        root.padding = Insets(PADDING_MEDIUM)
+        root.columnConstraints.addAll(ColumnConstraints().apply {
+            hgrow = Priority.ALWAYS
+        })
 
         SOUND_BYTE_TYPES.forEachIndexed { i, type ->
             val checkBox = CheckBox(type.simpleName).apply {
                 selectedProperty().bindBidirectional(toggles[type])
+                selectedProperty().addListener { _, _, newValue ->
+                    ConfigPersistence.toggleSoundByte(type, newValue)
+                }
             }
             root.add(checkBox, 0, i)
-            root.add(Button("", ImageView("settings_black.png")).apply {
+            root.add(Button("", ImageView(settingsIcon())).apply {
                 disableProperty().bind(checkBox.selectedProperty().not())
                 setOnAction { configureClicked(type) }
             }, 1, i)
         }
-        root.add(Button("Save").apply {
-            setOnAction { saveClicked() }
-        }, 0, root.children.size / 2)
 
-        title = "Configure Sounds"
+        title = TITLE_TOGGLE_SOUND_BYTES
         scene = Scene(root)
+        icons.add(bulldogIcon())
+        width = WINDOW_WIDTH
         addEventFilter(KeyEvent.KEY_PRESSED) {
             if (it.code == KeyCode.ESCAPE) {
                 close()
@@ -55,13 +63,10 @@ class ToggleSoundBytesStage : Stage() {
     }
 
     private fun configureClicked(type: KClass<out SoundByte>) {
-        ChooseSoundFilesStage(type).show()
-    }
-
-    private fun saveClicked() {
-        toggles.forEach { (t, u) ->
-            ConfigPersistence.toggleSoundByte(t, u.value)
+        ChooseSoundFilesStage(type).apply {
+            initModality(Modality.WINDOW_MODAL)
+            initOwner(this@ToggleSoundBytesStage)
+            show()
         }
-        close()
     }
 }

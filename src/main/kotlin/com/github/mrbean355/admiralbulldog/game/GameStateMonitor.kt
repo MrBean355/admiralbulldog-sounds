@@ -24,9 +24,11 @@ import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
+private const val GSI_PORT = 12345
+
 /** Receives game state updates from Dota 2. */
-fun monitorGameStateUpdates(port: Int, onNewGameState: (GameState) -> Unit) {
-    embeddedServer(Netty, port) {
+fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
+    embeddedServer(Netty, GSI_PORT) {
         install(ContentNegotiation) {
             gson()
         }
@@ -88,11 +90,11 @@ private fun playSoundForType(type: KClass<out SoundByte>) {
 private const val VOLUME = 0.20
 private val players = CopyOnWriteArrayList<MediaPlayer>()
 
-private fun playSound(path: String) {
-    val soundFile = SoundFile.valueOf(path)
+fun playSound(name: String) {
+    val soundFile = SoundFile.valueOf(name)
     val resource = DotaApplication::class.java.classLoader.getResource(soundFile.path)
     if (resource == null) {
-        println("!! Error playing: $path")
+        println("Error playing sound: $name")
         return
     }
     val media = Media(resource.toURI().toString())
