@@ -10,6 +10,7 @@ val SOUND_BYTE_TYPES = setOf(
         OnKill::class,
         OnMatchStart::class,
         OnMidasReady::class,
+        OnRespawn::class,
         OnSmoked::class,
         OnVictory::class,
         Periodically::class)

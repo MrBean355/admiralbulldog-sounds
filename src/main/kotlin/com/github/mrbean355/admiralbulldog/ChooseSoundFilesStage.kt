@@ -38,7 +38,7 @@ class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
             setOnAction { saveToggles() }
         }
 
-        title = type.simpleName
+        title = type.friendlyName()
         scene = Scene(root)
         icons.add(bulldogIcon())
         width = WINDOW_WIDTH

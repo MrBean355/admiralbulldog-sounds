@@ -48,7 +48,7 @@ class ToggleSoundBytesStage : Stage() {
         }, 0, 1, 2, 1)
 
         SOUND_BYTE_TYPES.forEachIndexed { i, type ->
-            val checkBox = CheckBox(type.simpleName).apply {
+            val checkBox = CheckBox(type.friendlyName()).apply {
                 selectedProperty().bindBidirectional(toggles[type])
                 selectedProperty().addListener { _, _, newValue ->
                     ConfigPersistence.toggleSoundByte(type, newValue)

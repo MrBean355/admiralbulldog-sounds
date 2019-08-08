@@ -1,7 +1,9 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.bytes.*
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import javafx.scene.image.Image
+import kotlin.reflect.KClass
 
 /* Dimensions */
 const val WINDOW_WIDTH = 300.0
@@ -36,3 +38,20 @@ fun bulldogIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsS
 
 fun playIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("play_arrow_black.png"))
 fun settingsIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("settings_black.png"))
+
+fun KClass<out SoundByte>.friendlyName(): String {
+    return when (this) {
+        OnBountyRunesSpawn::class -> "Bounty runes spawning"
+        OnDeath::class -> "Got killed"
+        OnDefeat::class -> "Lost the match"
+        OnHeal::class -> "Got healed"
+        OnKill::class -> "Killed a hero"
+        OnMatchStart::class -> "Match starting"
+        OnMidasReady::class -> "Midas is ready"
+        OnRespawn::class -> "Respawned"
+        OnSmoked::class -> "Used Smoke of Deceit"
+        OnVictory::class -> "Won the match"
+        Periodically::class -> "As time goes on"
+        else -> simpleName ?: "Unknown"
+    }
+}
