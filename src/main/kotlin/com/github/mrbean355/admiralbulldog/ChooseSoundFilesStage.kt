@@ -1,8 +1,8 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFile
+import com.github.mrbean355.admiralbulldog.assets.playSound
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
-import com.github.mrbean355.admiralbulldog.game.playSound
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
@@ -21,21 +21,18 @@ import javafx.stage.Stage
 import kotlin.reflect.KClass
 
 class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
-    private val allItems = SoundFile.values().map { it.name }
-    private val toggles: Map<String, BooleanProperty> = loadToggles()
+    private val allItems = SoundFile.values().toList()
+    private val soundToggles: Map<SoundFile, BooleanProperty> = loadToggles()
     private val searchResults = FXCollections.observableArrayList(allItems)
 
     init {
         val root = VBox(PADDING_SMALL)
         root.padding = Insets(PADDING_MEDIUM)
         root.children += TextField().apply {
-            textProperty().addListener { _, _, newValue ->
-                searchResults.clear()
-                searchResults.addAll(allItems.filter { it.contains(newValue.trim(), ignoreCase = true) })
-            }
+            textProperty().addListener { _, _, newValue -> filterItems(newValue) }
         }
-        root.children += ListView<String>(searchResults).apply {
-            setCellFactory { _ -> CheckBoxWithButtonCell { toggles[it] } }
+        root.children += ListView<SoundFile>(searchResults).apply {
+            setCellFactory { _ -> CheckBoxWithButtonCell { soundToggles[it] } }
         }
         root.children += Button(ACTION_SAVE).apply {
             setOnAction { saveToggles() }
@@ -52,17 +49,22 @@ class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
         }
     }
 
-    private fun loadToggles(): Map<String, BooleanProperty> {
+    private fun loadToggles(): Map<SoundFile, BooleanProperty> {
         val selection = ConfigPersistence.getSoundsForType(type)
         return allItems.associateWith { SimpleBooleanProperty(it in selection) }
     }
 
     private fun saveToggles() {
-        ConfigPersistence.saveSoundsForType(type, toggles.filterValues { it.value }.keys.toList())
+        ConfigPersistence.saveSoundsForType(type, soundToggles.filterValues { it.value }.keys.toList())
         close()
     }
 
-    private class CheckBoxWithButtonCell(private val getSelectedProperty: (String?) -> BooleanProperty?) : ListCell<String>() {
+    private fun filterItems(query: String) {
+        searchResults.clear()
+        searchResults.addAll(allItems.filter { it.name.contains(query.trim(), ignoreCase = true) })
+    }
+
+    private class CheckBoxWithButtonCell(private val getSelectedProperty: (SoundFile?) -> BooleanProperty?) : ListCell<SoundFile>() {
         private val container = GridPane()
         private val checkBox = CheckBox()
         private val button = Button("", ImageView(playIcon()))
@@ -76,15 +78,15 @@ class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
             container.add(button, 1, 0)
         }
 
-        override fun updateItem(item: String?, empty: Boolean) {
+        override fun updateItem(item: SoundFile?, empty: Boolean) {
             super.updateItem(item, empty)
             if (empty) {
                 graphic = null
                 return
             }
             graphic = container
-            checkBox.text = item
-            button.setOnAction { playSound(item.orEmpty()) }
+            checkBox.text = item?.name
+            button.setOnAction { item?.playSound() }
 
             booleanProperty?.let {
                 checkBox.selectedProperty().unbindBidirectional(booleanProperty)
