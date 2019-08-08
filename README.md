@@ -6,15 +6,22 @@ This is a little app that plays various [AdmiralBulldog](https://www.twitch.tv/a
 - 15 seconds before the bounty runes spawn
 - your Hand of Midas comes off cooldown
 - you become affected by Smoke of Deceit
-- you get a kill (33% chance)
-- you die (33% chance)
-- you get healed (33% chance)
+- you get a kill (sometimes)
+- you die (sometimes)
+- you get healed (sometimes)
 - the match starts
 - your team wins
 - your team loses
 - randomly every 5 to 15 minutes
 
-You can easily configure which sounds are played for each event.
+You can easily configure which sound bytes are played for each of these events.
+
+## Download
+1. Download the `.jar` file for the [latest release](https://github.com/MrBean355/dota2-integration/releases).
+2. Move the downloaded file to somewhere easy to access (e.g. on your desktop).
+3. Complete the **Setup** instructions below.
+4. Simply double-click the downloaded file to run the app!
+5. Note: a `config.json` file is created which stores your settings. If you more or delete this file, all your settings will be lost!  
 
 ## Setup
 1. Close Dota 2.
@@ -48,19 +55,27 @@ You can easily configure which sounds are played for each event.
 1. Open this app.
 2. Open Dota 2.
 3. Enter Hero Demo Mode.
-4. If you see this screen, you're ready to go:
+4. If you see this screen, you're ready to go:<br/>
     ![Complete](docs/setup_complete.png)
-5. If the app doesn't show the above screen after entering Hero Demo Mode, carefully go through the setup steps again.
+5. You can also trigger one of the events mentioned above to hear the sound (e.g. use Smoke of Deceit). 
+6. If the app doesn't show the above screen after entering Hero Demo Mode, carefully go through the setup steps again. Remember to close Dota 2!
 
-## Sound Byte Config
-Each of the 10 different sound byte types can be configured to play your choice of sounds.
+## Choosing The Sounds
+Each of the sound byte events can be configured to play your choice of sounds.
 For example, you can change the bounty rune sound byte from "ROONS!" to "Team Pepega".
 
-Simply start the app and click the "Configure sounds" button.
+Simply start the app and click the "Change sounds" button.
+From there, you can enable or disable certain sound byte events by un-checking the corresponding checkbox.
+
+The volume can be adjusted using the slider. 
+
+Click the settings cog next to a sound byte event to choose which sounds can be played for that event.
+When that event happens, one of the selected sounds will be randomly chosen to be played.
+Remember to click "Save" when you're done choosing sounds!
 
 ## Updates
-Over time, there will hopefully be new versions of this app which either fix bugs or add new features.
-It's recommended to keep up-to-date to always have the latest AdmiralBulldog pepega.
+The most common reason for new versions of this app is that new sound bytes have been added to the [PlaySounds](http://chatbot.admiralbulldog.live/playsounds) page.
+It's also likely that bugs get be fixed or new features are added. It's recommended to keep up-to-date to always have the latest AdmiralBulldog sound bytes.
 
 The app will check for a newer version on startup, and display a message with a link to download the latest version.
 
