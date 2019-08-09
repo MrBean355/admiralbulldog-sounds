@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.assets
 
+@javax.annotation.processing.Generated("DownloadSoundFilesTask")
 @Suppress("SpellCheckingInspection", "EnumEntryName", "Unused")
 enum class SoundFile(val path: String) {
     `12345DEAD`("monitored/12345dead.mp3"),
