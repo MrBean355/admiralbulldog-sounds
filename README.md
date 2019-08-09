@@ -3,28 +3,30 @@
 [![Build Status](https://travis-ci.org/MrBean355/dota2-integration.svg?branch=master)](https://travis-ci.org/MrBean355/dota2-integration)
 
 This is a little app that plays various [AdmiralBulldog](https://www.twitch.tv/admiralbulldog) sound bytes for things that happen in your Dota 2 matches: 
-- 15 seconds before the bounty runes spawn
+- shortly before the bounty runes spawn
 - your Hand of Midas comes off cooldown
-- you become affected by Smoke of Deceit
+- you get affected by Smoke of Deceit
 - you get a kill (sometimes)
 - you die (sometimes)
 - you get healed (sometimes)
+- you respawn
 - the match starts
 - your team wins
 - your team loses
 - randomly every 5 to 15 minutes
 
-You can easily configure which sound bytes are played for each of these events.
+You can toggle each of these events on and off to your liking.
+You can also easily choose which sounds are played for each of these events.
+It is designed to have the same selection of sounds as on AdmiralBulldog's official [PlaySounds](http://chatbot.admiralbulldog.live/playsounds) page.
 
-## Download
+## Installation
+
+#### Download
 1. Download the `.jar` file for the [latest release](https://github.com/MrBean355/dota2-integration/releases).
 2. Move the downloaded file to somewhere easy to access (e.g. on your desktop).
-3. Complete the **Setup** instructions below.
-4. Simply double-click the downloaded file to run the app!
-5. Note: a `config.json` file is created which stores your settings. If you more or delete this file, all your settings will be lost!  
 
-## Setup
-1. Close Dota 2.
+#### Dota 2 Setup
+1. Important: close Dota 2.
 2. Navigate to your Dota 2 installation folder (e.g. `C:\Program Files (x86)\Steam\steamapps\common\dota 2 beta`).
 3. Within there, navigate to `game\dota\cfg\gamestate_integration` (create any folders that don't exist).
 4. Create a new file called `gamestate_integration_bulldog.cfg`.
@@ -51,26 +53,32 @@ You can easily configure which sound bytes are played for each of these events.
     ```
 7. Save & close the file.
 
-## Testing Your Setup
-1. Open this app.
-2. Open Dota 2.
-3. Enter Hero Demo Mode.
-4. If you see this screen, you're ready to go:<br/>
-    ![Complete](docs/setup_complete.png)
-5. You can also trigger one of the events mentioned above to hear the sound (e.g. use Smoke of Deceit). 
-6. If the app doesn't show the above screen after entering Hero Demo Mode, carefully go through the setup steps again. Remember to close Dota 2!
+#### Test Your Setup
+1. Open the app by double-clicking the downloaded `.jar` file.
+2. Note that a `config.json` file is created which stores your settings. If you move or delete this file, all of your settings will be lost!
+3. Open Dota 2.
+4. Enter Hero Demo Mode.
+5. If you see this screen, you're ready to go:<br/>
+![Complete](docs/setup_complete.png)
+6. You can also trigger one of the events mentioned above to hear the sound (e.g. use Smoke of Deceit). 
+7. If the app doesn't show the above screen after entering Hero Demo Mode, carefully go through the setup steps again.
 
-## Choosing The Sounds
+## Choose The Sounds
 Each of the sound byte events can be configured to play your choice of sounds.
 For example, you can change the bounty rune sound byte from "ROONS!" to "Team Pepega".
 
 Simply start the app and click the "Change sounds" button.
 From there, you can enable or disable certain sound byte events by un-checking the corresponding checkbox.
 
+![Toggle sound bytes](docs/sound_byte_toggling.PNG)
+
 The volume can be adjusted using the slider. 
 
 Click the settings cog next to a sound byte event to choose which sounds can be played for that event.
-When that event happens, one of the selected sounds will be randomly chosen to be played.
+When that event happens, one of the selected sounds will get randomly chosen to be played.
+
+![Choose sounds](docs/choose_sounds.PNG)
+
 Remember to click "Save" when you're done choosing sounds!
 
 ## Updates
@@ -80,4 +88,4 @@ It's also likely that bugs get be fixed or new features are added. It's recommen
 The app will check for a newer version on startup, and display a message with a link to download the latest version.
 
 ## Contact
-Feel free to open an issue on this GitHub repository (preferred), or direct-message me (`@Mr_Bean`) on AdmiralBulldog's Discord server.
+Feel free to open an issue on this GitHub repository, or join my [Discord server](discord.gg/V6JzdJ5) and drop me a message (`@Mr_Bean`)!
