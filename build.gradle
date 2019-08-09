@@ -53,3 +53,12 @@ task downloadSoundFiles(type: DownloadSoundFilesTask) {
     monitoredSoundsDir = "monitored"
     unmonitoredSoundsDir = "unmonitored"
 }
+
+task generateBuildConfig() {
+    final file = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/BuildConfig.kt")
+    file.createNewFile()
+    file.write("package com.github.mrbean355.admiralbulldog\n" +
+            "\n" +
+            "@javax.annotation.processing.Generated(\"generateBuildConfig\")\n" +
+            "const val APP_VERSION = \"$version\"")
+}

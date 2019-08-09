@@ -66,6 +66,9 @@ class DotaApplication : Application() {
         root.children += Hyperlink(LINK_NEED_HELP).apply {
             setOnAction { needHelpClicked() }
         }
+        root.children += Label(LABEL_APP_VERSION.format(APP_VERSION)).apply {
+            font = Font(TEXT_SIZE_SMALL)
+        }
 
         val newVersion = HBox().apply {
             alignment = Pos.CENTER
