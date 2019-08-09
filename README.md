@@ -23,6 +23,9 @@ It is designed to have the same selection of sounds as on AdmiralBulldog's offic
 
 ## Installation
 
+#### Requirements
+The app can theoretically run on all operating systems (Windows, Mac & Linux). You'll need to have [Java](https://www.oracle.com/technetwork/java/javase/downloads/index.html) (probably version 12) installed on your machine.
+
 #### Download
 1. Download the `.jar` file for the [latest release](https://github.com/MrBean355/admiralbulldog-sounds/releases).
 2. Move the downloaded file to somewhere easy to access (e.g. on your desktop).
