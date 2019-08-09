@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.github.mrbean355'
-version '1.0.0-SNAPSHOT'
+version '1.0.0'
 
 sourceCompatibility = 1.8
 
@@ -31,7 +31,7 @@ compileTestKotlin {
 
 javafx {
     version = "12.0.1"
-    modules = ['javafx.controls', 'javafx.media', 'javafx.fxml']
+    modules = ['javafx.controls', 'javafx.media']
 }
 
 mainClassName = 'com.github.mrbean355.admiralbulldog.DotaApplicationKt'
