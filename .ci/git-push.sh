@@ -9,6 +9,6 @@ else
     git add .
     git status
     git commit -m "Auto-update sound bytes" -m "[skip ci]"
-    git remote add origin-travis https://${GITHUB_TOKEN}@github.com/MrBean355/dota2-integration.git
+    git remote add origin-travis https://${GITHUB_TOKEN}@github.com:MrBean355/admiralbulldog-sounds.git
     git push origin-travis
 fi

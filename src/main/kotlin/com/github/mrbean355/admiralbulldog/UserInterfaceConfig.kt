@@ -19,10 +19,10 @@ const val DESC_NOT_CONNECTED = "You need to be in a match. Try entering Hero Dem
 const val DESC_CONNECTED = "Ready to play sounds during your matches!"
 const val ACTION_CHANGE_SOUNDS = "Change sounds"
 const val LINK_NEED_HELP = "Need help?"
-const val URL_NEED_HELP = "https://github.com/MrBean355/dota2-integration"
+const val URL_NEED_HELP = "https://github.com/MrBean355/admiralbulldog-sounds"
 const val MSG_NEW_VERSION = "New version available!"
 const val LINK_DOWNLOAD = "Download"
-const val URL_DOWNLOAD = "https://github.com/MrBean355/dota2-integration/releases"
+const val URL_DOWNLOAD = "https://github.com/MrBean355/admiralbulldog-sounds/releases"
 
 /* Toggle Sound Bytes */
 const val TITLE_TOGGLE_SOUND_BYTES = "Enable sounds"

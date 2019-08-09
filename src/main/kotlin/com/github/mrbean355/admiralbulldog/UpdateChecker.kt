@@ -15,7 +15,7 @@ import retrofit2.http.GET
 fun checkForNewVersion(): ObservableValue<Boolean> {
     val result = SimpleBooleanProperty(false)
     val service = Retrofit.Builder()
-            .baseUrl("https://raw.githubusercontent.com/MrBean355/dota2-integration/master/src/main/resources/")
+            .baseUrl("https://raw.githubusercontent.com/MrBean355/admiralbulldog-sounds/master/src/main/resources/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
             .create(GitHubService::class.java)
