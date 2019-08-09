@@ -13,8 +13,9 @@ fun Project.generateSourceFile(packageName: String, className: String, enums: Li
 
     val text = "package $packageName\n" +
             "\n" +
+            "@javax.annotation.processing.Generated(\"DownloadSoundFilesTask\")\n" +
             "@Suppress(\"SpellCheckingInspection\", \"EnumEntryName\", \"Unused\")\n" +
-            "enum class SoundFile(val path: String) {\n" +
+            "enum class $className(val path: String) {\n" +
             lines.joinToString(separator = "").removeSuffix(",\n") + "\n" +
             "}\n"
 

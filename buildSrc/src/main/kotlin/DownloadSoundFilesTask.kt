@@ -30,25 +30,10 @@ open class DownloadSoundFilesTask : DefaultTask() {
         val unmonitoredFile = project.file(unmonitoredPath)
         unmonitoredFile.mkdirs()
 
-        // Remember which files exist locally:
-        val existingFiles = monitoredFile.list().orEmpty()
-
-        // Download missing remote files:
-        val remoteFiles = listRemoteFiles()
-        remoteFiles.forEach { remoteFile ->
-            if (!project.file("$monitoredPath/${remoteFile.fileName}").exists()) {
-                downloadFile(remoteFile, monitoredPath)
-                println("Downloaded new file: ${remoteFile.fileName}")
-            }
+        // Download all remote files:
+        listRemoteFiles().forEach { remoteFile ->
+            downloadFile(remoteFile, monitoredPath)
         }
-
-        // Delete files which don't exist remotely anymore:
-        val remoteFileNames = remoteFiles.map { it.fileName }
-        existingFiles.filterNot { it in remoteFileNames }
-                .forEach {
-                    project.file("$monitoredPath/$it").delete()
-                    println("Deleted old file: $it")
-                }
 
         // Generate the enum class:
         val monitoredSounds = monitoredFile.listFiles().orEmpty().map {
