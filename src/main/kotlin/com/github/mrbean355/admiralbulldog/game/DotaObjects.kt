@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection", "unused")
+
 package com.github.mrbean355.admiralbulldog.game
 
 data class GameState(
@@ -26,7 +28,7 @@ data class DotaMap(
         val clock_time: Long,
         val daytime: Boolean,
         val nightstalker_night: Boolean,
-        val game_state: String,
+        val game_state: MatchState,
         val paused: Boolean,
         val win_team: String,
         val customgamename: String,
@@ -36,6 +38,19 @@ data class DotaMap(
         val roshan_state: String?,
         val roshan_state_end_seconds: Float?
 )
+
+enum class MatchState {
+    DOTA_GAMERULES_STATE_DISCONNECT,
+    DOTA_GAMERULES_STATE_GAME_IN_PROGRESS,
+    DOTA_GAMERULES_STATE_HERO_SELECTION,
+    DOTA_GAMERULES_STATE_INIT,
+    DOTA_GAMERULES_STATE_LAST,
+    DOTA_GAMERULES_STATE_POST_GAME,
+    DOTA_GAMERULES_STATE_PRE_GAME,
+    DOTA_GAMERULES_STATE_STRATEGY_TIME,
+    DOTA_GAMERULES_STATE_WAIT_FOR_PLAYERS_TO_LOAD,
+    DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP
+}
 
 data class Player(
         val steamid: String,
