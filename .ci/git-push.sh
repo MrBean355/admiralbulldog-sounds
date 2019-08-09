@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-if [ "$TRAVIS_BRANCH" != "master" ] || [ "$TRAVIS_PULL_REQUEST" = "true" ]; then
+if [ "$TRAVIS_BRANCH" != "develop" ] || [ "$TRAVIS_PULL_REQUEST" = "true" ]; then
     echo "Skipping Git push, on branch $TRAVIS_BRANCH."
 else
     echo "Pushing changes, on branch $TRAVIS_BRANCH."
