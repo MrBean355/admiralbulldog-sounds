@@ -32,6 +32,7 @@ fun main() {
 
 class DotaApplication : Application() {
     private val isLoaded = SimpleBooleanProperty(false)
+    private val newVersionObservable = checkForNewVersion()
 
     override fun init() {
         ConfigPersistence.initialise()
@@ -72,7 +73,7 @@ class DotaApplication : Application() {
             children += Hyperlink(LINK_DOWNLOAD).apply {
                 setOnAction { downloadClicked() }
             }
-            visibleProperty().bind(checkForNewVersion())
+            visibleProperty().bind(newVersionObservable)
             managedProperty().bind(visibleProperty())
         }
 
