@@ -14,12 +14,15 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile "io.ktor:ktor-server-netty:1.2.2"
-    compile "io.ktor:ktor-gson:1.2.2"
-    compile 'org.slf4j:slf4j-nop:1.7.26'
-    compile 'com.squareup.retrofit2:retrofit:2.6.1'
-    compile 'com.squareup.retrofit2:converter-scalars:2.6.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "io.ktor:ktor-server-netty:1.2.2"
+    implementation "io.ktor:ktor-gson:1.2.2"
+    implementation 'org.slf4j:slf4j-nop:1.7.26'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.6.1'
+    runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:win"
+    runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:mac"
 }
 
 compileKotlin {
@@ -30,7 +33,7 @@ compileTestKotlin {
 }
 
 javafx {
-    version = "12.0.1"
+    version = "12.0.2"
     modules = ['javafx.controls', 'javafx.media']
 }
 
@@ -38,7 +41,7 @@ mainClassName = 'com.github.mrbean355.admiralbulldog.DotaApplicationKt'
 
 jar {
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     manifest {
         attributes(
