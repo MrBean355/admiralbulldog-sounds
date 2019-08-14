@@ -5,6 +5,8 @@ import com.github.mrbean355.admiralbulldog.bytes.RandomSoundByte
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.github.mrbean355.admiralbulldog.bytes.random
+import com.github.mrbean355.admiralbulldog.discord.playSoundOnDiscord
+import com.github.mrbean355.admiralbulldog.discord.shouldPlayOnDiscord
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import io.ktor.application.call
 import io.ktor.application.install
@@ -18,7 +20,6 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlin.concurrent.thread
-import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 private const val GSI_PORT = 12345
@@ -68,10 +69,10 @@ private fun processGameState(currentState: GameState) {
             if (it.shouldPlay(localPreviousState, currentState)) {
                 if (it is RandomSoundByte) {
                     if (random.nextFloat() < it.chance) {
-                        playSoundForType(it::class)
+                        playSoundForType(it)
                     }
                 } else {
-                    playSoundForType(it::class)
+                    playSoundForType(it)
                 }
             }
         }
@@ -79,9 +80,14 @@ private fun processGameState(currentState: GameState) {
     previousState = currentState
 }
 
-private fun playSoundForType(type: KClass<out SoundByte>) {
-    val choices = ConfigPersistence.getSoundsForType(type)
+private fun playSoundForType(soundByte: SoundByte) {
+    val choices = ConfigPersistence.getSoundsForType(soundByte::class)
     if (choices.isNotEmpty()) {
-        choices.random().playSound()
+        val choice = choices.random()
+        if (shouldPlayOnDiscord(soundByte)) {
+            playSoundOnDiscord(choice)
+        } else {
+            choice.playSound()
+        }
     }
 }
