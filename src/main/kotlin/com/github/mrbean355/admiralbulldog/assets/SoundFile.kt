@@ -211,6 +211,7 @@ enum class SoundFile(val path: String) {
     WRONGDOOR("monitored/wrongdoor.mp3"),
     WTFF("monitored/wtff.mp3"),
     WTFMAN("monitored/wtfman.mp3"),
+    WUBBA("monitored/wubba.mp3"),
     YAMEROO("monitored/yameroo.mp3"),
     YAY("monitored/yay.mp3"),
     YEEHAW("monitored/yeehaw.mp3"),
