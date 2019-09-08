@@ -19,12 +19,16 @@ const val MSG_CONNECTED = "Connected to Dota 2!"
 const val DESC_NOT_CONNECTED = "You need to be in a match. Try entering Hero Demo mode."
 const val DESC_CONNECTED = "Ready to play sounds during your matches!"
 const val ACTION_CHANGE_SOUNDS = "Change sounds"
+const val ACTION_DISCORD_BOT = "Discord bot"
 const val LINK_NEED_HELP = "Need help?"
 const val LABEL_APP_VERSION = "Version: %s"
 const val URL_NEED_HELP = "https://github.com/MrBean355/admiralbulldog-sounds"
 const val MSG_NEW_VERSION = "New version available!"
 const val LINK_DOWNLOAD = "Download"
 const val URL_DOWNLOAD = "https://github.com/MrBean355/admiralbulldog-sounds/releases"
+const val MSG_REMOVED_SOUNDS = "One or more sounds you were using got removed:\n" +
+        "%s\n" +
+        "Unfortunately you can't use them any more."
 
 /* Toggle Sound Bytes */
 const val TITLE_TOGGLE_SOUND_BYTES = "Enable sounds"
@@ -34,6 +38,10 @@ const val VOLUME_MINOR_TICK_COUNT = 3
 
 /* Choose Sound Files */
 const val ACTION_SAVE = "Save"
+
+/* Discord Bot */
+const val TITLE_DISCORD_BOT = "Discord bot"
+const val LABEL_ENABLE_DISCORD_BOT = "Enable Discord bot"
 
 /* Icons */
 fun bulldogIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg"))

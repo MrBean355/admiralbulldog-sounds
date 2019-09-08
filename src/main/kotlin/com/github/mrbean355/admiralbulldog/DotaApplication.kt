@@ -60,8 +60,14 @@ class DotaApplication : Application() {
                 if (isLoaded.get()) DESC_CONNECTED else DESC_NOT_CONNECTED
             }, isLoaded))
         }
-        root.children += Button(ACTION_CHANGE_SOUNDS).apply {
-            setOnAction { changeSoundsClicked(primaryStage) }
+        root.children += HBox(PADDING_SMALL).apply {
+            alignment = Pos.CENTER
+            children += Button(ACTION_CHANGE_SOUNDS).apply {
+                setOnAction { changeSoundsClicked(primaryStage) }
+            }
+            children += Button(ACTION_DISCORD_BOT).apply {
+                setOnAction { discordBotClicked(primaryStage) }
+            }
         }
         root.children += Hyperlink(LINK_NEED_HELP).apply {
             setOnAction { needHelpClicked() }
@@ -92,9 +98,7 @@ class DotaApplication : Application() {
         }
 
         if (ConfigPersistence.getInvalidSounds().isNotEmpty()) {
-            Alert(Alert.AlertType.WARNING, "One or more sounds you were using got removed:\n" +
-                    ConfigPersistence.getInvalidSounds().joinToString(separator = "\n") + "\n" +
-                    "Unfortunately you can't use them any more.")
+            Alert(Alert.AlertType.WARNING, MSG_REMOVED_SOUNDS.format(ConfigPersistence.getInvalidSounds().joinToString(separator = "\n")))
                     .showAndWait()
         }
     }
@@ -107,6 +111,14 @@ class DotaApplication : Application() {
 
     private fun changeSoundsClicked(stage: Stage) {
         ToggleSoundBytesStage().apply {
+            initModality(Modality.WINDOW_MODAL)
+            initOwner(stage)
+            show()
+        }
+    }
+
+    private fun discordBotClicked(stage: Stage) {
+        ConfigureDiscordBotStage().apply {
             initModality(Modality.WINDOW_MODAL)
             initOwner(stage)
             show()
