@@ -187,6 +187,7 @@ enum class SoundFile(val path: String) {
     THATSAMAZING("monitored/thatsamazing.mp3"),
     THATSPOWER("monitored/thatspower.mp3"),
     TP("monitored/tp.mp3"),
+    TRUE("monitored/true.mp3"),
     UGANDA("monitored/uganda.mp3"),
     UH("monitored/uh.mp3"),
     UNCLENOX("monitored/unclenox.mp3"),
