@@ -44,11 +44,7 @@ class ConfigureDiscordBotStage : Stage() {
     }
 
     private fun saveClicked() {
-        if (selectedProperty.get() && textProperty.get().isNotBlank()) {
-            ConfigPersistence.setDiscordToken(textProperty.get())
-        } else {
-            ConfigPersistence.setDiscordToken(null)
-        }
+        ConfigPersistence.setDiscordToken(selectedProperty.get(), textProperty.get())
         close()
     }
 }
