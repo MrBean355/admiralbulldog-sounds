@@ -1,6 +1,17 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.bytes.*
+import com.github.mrbean355.admiralbulldog.bytes.OnBountyRunesSpawn
+import com.github.mrbean355.admiralbulldog.bytes.OnDeath
+import com.github.mrbean355.admiralbulldog.bytes.OnDefeat
+import com.github.mrbean355.admiralbulldog.bytes.OnHeal
+import com.github.mrbean355.admiralbulldog.bytes.OnKill
+import com.github.mrbean355.admiralbulldog.bytes.OnMatchStart
+import com.github.mrbean355.admiralbulldog.bytes.OnMidasReady
+import com.github.mrbean355.admiralbulldog.bytes.OnRespawn
+import com.github.mrbean355.admiralbulldog.bytes.OnSmoked
+import com.github.mrbean355.admiralbulldog.bytes.OnVictory
+import com.github.mrbean355.admiralbulldog.bytes.Periodically
+import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import javafx.scene.image.Image
 import kotlin.reflect.KClass
@@ -42,6 +53,12 @@ const val ACTION_SAVE = "Save"
 /* Discord Bot */
 const val TITLE_DISCORD_BOT = "Discord bot"
 const val LABEL_ENABLE_DISCORD_BOT = "Enable Discord bot"
+const val PROMPT_DISCORD_MAGIC_NUMBER = "Your magic number"
+const val LABEL_DISCORD_BOT_HELP = "What is this?"
+const val ACTION_MORE_INFO = "More info"
+const val MSG_DISCORD_BOT_MORE_INFO = "This setting allows you to play sounds through Discord instead of on your computer.\n" +
+        "Currently only supports playing the ROONS sound byte."
+const val URL_DISCORD_BOT_HELP = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Discord-Bot"
 
 /* Icons */
 fun bulldogIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg"))

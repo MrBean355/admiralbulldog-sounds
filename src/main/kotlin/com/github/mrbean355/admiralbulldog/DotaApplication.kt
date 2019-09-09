@@ -10,7 +10,11 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
-import javafx.scene.control.*
+import javafx.scene.control.Alert
+import javafx.scene.control.Button
+import javafx.scene.control.Hyperlink
+import javafx.scene.control.Label
+import javafx.scene.control.ProgressBar
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
@@ -118,7 +122,7 @@ class DotaApplication : Application() {
     }
 
     private fun discordBotClicked(stage: Stage) {
-        ConfigureDiscordBotStage().apply {
+        ConfigureDiscordBotStage(hostServices).apply {
             initModality(Modality.WINDOW_MODAL)
             initOwner(stage)
             show()
