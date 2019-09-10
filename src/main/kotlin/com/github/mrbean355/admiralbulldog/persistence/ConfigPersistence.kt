@@ -32,6 +32,7 @@ object ConfigPersistence : JsonDeserializer<SoundFile> {
             .registerTypeAdapter(SoundFile::class.java, this)
             .create()
     private var volume = MIN_VOLUME
+    private var discordBotEnabled: Boolean = false
     private var discordToken: String? = null
     private var config: MutableMap<String, Toggle> = mutableMapOf()
     private val invalidSounds = mutableSetOf<String>()
@@ -45,6 +46,7 @@ object ConfigPersistence : JsonDeserializer<SoundFile> {
             loadDefaultConfig()
         }
         volume = loadedConfig.volume
+        discordBotEnabled = loadedConfig.discordBotEnabled
         discordToken = loadedConfig.discordToken
         config = loadedConfig.sounds.mapValues {
             Toggle(it.value.enabled, it.value.sounds.filterNotNull())
@@ -64,14 +66,15 @@ object ConfigPersistence : JsonDeserializer<SoundFile> {
     }
 
     /** @return `true` if the user has enabled the Discord bot. */
-    fun isUsingDiscordBot() = discordToken != null
+    fun isUsingDiscordBot() = discordBotEnabled
 
     /** @return the user's current token if it is set, empty string otherwise. */
     fun getDiscordToken() = discordToken.orEmpty()
 
-    /** Store the user's current token. */
-    fun setDiscordToken(discordToken: String?) {
-        this.discordToken = discordToken
+    /** Store whether the Discord bot is enabled and the user's current token. */
+    fun setDiscordToken(enabled: Boolean, discordToken: String?) {
+        this.discordBotEnabled = enabled && !discordToken.isNullOrBlank()
+        this.discordToken = discordToken?.trim()
         save()
     }
 
@@ -120,14 +123,14 @@ object ConfigPersistence : JsonDeserializer<SoundFile> {
         if (!file.exists()) {
             file.createNewFile()
         }
-        file.writeText(gson.toJson(Config(volume, discordToken, config)))
+        file.writeText(gson.toJson(Config(volume, discordBotEnabled, discordToken, config)))
     }
 
     /** Load the default configs for all sound bytes. */
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_BYTE_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(DEFAULT_VOLUME, null, sounds)
+        return Config(DEFAULT_VOLUME, false, null, sounds)
     }
 
     /** Load the default config for a given sound byte `type`. */
@@ -147,7 +150,7 @@ object ConfigPersistence : JsonDeserializer<SoundFile> {
         }
     }
 
-    data class Config(val volume: Double, val discordToken: String?, val sounds: Map<String, Toggle>)
+    data class Config(val volume: Double, val discordBotEnabled: Boolean, val discordToken: String?, val sounds: Map<String, Toggle>)
 
     data class Toggle(var enabled: Boolean, var sounds: List<SoundFile?>)
 }
