@@ -24,6 +24,9 @@ open class DownloadSoundFilesTask : DefaultTask() {
         // Set up local directories:
         val monitoredPath = "$BASE_TARGET_DIR/$monitoredSoundsDir"
         val monitoredFile = project.file(monitoredPath)
+        if (monitoredFile.exists()) {
+            monitoredFile.deleteRecursively()
+        }
         monitoredFile.mkdirs()
 
         val unmonitoredPath = "$BASE_TARGET_DIR/$unmonitoredSoundsDir"
