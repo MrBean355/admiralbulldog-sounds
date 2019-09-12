@@ -16,7 +16,6 @@ fun shouldPlayOnDiscord(soundByte: SoundByte): Boolean {
     return ConfigPersistence.isUsingDiscordBot() && soundByte is OnBountyRunesSpawn
 }
 
-// TODO: Add support for any sound file.
 fun playSoundOnDiscord(soundFile: SoundFile) {
     val service = Retrofit.Builder()
             .baseUrl("http://roonsbot.co.za:26382")
@@ -28,7 +27,8 @@ fun playSoundOnDiscord(soundFile: SoundFile) {
         println("Blank token set!")
         return
     }
-    service.playSound(token).enqueue(object : Callback<ResponseBody> {
+    val fileName = soundFile.path.substringAfterLast('/')
+    service.playSound(token, fileName).enqueue(object : Callback<ResponseBody> {
 
         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
             println("Response: ${response.code()}")
@@ -43,5 +43,5 @@ fun playSoundOnDiscord(soundFile: SoundFile) {
 private interface DiscordBotService {
 
     @GET("/")
-    fun playSound(@Query("token") token: String): Call<ResponseBody>
+    fun playSound(@Query("token") token: String, @Query("soundFileName") soundFileName: String): Call<ResponseBody>
 }
