@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.41'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.50'
 }
 
 repositories {
@@ -9,6 +9,6 @@ repositories {
 dependencies {
     gradleApi()
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    compile 'com.squareup.retrofit2:retrofit:2.6.0'
-    compile 'com.squareup.retrofit2:converter-scalars:2.6.0'
+    compile 'com.squareup.retrofit2:retrofit:2.6.1'
+    compile 'com.squareup.retrofit2:converter-scalars:2.6.1'
 }
