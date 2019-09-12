@@ -155,7 +155,6 @@ enum class SoundFile(val path: String) {
     RATSUBS("monitored/ratsubs.mp3"),
     RESIDENTSLEEPER("monitored/residentsleeper.wav"),
     RIPTHESKIN("monitored/riptheskin.mp3"),
-    RISIKEK("monitored/risikek.mp3"),
     ROARDADDY("monitored/roardaddy.mp3"),
     ROARPOGGIES("monitored/roarpoggies.mp3"),
     ROARSTICK("monitored/roarstick.mp3"),
