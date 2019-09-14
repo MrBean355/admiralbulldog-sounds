@@ -21,6 +21,9 @@ open class DownloadSoundFilesTask : DefaultTask() {
 
     @TaskAction
     fun download() {
+        val remoteFiles = listRemoteFiles()
+        println("Found ${remoteFiles.size} remote files.")
+
         // Set up local directories:
         val monitoredPath = "$BASE_TARGET_DIR/$monitoredSoundsDir"
         val monitoredFile = project.file(monitoredPath)
@@ -34,7 +37,7 @@ open class DownloadSoundFilesTask : DefaultTask() {
         unmonitoredFile.mkdirs()
 
         // Download all remote files:
-        listRemoteFiles().forEach { remoteFile ->
+        remoteFiles.forEach { remoteFile ->
             downloadFile(remoteFile, monitoredPath)
         }
 
