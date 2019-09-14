@@ -14,5 +14,5 @@ before_script:
 script:
   - sh .ci/build.sh
 
-after_script:
+after_success:
   - sh .ci/git-push.sh
