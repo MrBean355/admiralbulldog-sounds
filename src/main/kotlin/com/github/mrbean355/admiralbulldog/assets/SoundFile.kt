@@ -224,5 +224,6 @@ enum class SoundFile(val path: String) {
     YAY("monitored/yay.mp3"),
     YEEHAW("monitored/yeehaw.mp3"),
     YOUKILLEDMYPEOPLE("monitored/youkilledmypeople.mp3"),
-    YOULIKETHAT("monitored/youlikethat.mp3")
+    YOULIKETHAT("monitored/youlikethat.mp3"),
+    YOUSURE("monitored/yousure.mp3")
 }
