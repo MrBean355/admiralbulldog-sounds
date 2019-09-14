@@ -129,6 +129,7 @@ enum class SoundFile(val path: String) {
     OHSHIT("monitored/ohshit.mp3"),
     OMAEWA("monitored/omaewa.mp3"),
     OMEGAEZ("monitored/omegaez.mp3"),
+    OMEGALUL("monitored/omegalul.mp3"),
     OMEGAWOW("monitored/omegawow.mp3"),
     ONECLAP("monitored/oneclap.mp3"),
     ONIICHAN("monitored/oniichan.mp3"),
@@ -221,5 +222,6 @@ enum class SoundFile(val path: String) {
     YAMEROO("monitored/yameroo.mp3"),
     YAY("monitored/yay.mp3"),
     YEEHAW("monitored/yeehaw.mp3"),
-    YOUKILLEDMYPEOPLE("monitored/youkilledmypeople.mp3")
+    YOUKILLEDMYPEOPLE("monitored/youkilledmypeople.mp3"),
+    YOULIKETHAT("monitored/youlikethat.mp3")
 }
