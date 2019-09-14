@@ -200,6 +200,7 @@ enum class SoundFile(val path: String) {
     WARRIA("monitored/warria.mp3"),
     WASHEDUP("monitored/washedup.mp3"),
     WATCHDOTA("monitored/watchdota.mp3"),
+    WATCHSOMEDOTA("monitored/watchsomedota.mp3"),
     WEEBDOG("monitored/weebdog.mp3"),
     WEEBDOG2("monitored/weebdog2.mp3"),
     WEEBDOG3("monitored/weebdog3.mp3"),
