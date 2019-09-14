@@ -37,7 +37,8 @@ open class DownloadSoundFilesTask : DefaultTask() {
         unmonitoredFile.mkdirs()
 
         // Download all remote files:
-        remoteFiles.forEach { remoteFile ->
+        remoteFiles.forEachIndexed { index, remoteFile ->
+            println("Download file #${index + 1}: ${remoteFile.fileName}")
             downloadFile(remoteFile, monitoredPath)
         }
 

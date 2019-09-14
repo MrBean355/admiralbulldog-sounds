@@ -18,7 +18,6 @@ fun listRemoteFiles(): List<SoundFile> {
     val html = String(responseBody.bytes())
     val blocks = html.split("<tr>")
             .drop(2)
-            .dropLast(1)
 
     return blocks.map { block ->
         val friendlyName = block.split("<td>")[1].split("</td>").first()
