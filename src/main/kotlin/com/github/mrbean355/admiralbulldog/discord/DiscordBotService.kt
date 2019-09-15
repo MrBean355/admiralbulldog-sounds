@@ -16,13 +16,12 @@ fun shouldPlayOnDiscord(soundByte: SoundByte): Boolean {
     return ConfigPersistence.isUsingDiscordBot() && soundByte is OnBountyRunesSpawn
 }
 
-fun playSoundOnDiscord(soundFile: SoundFile) {
+fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.getDiscordToken()) {
     val service = Retrofit.Builder()
             .baseUrl("http://roonsbot.co.za:26382")
             .build()
             .create(DiscordBotService::class.java)
 
-    val token = ConfigPersistence.getDiscordToken()
     if (token.isBlank()) {
         println("Blank token set!")
         return

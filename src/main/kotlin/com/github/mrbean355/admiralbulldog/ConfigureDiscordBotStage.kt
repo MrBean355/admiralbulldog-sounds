@@ -1,5 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.assets.SoundFile
+import com.github.mrbean355.admiralbulldog.discord.playSoundOnDiscord
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.HostServices
 import javafx.beans.property.SimpleBooleanProperty
@@ -14,6 +16,7 @@ import javafx.scene.control.Hyperlink
 import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
@@ -44,8 +47,16 @@ class ConfigureDiscordBotStage(private val hostServices: HostServices) : Stage()
                 }
             }
         }
-        root.children += Button(ACTION_SAVE).apply {
-            setOnAction { saveClicked() }
+        root.children += HBox(PADDING_SMALL).apply {
+            children += Button(ACTION_SAVE).apply {
+                setOnAction { saveClicked() }
+            }
+            children += Button(ACTION_TEST).apply {
+                disableProperty().bind(selectedProperty.not())
+                setOnAction {
+                    playSoundOnDiscord(SoundFile.ROONS, token = textProperty.get())
+                }
+            }
         }
 
         title = TITLE_DISCORD_BOT
