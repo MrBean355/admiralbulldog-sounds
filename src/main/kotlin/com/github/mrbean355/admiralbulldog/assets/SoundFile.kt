@@ -3,7 +3,6 @@ package com.github.mrbean355.admiralbulldog.assets
 @javax.annotation.processing.Generated("DownloadSoundFilesTask")
 @Suppress("SpellCheckingInspection", "EnumEntryName", "Unused")
 enum class SoundFile(val path: String) {
-    `12345DEAD`("monitored/12345dead.mp3"),
     `3HEAD`("monitored/3head.mp3"),
     AAAH("monitored/aaah.mp3"),
     ADMIRALC("monitored/admiralc.mp3"),
@@ -112,6 +111,7 @@ enum class SoundFile(val path: String) {
     MOTHERCOMES("monitored/mothercomes.mp3"),
     MOVEYOURASS("monitored/moveyourass.mp3"),
     MYANEE("monitored/myanee.mp3"),
+    NAM("monitored/nam.mp3"),
     NAMASTE("monitored/namaste.mp3"),
     NANI("monitored/nani.mp3"),
     NICONII("monitored/niconii.mp3"),
