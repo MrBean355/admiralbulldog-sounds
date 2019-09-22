@@ -101,6 +101,7 @@ enum class SoundFile(val path: String) {
     KREYGASM("monitored/kreygasm.mp3"),
     LAMBSAUCE("monitored/lambsauce.mp3"),
     LASHOFTHESPANKING("monitored/lashofthespanking.mp3"),
+    LAUGHTRACK("monitored/laughtrack.mp3"),
     LIKEWHATYOUSEE("monitored/likewhatyousee.mp3"),
     LIPS("monitored/lips.mp3"),
     LOOL4HEAD("monitored/lool4head.mp3"),
