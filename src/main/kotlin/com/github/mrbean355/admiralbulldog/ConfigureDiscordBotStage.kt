@@ -54,7 +54,8 @@ class ConfigureDiscordBotStage(private val hostServices: HostServices) : Stage()
             children += Button(ACTION_TEST).apply {
                 disableProperty().bind(selectedProperty.not())
                 setOnAction {
-                    playSoundOnDiscord(SoundFile.ROONS, token = textProperty.get())
+                    // FIXME: Somehow do this better.
+                    playSoundOnDiscord(SoundFile("roons.mp3"), token = textProperty.get())
                 }
             }
         }

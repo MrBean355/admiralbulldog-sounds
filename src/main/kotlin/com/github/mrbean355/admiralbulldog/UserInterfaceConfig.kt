@@ -23,6 +23,10 @@ const val PADDING_MEDIUM = 16.0
 const val TEXT_SIZE_SMALL = 10.0
 const val TEXT_SIZE_LARGE = 18.0
 
+/* Sync Sound Bytes */
+const val TITLE_SYNC_SOUND_BYTES = "Updating"
+const val MSG_SYNC_WELCOME = "Welcome!\nChecking for new PlaySounds...\n"
+
 /* Main Window */
 const val TITLE_MAIN_WINDOW = "AdmiralBulldog"
 const val MSG_NOT_CONNECTED = "Waiting to hear from Dota 2"

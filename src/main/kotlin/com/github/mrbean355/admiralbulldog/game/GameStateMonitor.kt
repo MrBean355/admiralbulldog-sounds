@@ -1,6 +1,5 @@
 package com.github.mrbean355.admiralbulldog.game
 
-import com.github.mrbean355.admiralbulldog.assets.playSound
 import com.github.mrbean355.admiralbulldog.bytes.RandomSoundByte
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
@@ -87,7 +86,7 @@ private fun playSoundForType(soundByte: SoundByte) {
         if (shouldPlayOnDiscord(soundByte)) {
             playSoundOnDiscord(choice)
         } else {
-            choice.playSound()
+            choice.play()
         }
     }
 }
