@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFiles
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Platform
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleStringProperty
@@ -39,6 +40,7 @@ class SyncSoundBytesStage : Stage() {
                 log.value = "${log.value}\n$it"
             }
         }, success = {
+            ConfigPersistence.markLastSync()
             setOnCloseRequest { /* Default behaviour */ }
         })
 

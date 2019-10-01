@@ -114,7 +114,6 @@ class DotaApplication : Application() {
     }
 
     private fun resume(primaryStage: Stage) {
-        ConfigPersistence.markLastSync()
         primaryStage.show()
         val invalidSounds = ConfigPersistence.getInvalidSounds()
         if (invalidSounds.isNotEmpty()) {
