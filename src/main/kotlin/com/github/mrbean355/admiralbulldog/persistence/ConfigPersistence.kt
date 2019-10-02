@@ -38,6 +38,15 @@ object ConfigPersistence {
         save()
     }
 
+    fun getId() = loadedConfig.id
+
+    fun setId(id: String) {
+        if (loadedConfig.id != id) {
+            loadedConfig.id = id
+            save()
+        }
+    }
+
     /** @return the time when sounds were last synced from the PlaySounds page. */
     fun getLastSync() = loadedConfig.lastSync
 
@@ -124,7 +133,7 @@ object ConfigPersistence {
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_BYTE_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0L, DEFAULT_VOLUME, false, null, sounds.toMutableMap())
+        return Config(null, 0L, DEFAULT_VOLUME, false, null, sounds.toMutableMap())
     }
 
     /** Load the default config for a given sound byte `type`. */
@@ -144,7 +153,7 @@ object ConfigPersistence {
         }
     }
 
-    private data class Config(var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, val sounds: MutableMap<String, Toggle>)
+    private data class Config(var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, val sounds: MutableMap<String, Toggle>)
 
     private data class Toggle(var enabled: Boolean, var sounds: MutableList<String>)
 }

@@ -20,6 +20,7 @@ dependencies {
     implementation "io.ktor:ktor-gson:1.2.4"
     implementation 'org.slf4j:slf4j-nop:1.7.28'
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
     implementation 'com.squareup.retrofit2:converter-scalars:2.6.1'
     runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:win"
     runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:linux"
