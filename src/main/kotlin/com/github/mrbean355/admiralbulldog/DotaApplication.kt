@@ -1,7 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFiles
-import com.github.mrbean355.admiralbulldog.discord.createId
 import com.github.mrbean355.admiralbulldog.discord.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
@@ -103,14 +102,7 @@ class DotaApplication : Application() {
             setOnCloseRequest { exitProcess(0) }
         }
 
-        if (ConfigPersistence.getId() == null) {
-            createId { onIdLoaded(primaryStage) }
-        } else {
-            onIdLoaded(primaryStage)
-        }
-    }
-
-    private fun onIdLoaded(primaryStage: Stage) {
+        logAnalyticsEvent("app_start")
         if (SoundFiles.shouldSync()) {
             SyncSoundBytesStage().apply {
                 initModality(Modality.WINDOW_MODAL)
@@ -121,8 +113,6 @@ class DotaApplication : Application() {
         } else {
             resume(primaryStage)
         }
-
-        logAnalyticsEvent("app_start")
     }
 
     private fun resume(primaryStage: Stage) {
