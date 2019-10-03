@@ -23,6 +23,11 @@ const val PADDING_MEDIUM = 16.0
 const val TEXT_SIZE_SMALL = 10.0
 const val TEXT_SIZE_LARGE = 18.0
 
+/* Sync Sound Bytes */
+const val TITLE_SYNC_SOUND_BYTES = "Updating"
+const val MSG_SYNC_WELCOME = "Welcome!\nChecking for new PlaySounds...\n"
+const val ACTION_DONE = "Done"
+
 /* Main Window */
 const val TITLE_MAIN_WINDOW = "AdmiralBulldog"
 const val MSG_NOT_CONNECTED = "Waiting to hear from Dota 2"
@@ -54,6 +59,7 @@ const val ACTION_SAVE = "Save"
 const val TITLE_DISCORD_BOT = "Discord bot"
 const val LABEL_ENABLE_DISCORD_BOT = "Enable Discord bot"
 const val PROMPT_DISCORD_MAGIC_NUMBER = "Your magic number"
+const val ACTION_TEST = "Test"
 const val LABEL_DISCORD_BOT_HELP = "What is this?"
 const val ACTION_MORE_INFO = "More info"
 const val MSG_DISCORD_BOT_MORE_INFO = "This setting allows you to play sounds through Discord instead of on your computer.\n" +

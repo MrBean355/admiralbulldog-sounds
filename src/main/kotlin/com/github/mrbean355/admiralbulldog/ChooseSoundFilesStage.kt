@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFile
-import com.github.mrbean355.admiralbulldog.assets.playSound
+import com.github.mrbean355.admiralbulldog.assets.SoundFiles
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.property.BooleanProperty
@@ -9,7 +9,11 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.FXCollections
 import javafx.geometry.Insets
 import javafx.scene.Scene
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.CheckBox
+import javafx.scene.control.ListCell
+import javafx.scene.control.ListView
+import javafx.scene.control.TextField
 import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -21,9 +25,19 @@ import javafx.stage.Stage
 import kotlin.reflect.KClass
 
 class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
-    private val allItems = SoundFile.values().toList()
+    private val allItems = SoundFiles.getAll()
     private val soundToggles: Map<SoundFile, BooleanProperty> = loadToggles()
-    private val searchResults = FXCollections.observableArrayList(allItems)
+    private val searchResults = FXCollections.observableArrayList(allItems).apply {
+        FXCollections.sort(this) { lhs, rhs ->
+            val lhsSelected = soundToggles[lhs]?.value ?: false
+            val rhsSelected = soundToggles[rhs]?.value ?: false
+            when {
+                lhsSelected == rhsSelected -> 0
+                lhsSelected -> -1
+                else -> 1
+            }
+        }
+    }
 
     init {
         val root = VBox(PADDING_SMALL)
@@ -86,7 +100,7 @@ class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
             }
             graphic = container
             checkBox.text = item?.name
-            button.setOnAction { item?.playSound() }
+            button.setOnAction { item?.play() }
 
             booleanProperty?.let {
                 checkBox.selectedProperty().unbindBidirectional(booleanProperty)

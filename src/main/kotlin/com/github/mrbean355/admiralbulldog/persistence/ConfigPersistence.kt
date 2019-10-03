@@ -1,14 +1,11 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFile
+import com.github.mrbean355.admiralbulldog.assets.SoundFiles
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
 import java.io.File
-import java.lang.reflect.Type
 import kotlin.reflect.KClass
 
 private const val FILE_NAME = "config.json"
@@ -17,104 +14,110 @@ const val MIN_VOLUME = 0.0
 const val MAX_VOLUME = 100.0
 private const val DEFAULT_VOLUME = 20.0
 
-/** List of all [SoundFile] enum entry names. */
-private val SOUND_FILE_ENTRIES = SoundFile.values().map { it.name }
-
 /**
  * Facilitates saving & loading the configuration of the sound bytes from a file.
  * Sound bytes:
  * - have a list of possible sounds to play, configurable by the user at runtime
  * - can be enabled or disabled at runtime by the user
  */
-object ConfigPersistence : JsonDeserializer<SoundFile> {
+object ConfigPersistence {
+    private lateinit var loadedConfig: Config
     private val gson = GsonBuilder()
             .setPrettyPrinting()
-            .registerTypeAdapter(SoundFile::class.java, this)
             .create()
-    private var volume = MIN_VOLUME
-    private var discordBotEnabled: Boolean = false
-    private var discordToken: String? = null
-    private var config: MutableMap<String, Toggle> = mutableMapOf()
-    private val invalidSounds = mutableSetOf<String>()
 
     /** Load config from file into memory. */
     fun initialise() {
         val file = File(FILE_NAME)
-        val loadedConfig = if (file.exists()) {
+        loadedConfig = if (file.exists()) {
             gson.fromJson(file.readText(), Config::class.java)
         } else {
             loadDefaultConfig()
         }
-        volume = loadedConfig.volume
-        discordBotEnabled = loadedConfig.discordBotEnabled
-        discordToken = loadedConfig.discordToken
-        config = loadedConfig.sounds.mapValues {
-            Toggle(it.value.enabled, it.value.sounds.filterNotNull())
-        }.toMutableMap()
-
         addMissingSoundByteDefaults()
         save()
     }
 
+    fun getId() = loadedConfig.id
+
+    fun setId(id: String) {
+        if (loadedConfig.id != id) {
+            loadedConfig.id = id
+            save()
+        }
+    }
+
+    /** @return the time when sounds were last synced from the PlaySounds page. */
+    fun getLastSync() = loadedConfig.lastSync
+
+    /** Set the time when sounds were last synced from the PlaySounds page to now. */
+    fun markLastSync() {
+        loadedConfig.lastSync = System.currentTimeMillis()
+        save()
+    }
+
     /** @return the current volume, in the range `[0.0, 100.0]`. */
-    fun getVolume() = volume
+    fun getVolume() = loadedConfig.volume
 
     /** Set the current volume. Will be clamped to the range `[0.0, 100.0]`. */
     fun setVolume(volume: Double) {
-        this.volume = volume.coerceAtLeast(MIN_VOLUME).coerceAtMost(MAX_VOLUME)
+        loadedConfig.volume = volume.coerceAtLeast(MIN_VOLUME).coerceAtMost(MAX_VOLUME)
         save()
     }
 
     /** @return `true` if the user has enabled the Discord bot. */
-    fun isUsingDiscordBot() = discordBotEnabled
+    fun isUsingDiscordBot() = loadedConfig.discordBotEnabled
 
     /** @return the user's current token if it is set, empty string otherwise. */
-    fun getDiscordToken() = discordToken.orEmpty()
+    fun getDiscordToken() = loadedConfig.discordToken.orEmpty()
 
     /** Store whether the Discord bot is enabled and the user's current token. */
     fun setDiscordToken(enabled: Boolean, discordToken: String?) {
-        this.discordBotEnabled = enabled && !discordToken.isNullOrBlank()
-        this.discordToken = discordToken?.trim()
+        loadedConfig.discordBotEnabled = enabled && !discordToken.isNullOrBlank()
+        loadedConfig.discordToken = discordToken?.trim()
         save()
     }
 
     /** @return `true` if the sound byte is enabled; `false` otherwise. */
     fun isSoundByteEnabled(type: KClass<out SoundByte>): Boolean {
-        return config[type.simpleName]!!.enabled
+        return loadedConfig.sounds[type.simpleName]!!.enabled
     }
 
     /** Enable or disable a sound byte. */
     fun toggleSoundByte(type: KClass<out SoundByte>, enabled: Boolean) {
-        config[type.simpleName]!!.enabled = enabled
+        loadedConfig.sounds[type.simpleName]!!.enabled = enabled
         save()
     }
 
     /** @return all selected sounds for a sound byte if it's enabled; empty list otherwise. */
     fun getSoundsForType(type: KClass<out SoundByte>): List<SoundFile> {
-        val toggle = config[type.simpleName]!!
+        val toggle = loadedConfig.sounds[type.simpleName]!!
         if (toggle.enabled) {
-            return toggle.sounds.filterNotNull()
+            return toggle.sounds.mapNotNull { SoundFiles.findSound(it) }
         }
         return emptyList()
     }
 
-    /** Update the given sound byte's config to use the given sound `selection`. */
-    fun saveSoundsForType(type: KClass<out SoundByte>, selection: List<SoundFile>) {
-        config[type.simpleName]!!.sounds = selection
+    /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
+    fun getInvalidSounds(): List<String> {
+        val existing = SoundFiles.getAll().map { it.name }
+        return loadedConfig.sounds.flatMap { it.value.sounds }
+                .filter { it !in existing }
+    }
+
+    /** Clear user-selected sounds that don't exist on the PlaySounds page from the config. */
+    fun clearInvalidSounds() {
+        val invalid = getInvalidSounds()
+        loadedConfig.sounds.forEach { (_, v) ->
+            v.sounds.removeAll { it in invalid }
+        }
         save()
     }
 
-    fun getInvalidSounds() = invalidSounds.toList()
-
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): SoundFile? {
-        val element = json.asString
-        if (SOUND_FILE_ENTRIES.contains(element)) {
-            return SoundFile.valueOf(element)
-        }
-        // The deserialised sound name doesn't match an entry in the SoundFile enum. This means the user downloaded a new
-        // version of the app which doesn't have the sound file any more. Keep track of this so we can inform the user.
-        invalidSounds += element
-        return null
+    /** Update the given sound byte's config to use the given sound `selection`. */
+    fun saveSoundsForType(type: KClass<out SoundByte>, selection: List<SoundFile>) {
+        loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
+        save()
     }
 
     /** Save the current `config` map to file. */
@@ -123,20 +126,20 @@ object ConfigPersistence : JsonDeserializer<SoundFile> {
         if (!file.exists()) {
             file.createNewFile()
         }
-        file.writeText(gson.toJson(Config(volume, discordBotEnabled, discordToken, config)))
+        file.writeText(gson.toJson(loadedConfig))
     }
 
     /** Load the default configs for all sound bytes. */
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_BYTE_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(DEFAULT_VOLUME, false, null, sounds)
+        return Config(null, 0L, DEFAULT_VOLUME, false, null, sounds.toMutableMap())
     }
 
     /** Load the default config for a given sound byte `type`. */
     private fun loadDefaults(type: KClass<out SoundByte>): Toggle {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
-                ?: return Toggle(false, emptyList())
+                ?: return Toggle(false, mutableListOf())
 
         return gson.fromJson(resource.readText(), Toggle::class.java)
     }
@@ -144,13 +147,13 @@ object ConfigPersistence : JsonDeserializer<SoundFile> {
     /** Checks the loaded `config` map, adding defaults for any missing sound bytes. */
     private fun addMissingSoundByteDefaults() {
         SOUND_BYTE_TYPES.forEach {
-            if (config[it.simpleName] == null) {
-                config[it.simpleName!!] = loadDefaults(it)
+            if (loadedConfig.sounds[it.simpleName] == null) {
+                loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
             }
         }
     }
 
-    data class Config(val volume: Double, val discordBotEnabled: Boolean, val discordToken: String?, val sounds: Map<String, Toggle>)
+    private data class Config(var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, val sounds: MutableMap<String, Toggle>)
 
-    data class Toggle(var enabled: Boolean, var sounds: List<SoundFile?>)
+    private data class Toggle(var enabled: Boolean, var sounds: MutableList<String>)
 }

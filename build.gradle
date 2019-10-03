@@ -5,9 +5,9 @@ plugins {
 }
 
 group 'com.github.mrbean355'
-version '1.5.0-beta.3'
+version '1.5.0-beta.4'
 
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
@@ -15,10 +15,12 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.3.0"
     implementation "io.ktor:ktor-server-netty:1.2.4"
     implementation "io.ktor:ktor-gson:1.2.4"
     implementation 'org.slf4j:slf4j-nop:1.7.28'
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
     implementation 'com.squareup.retrofit2:converter-scalars:2.6.1'
     runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:win"
     runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:linux"
@@ -26,10 +28,10 @@ dependencies {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
 }
 
 javafx {
@@ -48,13 +50,6 @@ jar {
                 'Main-Class': mainClassName
         )
     }
-}
-
-task downloadSoundFiles(type: DownloadSoundFilesTask) {
-    packageName = "com.github.mrbean355.admiralbulldog.assets"
-    className = "SoundFile"
-    monitoredSoundsDir = "monitored"
-    unmonitoredSoundsDir = "unmonitored"
 }
 
 task generateBuildConfig() {

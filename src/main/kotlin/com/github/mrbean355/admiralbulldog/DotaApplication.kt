@@ -1,5 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.assets.SoundFiles
+import com.github.mrbean355.admiralbulldog.discord.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Application
@@ -98,12 +100,28 @@ class DotaApplication : Application() {
             icons.add(bulldogIcon())
             title = TITLE_MAIN_WINDOW
             setOnCloseRequest { exitProcess(0) }
-            show()
         }
 
-        if (ConfigPersistence.getInvalidSounds().isNotEmpty()) {
-            Alert(Alert.AlertType.WARNING, MSG_REMOVED_SOUNDS.format(ConfigPersistence.getInvalidSounds().joinToString(separator = "\n")))
+        logAnalyticsEvent("app_start")
+        if (SoundFiles.shouldSync()) {
+            SyncSoundBytesStage().apply {
+                initModality(Modality.WINDOW_MODAL)
+                initOwner(primaryStage)
+                showAndWait()
+                resume(primaryStage)
+            }
+        } else {
+            resume(primaryStage)
+        }
+    }
+
+    private fun resume(primaryStage: Stage) {
+        primaryStage.show()
+        val invalidSounds = ConfigPersistence.getInvalidSounds()
+        if (invalidSounds.isNotEmpty()) {
+            Alert(Alert.AlertType.WARNING, MSG_REMOVED_SOUNDS.format(invalidSounds.joinToString(separator = "\n")))
                     .showAndWait()
+            ConfigPersistence.clearInvalidSounds()
         }
     }
 

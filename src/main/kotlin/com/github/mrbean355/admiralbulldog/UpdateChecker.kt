@@ -2,8 +2,8 @@ package com.github.mrbean355.admiralbulldog
 
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.value.ObservableValue
-import retrofit2.Call
-import retrofit2.Callback
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -14,38 +14,28 @@ import retrofit2.http.GET
  */
 fun checkForNewVersion(): ObservableValue<Boolean> {
     val result = SimpleBooleanProperty(false)
-    val service = Retrofit.Builder()
-            .baseUrl("https://raw.githubusercontent.com/MrBean355/admiralbulldog-sounds/master/src/main/resources/")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-            .create(GitHubService::class.java)
-
-    service.getVersionFile().enqueue(object : Callback<String> {
-
-        override fun onResponse(call: Call<String>, response: Response<String>) {
-            if (response.isSuccessful) {
-                try {
-                    val latestVersion = response.body().orEmpty().toInt()
-                    val currentVersion = GitHubService::class.java.classLoader.getResource("latest-version")?.readText().orEmpty().toInt()
-                    if (latestVersion > currentVersion) {
-                        result.set(true)
-                    }
-                } catch (t: Throwable) {
-                    println("Failed to compare versions: $t")
-                }
-            } else {
-                println("Failed to download version file: ${response.code()}")
+    GlobalScope.launch {
+        val response = service().getVersionFile()
+        if (response.isSuccessful) {
+            val latestVersion = response.body().orEmpty().toInt()
+            val currentVersion = GitHubService::class.java.classLoader.getResource("latest-version")?.readText().orEmpty().toInt()
+            if (latestVersion > currentVersion) {
+                result.set(true)
             }
+        } else {
+            println("Failed to download version file: ${response.code()}")
         }
-
-        override fun onFailure(call: Call<String>, t: Throwable) {
-            println("Failed to download version file: $t")
-        }
-    })
+    }
     return result
 }
 
+private fun service() = Retrofit.Builder()
+        .baseUrl("https://raw.githubusercontent.com/MrBean355/admiralbulldog-sounds/master/src/main/resources/")
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .build()
+        .create(GitHubService::class.java)
+
 private interface GitHubService {
     @GET("latest-version")
-    fun getVersionFile(): Call<String>
+    suspend fun getVersionFile(): Response<String>
 }
