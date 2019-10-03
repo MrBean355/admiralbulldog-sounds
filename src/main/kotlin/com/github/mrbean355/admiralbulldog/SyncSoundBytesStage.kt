@@ -3,10 +3,12 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.assets.SoundFiles
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Platform
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.scene.Scene
+import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
 import javafx.scene.control.TextArea
 import javafx.scene.layout.VBox
@@ -15,6 +17,7 @@ import javafx.stage.Stage
 class SyncSoundBytesStage : Stage() {
     private val progress = SimpleDoubleProperty()
     private val log = SimpleStringProperty(MSG_SYNC_WELCOME)
+    private val complete = SimpleBooleanProperty(false)
 
     init {
         val root = VBox(PADDING_MEDIUM).apply {
@@ -24,7 +27,6 @@ class SyncSoundBytesStage : Stage() {
             prefWidthProperty().bind(root.widthProperty())
             progressProperty().bind(this@SyncSoundBytesStage.progress)
         }
-
         root.children += TextArea().apply {
             isEditable = false
             textProperty().bind(log)
@@ -34,6 +36,10 @@ class SyncSoundBytesStage : Stage() {
                 deselect()
             }
         }
+        root.children += Button(ACTION_DONE).apply {
+            disableProperty().bind(complete.not())
+            setOnAction { close() }
+        }
 
         SoundFiles.synchronise(action = {
             Platform.runLater {
@@ -42,6 +48,7 @@ class SyncSoundBytesStage : Stage() {
         }, success = {
             ConfigPersistence.markLastSync()
             setOnCloseRequest { /* Default behaviour */ }
+            complete.set(true)
         })
 
         title = TITLE_SYNC_SOUND_BYTES
