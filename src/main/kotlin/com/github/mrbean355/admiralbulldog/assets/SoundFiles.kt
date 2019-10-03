@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -110,7 +110,7 @@ object SoundFiles {
             if (!File("$SOUNDS_PATH/$it").exists()) {
                 val stream = SoundFiles::class.java.classLoader.getResourceAsStream("unmonitored/$it")
                 if (stream != null) {
-                    Files.copy(stream, Path.of("sounds/$it"))
+                    Files.copy(stream, Paths.get("sounds/$it"))
                 }
             }
         }
