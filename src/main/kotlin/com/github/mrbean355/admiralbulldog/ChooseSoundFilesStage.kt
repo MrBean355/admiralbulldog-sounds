@@ -27,7 +27,17 @@ import kotlin.reflect.KClass
 class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
     private val allItems = SoundFiles.getAll()
     private val soundToggles: Map<SoundFile, BooleanProperty> = loadToggles()
-    private val searchResults = FXCollections.observableArrayList(allItems)
+    private val searchResults = FXCollections.observableArrayList(allItems).apply {
+        FXCollections.sort(this) { lhs, rhs ->
+            val lhsSelected = soundToggles[lhs]?.value ?: false
+            val rhsSelected = soundToggles[rhs]?.value ?: false
+            when {
+                lhsSelected == rhsSelected -> 0
+                lhsSelected -> -1
+                else -> 1
+            }
+        }
+    }
 
     init {
         val root = VBox(PADDING_SMALL)
