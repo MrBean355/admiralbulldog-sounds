@@ -23,14 +23,19 @@ import javafx.scene.text.Font
 import javafx.stage.Modality
 import javafx.stage.Stage
 import java.io.File
-import java.io.PrintStream
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
 fun main() {
     Thread.setDefaultUncaughtExceptionHandler { t, e ->
         val file = File("crash_log.txt")
-        e.printStackTrace(PrintStream(file))
+        val stringWriter = StringWriter()
+        e.printStackTrace(PrintWriter(stringWriter))
+        val stackTrace = stringWriter.toString()
+        logAnalyticsEvent("unhandled_exception", stackTrace)
+        file.writeText(stackTrace)
         file.appendText(t.toString())
     }
     launch(DotaApplication::class.java)
