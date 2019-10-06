@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
+import org.slf4j.LoggerFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit
 private const val HOST_URL_PROD = "http://roonsbot.co.za:8090"
 private const val HOST_URL_DEV = "http://localhost:1234"
 private const val HOST_URL = HOST_URL_PROD
+private val logger = LoggerFactory.getLogger("DiscordBotService")
 
 /**
  * Play the given [soundFile] on Discord through the bot.
@@ -24,16 +26,16 @@ private const val HOST_URL = HOST_URL_PROD
  */
 fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.getDiscordToken()) {
     if (token.isBlank()) {
-        println("Blank token set!")
+        logger.warn("Blank token set!")
         return
     }
     GlobalScope.launch {
         val fileName = soundFile.path.substringAfterLast('/')
         val response = service.playSound(PlaySoundRequest(loadUserId(), token, fileName))
         if (response.isSuccessful) {
-            println("Sound played! soundFile='$soundFile'")
+            logger.info("Sound played! soundFile='$soundFile'")
         } else {
-            println("Play sound failed! soundFile='$soundFile', code=${response.code()}")
+            logger.info("Play sound failed! soundFile='$soundFile', code=${response.code()}")
         }
     }
 }
@@ -43,12 +45,7 @@ fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.g
  */
 fun logAnalyticsEvent(eventType: String, eventData: String = "") {
     GlobalScope.launch {
-        val response = service.logAnalyticsEvent(AnalyticsRequest(loadUserId(), eventType, eventData))
-        if (response.isSuccessful) {
-            println("Analytics sent! eventType='$eventType', eventData='$eventData'")
-        } else {
-            println("Analytics failed! code=${response.code()}")
-        }
+        service.logAnalyticsEvent(AnalyticsRequest(loadUserId(), eventType, eventData))
     }
 }
 

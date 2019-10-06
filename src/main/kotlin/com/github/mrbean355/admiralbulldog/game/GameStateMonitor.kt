@@ -11,17 +11,21 @@ import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.gson.gson
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
 import kotlin.reflect.full.createInstance
 
 private const val GSI_PORT = 12345
+private val logger = LoggerFactory.getLogger("GameStateMonitor")
+private val soundBytes = mutableListOf<SoundByte>()
+private var previousState: GameState? = null
 
 /** Receives game state updates from Dota 2. */
 fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
@@ -37,17 +41,14 @@ fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
                         processGameState(gameState)
                         onNewGameState(gameState)
                     } catch (t: Throwable) {
-                        t.printStackTrace()
+                        logger.error("Exception during game state update", t)
                     }
-                    call.respond(HttpStatusCode.OK)
+                    call.respond(OK)
                 }
             }
         }.start(wait = true)
     }
 }
-
-private val soundBytes = mutableListOf<SoundByte>()
-private var previousState: GameState? = null
 
 /** Play sound bytes that want to be played. */
 private fun processGameState(currentState: GameState) {
