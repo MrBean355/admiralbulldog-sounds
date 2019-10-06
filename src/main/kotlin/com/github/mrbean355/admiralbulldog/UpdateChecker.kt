@@ -4,10 +4,13 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.value.ObservableValue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+
+private val logger = LoggerFactory.getLogger("UpdateChecker")
 
 /**
  * Check if the `latest-version` file on GitHub has a newer version that the current one.
@@ -23,7 +26,7 @@ fun checkForNewVersion(): ObservableValue<Boolean> {
                 result.set(true)
             }
         } else {
-            println("Failed to download version file: ${response.code()}")
+            logger.error("Failed to download version file: ${response.code()}")
         }
     }
     return result

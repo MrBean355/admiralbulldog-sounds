@@ -34,7 +34,7 @@ fun main() {
         val stringWriter = StringWriter()
         e.printStackTrace(PrintWriter(stringWriter))
         val stackTrace = stringWriter.toString()
-        logAnalyticsEvent("unhandled_exception", stackTrace)
+        runCatching { logAnalyticsEvent("unhandled_exception", stackTrace) }
         file.writeText(stackTrace)
         file.appendText(t.toString())
     }

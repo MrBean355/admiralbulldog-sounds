@@ -6,6 +6,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -18,6 +19,7 @@ const val SOUNDS_PATH = "sounds"
 private val SPECIAL_SOUNDS = listOf("herewegoagain.mp3", "useyourmidas.wav", "wefuckinglost.wav")
 
 object SoundFiles {
+    private val logger = LoggerFactory.getLogger(SoundFiles::class.java)
     private var allSounds = emptyList<SoundFile>()
 
     /** Should we check for new sounds? */
@@ -77,7 +79,7 @@ object SoundFiles {
         if (allSounds.isEmpty()) {
             val root = File(SOUNDS_PATH)
             if (!root.exists() || !root.isDirectory) {
-                println("Error: couldn't file sounds directory")
+                logger.error("Couldn't file sounds directory")
                 return emptyList()
             }
             allSounds = root.list()?.map { SoundFile(it) }
