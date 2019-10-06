@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
 import kotlin.reflect.full.createInstance
 
-private const val GSI_PORT = 12345
 private val logger = LoggerFactory.getLogger("GameStateMonitor")
 private val soundBytes = mutableListOf<SoundByte>()
 private var previousState: GameState? = null
@@ -30,7 +29,7 @@ private var previousState: GameState? = null
 /** Receives game state updates from Dota 2. */
 fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
     thread(isDaemon = true) {
-        embeddedServer(Netty, GSI_PORT) {
+        embeddedServer(Netty, ConfigPersistence.getPort()) {
             install(ContentNegotiation) {
                 gson()
             }
