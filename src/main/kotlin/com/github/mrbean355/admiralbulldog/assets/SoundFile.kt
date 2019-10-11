@@ -31,6 +31,10 @@ class SoundFile(fileName: String) {
         }
     }
 
+    override fun toString(): String {
+        return "SoundFile(name='$name', path='$path')"
+    }
+
     private companion object {
         private val players = CopyOnWriteArrayList<MediaPlayer>()
     }

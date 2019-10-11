@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFile
+import com.github.mrbean355.admiralbulldog.discord.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.discord.playSoundOnDiscord
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.HostServices
@@ -54,6 +55,7 @@ class ConfigureDiscordBotStage(private val hostServices: HostServices) : Stage()
             children += Button(ACTION_TEST).apply {
                 disableProperty().bind(selectedProperty.not())
                 setOnAction {
+                    logAnalyticsEvent(eventType = "button_click", eventData = "discord_bot_test")
                     // FIXME: Somehow do this better.
                     playSoundOnDiscord(SoundFile("roons.mp3"), token = textProperty.get())
                 }

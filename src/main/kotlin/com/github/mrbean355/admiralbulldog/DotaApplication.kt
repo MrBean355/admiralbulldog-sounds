@@ -137,6 +137,7 @@ class DotaApplication : Application() {
     }
 
     private fun changeSoundsClicked(stage: Stage) {
+        logAnalyticsEvent(eventType = "button_click", eventData = "change_sounds")
         ToggleSoundBytesStage().apply {
             initModality(Modality.WINDOW_MODAL)
             initOwner(stage)
@@ -145,6 +146,7 @@ class DotaApplication : Application() {
     }
 
     private fun discordBotClicked(stage: Stage) {
+        logAnalyticsEvent(eventType = "button_click", eventData = "discord_bot_setup")
         ConfigureDiscordBotStage(hostServices).apply {
             initModality(Modality.WINDOW_MODAL)
             initOwner(stage)
@@ -153,10 +155,12 @@ class DotaApplication : Application() {
     }
 
     private fun needHelpClicked() {
+        logAnalyticsEvent(eventType = "button_click", eventData = "need_help")
         hostServices.showDocument(URL_NEED_HELP)
     }
 
     private fun downloadClicked() {
+        logAnalyticsEvent(eventType = "button_click", eventData = "download_latest_version")
         hostServices.showDocument(URL_DOWNLOAD)
     }
 }
