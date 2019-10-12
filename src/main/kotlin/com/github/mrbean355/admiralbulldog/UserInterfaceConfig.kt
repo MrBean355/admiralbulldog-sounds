@@ -53,6 +53,9 @@ const val VOLUME_MAJOR_TICK_UNIT = MAX_VOLUME / 5.0
 const val VOLUME_MINOR_TICK_COUNT = 3
 
 /* Choose Sound Files */
+const val LABEL_PLAY_THROUGH_DISCORD = "Play through Discord"
+const val LABEL_CONFIGURE_BOT = "Configure the Discord bot from the main screen"
+const val PROMPT_SEARCH = "Search..."
 const val ACTION_SAVE = "Save"
 
 /* Discord Bot */
@@ -61,9 +64,6 @@ const val LABEL_ENABLE_DISCORD_BOT = "Enable Discord bot"
 const val PROMPT_DISCORD_MAGIC_NUMBER = "Your magic number"
 const val ACTION_TEST = "Test"
 const val LABEL_DISCORD_BOT_HELP = "What is this?"
-const val ACTION_MORE_INFO = "More info"
-const val MSG_DISCORD_BOT_MORE_INFO = "This setting allows you to play sounds through Discord instead of on your computer.\n" +
-        "Currently only supports playing the ROONS sound byte."
 const val URL_DISCORD_BOT_HELP = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Discord-Bot"
 
 /* Icons */

@@ -1,12 +1,11 @@
 package com.github.mrbean355.admiralbulldog.game
 
-import com.github.mrbean355.admiralbulldog.bytes.OnBountyRunesSpawn
 import com.github.mrbean355.admiralbulldog.bytes.RandomSoundByte
 import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.github.mrbean355.admiralbulldog.bytes.random
-import com.github.mrbean355.admiralbulldog.discord.playSoundOnDiscord
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.service.playSoundOnDiscord
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -92,5 +91,5 @@ private fun playSoundForType(soundByte: SoundByte) {
 }
 
 private fun shouldPlayOnDiscord(soundByte: SoundByte): Boolean {
-    return ConfigPersistence.isUsingDiscordBot() && soundByte is OnBountyRunesSpawn
+    return ConfigPersistence.isUsingDiscordBot() && ConfigPersistence.isPlayedThroughDiscord(soundByte::class)
 }

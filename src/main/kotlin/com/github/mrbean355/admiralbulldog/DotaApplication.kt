@@ -1,9 +1,10 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFiles
-import com.github.mrbean355.admiralbulldog.discord.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
+import com.github.mrbean355.admiralbulldog.service.whenLaterVersionAvailable
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.application.Platform
@@ -43,7 +44,6 @@ fun main() {
 
 class DotaApplication : Application() {
     private val isLoaded = SimpleBooleanProperty(false)
-    private val newVersionObservable = checkForNewVersion()
 
     override fun init() {
         ConfigPersistence.initialise()
@@ -93,8 +93,12 @@ class DotaApplication : Application() {
             children += Hyperlink(LINK_DOWNLOAD).apply {
                 setOnAction { downloadClicked() }
             }
-            visibleProperty().bind(newVersionObservable)
+            visibleProperty().set(false)
             managedProperty().bind(visibleProperty())
+        }
+
+        whenLaterVersionAvailable {
+            newVersion.isVisible = true
         }
 
         root.children += newVersion

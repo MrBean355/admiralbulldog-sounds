@@ -10,12 +10,17 @@ import java.util.concurrent.CopyOnWriteArrayList
 /**
  * A downloaded sound file which the user can choose to be played.
  */
-class SoundFile(fileName: String) {
-    val name: String = fileName.substringBeforeLast('.').toUpperCase() //fixme
-    val path: String = "${SOUNDS_PATH}/$fileName"
+class SoundFile(
+        /** Path to the file. */
+        private val filePath: String) {
+    /** Name of the file, excluding directories. */
+    val fileName: String = filePath.substringAfterLast('/')
+    /** Name of the file, excluding directories and the file extension. */
+    // FIXME: toUpperCase() is here for backwards compatibility with existing config files. Make case-insensitive?
+    val name: String = fileName.substringBeforeLast('.').toUpperCase()
 
     fun play() {
-        val media = Media(File(path).toURI().toString())
+        val media = Media(File(filePath).toURI().toString())
         MediaPlayer(media).apply {
             // Without setting the start time, some sounds don't play on MacOS ¯\_(ツ)_/¯
             startTime = Duration.ZERO
@@ -32,7 +37,7 @@ class SoundFile(fileName: String) {
     }
 
     override fun toString(): String {
-        return "SoundFile(name='$name', path='$path')"
+        return "SoundFile(filePath='$filePath', fileName='$fileName', name='$name')"
     }
 
     private companion object {

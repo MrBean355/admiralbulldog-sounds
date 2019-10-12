@@ -1,17 +1,15 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.assets.SoundFile
-import com.github.mrbean355.admiralbulldog.discord.logAnalyticsEvent
-import com.github.mrbean355.admiralbulldog.discord.playSoundOnDiscord
+import com.github.mrbean355.admiralbulldog.assets.SoundFiles
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
+import com.github.mrbean355.admiralbulldog.service.playSoundOnDiscord
 import javafx.application.HostServices
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.scene.Scene
-import javafx.scene.control.Alert
 import javafx.scene.control.Button
-import javafx.scene.control.ButtonType
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Hyperlink
 import javafx.scene.control.TextField
@@ -38,15 +36,7 @@ class ConfigureDiscordBotStage(private val hostServices: HostServices) : Stage()
             textProperty().bindBidirectional(textProperty)
         }
         root.children += Hyperlink(LABEL_DISCORD_BOT_HELP).apply {
-            setOnAction {
-                val buttonType = ButtonType(ACTION_MORE_INFO)
-                val result = Alert(Alert.AlertType.INFORMATION, MSG_DISCORD_BOT_MORE_INFO, buttonType)
-                        .showAndWait()
-
-                if (result.isPresent && result.get() == buttonType) {
-                    hostServices.showDocument(URL_DISCORD_BOT_HELP)
-                }
-            }
+            setOnAction { helpClicked() }
         }
         root.children += HBox(PADDING_SMALL).apply {
             children += Button(ACTION_SAVE).apply {
@@ -56,8 +46,7 @@ class ConfigureDiscordBotStage(private val hostServices: HostServices) : Stage()
                 disableProperty().bind(selectedProperty.not())
                 setOnAction {
                     logAnalyticsEvent(eventType = "button_click", eventData = "discord_bot_test")
-                    // FIXME: Somehow do this better.
-                    playSoundOnDiscord(SoundFile("roons.mp3"), token = textProperty.get())
+                    playSoundOnDiscord(SoundFiles.getAll().random(), token = textProperty.get())
                 }
             }
         }
@@ -71,6 +60,11 @@ class ConfigureDiscordBotStage(private val hostServices: HostServices) : Stage()
                 close()
             }
         }
+    }
+
+    private fun helpClicked() {
+        logAnalyticsEvent(eventType = "button_click", eventData = "discord_bot_help")
+        hostServices.showDocument(URL_DISCORD_BOT_HELP)
     }
 
     private fun saveClicked() {

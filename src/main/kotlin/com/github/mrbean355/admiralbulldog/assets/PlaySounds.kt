@@ -7,12 +7,15 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
-import java.io.File
+import retrofit2.http.Path
 import java.io.FileOutputStream
 
 private const val HOST_CHATBOT = "http://chatbot.admiralbulldog.live/"
 private const val HOST_NUULS = "https://i.nuuls.com/"
 
+/**
+ * Queries the PlaySounds page to get the latest sounds.
+ */
 object PlaySounds {
 
     /** Scrape the PlaySounds web page and collect a list of sound file names and URLs. */
@@ -37,15 +40,15 @@ object PlaySounds {
         }
     }
 
-    /** Download the given sound to the given destination. */
-    suspend fun downloadFile(file: RemoteSoundFile) {
+    /** Download the given sound file to the given destination. */
+    suspend fun downloadFile(file: RemoteSoundFile, destination: String) {
         val response = createNuulsService().get(file.url.removePrefix(HOST_NUULS))
         val responseBody = response.body()
         if (!response.isSuccessful || responseBody == null) {
-            throw RuntimeException("Unable to download $file, code=${response.code()}, body length=${responseBody?.contentLength()}")
+            throw RuntimeException("Unable to download $file, response=$response")
         }
         val stream = responseBody.byteStream()
-        val output = FileOutputStream("$SOUNDS_PATH/${file.fileName}")
+        val output = FileOutputStream("$destination/${file.fileName}")
         val buffer = ByteArray(4096)
         withContext(IO) {
             while (true) {
@@ -59,6 +62,13 @@ object PlaySounds {
             stream.close()
         }
     }
+
+    /** A sound on the PlaySounds page. */
+    data class RemoteSoundFile(
+            /** Remote file name with extension. */
+            val fileName: String,
+            /** URL where the file is hosted. */
+            val url: String)
 
     private fun createChatBotService(): PlaySoundsService {
         return Retrofit.Builder()
@@ -75,13 +85,6 @@ object PlaySounds {
                 .create(NuulsService::class.java)
     }
 
-    data class RemoteSoundFile(val fileName: String, val url: String) {
-
-        fun existsLocally(): Boolean {
-            return File("${SOUNDS_PATH}/$fileName").exists()
-        }
-    }
-
     private interface PlaySoundsService {
         @GET("playsounds")
         suspend fun getHtml(): Response<ResponseBody>
@@ -89,7 +92,7 @@ object PlaySounds {
 
     private interface NuulsService {
         @GET("{name}")
-        suspend fun get(@retrofit2.http.Path("name") name: String): Response<ResponseBody>
+        suspend fun get(@Path("name") name: String): Response<ResponseBody>
     }
 }
 

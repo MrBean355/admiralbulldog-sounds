@@ -11,6 +11,7 @@ import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
+import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
 import javafx.scene.control.TextField
@@ -25,6 +26,7 @@ import javafx.stage.Stage
 import kotlin.reflect.KClass
 
 class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
+    private val playThroughDiscord = SimpleBooleanProperty(ConfigPersistence.isPlayedThroughDiscord(type))
     private val allItems = SoundFiles.getAll()
     private val soundToggles: Map<SoundFile, BooleanProperty> = loadToggles()
     private val searchResults = FXCollections.observableArrayList(allItems).apply {
@@ -42,7 +44,16 @@ class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
     init {
         val root = VBox(PADDING_SMALL)
         root.padding = Insets(PADDING_MEDIUM)
+        val discordBotEnabled = ConfigPersistence.isUsingDiscordBot()
+        root.children += CheckBox(LABEL_PLAY_THROUGH_DISCORD).apply {
+            selectedProperty().bindBidirectional(playThroughDiscord)
+            disableProperty().set(!discordBotEnabled)
+        }
+        if (!discordBotEnabled) {
+            root.children += Label(LABEL_CONFIGURE_BOT)
+        }
         root.children += TextField().apply {
+            promptText = PROMPT_SEARCH
             textProperty().addListener { _, _, newValue -> filterItems(newValue) }
         }
         root.children += ListView<SoundFile>(searchResults).apply {
@@ -69,6 +80,7 @@ class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
     }
 
     private fun saveToggles() {
+        ConfigPersistence.setPlayedThroughDiscord(type, playThroughDiscord.get())
         ConfigPersistence.saveSoundsForType(type, soundToggles.filterValues { it.value }.keys.toList())
         close()
     }
