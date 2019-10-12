@@ -66,7 +66,7 @@ class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
         title = type.friendlyName()
         scene = Scene(root)
         icons.add(bulldogIcon())
-        width = WINDOW_WIDTH
+        sizeToScene()
         addEventFilter(KeyEvent.KEY_PRESSED) {
             if (it.code == KeyCode.ESCAPE) {
                 close()

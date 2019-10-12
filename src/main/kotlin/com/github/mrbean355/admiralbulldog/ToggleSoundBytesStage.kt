@@ -23,7 +23,6 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 import javafx.stage.Modality
 import javafx.stage.Stage
-import javafx.util.Duration
 import kotlin.reflect.KClass
 
 class ToggleSoundBytesStage : Stage() {
@@ -52,9 +51,7 @@ class ToggleSoundBytesStage : Stage() {
 
         SOUND_BYTE_TYPES.forEachIndexed { i, type ->
             val checkBox = CheckBox(type.friendlyName()).apply {
-                tooltip = Tooltip(type.description()).apply {
-                    showDelay = Duration.ZERO
-                }
+                tooltip = Tooltip(type.description())
                 selectedProperty().bindBidirectional(toggles[type])
                 selectedProperty().addListener { _, _, newValue ->
                     ConfigPersistence.toggleSoundByte(type, newValue)
