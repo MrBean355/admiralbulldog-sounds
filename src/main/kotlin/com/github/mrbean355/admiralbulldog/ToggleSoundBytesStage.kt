@@ -5,6 +5,7 @@ import com.github.mrbean355.admiralbulldog.bytes.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.MIN_VOLUME
+import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Insets
@@ -84,6 +85,7 @@ class ToggleSoundBytesStage : Stage() {
     }
 
     private fun configureClicked(type: KClass<out SoundByte>) {
+        logAnalyticsEvent(eventType = "configure_sound", eventData = type.simpleName.orEmpty().ifEmpty { "unknown" })
         ChooseSoundFilesStage(type).apply {
             initModality(Modality.WINDOW_MODAL)
             initOwner(this@ToggleSoundBytesStage)
