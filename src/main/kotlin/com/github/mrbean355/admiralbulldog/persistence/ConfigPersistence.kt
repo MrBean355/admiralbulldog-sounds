@@ -42,10 +42,13 @@ object ConfigPersistence {
         save()
     }
 
+    /** @return the chosen port number. */
     fun getPort() = loadedConfig.port
 
+    /** @return the user's ID. */
     fun getId() = loadedConfig.id
 
+    /** Set the user's ID. */
     fun setId(id: String) {
         if (loadedConfig.id != id) {
             loadedConfig.id = id
@@ -92,6 +95,17 @@ object ConfigPersistence {
     /** Enable or disable a sound byte. */
     fun toggleSoundByte(type: KClass<out SoundByte>, enabled: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.enabled = enabled
+        save()
+    }
+
+    /** @return whether the user has chosen to play the sound byte through Discord. */
+    fun isPlayedThroughDiscord(type: KClass<out SoundByte>): Boolean {
+        return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
+    }
+
+    /** Set whether the user has chosen to play the sound byte through Discord. */
+    fun setPlayedThroughDiscord(type: KClass<out SoundByte>, playThroughDiscord: Boolean) {
+        loadedConfig.sounds[type.simpleName]!!.playThroughDiscord = playThroughDiscord
         save()
     }
 
@@ -145,7 +159,7 @@ object ConfigPersistence {
     /** Load the default config for a given sound byte `type`. */
     private fun loadDefaults(type: KClass<out SoundByte>): Toggle {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
-                ?: return Toggle(false, mutableListOf())
+                ?: return Toggle(enabled = false, playThroughDiscord = false, sounds = mutableListOf())
 
         return gson.fromJson(resource.readText(), Toggle::class.java)
     }
@@ -161,5 +175,5 @@ object ConfigPersistence {
 
     private data class Config(var port: Int, var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, val sounds: MutableMap<String, Toggle>)
 
-    private data class Toggle(var enabled: Boolean, var sounds: MutableList<String>)
+    private data class Toggle(var enabled: Boolean, var playThroughDiscord: Boolean, var sounds: MutableList<String>)
 }

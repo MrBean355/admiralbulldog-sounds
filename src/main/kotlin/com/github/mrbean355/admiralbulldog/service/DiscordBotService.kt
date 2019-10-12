@@ -1,18 +1,23 @@
-package com.github.mrbean355.admiralbulldog.discord
+package com.github.mrbean355.admiralbulldog.service
 
+import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.assets.SoundFile
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 private const val HOST_URL_PROD = "http://roonsbot.co.za:8090"
@@ -30,12 +35,9 @@ fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.g
         return
     }
     GlobalScope.launch {
-        val fileName = soundFile.path.substringAfterLast('/')
-        val response = service.playSound(PlaySoundRequest(loadUserId(), token, fileName))
-        if (response.isSuccessful) {
-            logger.info("Sound played! soundFile='$soundFile'")
-        } else {
-            logger.info("Play sound failed! soundFile='$soundFile', code=${response.code()}")
+        val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundFile.fileName))
+        if (!response.isSuccessful) {
+            logger.info("Play sound through Discord failed! soundFile=$soundFile, response=$response")
         }
     }
 }
@@ -49,6 +51,23 @@ fun logAnalyticsEvent(eventType: String, eventData: String = "") {
     }
 }
 
+/**
+ * Invokes [onLaterVersion] if the service says there's a newer app version available.
+ */
+fun whenLaterVersionAvailable(onLaterVersion: () -> Unit) {
+    GlobalScope.launch {
+        val response = service.hasLaterVersion(APP_VERSION)
+        if (response.isSuccessful) {
+            val body = response.body() ?: false
+            if (body) {
+                withContext(Main) { onLaterVersion() }
+            }
+        } else {
+            logger.error("Later version check failed! response=$response")
+        }
+    }
+}
+
 private interface DiscordBotService {
 
     @POST("/createId")
@@ -59,6 +78,9 @@ private interface DiscordBotService {
 
     @POST("/analytics/logEvent")
     suspend fun logAnalyticsEvent(@Body request: AnalyticsRequest): Response<Void>
+
+    @GET("/metadata/laterVersion")
+    suspend fun hasLaterVersion(@Query("version") version: String): Response<Boolean>
 }
 
 private data class CreateIdResponse(val userId: String)

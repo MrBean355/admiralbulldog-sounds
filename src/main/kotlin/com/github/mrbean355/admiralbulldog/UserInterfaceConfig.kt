@@ -53,6 +53,9 @@ const val VOLUME_MAJOR_TICK_UNIT = MAX_VOLUME / 5.0
 const val VOLUME_MINOR_TICK_COUNT = 3
 
 /* Choose Sound Files */
+const val LABEL_PLAY_THROUGH_DISCORD = "Play through Discord"
+const val LABEL_CONFIGURE_BOT = "Configure the Discord bot from the main screen"
+const val PROMPT_SEARCH = "Search..."
 const val ACTION_SAVE = "Save"
 
 /* Discord Bot */
@@ -61,9 +64,6 @@ const val LABEL_ENABLE_DISCORD_BOT = "Enable Discord bot"
 const val PROMPT_DISCORD_MAGIC_NUMBER = "Your magic number"
 const val ACTION_TEST = "Test"
 const val LABEL_DISCORD_BOT_HELP = "What is this?"
-const val ACTION_MORE_INFO = "More info"
-const val MSG_DISCORD_BOT_MORE_INFO = "This setting allows you to play sounds through Discord instead of on your computer.\n" +
-        "Currently only supports playing the ROONS sound byte."
 const val URL_DISCORD_BOT_HELP = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Discord-Bot"
 
 /* Icons */
@@ -85,6 +85,23 @@ fun KClass<out SoundByte>.friendlyName(): String {
         OnSmoked::class -> "Used Smoke of Deceit"
         OnVictory::class -> "Won the match"
         Periodically::class -> "As time goes on"
+        else -> simpleName ?: "Unknown"
+    }
+}
+
+fun KClass<out SoundByte>.description(): String {
+    return when (this) {
+        OnBountyRunesSpawn::class -> "Plays a sound 15 seconds before bounty runes spawn."
+        OnDeath::class -> "Plays a sound when you die (1 in 3 chance)."
+        OnDefeat::class -> "Plays a sound when your ancient explodes."
+        OnHeal::class -> "Plays a sound when you get healed for at least 200 HP (1 in 3 chance)."
+        OnKill::class -> "Plays a sound when you kill an enemy (1 in 3 chance)."
+        OnMatchStart::class -> "Plays a sound when the game starts (clock hits 0)."
+        OnMidasReady::class -> "Plays a sound when your Hand of Midas comes off cooldown."
+        OnRespawn::class -> "Plays a sound when you respawn."
+        OnSmoked::class -> "Plays a sound when you are affected by Smoke of Deceit."
+        OnVictory::class -> "Plays a sound when the enemy's ancient explodes."
+        Periodically::class -> "Plays a sound every 5 - 15 minutes."
         else -> simpleName ?: "Unknown"
     }
 }
