@@ -111,7 +111,7 @@ class DotaApplication : Application() {
             setOnCloseRequest { exitProcess(0) }
         }
 
-        logAnalyticsEvent("app_start")
+        logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION)
         if (SoundFiles.shouldSync()) {
             SyncSoundBytesStage().apply {
                 initModality(Modality.WINDOW_MODAL)
