@@ -20,9 +20,7 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
-private const val HOST_URL_PROD = "http://roonsbot.co.za:8090"
-private const val HOST_URL_DEV = "http://localhost:1234"
-private const val HOST_URL = HOST_URL_PROD
+var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
 private val logger = LoggerFactory.getLogger("DiscordBotService")
 
 /**
@@ -112,11 +110,13 @@ private suspend fun loadUserId(): String {
 }
 
 private val mutex = Mutex()
-private val service = Retrofit.Builder()
-        .client(OkHttpClient.Builder()
-                .callTimeout(10, TimeUnit.SECONDS)
-                .build())
-        .baseUrl(HOST_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(DiscordBotService::class.java)
+private val service by lazy {
+    Retrofit.Builder()
+            .client(OkHttpClient.Builder()
+                    .callTimeout(10, TimeUnit.SECONDS)
+                    .build())
+            .baseUrl(hostUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(DiscordBotService::class.java)
+}

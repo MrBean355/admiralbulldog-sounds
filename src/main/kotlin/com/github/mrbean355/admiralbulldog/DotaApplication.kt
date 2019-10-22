@@ -3,6 +3,7 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.assets.SoundFiles
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.service.hostUrl
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.service.whenLaterVersionAvailable
 import javafx.application.Application
@@ -29,7 +30,11 @@ import java.io.StringWriter
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-fun main() {
+/** Program argument to point to a custom host. Points to prod if omitted. */
+private const val ARG_HOST_URL = "--host-url"
+
+fun main(args: Array<String>) {
+    setCustomHostUrl(args)
     Thread.setDefaultUncaughtExceptionHandler { t, e ->
         val file = File("crash_log.txt")
         val stringWriter = StringWriter()
@@ -40,6 +45,14 @@ fun main() {
         file.appendText(t.toString())
     }
     launch(DotaApplication::class.java)
+}
+
+private fun setCustomHostUrl(args: Array<String>) {
+    val hostUrlArg = args.firstOrNull { it.startsWith(ARG_HOST_URL) } ?: return
+    hostUrl = hostUrlArg.substringAfterLast('=')
+    if (hostUrl.isNotBlank()) {
+        println("Using custom host URL: $hostUrl")
+    }
 }
 
 class DotaApplication : Application() {
