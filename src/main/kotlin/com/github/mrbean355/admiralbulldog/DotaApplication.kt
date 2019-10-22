@@ -6,6 +6,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.hostUrl
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.service.whenLaterVersionAvailable
+import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.application.Platform
@@ -139,6 +140,7 @@ class DotaApplication : Application() {
 
     private fun resume(primaryStage: Stage) {
         primaryStage.show()
+        prepareTrayIcon(primaryStage)
         val invalidSounds = ConfigPersistence.getInvalidSounds()
         if (invalidSounds.isNotEmpty()) {
             Alert(Alert.AlertType.WARNING, MSG_REMOVED_SOUNDS.format(invalidSounds.joinToString(separator = "\n")))

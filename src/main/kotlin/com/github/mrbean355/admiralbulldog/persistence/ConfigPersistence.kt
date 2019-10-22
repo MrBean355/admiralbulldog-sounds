@@ -87,6 +87,17 @@ object ConfigPersistence {
         save()
     }
 
+    /**
+     * Sets whether we have notified about the tray icon to `true`.
+     * @return the value prior to setting it to `true`.
+     */
+    fun getAndSetNotifiedAboutSystemTray(): Boolean {
+        val previous = loadedConfig.trayNotified
+        loadedConfig.trayNotified = true
+        save()
+        return previous
+    }
+
     /** @return `true` if the sound byte is enabled; `false` otherwise. */
     fun isSoundByteEnabled(type: KClass<out SoundByte>): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.enabled
@@ -153,7 +164,7 @@ object ConfigPersistence {
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_BYTE_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0, null, 0L, DEFAULT_VOLUME, false, null, sounds.toMutableMap())
+        return Config(0, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap())
     }
 
     /** Load the default config for a given sound byte `type`. */
@@ -173,7 +184,7 @@ object ConfigPersistence {
         }
     }
 
-    private data class Config(var port: Int, var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, val sounds: MutableMap<String, Toggle>)
+    private data class Config(var port: Int, var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, var trayNotified: Boolean, val sounds: MutableMap<String, Toggle>)
 
     private data class Toggle(var enabled: Boolean, var playThroughDiscord: Boolean, var sounds: MutableList<String>)
 }
