@@ -6,22 +6,20 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
+import com.github.mrbean355.admiralbulldog.ui.finalise
+import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Insets
-import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import javafx.scene.control.Slider
 import javafx.scene.control.Tooltip
 import javafx.scene.image.ImageView
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
-import javafx.stage.Modality
 import javafx.stage.Stage
 import kotlin.reflect.KClass
 
@@ -36,7 +34,6 @@ class ToggleSoundBytesStage : Stage() {
         root.columnConstraints.addAll(ColumnConstraints().apply {
             hgrow = Priority.ALWAYS
         })
-
         root.add(Label(LABEL_VOLUME), 0, 0, 2, 1)
         root.add(Slider(MIN_VOLUME, MAX_VOLUME, ConfigPersistence.getVolume()).apply {
             isShowTickLabels = true
@@ -48,7 +45,6 @@ class ToggleSoundBytesStage : Stage() {
                 ConfigPersistence.setVolume(newValue.toDouble())
             }
         }, 0, 1, 2, 1)
-
         SOUND_BYTE_TYPES.forEachIndexed { i, type ->
             val checkBox = CheckBox(type.friendlyName()).apply {
                 tooltip = Tooltip(type.description())
@@ -63,16 +59,8 @@ class ToggleSoundBytesStage : Stage() {
                 setOnAction { configureClicked(type) }
             }, 1, i + 2)
         }
-
-        title = TITLE_TOGGLE_SOUND_BYTES
-        scene = Scene(root)
-        icons.add(bulldogIcon())
+        finalise(title = TITLE_TOGGLE_SOUND_BYTES, root = root)
         width = WINDOW_WIDTH
-        addEventFilter(KeyEvent.KEY_PRESSED) {
-            if (it.code == KeyCode.ESCAPE) {
-                close()
-            }
-        }
     }
 
     private fun loadToggles(): Map<KClass<out SoundByte>, BooleanProperty> {
@@ -83,10 +71,6 @@ class ToggleSoundBytesStage : Stage() {
 
     private fun configureClicked(type: KClass<out SoundByte>) {
         logAnalyticsEvent(eventType = "configure_sound", eventData = type.simpleName.orEmpty().ifEmpty { "unknown" })
-        ChooseSoundFilesStage(type).apply {
-            initModality(Modality.WINDOW_MODAL)
-            initOwner(this@ToggleSoundBytesStage)
-            show()
-        }
+        ChooseSoundFilesStage(type).showModal()
     }
 }

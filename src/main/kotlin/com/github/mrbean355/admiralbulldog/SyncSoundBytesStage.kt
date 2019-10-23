@@ -2,12 +2,13 @@ package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFiles
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.ui.finalise
 import javafx.application.Platform
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.event.EventHandler
 import javafx.geometry.Insets
-import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
 import javafx.scene.control.TextArea
@@ -54,11 +55,9 @@ class SyncSoundBytesStage : Stage() {
             setOnCloseRequest { /* Default behaviour */ }
             complete.set(true)
         })
-
-        title = TITLE_SYNC_SOUND_BYTES
-        scene = Scene(root)
-        icons.add(bulldogIcon())
-        width = WINDOW_WIDTH
-        setOnCloseRequest { it.consume() }
+        finalise(title = TITLE_SYNC_SOUND_BYTES, root = root, onCloseRequest = EventHandler {
+            it.consume()
+        })
+        width = WINDOW_WIDTH_LARGE
     }
 }

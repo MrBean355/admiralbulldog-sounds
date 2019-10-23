@@ -77,13 +77,18 @@ object ConfigPersistence {
     /** @return `true` if the user has enabled the Discord bot. */
     fun isUsingDiscordBot() = loadedConfig.discordBotEnabled
 
+    /** Set whether the user has enabled the Discord bot. */
+    fun setUsingDiscordBot(enabled: Boolean) {
+        loadedConfig.discordBotEnabled = enabled
+        save()
+    }
+
     /** @return the user's current token if it is set, empty string otherwise. */
     fun getDiscordToken() = loadedConfig.discordToken.orEmpty()
 
-    /** Store whether the Discord bot is enabled and the user's current token. */
-    fun setDiscordToken(enabled: Boolean, discordToken: String?) {
-        loadedConfig.discordBotEnabled = enabled && !discordToken.isNullOrBlank()
-        loadedConfig.discordToken = discordToken?.trim()
+    /** Set the user's Discord token. */
+    fun setDiscordToken(token: String) {
+        loadedConfig.discordToken = token.trim()
         save()
     }
 
@@ -129,6 +134,17 @@ object ConfigPersistence {
         return emptyList()
     }
 
+    /** @return a list of all sounds selected for the sound board. */
+    fun getSoundBoard(): List<SoundFile> {
+        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundFiles.findSound(it) }
+    }
+
+    /** Set the list of all sounds selected for the sound board. */
+    fun setSoundBoard(soundBoard: List<SoundFile>) {
+        loadedConfig.soundBoard = soundBoard.map { it.name }
+        save()
+    }
+
     /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
     fun getInvalidSounds(): List<String> {
         val existing = SoundFiles.getAll().map { it.name }
@@ -164,7 +180,7 @@ object ConfigPersistence {
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_BYTE_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap())
+        return Config(0, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList())
     }
 
     /** Load the default config for a given sound byte `type`. */
@@ -184,7 +200,7 @@ object ConfigPersistence {
         }
     }
 
-    private data class Config(var port: Int, var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, var trayNotified: Boolean, val sounds: MutableMap<String, Toggle>)
+    private data class Config(var port: Int, var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, var trayNotified: Boolean, val sounds: MutableMap<String, Toggle>, var soundBoard: List<String>?)
 
     private data class Toggle(var enabled: Boolean, var playThroughDiscord: Boolean, var sounds: MutableList<String>)
 }

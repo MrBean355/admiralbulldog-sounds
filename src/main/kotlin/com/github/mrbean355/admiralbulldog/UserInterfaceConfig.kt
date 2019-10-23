@@ -18,6 +18,7 @@ import kotlin.reflect.KClass
 
 /* Dimensions */
 const val WINDOW_WIDTH = 300.0
+const val WINDOW_WIDTH_LARGE = 450.0
 const val PADDING_SMALL = 8.0
 const val PADDING_MEDIUM = 16.0
 const val TEXT_SIZE_SMALL = 10.0
@@ -60,18 +61,20 @@ const val VOLUME_MAJOR_TICK_UNIT = MAX_VOLUME / 5.0
 const val VOLUME_MINOR_TICK_COUNT = 3
 
 /* Choose Sound Files */
-const val LABEL_PLAY_THROUGH_DISCORD = "Play through Discord"
-const val LABEL_CONFIGURE_BOT = "Configure the Discord bot from the main screen"
+const val TOOLTIP_PLAY_LOCALLY = "Play on your machine"
 const val PROMPT_SEARCH = "Search..."
 const val ACTION_SAVE = "Save"
 
 /* Discord Bot */
 const val TITLE_DISCORD_BOT = "Discord bot"
 const val LABEL_ENABLE_DISCORD_BOT = "Enable Discord bot"
+const val TITLE_SOUND_BOARD = "Discord sound board"
 const val PROMPT_DISCORD_MAGIC_NUMBER = "Your magic number"
-const val ACTION_TEST = "Test"
-const val LABEL_DISCORD_BOT_HELP = "What is this?"
-const val URL_DISCORD_BOT_HELP = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Discord-Bot"
+const val LABEL_PLAY_ON_DISCORD = "Play through Discord:"
+const val ACTION_SOUND_BOARD = "Sound board"
+const val TOOLTIP_PLAY_ON_DISCORD = "Play through Discord"
+const val ACTION_CHOOSE_SOUNDS = "Choose sounds"
+const val TITLE_CONFIGURE_SOUND_BOARD = "Choose sounds"
 
 /* Icons */
 fun bulldogIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg"))

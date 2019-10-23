@@ -6,15 +6,17 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.hostUrl
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.service.whenLaterVersionAvailable
+import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
+import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.application.Platform
 import javafx.beans.binding.Bindings.createStringBinding
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.geometry.Pos
-import javafx.scene.Scene
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.control.Hyperlink
@@ -23,7 +25,6 @@ import javafx.scene.control.ProgressBar
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
-import javafx.stage.Modality
 import javafx.stage.Stage
 import java.io.File
 import java.io.PrintWriter
@@ -118,24 +119,15 @@ class DotaApplication : Application() {
         root.children += newVersion
         monitorGameStateUpdates { onNewGameState() }
 
-        primaryStage.apply {
-            scene = Scene(root)
-            icons.add(bulldogIcon())
-            title = TITLE_MAIN_WINDOW
-            setOnCloseRequest { exitProcess(0) }
-        }
+        primaryStage.finalise(title = TITLE_MAIN_WINDOW, root = root, closeOnEscape = false, onCloseRequest = EventHandler {
+            exitProcess(0)
+        })
 
         logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION)
         if (SoundFiles.shouldSync()) {
-            SyncSoundBytesStage().apply {
-                initModality(Modality.WINDOW_MODAL)
-                initOwner(primaryStage)
-                showAndWait()
-                resume(primaryStage)
-            }
-        } else {
-            resume(primaryStage)
+            SyncSoundBytesStage().showModal(wait = true)
         }
+        resume(primaryStage)
     }
 
     private fun resume(primaryStage: Stage) {
@@ -157,20 +149,12 @@ class DotaApplication : Application() {
 
     private fun changeSoundsClicked(stage: Stage) {
         logAnalyticsEvent(eventType = "button_click", eventData = "change_sounds")
-        ToggleSoundBytesStage().apply {
-            initModality(Modality.WINDOW_MODAL)
-            initOwner(stage)
-            show()
-        }
+        ToggleSoundBytesStage().showModal()
     }
 
     private fun discordBotClicked(stage: Stage) {
         logAnalyticsEvent(eventType = "button_click", eventData = "discord_bot_setup")
-        ConfigureDiscordBotStage(hostServices).apply {
-            initModality(Modality.WINDOW_MODAL)
-            initOwner(stage)
-            show()
-        }
+        DiscordBotStage().showModal()
     }
 
     private fun needHelpClicked() {
