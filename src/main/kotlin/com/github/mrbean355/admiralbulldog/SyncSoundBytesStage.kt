@@ -45,8 +45,12 @@ class SyncSoundBytesStage : Stage() {
             Platform.runLater {
                 log.value = "${log.value}\n$it"
             }
-        }, success = {
-            ConfigPersistence.markLastSync()
+        }, complete = { successful ->
+            if (successful) {
+                ConfigPersistence.markLastSync()
+            } else {
+                log.value += MSG_SYNC_FAILED
+            }
             setOnCloseRequest { /* Default behaviour */ }
             complete.set(true)
         })

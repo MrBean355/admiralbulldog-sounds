@@ -41,12 +41,17 @@ object SoundFiles {
      * Deletes local sounds which don't exist remotely.
      * Copies over the [SPECIAL_SOUNDS].
      */
-    fun synchronise(action: (String) -> Unit, success: () -> Unit) {
+    fun synchronise(action: (String) -> Unit, complete: (Boolean) -> Unit) {
         val downloaded = AtomicInteger()
         val deleted = AtomicInteger()
         GlobalScope.launch {
             val localFiles = getLocalFiles().toMutableList()
-            val remoteFiles = PlaySounds.listRemoteFiles()
+            val response = PlaySounds.listRemoteFiles()
+            val remoteFiles = response.body
+            if (!response.success || remoteFiles == null) {
+                withContext(Main) { complete(false) }
+                return@launch
+            }
 
             /* Download all remote files that don't exist locally. */
             coroutineScope {
@@ -77,7 +82,7 @@ object SoundFiles {
             action("Done!\n" +
                     "-> Downloaded ${downloaded.get()} new sound(s).\n" +
                     "-> Deleted ${deleted.get()} old sound(s).\n")
-            withContext(Main) { success() }
+            withContext(Main) { complete(true) }
         }
     }
 

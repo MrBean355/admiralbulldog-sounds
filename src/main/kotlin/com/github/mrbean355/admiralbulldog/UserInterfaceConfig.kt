@@ -26,6 +26,7 @@ const val TEXT_SIZE_LARGE = 18.0
 /* Sync Sound Bytes */
 const val TITLE_SYNC_SOUND_BYTES = "Updating"
 const val MSG_SYNC_WELCOME = "Welcome!\nChecking for new PlaySounds...\n"
+const val MSG_SYNC_FAILED = "\nCouldn't connect to PlaySounds page.\nCan't get latest sounds."
 const val ACTION_DONE = "Done"
 
 /* Main Window */

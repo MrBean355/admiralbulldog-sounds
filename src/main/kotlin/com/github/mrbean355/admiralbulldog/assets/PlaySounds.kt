@@ -13,30 +13,32 @@ import java.io.FileOutputStream
 private const val HOST_CHATBOT = "http://chatbot.admiralbulldog.live/"
 private const val HOST_NUULS = "https://i.nuuls.com/"
 
+class ServiceResponse<T>(val success: Boolean, val body: T? = null)
+
 /**
  * Queries the PlaySounds page to get the latest sounds.
  */
 object PlaySounds {
 
     /** Scrape the PlaySounds web page and collect a list of sound file names and URLs. */
-    suspend fun listRemoteFiles(): List<RemoteSoundFile> {
+    suspend fun listRemoteFiles(): ServiceResponse<List<RemoteSoundFile>> {
         val response = createChatBotService().getHtml()
         val responseBody = response.body()
         if (!response.isSuccessful || responseBody == null) {
-            throw RuntimeException("Unable to download HTML, code=${response.code()}, body length=${responseBody?.contentLength()}")
+            return ServiceResponse(false)
         }
         return withContext(IO) {
             val html = String(responseBody.bytes())
             val blocks = html.split("<tr>")
                     .drop(2)
 
-            blocks.map { block ->
+            ServiceResponse(true, blocks.map { block ->
                 val friendlyName = block.split("<td>")[1].split("</td>").first()
                 val url = block.split("data-link=\"")[1].split("\"").first()
                 val fileExtension = url.substringAfterLast('.', missingDelimiterValue = "")
                 val fileName = "$friendlyName.$fileExtension"
                 RemoteSoundFile(fileName, url)
-            }
+            })
         }
     }
 
