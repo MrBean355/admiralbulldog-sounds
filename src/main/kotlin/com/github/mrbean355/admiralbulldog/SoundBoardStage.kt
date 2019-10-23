@@ -40,7 +40,7 @@ class SoundBoardStage : Stage() {
     }
 
     private fun chooseSoundsClicked() {
-        ConfigureSoundBoardStage().showModal(wait = true)
+        ConfigureSoundBoardStage().showModal(owner = this, wait = true)
         buildSoundButtons()
         sizeToScene()
     }

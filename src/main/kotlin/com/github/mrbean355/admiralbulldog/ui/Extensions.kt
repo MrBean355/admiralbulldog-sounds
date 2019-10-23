@@ -6,12 +6,14 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
-import javafx.stage.Modality.APPLICATION_MODAL
+import javafx.stage.Modality.WINDOW_MODAL
 import javafx.stage.Stage
+import javafx.stage.Window
 import javafx.stage.WindowEvent
 
-fun Stage.showModal(wait: Boolean = false) {
-    initModality(APPLICATION_MODAL)
+fun Stage.showModal(owner: Window, wait: Boolean = false) {
+    initModality(WINDOW_MODAL)
+    initOwner(owner)
     if (wait) {
         showAndWait()
     } else {

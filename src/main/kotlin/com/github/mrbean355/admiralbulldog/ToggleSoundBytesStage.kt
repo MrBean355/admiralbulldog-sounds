@@ -71,6 +71,6 @@ class ToggleSoundBytesStage : Stage() {
 
     private fun configureClicked(type: KClass<out SoundByte>) {
         logAnalyticsEvent(eventType = "configure_sound", eventData = type.simpleName.orEmpty().ifEmpty { "unknown" })
-        ChooseSoundFilesStage(type).showModal()
+        ChooseSoundFilesStage(type).showModal(owner = this)
     }
 }

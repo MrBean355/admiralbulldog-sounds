@@ -125,7 +125,7 @@ class DotaApplication : Application() {
 
         logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION)
         if (SoundFiles.shouldSync()) {
-            SyncSoundBytesStage().showModal(wait = true)
+            SyncSoundBytesStage().showModal(owner = primaryStage, wait = true)
         }
         resume(primaryStage)
     }
@@ -149,12 +149,12 @@ class DotaApplication : Application() {
 
     private fun changeSoundsClicked(stage: Stage) {
         logAnalyticsEvent(eventType = "button_click", eventData = "change_sounds")
-        ToggleSoundBytesStage().showModal()
+        ToggleSoundBytesStage().showModal(owner = stage)
     }
 
     private fun discordBotClicked(stage: Stage) {
         logAnalyticsEvent(eventType = "button_click", eventData = "discord_bot_setup")
-        DiscordBotStage().showModal()
+        DiscordBotStage().showModal(owner = stage)
     }
 
     private fun needHelpClicked() {

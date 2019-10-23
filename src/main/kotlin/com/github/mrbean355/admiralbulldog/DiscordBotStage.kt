@@ -86,6 +86,6 @@ class DiscordBotStage : Stage() {
     }
 
     private fun soundBoardClicked() {
-        SoundBoardStage().showModal()
+        SoundBoardStage().showModal(owner = this)
     }
 }
