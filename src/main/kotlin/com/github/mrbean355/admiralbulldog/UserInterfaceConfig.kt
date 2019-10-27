@@ -38,6 +38,7 @@ const val DESC_NOT_CONNECTED = "You need to be in a match. Try entering Hero Dem
 const val DESC_CONNECTED = "Ready to play sounds during your matches!"
 const val ACTION_CHANGE_SOUNDS = "Change sounds"
 const val ACTION_DISCORD_BOT = "Discord bot"
+const val LINK_INSTALL = "Install"
 const val LINK_NEED_HELP = "Need help?"
 const val LABEL_APP_VERSION = "Version: %s"
 const val URL_NEED_HELP = "https://github.com/MrBean355/admiralbulldog-sounds"
@@ -47,6 +48,13 @@ const val URL_DOWNLOAD = "https://github.com/MrBean355/admiralbulldog-sounds/rel
 const val MSG_REMOVED_SOUNDS = "One or more sounds you were using got removed:\n" +
         "%s\n" +
         "Unfortunately you can't use them any more."
+const val MSG_INSTALLER = "Please choose your Dota 2 installation folder"
+const val TITLE_INSTALLER = "Choose Dota 2 folder"
+const val HEADER_INSTALLER = "Installer"
+const val MSG_INSTALLER_WRONG_FOLDER = "This doesn't look like the Dota 2 folder"
+const val ACTION_TRY_AGAIN = "Try again"
+const val MSG_INSTALLER_CANT_CREATE = "Couldn't create the file: %s"
+const val MSG_INSTALLER_SUCCESS = "Successfully installed! Please restart Dota if it's open."
 
 /* System Tray */
 const val ACTION_SHOW = "Show"
@@ -68,6 +76,7 @@ const val ACTION_SAVE = "Save"
 /* Discord Bot */
 const val TITLE_DISCORD_BOT = "Discord bot"
 const val LABEL_ENABLE_DISCORD_BOT = "Enable Discord bot"
+const val LINK_INVITE_BOT = "Invite bot to server"
 const val TITLE_SOUND_BOARD = "Discord sound board"
 const val PROMPT_DISCORD_MAGIC_NUMBER = "Your magic number"
 const val LABEL_PLAY_ON_DISCORD = "Play through Discord:"

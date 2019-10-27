@@ -6,6 +6,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.hostUrl
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.service.whenLaterVersionAvailable
+import com.github.mrbean355.admiralbulldog.ui.createGsiFile
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
 import com.github.mrbean355.admiralbulldog.ui.showModal
@@ -95,8 +96,16 @@ class DotaApplication : Application() {
                 setOnAction { discordBotClicked(primaryStage) }
             }
         }
-        root.children += Hyperlink(LINK_NEED_HELP).apply {
-            setOnAction { needHelpClicked() }
+        root.children += HBox(PADDING_SMALL).apply {
+            alignment = Pos.CENTER
+            children += Hyperlink(LINK_INSTALL).apply {
+                setOnAction { installClicked(primaryStage) }
+                visibleProperty().bind(isLoaded.not())
+                managedProperty().bind(visibleProperty())
+            }
+            children += Hyperlink(LINK_NEED_HELP).apply {
+                setOnAction { needHelpClicked() }
+            }
         }
         root.children += Label(LABEL_APP_VERSION.format(APP_VERSION)).apply {
             font = Font(TEXT_SIZE_SMALL)
@@ -154,7 +163,12 @@ class DotaApplication : Application() {
 
     private fun discordBotClicked(stage: Stage) {
         logAnalyticsEvent(eventType = "button_click", eventData = "discord_bot_setup")
-        DiscordBotStage().showModal(owner = stage)
+        DiscordBotStage(hostServices).showModal(owner = stage)
+    }
+
+    private fun installClicked(stage: Stage) {
+        logAnalyticsEvent(eventType = "button_click", eventData = "install")
+        createGsiFile(stage)
     }
 
     private fun needHelpClicked() {
