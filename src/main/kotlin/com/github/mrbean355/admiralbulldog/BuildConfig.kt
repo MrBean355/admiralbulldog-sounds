@@ -1,4 +1,4 @@
 package com.github.mrbean355.admiralbulldog
 
 @javax.annotation.processing.Generated("generateBuildConfig")
-const val APP_VERSION = "1.7.2"
+const val APP_VERSION = "1.8.0-SNAPSHOT"
