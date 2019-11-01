@@ -39,6 +39,7 @@ const val DESC_CONNECTED = "Ready to play sounds during your matches!"
 const val ACTION_CHANGE_SOUNDS = "Change sounds"
 const val ACTION_DISCORD_BOT = "Discord bot"
 const val LINK_INSTALL = "Install"
+const val LINK_NOTIFICATIONS = "Notifications"
 const val LINK_NEED_HELP = "Need help?"
 const val LABEL_APP_VERSION = "Version: %s"
 const val URL_NEED_HELP = "https://github.com/MrBean355/admiralbulldog-sounds"
@@ -61,6 +62,12 @@ const val ACTION_SHOW = "Show"
 const val ACTION_EXIT = "Exit"
 const val TRAY_CAPTION = "Over here!"
 const val TRAY_MESSAGE = "I've minimized to the system tray!"
+
+/* Notifications */
+const val TITLE_NOTIFICATIONS = "Notifications"
+const val ACTION_CLEAR = "Clear"
+const val NOTIFICATION_STARTUP = "Started up v$APP_VERSION."
+const val NOTIFICATION_DISCORD_FAIL = "Tried to play %s through Discord, but the bot wasn't in a voice channel. Playing locally instead."
 
 /* Toggle Sound Bytes */
 const val TITLE_TOGGLE_SOUND_BYTES = "Enable sounds"
