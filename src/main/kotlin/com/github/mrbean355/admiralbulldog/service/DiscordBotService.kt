@@ -36,6 +36,7 @@ fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.g
         val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundFile.fileName))
         if (!response.isSuccessful) {
             logger.info("Play sound through Discord failed! soundFile=$soundFile, response=$response")
+            soundFile.play()
         }
     }
 }
