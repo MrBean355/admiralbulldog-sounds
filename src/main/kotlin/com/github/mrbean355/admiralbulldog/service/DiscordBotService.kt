@@ -1,8 +1,10 @@
 package com.github.mrbean355.admiralbulldog.service
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
+import com.github.mrbean355.admiralbulldog.NOTIFICATION_DISCORD_FAIL
 import com.github.mrbean355.admiralbulldog.assets.SoundFile
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.persistence.Notifications
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,6 +38,8 @@ fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.g
         val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundFile.fileName))
         if (!response.isSuccessful) {
             logger.info("Play sound through Discord failed! soundFile=$soundFile, response=$response")
+            Notifications.put(NOTIFICATION_DISCORD_FAIL.format(soundFile.name))
+            soundFile.play()
         }
     }
 }
