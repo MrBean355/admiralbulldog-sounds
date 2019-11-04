@@ -2,6 +2,7 @@ package com.github.mrbean355.admiralbulldog.assets
 
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -9,6 +10,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import java.io.FileOutputStream
+import java.util.concurrent.TimeUnit
 
 private const val HOST_CHATBOT = "http://chatbot.admiralbulldog.live/"
 private const val HOST_NUULS = "https://i.nuuls.com/"
@@ -74,6 +76,9 @@ object PlaySounds {
 
     private fun createChatBotService(): PlaySoundsService {
         return Retrofit.Builder()
+                .client(OkHttpClient.Builder()
+                        .callTimeout(10, TimeUnit.SECONDS)
+                        .build())
                 .baseUrl(HOST_CHATBOT)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build()
@@ -82,6 +87,9 @@ object PlaySounds {
 
     private fun createNuulsService(): NuulsService {
         return Retrofit.Builder()
+                .client(OkHttpClient.Builder()
+                        .callTimeout(10, TimeUnit.SECONDS)
+                        .build())
                 .baseUrl(HOST_NUULS)
                 .build()
                 .create(NuulsService::class.java)
