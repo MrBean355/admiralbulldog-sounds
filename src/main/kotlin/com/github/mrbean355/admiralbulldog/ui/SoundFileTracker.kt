@@ -8,6 +8,7 @@ import com.github.mrbean355.admiralbulldog.playIcon
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.FXCollections
+import javafx.collections.transformation.SortedList
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ListCell
@@ -27,17 +28,7 @@ import javafx.scene.layout.Priority
 class SoundFileTracker(selection: List<SoundFile>) {
     private val allItems = SoundFiles.getAll()
     private val soundToggles: Map<SoundFile, BooleanProperty> = allItems.associateWith { SimpleBooleanProperty(it in selection) }
-    private val searchResults = FXCollections.observableArrayList(allItems).apply {
-        FXCollections.sort(this) { lhs, rhs ->
-            val lhsSelected = soundToggles[lhs]?.value ?: false
-            val rhsSelected = soundToggles[rhs]?.value ?: false
-            when {
-                lhsSelected == rhsSelected -> 0
-                lhsSelected -> -1
-                else -> 1
-            }
-        }
-    }
+    private val searchResults = FXCollections.observableArrayList(allItems)
 
     fun createSearchField(): TextField {
         return TextField().apply {
@@ -47,7 +38,16 @@ class SoundFileTracker(selection: List<SoundFile>) {
     }
 
     fun createListView(): ListView<SoundFile> {
-        return ListView<SoundFile>(searchResults).apply {
+        val sortedList = SortedList<SoundFile>(searchResults, Comparator { lhs, rhs ->
+            val lhsSelected = soundToggles[lhs]?.value ?: false
+            val rhsSelected = soundToggles[rhs]?.value ?: false
+            when {
+                lhsSelected == rhsSelected -> 0
+                lhsSelected -> -1
+                else -> 1
+            }
+        })
+        return ListView<SoundFile>(sortedList).apply {
             setCellFactory { CheckBoxWithButtonCell { soundToggles[it] } }
         }
     }
