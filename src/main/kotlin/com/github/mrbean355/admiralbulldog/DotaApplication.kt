@@ -3,7 +3,6 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.assets.SoundFiles
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.persistence.Notifications
 import com.github.mrbean355.admiralbulldog.service.hostUrl
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.service.whenLaterVersionAvailable
@@ -104,11 +103,6 @@ class DotaApplication : Application() {
                 visibleProperty().bind(isLoaded.not())
                 managedProperty().bind(visibleProperty())
             }
-            children += Hyperlink(LINK_NOTIFICATIONS).apply {
-                setOnAction { notificationsClicked(primaryStage) }
-                visibleProperty().bind(isLoaded)
-                managedProperty().bind(visibleProperty())
-            }
             children += Hyperlink(LINK_NEED_HELP).apply {
                 setOnAction { needHelpClicked() }
             }
@@ -154,7 +148,6 @@ class DotaApplication : Application() {
                     .showAndWait()
             ConfigPersistence.clearInvalidSounds()
         }
-        Notifications.put(NOTIFICATION_STARTUP)
     }
 
     private fun onNewGameState() {
@@ -176,11 +169,6 @@ class DotaApplication : Application() {
     private fun installClicked(stage: Stage) {
         logAnalyticsEvent(eventType = "button_click", eventData = "install")
         createGsiFile(stage)
-    }
-
-    private fun notificationsClicked(stage: Stage) {
-        logAnalyticsEvent(eventType = "button_click", eventData = "notifications")
-        ViewNotificationsStage().showModal(owner = stage)
     }
 
     private fun needHelpClicked() {

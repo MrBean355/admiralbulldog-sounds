@@ -17,6 +17,8 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
 import kotlin.reflect.full.createInstance
@@ -83,7 +85,11 @@ private fun playSoundForType(soundByte: SoundByte) {
     if (choices.isNotEmpty()) {
         val choice = choices.random()
         if (shouldPlayOnDiscord(soundByte)) {
-            playSoundOnDiscord(choice)
+            GlobalScope.launch {
+                if (!playSoundOnDiscord(choice)) {
+                    choice.play()
+                }
+            }
         } else {
             choice.play()
         }

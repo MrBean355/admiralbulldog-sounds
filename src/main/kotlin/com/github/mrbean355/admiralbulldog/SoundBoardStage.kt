@@ -6,12 +6,17 @@ import com.github.mrbean355.admiralbulldog.service.playSoundOnDiscord
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.geometry.Insets
+import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.Tooltip
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SoundBoardStage : Stage() {
     private val soundsContainer = FlowPane(PADDING_SMALL, PADDING_SMALL)
@@ -46,6 +51,13 @@ class SoundBoardStage : Stage() {
     }
 
     private fun soundClicked(soundFile: SoundFile) {
-        playSoundOnDiscord(soundFile)
+        GlobalScope.launch {
+            if (!playSoundOnDiscord(soundFile)) {
+                withContext(Main) {
+                    Alert(Alert.AlertType.ERROR, MSG_DISCORD_PLAY_FAILED.format(soundFile.name))
+                            .show()
+                }
+            }
+        }
     }
 }

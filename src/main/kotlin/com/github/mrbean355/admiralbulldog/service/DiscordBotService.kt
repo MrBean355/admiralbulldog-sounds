@@ -1,10 +1,8 @@
 package com.github.mrbean355.admiralbulldog.service
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.NOTIFICATION_DISCORD_FAIL
 import com.github.mrbean355.admiralbulldog.assets.SoundFile
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.persistence.Notifications
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,20 +26,19 @@ private val logger = LoggerFactory.getLogger("DiscordBotService")
 /**
  * Play the given [soundFile] on Discord through the bot.
  * Can pass in a custom [token] to be used instead of loading one from config.
+ * @return `true` if the sound was actually played through Discord.
  */
-fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.getDiscordToken()) {
+suspend fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.getDiscordToken()): Boolean {
     if (token.isBlank()) {
         logger.warn("Blank token set!")
-        return
+        return false
     }
-    GlobalScope.launch {
-        val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundFile.fileName))
-        if (!response.isSuccessful) {
-            logger.info("Play sound through Discord failed! soundFile=$soundFile, response=$response")
-            Notifications.put(NOTIFICATION_DISCORD_FAIL.format(soundFile.name))
-            soundFile.play()
-        }
+    val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundFile.fileName))
+    if (!response.isSuccessful) {
+        logger.info("Play sound through Discord failed! soundFile=$soundFile, response=$response")
+        return false
     }
+    return true
 }
 
 /**
