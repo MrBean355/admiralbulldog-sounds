@@ -62,7 +62,7 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
             var row = 0
             var col = 0
             SOUND_BYTE_TYPES.forEach {
-                add(CheckBox(it.friendlyName()).apply {
+                add(CheckBox(it.friendlyName).apply {
                     disableProperty().bind(botEnabled.not())
                     selectedProperty().bindBidirectional(toggles[it])
                     selectedProperty().addListener { _, _, _ ->

@@ -21,7 +21,7 @@ class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
         root.children += Button(ACTION_SAVE).apply {
             setOnAction { saveToggles() }
         }
-        finalise(title = type.friendlyName(), root = root)
+        finalise(title = type.friendlyName, root = root)
     }
 
     private fun saveToggles() {
