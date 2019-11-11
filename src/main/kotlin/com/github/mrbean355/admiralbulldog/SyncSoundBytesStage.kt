@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.assets.SoundFiles
+import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import javafx.application.Platform
@@ -42,7 +42,7 @@ class SyncSoundBytesStage : Stage() {
             setOnAction { close() }
         }
 
-        SoundFiles.synchronise(action = {
+        SoundBytes.synchronise(action = {
             Platform.runLater {
                 log.value = "${log.value}\n$it"
             }

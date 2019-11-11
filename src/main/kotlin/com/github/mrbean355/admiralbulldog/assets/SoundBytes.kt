@@ -25,9 +25,9 @@ private val SYNC_PERIOD = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
 /**
  * Synchronises our local sounds with the PlaySounds page.
  */
-object SoundFiles {
-    private val logger = LoggerFactory.getLogger(SoundFiles::class.java)
-    private var allSounds = emptyList<SoundFile>()
+object SoundBytes {
+    private val logger = LoggerFactory.getLogger(SoundBytes::class.java)
+    private var allSounds = emptyList<SoundByte>()
 
     /** Should we check for new sounds? */
     fun shouldSync(): Boolean {
@@ -46,7 +46,7 @@ object SoundFiles {
         val deleted = AtomicInteger()
         GlobalScope.launch {
             val localFiles = getLocalFiles().toMutableList()
-            val response = PlaySounds.listRemoteFiles()
+            val response = PlaySounds.listRemoteSoundBytes()
             val remoteFiles = response.body
             if (!response.success || remoteFiles == null) {
                 withContext(Main) { complete(false) }
@@ -59,7 +59,7 @@ object SoundFiles {
                     localFiles.remove(it.fileName)
                     launch {
                         if (!it.existsLocally()) {
-                            PlaySounds.downloadFile(it, SOUNDS_PATH)
+                            PlaySounds.downloadSoundByte(it, SOUNDS_PATH)
                             downloaded.incrementAndGet()
                             action("Downloaded: ${it.fileName}")
                         }
@@ -87,14 +87,14 @@ object SoundFiles {
     }
 
     /** @return a list of all currently downloaded sounds. */
-    fun getAll(): List<SoundFile> {
+    fun getAll(): List<SoundByte> {
         if (allSounds.isEmpty()) {
             val root = File(SOUNDS_PATH)
             if (!root.exists() || !root.isDirectory) {
                 logger.error("Couldn't find sounds directory")
                 return emptyList()
             }
-            allSounds = root.list()?.map { SoundFile("$SOUNDS_PATH/$it") }
+            allSounds = root.list()?.map { SoundByte("$SOUNDS_PATH/$it") }
                     .orEmpty()
         }
         return allSounds
@@ -104,11 +104,11 @@ object SoundFiles {
      * Find a downloaded sound by name.
      * @return the sound if found, `null` otherwise.
      */
-    fun findSound(name: String): SoundFile? {
+    fun findSound(name: String): SoundByte? {
         return getAll().firstOrNull { it.name == name }
     }
 
-    private fun PlaySounds.RemoteSoundFile.existsLocally(): Boolean {
+    private fun PlaySounds.RemoteSoundByte.existsLocally(): Boolean {
         return File("$SOUNDS_PATH/$fileName").exists()
     }
 
@@ -126,7 +126,7 @@ object SoundFiles {
     private fun copySpecialSounds() {
         SPECIAL_SOUNDS.forEach {
             if (!File("$SOUNDS_PATH/$it").exists()) {
-                val stream = SoundFiles::class.java.classLoader.getResourceAsStream("$SPECIAL_SOUNDS_PATH/$it")
+                val stream = SoundBytes::class.java.classLoader.getResourceAsStream("$SPECIAL_SOUNDS_PATH/$it")
                 if (stream != null) {
                     Files.copy(stream, Paths.get("$SOUNDS_PATH/$it"))
                 }

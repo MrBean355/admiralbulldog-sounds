@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.assets.SoundFile
+import com.github.mrbean355.admiralbulldog.assets.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.playSoundOnDiscord
 import com.github.mrbean355.admiralbulldog.ui.finalise
@@ -50,11 +50,11 @@ class SoundBoardStage : Stage() {
         sizeToScene()
     }
 
-    private fun soundClicked(soundFile: SoundFile) {
+    private fun soundClicked(soundByte: SoundByte) {
         GlobalScope.launch {
-            if (!playSoundOnDiscord(soundFile)) {
+            if (!playSoundOnDiscord(soundByte)) {
                 withContext(Main) {
-                    Alert(Alert.AlertType.ERROR, MSG_DISCORD_PLAY_FAILED.format(soundFile.name))
+                    Alert(Alert.AlertType.ERROR, MSG_DISCORD_PLAY_FAILED.format(soundByte.name))
                             .show()
                 }
             }

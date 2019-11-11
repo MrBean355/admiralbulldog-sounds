@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
-import com.github.mrbean355.admiralbulldog.assets.SoundFile
-import com.github.mrbean355.admiralbulldog.assets.SoundFiles
+import com.github.mrbean355.admiralbulldog.assets.SoundByte
+import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.google.gson.GsonBuilder
@@ -126,28 +126,28 @@ object ConfigPersistence {
     }
 
     /** @return all selected sounds for a sound byte if it's enabled; empty list otherwise. */
-    fun getSoundsForType(type: KClass<out SoundEvent>): List<SoundFile> {
+    fun getSoundsForType(type: KClass<out SoundEvent>): List<SoundByte> {
         val toggle = loadedConfig.sounds[type.simpleName]!!
         if (toggle.enabled) {
-            return toggle.sounds.mapNotNull { SoundFiles.findSound(it) }
+            return toggle.sounds.mapNotNull { SoundBytes.findSound(it) }
         }
         return emptyList()
     }
 
     /** @return a list of all sounds selected for the sound board. */
-    fun getSoundBoard(): List<SoundFile> {
-        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundFiles.findSound(it) }
+    fun getSoundBoard(): List<SoundByte> {
+        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundBytes.findSound(it) }
     }
 
     /** Set the list of all sounds selected for the sound board. */
-    fun setSoundBoard(soundBoard: List<SoundFile>) {
+    fun setSoundBoard(soundBoard: List<SoundByte>) {
         loadedConfig.soundBoard = soundBoard.map { it.name }
         save()
     }
 
     /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
     fun getInvalidSounds(): List<String> {
-        val existing = SoundFiles.getAll().map { it.name }
+        val existing = SoundBytes.getAll().map { it.name }
         return loadedConfig.sounds.flatMap { it.value.sounds }
                 .filter { it !in existing }
     }
@@ -162,7 +162,7 @@ object ConfigPersistence {
     }
 
     /** Update the given sound byte's config to use the given sound `selection`. */
-    fun saveSoundsForType(type: KClass<out SoundEvent>, selection: List<SoundFile>) {
+    fun saveSoundsForType(type: KClass<out SoundEvent>, selection: List<SoundByte>) {
         loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
         save()
     }

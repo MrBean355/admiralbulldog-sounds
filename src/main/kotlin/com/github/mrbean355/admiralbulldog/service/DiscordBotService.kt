@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog.service
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.assets.SoundFile
+import com.github.mrbean355.admiralbulldog.assets.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -24,18 +24,18 @@ var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
 private val logger = LoggerFactory.getLogger("DiscordBotService")
 
 /**
- * Play the given [soundFile] on Discord through the bot.
+ * Play the given [soundByte] on Discord through the bot.
  * Can pass in a custom [token] to be used instead of loading one from config.
  * @return `true` if the sound was actually played through Discord.
  */
-suspend fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.getDiscordToken()): Boolean {
+suspend fun playSoundOnDiscord(soundByte: SoundByte, token: String = ConfigPersistence.getDiscordToken()): Boolean {
     if (token.isBlank()) {
         logger.warn("Blank token set!")
         return false
     }
-    val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundFile.fileName))
+    val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundByte.fileName))
     if (!response.isSuccessful) {
-        logger.info("Play sound through Discord failed! soundFile=$soundFile, response=$response")
+        logger.info("Play sound through Discord failed! soundFile=$soundByte, response=$response")
         return false
     }
     return true

@@ -23,7 +23,7 @@ class ServiceResponse<T>(val success: Boolean, val body: T? = null)
 object PlaySounds {
 
     /** Scrape the PlaySounds web page and collect a list of sound file names and URLs. */
-    suspend fun listRemoteFiles(): ServiceResponse<List<RemoteSoundFile>> {
+    suspend fun listRemoteSoundBytes(): ServiceResponse<List<RemoteSoundByte>> {
         val response = createChatBotService().getHtml()
         val responseBody = response.body()
         if (!response.isSuccessful || responseBody == null) {
@@ -39,20 +39,20 @@ object PlaySounds {
                 val url = block.split("data-link=\"")[1].split("\"").first()
                 val fileExtension = url.substringAfterLast('.', missingDelimiterValue = "")
                 val fileName = "$friendlyName.$fileExtension"
-                RemoteSoundFile(fileName, url)
+                RemoteSoundByte(fileName, url)
             })
         }
     }
 
     /** Download the given sound file to the given destination. */
-    suspend fun downloadFile(file: RemoteSoundFile, destination: String) {
-        val response = createNuulsService().get(file.url.removePrefix(HOST_NUULS))
+    suspend fun downloadSoundByte(remoteSoundByte: RemoteSoundByte, destination: String) {
+        val response = createNuulsService().get(remoteSoundByte.url.removePrefix(HOST_NUULS))
         val responseBody = response.body()
         if (!response.isSuccessful || responseBody == null) {
-            throw RuntimeException("Unable to download $file, response=$response")
+            throw RuntimeException("Unable to download $remoteSoundByte, response=$response")
         }
         val stream = responseBody.byteStream()
-        val output = FileOutputStream("$destination/${file.fileName}")
+        val output = FileOutputStream("$destination/${remoteSoundByte.fileName}")
         val buffer = ByteArray(4096)
         withContext(IO) {
             while (true) {
@@ -68,7 +68,7 @@ object PlaySounds {
     }
 
     /** A sound on the PlaySounds page. */
-    data class RemoteSoundFile(
+    data class RemoteSoundByte(
             /** Remote file name with extension. */
             val fileName: String,
             /** URL where the file is hosted. */

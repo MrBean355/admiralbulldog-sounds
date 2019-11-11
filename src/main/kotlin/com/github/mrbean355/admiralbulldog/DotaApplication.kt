@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.assets.SoundFiles
+import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.hostUrl
@@ -133,7 +133,7 @@ class DotaApplication : Application() {
         })
 
         logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION)
-        if (SoundFiles.shouldSync()) {
+        if (SoundBytes.shouldSync()) {
             SyncSoundBytesStage().showModal(owner = primaryStage, wait = true)
         }
         resume(primaryStage)

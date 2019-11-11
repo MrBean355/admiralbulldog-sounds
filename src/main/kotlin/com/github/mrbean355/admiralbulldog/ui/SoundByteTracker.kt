@@ -2,8 +2,8 @@ package com.github.mrbean355.admiralbulldog.ui
 
 import com.github.mrbean355.admiralbulldog.PROMPT_SEARCH
 import com.github.mrbean355.admiralbulldog.TOOLTIP_PLAY_LOCALLY
-import com.github.mrbean355.admiralbulldog.assets.SoundFile
-import com.github.mrbean355.admiralbulldog.assets.SoundFiles
+import com.github.mrbean355.admiralbulldog.assets.SoundByte
+import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.playIcon
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
@@ -21,13 +21,13 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 
 /**
- * Manages a [ListView] of all [SoundFile]s, with the ability to filter items based on the input of a search field.
+ * Manages a [ListView] of all [SoundByte]s, with the ability to filter items based on the input of a search field.
  *
  *  @param selection Items to be initially selected.
  */
-class SoundFileTracker(selection: List<SoundFile>) {
-    private val allItems = SoundFiles.getAll()
-    private val soundToggles: Map<SoundFile, BooleanProperty> = allItems.associateWith { SimpleBooleanProperty(it in selection) }
+class SoundByteTracker(selection: List<SoundByte>) {
+    private val allItems = SoundBytes.getAll()
+    private val soundToggles: Map<SoundByte, BooleanProperty> = allItems.associateWith { SimpleBooleanProperty(it in selection) }
     private val searchResults = FXCollections.observableArrayList(allItems)
 
     fun createSearchField(): TextField {
@@ -37,8 +37,8 @@ class SoundFileTracker(selection: List<SoundFile>) {
         }
     }
 
-    fun createListView(): ListView<SoundFile> {
-        val sortedList = SortedList<SoundFile>(searchResults, Comparator { lhs, rhs ->
+    fun createListView(): ListView<SoundByte> {
+        val sortedList = SortedList<SoundByte>(searchResults, Comparator { lhs, rhs ->
             val lhsSelected = soundToggles[lhs]?.value ?: false
             val rhsSelected = soundToggles[rhs]?.value ?: false
             when {
@@ -47,12 +47,12 @@ class SoundFileTracker(selection: List<SoundFile>) {
                 else -> 1
             }
         })
-        return ListView<SoundFile>(sortedList).apply {
+        return ListView<SoundByte>(sortedList).apply {
             setCellFactory { CheckBoxWithButtonCell { soundToggles[it] } }
         }
     }
 
-    fun getSelection(): List<SoundFile> {
+    fun getSelection(): List<SoundByte> {
         return soundToggles.filterValues { it.value }.keys.toList()
     }
 
@@ -61,7 +61,7 @@ class SoundFileTracker(selection: List<SoundFile>) {
         searchResults.addAll(allItems.filter { it.name.contains(query.trim(), ignoreCase = true) })
     }
 
-    private class CheckBoxWithButtonCell(private val getSelectedProperty: (SoundFile?) -> BooleanProperty?) : ListCell<SoundFile>() {
+    private class CheckBoxWithButtonCell(private val getSelectedProperty: (SoundByte?) -> BooleanProperty?) : ListCell<SoundByte>() {
         private val container = GridPane()
         private val checkBox = CheckBox()
         private val button = Button("", ImageView(playIcon()))
@@ -75,7 +75,7 @@ class SoundFileTracker(selection: List<SoundFile>) {
             container.add(button, 1, 0)
         }
 
-        override fun updateItem(item: SoundFile?, empty: Boolean) {
+        override fun updateItem(item: SoundByte?, empty: Boolean) {
             super.updateItem(item, empty)
             if (empty) {
                 graphic = null
