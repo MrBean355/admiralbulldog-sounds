@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.bytes.SoundByte
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.SoundFileTracker
 import com.github.mrbean355.admiralbulldog.ui.finalise
@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import kotlin.reflect.KClass
 
-class ChooseSoundFilesStage(private val type: KClass<out SoundByte>) : Stage() {
+class ChooseSoundFilesStage(private val type: KClass<out SoundEvent>) : Stage() {
     private val tracker = SoundFileTracker(ConfigPersistence.getSoundsForType(type))
 
     init {

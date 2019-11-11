@@ -1,4 +1,4 @@
-package com.github.mrbean355.admiralbulldog.bytes
+package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
 
@@ -14,7 +14,7 @@ private const val MAX_HEAL = 500
  * A heal amount of [MAX_HEAL] or more gives a 100% chance to play the sound.
  * The heal amount must be at least [MIN_HP_PERCENTAGE] percent of the hero's max HP.
  */
-class OnHeal : SoundByte {
+class OnHeal : SoundEvent {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (previous.hero!!.health <= 0F) {

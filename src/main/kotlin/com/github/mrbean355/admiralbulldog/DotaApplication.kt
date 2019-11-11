@@ -158,7 +158,7 @@ class DotaApplication : Application() {
 
     private fun changeSoundsClicked(stage: Stage) {
         logAnalyticsEvent(eventType = "button_click", eventData = "change_sounds")
-        ToggleSoundBytesStage().showModal(owner = stage)
+        ToggleSoundEventsStage().showModal(owner = stage)
     }
 
     private fun discordBotClicked(stage: Stage) {

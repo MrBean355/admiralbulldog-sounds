@@ -1,19 +1,19 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.bytes.OnBountyRunesSpawn
-import com.github.mrbean355.admiralbulldog.bytes.OnDeath
-import com.github.mrbean355.admiralbulldog.bytes.OnDefeat
-import com.github.mrbean355.admiralbulldog.bytes.OnHeal
-import com.github.mrbean355.admiralbulldog.bytes.OnKill
-import com.github.mrbean355.admiralbulldog.bytes.OnMagicImmune
-import com.github.mrbean355.admiralbulldog.bytes.OnMatchStart
-import com.github.mrbean355.admiralbulldog.bytes.OnMidasReady
-import com.github.mrbean355.admiralbulldog.bytes.OnRespawn
-import com.github.mrbean355.admiralbulldog.bytes.OnSmoked
-import com.github.mrbean355.admiralbulldog.bytes.OnStunned
-import com.github.mrbean355.admiralbulldog.bytes.OnVictory
-import com.github.mrbean355.admiralbulldog.bytes.Periodically
-import com.github.mrbean355.admiralbulldog.bytes.SoundByte
+import com.github.mrbean355.admiralbulldog.events.OnBountyRunesSpawn
+import com.github.mrbean355.admiralbulldog.events.OnDeath
+import com.github.mrbean355.admiralbulldog.events.OnDefeat
+import com.github.mrbean355.admiralbulldog.events.OnHeal
+import com.github.mrbean355.admiralbulldog.events.OnKill
+import com.github.mrbean355.admiralbulldog.events.OnMagicImmune
+import com.github.mrbean355.admiralbulldog.events.OnMatchStart
+import com.github.mrbean355.admiralbulldog.events.OnMidasReady
+import com.github.mrbean355.admiralbulldog.events.OnRespawn
+import com.github.mrbean355.admiralbulldog.events.OnSmoked
+import com.github.mrbean355.admiralbulldog.events.OnStunned
+import com.github.mrbean355.admiralbulldog.events.OnVictory
+import com.github.mrbean355.admiralbulldog.events.Periodically
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import javafx.scene.image.Image
 import kotlin.reflect.KClass
@@ -65,7 +65,7 @@ const val TRAY_CAPTION = "Over here!"
 const val TRAY_MESSAGE = "I've minimized to the system tray!"
 
 /* Toggle Sound Bytes */
-const val TITLE_TOGGLE_SOUND_BYTES = "Enable sounds"
+const val TITLE_TOGGLE_SOUND_EVENTS = "Enable sounds"
 const val LABEL_VOLUME = "Volume"
 const val VOLUME_MAJOR_TICK_UNIT = MAX_VOLUME / 5.0
 const val VOLUME_MINOR_TICK_COUNT = 3
@@ -94,7 +94,7 @@ fun bulldogIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsS
 fun playIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("play_arrow_black.png"))
 fun settingsIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("settings_black.png"))
 
-val KClass<out SoundByte>.friendlyName: String
+val KClass<out SoundEvent>.friendlyName: String
     get() {
         return when (this) {
             OnBountyRunesSpawn::class -> "Bounty runes spawning"
@@ -114,7 +114,7 @@ val KClass<out SoundByte>.friendlyName: String
         }
     }
 
-val KClass<out SoundByte>.description: String
+val KClass<out SoundEvent>.description: String
     get() {
         return when (this) {
             OnBountyRunesSpawn::class -> "Plays a sound 15 seconds before bounty runes spawn."

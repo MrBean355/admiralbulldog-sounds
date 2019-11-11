@@ -1,9 +1,9 @@
-package com.github.mrbean355.admiralbulldog.bytes
+package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
 import java.util.concurrent.TimeUnit
 
-class Periodically : SoundByte {
+class Periodically : SoundEvent {
     private val minQuietTime = TimeUnit.MINUTES.toSeconds(5)
     private val maxQuietTime = TimeUnit.MINUTES.toSeconds(15)
     private var nextPlayClockTime = UNINITIALISED

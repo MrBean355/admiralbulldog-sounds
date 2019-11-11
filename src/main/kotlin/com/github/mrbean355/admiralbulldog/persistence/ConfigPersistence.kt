@@ -2,8 +2,8 @@ package com.github.mrbean355.admiralbulldog.persistence
 
 import com.github.mrbean355.admiralbulldog.assets.SoundFile
 import com.github.mrbean355.admiralbulldog.assets.SoundFiles
-import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
-import com.github.mrbean355.admiralbulldog.bytes.SoundByte
+import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.google.gson.GsonBuilder
 import java.io.File
 import kotlin.reflect.KClass
@@ -38,7 +38,7 @@ object ConfigPersistence {
         if (loadedConfig.port == 0) {
             loadedConfig.port = DEFAULT_PORT
         }
-        addMissingSoundByteDefaults()
+        addMissingSoundEventDefaults()
         save()
     }
 
@@ -104,29 +104,29 @@ object ConfigPersistence {
     }
 
     /** @return `true` if the sound byte is enabled; `false` otherwise. */
-    fun isSoundByteEnabled(type: KClass<out SoundByte>): Boolean {
+    fun isSoundEventEnabled(type: KClass<out SoundEvent>): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.enabled
     }
 
     /** Enable or disable a sound byte. */
-    fun toggleSoundByte(type: KClass<out SoundByte>, enabled: Boolean) {
+    fun toggleSoundEvent(type: KClass<out SoundEvent>, enabled: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.enabled = enabled
         save()
     }
 
     /** @return whether the user has chosen to play the sound byte through Discord. */
-    fun isPlayedThroughDiscord(type: KClass<out SoundByte>): Boolean {
+    fun isPlayedThroughDiscord(type: KClass<out SoundEvent>): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
     }
 
     /** Set whether the user has chosen to play the sound byte through Discord. */
-    fun setPlayedThroughDiscord(type: KClass<out SoundByte>, playThroughDiscord: Boolean) {
+    fun setPlayedThroughDiscord(type: KClass<out SoundEvent>, playThroughDiscord: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.playThroughDiscord = playThroughDiscord
         save()
     }
 
     /** @return all selected sounds for a sound byte if it's enabled; empty list otherwise. */
-    fun getSoundsForType(type: KClass<out SoundByte>): List<SoundFile> {
+    fun getSoundsForType(type: KClass<out SoundEvent>): List<SoundFile> {
         val toggle = loadedConfig.sounds[type.simpleName]!!
         if (toggle.enabled) {
             return toggle.sounds.mapNotNull { SoundFiles.findSound(it) }
@@ -162,7 +162,7 @@ object ConfigPersistence {
     }
 
     /** Update the given sound byte's config to use the given sound `selection`. */
-    fun saveSoundsForType(type: KClass<out SoundByte>, selection: List<SoundFile>) {
+    fun saveSoundsForType(type: KClass<out SoundEvent>, selection: List<SoundFile>) {
         loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
         save()
     }
@@ -178,13 +178,13 @@ object ConfigPersistence {
 
     /** Load the default configs for all sound bytes. */
     private fun loadDefaultConfig(): Config {
-        val sounds = SOUND_BYTE_TYPES.associateWith { loadDefaults(it) }
+        val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
         return Config(0, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList())
     }
 
     /** Load the default config for a given sound byte `type`. */
-    private fun loadDefaults(type: KClass<out SoundByte>): Toggle {
+    private fun loadDefaults(type: KClass<out SoundEvent>): Toggle {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
                 ?: return Toggle(enabled = false, playThroughDiscord = false, sounds = mutableListOf())
 
@@ -192,8 +192,8 @@ object ConfigPersistence {
     }
 
     /** Checks the loaded `config` map, adding defaults for any missing sound bytes. */
-    private fun addMissingSoundByteDefaults() {
-        SOUND_BYTE_TYPES.forEach {
+    private fun addMissingSoundEventDefaults() {
+        SOUND_EVENT_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
             }

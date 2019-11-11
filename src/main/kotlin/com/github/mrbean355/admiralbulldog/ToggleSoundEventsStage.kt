@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
-import com.github.mrbean355.admiralbulldog.bytes.SoundByte
+import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.MIN_VOLUME
@@ -23,8 +23,8 @@ import javafx.scene.layout.Priority
 import javafx.stage.Stage
 import kotlin.reflect.KClass
 
-class ToggleSoundBytesStage : Stage() {
-    private val toggles: Map<KClass<out SoundByte>, BooleanProperty> = loadToggles()
+class ToggleSoundEventsStage : Stage() {
+    private val toggles: Map<KClass<out SoundEvent>, BooleanProperty> = loadToggles()
 
     init {
         val root = GridPane()
@@ -45,12 +45,12 @@ class ToggleSoundBytesStage : Stage() {
                 ConfigPersistence.setVolume(newValue.toDouble())
             }
         }, 0, 1, 2, 1)
-        SOUND_BYTE_TYPES.forEachIndexed { i, type ->
+        SOUND_EVENT_TYPES.forEachIndexed { i, type ->
             val checkBox = CheckBox(type.friendlyName).apply {
                 tooltip = Tooltip(type.description)
                 selectedProperty().bindBidirectional(toggles[type])
                 selectedProperty().addListener { _, _, newValue ->
-                    ConfigPersistence.toggleSoundByte(type, newValue)
+                    ConfigPersistence.toggleSoundEvent(type, newValue)
                 }
             }
             root.add(checkBox, 0, i + 2)
@@ -59,17 +59,17 @@ class ToggleSoundBytesStage : Stage() {
                 setOnAction { configureClicked(type) }
             }, 1, i + 2)
         }
-        finalise(title = TITLE_TOGGLE_SOUND_BYTES, root = root)
+        finalise(title = TITLE_TOGGLE_SOUND_EVENTS, root = root)
         width = WINDOW_WIDTH
     }
 
-    private fun loadToggles(): Map<KClass<out SoundByte>, BooleanProperty> {
-        return SOUND_BYTE_TYPES.associateWith {
-            SimpleBooleanProperty(ConfigPersistence.isSoundByteEnabled(it))
+    private fun loadToggles(): Map<KClass<out SoundEvent>, BooleanProperty> {
+        return SOUND_EVENT_TYPES.associateWith {
+            SimpleBooleanProperty(ConfigPersistence.isSoundEventEnabled(it))
         }
     }
 
-    private fun configureClicked(type: KClass<out SoundByte>) {
+    private fun configureClicked(type: KClass<out SoundEvent>) {
         logAnalyticsEvent(eventType = "configure_sound", eventData = type.simpleName.orEmpty().ifEmpty { "unknown" })
         ChooseSoundFilesStage(type).showModal(owner = this)
     }

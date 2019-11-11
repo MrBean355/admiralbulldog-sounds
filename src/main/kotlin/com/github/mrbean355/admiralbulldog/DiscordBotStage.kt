@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
-import com.github.mrbean355.admiralbulldog.bytes.SoundByte
+import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.ui.finalise
@@ -28,7 +28,7 @@ private const val INVITE_URL = "https://discordapp.com/api/oauth2/authorize?clie
 class DiscordBotStage(private val hostServices: HostServices) : Stage() {
     private val botEnabled = SimpleBooleanProperty(ConfigPersistence.isUsingDiscordBot())
     private val token = SimpleStringProperty(ConfigPersistence.getDiscordToken())
-    private val toggles: Map<KClass<out SoundByte>, BooleanProperty> = loadToggles()
+    private val toggles: Map<KClass<out SoundEvent>, BooleanProperty> = loadToggles()
 
     init {
         val root = VBox(PADDING_MEDIUM).apply {
@@ -61,7 +61,7 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
 
             var row = 0
             var col = 0
-            SOUND_BYTE_TYPES.forEach {
+            SOUND_EVENT_TYPES.forEach {
                 add(CheckBox(it.friendlyName).apply {
                     disableProperty().bind(botEnabled.not())
                     selectedProperty().bindBidirectional(toggles[it])
@@ -82,8 +82,8 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
         finalise(title = TITLE_DISCORD_BOT, root = root)
     }
 
-    private fun loadToggles(): Map<KClass<out SoundByte>, BooleanProperty> {
-        return SOUND_BYTE_TYPES.associateWith { SimpleBooleanProperty(ConfigPersistence.isPlayedThroughDiscord(it)) }
+    private fun loadToggles(): Map<KClass<out SoundEvent>, BooleanProperty> {
+        return SOUND_EVENT_TYPES.associateWith { SimpleBooleanProperty(ConfigPersistence.isPlayedThroughDiscord(it)) }
     }
 
     private fun enableBotToggled(enabled: Boolean) {

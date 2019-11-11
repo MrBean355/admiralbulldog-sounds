@@ -1,4 +1,4 @@
-package com.github.mrbean355.admiralbulldog.bytes
+package com.github.mrbean355.admiralbulldog.events
 
 import kotlin.random.Random
 

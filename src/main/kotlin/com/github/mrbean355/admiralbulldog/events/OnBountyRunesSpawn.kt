@@ -1,4 +1,4 @@
-package com.github.mrbean355.admiralbulldog.bytes
+package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.game.MatchState
@@ -10,7 +10,7 @@ private const val HOW_OFTEN = 5 * 60L
 private const val WARNING_PERIOD = 15L
 
 /** Plays a sound shortly before the bounty runes spawn. */
-class OnBountyRunesSpawn : SoundByte {
+class OnBountyRunesSpawn : SoundEvent {
     private var nextPlayTime = UNINITIALISED
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
