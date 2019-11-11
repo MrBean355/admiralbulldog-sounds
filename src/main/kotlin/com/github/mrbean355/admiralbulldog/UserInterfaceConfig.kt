@@ -5,10 +5,12 @@ import com.github.mrbean355.admiralbulldog.bytes.OnDeath
 import com.github.mrbean355.admiralbulldog.bytes.OnDefeat
 import com.github.mrbean355.admiralbulldog.bytes.OnHeal
 import com.github.mrbean355.admiralbulldog.bytes.OnKill
+import com.github.mrbean355.admiralbulldog.bytes.OnMagicImmune
 import com.github.mrbean355.admiralbulldog.bytes.OnMatchStart
 import com.github.mrbean355.admiralbulldog.bytes.OnMidasReady
 import com.github.mrbean355.admiralbulldog.bytes.OnRespawn
 import com.github.mrbean355.admiralbulldog.bytes.OnSmoked
+import com.github.mrbean355.admiralbulldog.bytes.OnStunned
 import com.github.mrbean355.admiralbulldog.bytes.OnVictory
 import com.github.mrbean355.admiralbulldog.bytes.Periodically
 import com.github.mrbean355.admiralbulldog.bytes.SoundByte
@@ -104,6 +106,8 @@ val KClass<out SoundByte>.friendlyName: String
             OnMidasReady::class -> "Midas is ready"
             OnRespawn::class -> "Respawned"
             OnSmoked::class -> "Used Smoke of Deceit"
+            OnStunned::class -> "Got stunned"
+            OnMagicImmune::class -> "Became magic immune"
             OnVictory::class -> "Won the match"
             Periodically::class -> "As time goes on"
             else -> simpleName ?: "Unknown"
@@ -122,6 +126,8 @@ val KClass<out SoundByte>.description: String
             OnMidasReady::class -> "Plays a sound when your Hand of Midas comes off cooldown."
             OnRespawn::class -> "Plays a sound when you respawn."
             OnSmoked::class -> "Plays a sound when you are affected by Smoke of Deceit."
+            OnStunned::class -> "Plays a sound when you get stunned (20% chance)."
+            OnMagicImmune::class -> "Plays a sound when you become magic immune (50% chance)."
             OnVictory::class -> "Plays a sound when the enemy's ancient explodes."
             Periodically::class -> "Plays a sound every 5 - 15 minutes."
             else -> simpleName ?: "Unknown"
