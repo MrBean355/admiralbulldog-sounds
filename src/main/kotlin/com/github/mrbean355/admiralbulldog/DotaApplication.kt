@@ -27,9 +27,6 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
 import javafx.stage.Stage
-import java.io.File
-import java.io.PrintWriter
-import java.io.StringWriter
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
@@ -38,15 +35,6 @@ private const val ARG_HOST_URL = "--host-url"
 
 fun main(args: Array<String>) {
     setCustomHostUrl(args)
-    Thread.setDefaultUncaughtExceptionHandler { t, e ->
-        val file = File("crash_log.txt")
-        val stringWriter = StringWriter()
-        e.printStackTrace(PrintWriter(stringWriter))
-        val stackTrace = stringWriter.toString()
-        runCatching { logAnalyticsEvent("unhandled_exception", stackTrace) }
-        file.writeText(stackTrace)
-        file.appendText(t.toString())
-    }
     launch(DotaApplication::class.java)
 }
 
@@ -62,6 +50,7 @@ class DotaApplication : Application() {
     private val isLoaded = SimpleBooleanProperty(false)
 
     override fun init() {
+        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandlerImpl(hostServices))
         ConfigPersistence.initialise()
     }
 
