@@ -12,8 +12,6 @@ val SOUND_EVENT_TYPES = setOf(
         OnMidasReady::class,
         OnRespawn::class,
         OnSmoked::class,
-        OnStunned::class,
-        OnMagicImmune::class,
         OnVictory::class,
         Periodically::class)
 
