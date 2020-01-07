@@ -5,6 +5,7 @@ import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.google.gson.GsonBuilder
+import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -22,6 +23,7 @@ private const val DEFAULT_VOLUME = 20.0
  * - can be enabled or disabled at runtime by the user
  */
 object ConfigPersistence {
+    private val logger = LoggerFactory.getLogger(ConfigPersistence::class.java)
     private lateinit var loadedConfig: Config
     private val gson = GsonBuilder()
             .setPrettyPrinting()
@@ -37,7 +39,9 @@ object ConfigPersistence {
         }
         if (loadedConfig.port == 0) {
             loadedConfig.port = DEFAULT_PORT
+            logger.info("Defaulting to port $DEFAULT_PORT")
         }
+        cleanUpStaleSoundEvents()
         addMissingSoundEventDefaults()
         save()
     }
@@ -159,8 +163,13 @@ object ConfigPersistence {
     /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
     fun getInvalidSounds(): List<String> {
         val existing = SoundBytes.getAll().map { it.name }
-        return loadedConfig.sounds.flatMap { it.value.sounds }
+        val invalidSounds = loadedConfig.sounds
+                .flatMap { it.value.sounds }
                 .filter { it !in existing }
+        val invalidSoundBoard = loadedConfig.soundBoard
+                ?.filter { it !in existing }
+                .orEmpty()
+        return invalidSounds + invalidSoundBoard
     }
 
     /** Clear user-selected sounds that don't exist on the PlaySounds page from the config. */
@@ -169,6 +178,7 @@ object ConfigPersistence {
         loadedConfig.sounds.forEach { (_, v) ->
             v.sounds.removeAll { it in invalid }
         }
+        loadedConfig.soundBoard = loadedConfig.soundBoard?.filterNot { it in invalid }
         save()
     }
 
@@ -182,6 +192,7 @@ object ConfigPersistence {
     private fun save() {
         val file = File(FILE_NAME)
         if (!file.exists()) {
+            logger.info("Created new config file: ${file.absolutePath}")
             file.createNewFile()
         }
         file.writeText(gson.toJson(loadedConfig))
@@ -197,9 +208,20 @@ object ConfigPersistence {
     /** Load the default config for a given sound byte `type`. */
     private fun loadDefaults(type: KClass<out SoundEvent>): Toggle {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
-                ?: return Toggle(enabled = false, playThroughDiscord = false, sounds = mutableListOf())
-
+        if (resource == null) {
+            logger.warn("No defaults resource available for: ${type.simpleName}")
+            return Toggle(enabled = false, playThroughDiscord = false, sounds = mutableListOf())
+        }
         return gson.fromJson(resource.readText(), Toggle::class.java)
+    }
+
+    private fun cleanUpStaleSoundEvents() {
+        val validTypes = SOUND_EVENT_TYPES.map { it.simpleName!! }
+        val invalidTypes = loadedConfig.sounds.filterKeys { it !in validTypes }
+        invalidTypes.forEach {
+            loadedConfig.sounds.remove(it.key)
+            logger.info("Removed stale sound event: ${it.key}")
+        }
     }
 
     /** Checks the loaded `config` map, adding defaults for any missing sound bytes. */
@@ -207,6 +229,7 @@ object ConfigPersistence {
         SOUND_EVENT_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
+                logger.info("Loaded defaults for sound event: ${it.simpleName}")
             }
         }
     }
