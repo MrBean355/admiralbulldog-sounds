@@ -13,9 +13,9 @@ import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
-/** Folder that the downloaded sounds live in. */
+/** Directory that the downloaded sounds live in. */
 private const val SOUNDS_PATH = "sounds"
-/** Folder within resources where special sounds live. */
+/** Directory within resources where special sounds live. */
 private const val SPECIAL_SOUNDS_PATH = "unmonitored"
 /** Special sounds that don't exist on the PlaySounds page. */
 private val SPECIAL_SOUNDS = listOf("herewegoagain.mp3", "useyourmidas.wav", "wefuckinglost.wav")

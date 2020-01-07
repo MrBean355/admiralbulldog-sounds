@@ -6,7 +6,8 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.hostUrl
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.service.whenLaterVersionAvailable
-import com.github.mrbean355.admiralbulldog.ui.createGsiFile
+import com.github.mrbean355.admiralbulldog.ui.DotaPath
+import com.github.mrbean355.admiralbulldog.ui.Installer
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
 import com.github.mrbean355.admiralbulldog.ui.showModal
@@ -87,13 +88,11 @@ class DotaApplication : Application() {
         }
         root.children += HBox(PADDING_SMALL).apply {
             alignment = Pos.CENTER
-            children += Hyperlink(LINK_INSTALL).apply {
-                setOnAction { installClicked(primaryStage) }
-                visibleProperty().bind(isLoaded.not())
-                managedProperty().bind(visibleProperty())
+            children += Hyperlink(LINK_DISCORD_COMMUNITY).apply {
+                setOnAction { discordCommunityClicked() }
             }
-            children += Hyperlink(LINK_NEED_HELP).apply {
-                setOnAction { needHelpClicked() }
+            children += Hyperlink(LINK_PROJECT_WEBSITE).apply {
+                setOnAction { projectWebsiteClicked() }
             }
         }
         root.children += Label(LABEL_APP_VERSION.format(APP_VERSION)).apply {
@@ -131,6 +130,17 @@ class DotaApplication : Application() {
     private fun resume(primaryStage: Stage) {
         primaryStage.show()
         prepareTrayIcon(primaryStage)
+
+        val result = runCatching {
+            DotaPath.loadPath(ownerWindow = primaryStage)
+        }.onFailure {
+            Alert(Alert.AlertType.ERROR, MSG_SPECIFY_VALID_DOTA_DIR)
+                    .showAndWait()
+            exitProcess(-1)
+        }
+
+        Installer.installIfNecessary(result.getOrDefault(""))
+
         val invalidSounds = ConfigPersistence.getInvalidSounds()
         if (invalidSounds.isNotEmpty()) {
             Alert(Alert.AlertType.WARNING, MSG_REMOVED_SOUNDS.format(invalidSounds.joinToString(separator = "\n")))
@@ -155,14 +165,14 @@ class DotaApplication : Application() {
         DiscordBotStage(hostServices).showModal(owner = stage)
     }
 
-    private fun installClicked(stage: Stage) {
-        logAnalyticsEvent(eventType = "button_click", eventData = "install")
-        createGsiFile(stage)
+    private fun discordCommunityClicked() {
+        logAnalyticsEvent(eventType = "button_click", eventData = "discord_community")
+        hostServices.showDocument(URL_DISCORD_INVITE)
     }
 
-    private fun needHelpClicked() {
-        logAnalyticsEvent(eventType = "button_click", eventData = "need_help")
-        hostServices.showDocument(URL_NEED_HELP)
+    private fun projectWebsiteClicked() {
+        logAnalyticsEvent(eventType = "button_click", eventData = "project_website")
+        hostServices.showDocument(URL_PROJECT_WEBSITE)
     }
 
     private fun downloadClicked() {

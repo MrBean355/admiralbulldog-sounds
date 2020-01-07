@@ -1,61 +1,44 @@
 package com.github.mrbean355.admiralbulldog.ui
 
-import com.github.mrbean355.admiralbulldog.ACTION_TRY_AGAIN
-import com.github.mrbean355.admiralbulldog.HEADER_INSTALLER
-import com.github.mrbean355.admiralbulldog.MSG_INSTALLER
-import com.github.mrbean355.admiralbulldog.MSG_INSTALLER_CANT_CREATE
 import com.github.mrbean355.admiralbulldog.MSG_INSTALLER_SUCCESS
-import com.github.mrbean355.admiralbulldog.MSG_INSTALLER_WRONG_FOLDER
-import com.github.mrbean355.admiralbulldog.TITLE_INSTALLER
-import com.github.mrbean355.admiralbulldog.TITLE_MAIN_WINDOW
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
-import javafx.stage.DirectoryChooser
-import javafx.stage.Stage
+import org.slf4j.LoggerFactory
 import java.io.File
 
-private const val DOTA_ROOT = "dota 2 beta"
-private const val DOTA_CFG = "$DOTA_ROOT/game/dota/cfg"
-private const val DOTA_GSI = "gamestate_integration"
+/** Path (within the root Dota directory) to the GSI directory. */
+private const val GSI_DIR = "game/dota/cfg/gamestate_integration"
+/** Name of the GSI file. */
 private const val GSI_FILE = "gamestate_integration_bulldog.cfg"
 
-fun createGsiFile(stage: Stage) {
-    val btn = Alert(Alert.AlertType.INFORMATION, MSG_INSTALLER, ButtonType.NEXT).showMine()
-    if (btn !== ButtonType.NEXT) {
-        return
-    }
+object Installer {
+    private val logger = LoggerFactory.getLogger(Installer::class.java)
 
-    val result = DirectoryChooser().run {
-        title = TITLE_INSTALLER
-        showDialog(stage)
-    } ?: return
-
-    val selectedPath = result.absolutePath
-    val root = selectedPath.substringBefore(DOTA_ROOT)
-    val cfg = File("$root/$DOTA_CFG".safe())
-    if (!cfg.exists()) {
-        val tryAgain = ButtonType(ACTION_TRY_AGAIN)
-        val btn = Alert(Alert.AlertType.WARNING, MSG_INSTALLER_WRONG_FOLDER, tryAgain)
-                .showMine()
-        if (btn === tryAgain) {
-            createGsiFile(stage)
+    /**
+     * Creates the Game State Integration file if it doesn't exists.
+     * If it exists, updates its content.
+     *
+     * @throws IllegalStateException if the GSI file couldn't be created.
+     */
+    fun installIfNecessary(dotaPath: String) {
+        val gsiDirectory = File("$dotaPath/$GSI_DIR".replaceFileSeparators())
+        if (!gsiDirectory.exists()) {
+            if (gsiDirectory.mkdir()) {
+                logger.info("Created GSI directory: ${gsiDirectory.absolutePath}")
+            } else {
+                throw IllegalStateException("Couldn't create GSI directory: ${gsiDirectory.absolutePath}")
+            }
         }
-        return
-    }
-    val gsi = File(cfg.absolutePath + "/$DOTA_GSI".safe())
-    if (!gsi.exists()) {
-        gsi.mkdir()
-    }
-    val bulldog = File(gsi.absolutePath + "/$GSI_FILE".safe())
-    if (!bulldog.exists() && !bulldog.createNewFile()) {
-        Alert(Alert.AlertType.WARNING, MSG_INSTALLER_CANT_CREATE.format(bulldog.absolutePath), ButtonType.CANCEL)
-                .showMine()
-        return
-    }
-    bulldog.writeText("""
+        val gsiFile = File(gsiDirectory.absolutePath + "/$GSI_FILE".replaceFileSeparators())
+        val firstTime = !gsiFile.exists()
+        if (firstTime && !gsiFile.createNewFile()) {
+            throw IllegalStateException("Couldn't create GSI file: ${gsiFile.absolutePath}")
+        }
+        gsiFile.writeText("""
             "AdmiralBulldog Sounds"
             {
-                "uri"           "http://localhost:12345"
+                "uri"           "http://localhost:${ConfigPersistence.getPort()}"
                 "timeout"       "5.0"
                 "buffer"        "0.1"
                 "throttle"      "0.1"
@@ -72,16 +55,10 @@ fun createGsiFile(stage: Stage) {
             }
         """.trimIndent())
 
-    Alert(Alert.AlertType.INFORMATION, MSG_INSTALLER_SUCCESS, ButtonType.FINISH)
-            .showMine()
-}
-
-private fun Alert.showMine(): ButtonType? {
-    title = TITLE_MAIN_WINDOW
-    headerText = HEADER_INSTALLER
-    return showAndWait().orElse(null)
-}
-
-private fun String.safe(): String {
-    return replace("/", File.separator)
+        if (firstTime) {
+            Alert(Alert.AlertType.INFORMATION, MSG_INSTALLER_SUCCESS, ButtonType.FINISH)
+                    .showInstallerAndWait()
+        }
+        logger.info("Wrote GSI file contents: ${gsiFile.absolutePath}")
+    }
 }

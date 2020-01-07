@@ -56,6 +56,17 @@ object ConfigPersistence {
         }
     }
 
+    /** @return the currently chosen Dota installation path. */
+    fun getDotaPath(): String? {
+        return loadedConfig.dotaPath
+    }
+
+    /** Set the Dota installation path. */
+    fun setDotaPath(path: String) {
+        loadedConfig.dotaPath = path
+        save()
+    }
+
     /** @return the time when sounds were last synced from the PlaySounds page. */
     fun getLastSync() = loadedConfig.lastSync
 
@@ -180,7 +191,7 @@ object ConfigPersistence {
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList())
+        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList())
     }
 
     /** Load the default config for a given sound byte `type`. */
@@ -200,7 +211,22 @@ object ConfigPersistence {
         }
     }
 
-    private data class Config(var port: Int, var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, var trayNotified: Boolean, val sounds: MutableMap<String, Toggle>, var soundBoard: List<String>?)
+    private data class Config(
+            var port: Int,
+            var id: String?,
+            var dotaPath: String?,
+            var lastSync: Long,
+            var volume: Double,
+            var discordBotEnabled: Boolean,
+            var discordToken: String?,
+            var trayNotified: Boolean,
+            val sounds: MutableMap<String, Toggle>,
+            var soundBoard: List<String>?
+    )
 
-    private data class Toggle(var enabled: Boolean, var playThroughDiscord: Boolean, var sounds: MutableList<String>)
+    private data class Toggle(
+            var enabled: Boolean,
+            var playThroughDiscord: Boolean,
+            var sounds: MutableList<String>
+    )
 }
