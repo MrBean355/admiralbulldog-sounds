@@ -24,7 +24,7 @@ object Installer {
     fun installIfNecessary(dotaPath: String) {
         val gsiDirectory = File("$dotaPath/$GSI_DIR".replaceFileSeparators())
         if (!gsiDirectory.exists()) {
-            if (gsiDirectory.mkdir()) {
+            if (gsiDirectory.mkdirs()) {
                 logger.info("Created GSI directory: ${gsiDirectory.absolutePath}")
             } else {
                 throw IllegalStateException("Couldn't create GSI directory: ${gsiDirectory.absolutePath}")
