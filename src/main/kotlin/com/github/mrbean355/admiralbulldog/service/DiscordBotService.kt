@@ -1,23 +1,18 @@
 package com.github.mrbean355.admiralbulldog.service
 
-import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.assets.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
@@ -50,23 +45,6 @@ fun logAnalyticsEvent(eventType: String, eventData: String = "") {
     }
 }
 
-/**
- * Invokes [onLaterVersion] if the service says there's a newer app version available.
- */
-fun whenLaterVersionAvailable(onLaterVersion: () -> Unit) {
-    GlobalScope.launch {
-        val response = service.hasLaterVersion(APP_VERSION)
-        if (response.isSuccessful) {
-            val body = response.body() ?: false
-            if (body) {
-                withContext(Main) { onLaterVersion() }
-            }
-        } else {
-            logger.error("Later version check failed! response=$response")
-        }
-    }
-}
-
 private interface DiscordBotService {
 
     @POST("/createId")
@@ -78,8 +56,6 @@ private interface DiscordBotService {
     @POST("/analytics/logEvent")
     suspend fun logAnalyticsEvent(@Body request: AnalyticsRequest): Response<Void>
 
-    @GET("/metadata/laterVersion")
-    suspend fun hasLaterVersion(@Query("version") version: String): Response<Boolean>
 }
 
 private data class CreateIdResponse(val userId: String)

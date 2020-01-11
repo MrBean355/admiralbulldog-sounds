@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.ui
 
+import com.github.mrbean355.admiralbulldog.HEADER_INSTALLER
 import com.github.mrbean355.admiralbulldog.MSG_INSTALLER
 import com.github.mrbean355.admiralbulldog.TITLE_INSTALLER
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
@@ -31,10 +32,15 @@ object DotaPath {
             logger.info("Loaded Dota path from config: $cached")
             return cached
         }
+        val action = Alert(
+                type = Alert.AlertType.INFORMATION,
+                header = HEADER_INSTALLER,
+                content = MSG_INSTALLER,
+                buttons = arrayOf(ButtonType.NEXT),
+                owner = ownerWindow
+        ).showAndWait().toNullable()
 
-        val clickedButton = Alert(Alert.AlertType.INFORMATION, MSG_INSTALLER, ButtonType.NEXT)
-                .showInstallerAndWait()
-        if (clickedButton !== ButtonType.NEXT) {
+        if (action !== ButtonType.NEXT) {
             logger.error("User dismissed the alert dialog")
             throw IllegalStateException("Operation cancelled")
         }

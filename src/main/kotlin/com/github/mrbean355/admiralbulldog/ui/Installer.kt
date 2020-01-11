@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.ui
 
+import com.github.mrbean355.admiralbulldog.HEADER_INSTALLER
 import com.github.mrbean355.admiralbulldog.MSG_INSTALLER_SUCCESS
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.control.Alert
@@ -56,8 +57,11 @@ object Installer {
         """.trimIndent())
 
         if (firstTime) {
-            Alert(Alert.AlertType.INFORMATION, MSG_INSTALLER_SUCCESS, ButtonType.FINISH)
-                    .showInstallerAndWait()
+            Alert(type = Alert.AlertType.INFORMATION,
+                    header = HEADER_INSTALLER,
+                    content = MSG_INSTALLER_SUCCESS,
+                    buttons = arrayOf(ButtonType.FINISH)
+            ).showAndWait()
         }
         logger.info("Wrote GSI file contents: ${gsiFile.absolutePath}")
     }

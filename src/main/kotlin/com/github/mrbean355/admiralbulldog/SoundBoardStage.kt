@@ -3,11 +3,13 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.assets.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.playSoundOnDiscord
+import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.geometry.Insets
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
+import javafx.scene.control.ButtonType
 import javafx.scene.control.Label
 import javafx.scene.control.Tooltip
 import javafx.scene.layout.FlowPane
@@ -54,8 +56,12 @@ class SoundBoardStage : Stage() {
         GlobalScope.launch {
             if (!playSoundOnDiscord(soundByte)) {
                 withContext(Main) {
-                    Alert(Alert.AlertType.ERROR, MSG_DISCORD_PLAY_FAILED.format(soundByte.name))
-                            .show()
+                    Alert(type = Alert.AlertType.ERROR,
+                            header = HEADER_DISCORD_SOUND,
+                            content = MSG_DISCORD_PLAY_FAILED.format(soundByte.name),
+                            buttons = arrayOf(ButtonType.OK),
+                            owner = this@SoundBoardStage
+                    ).show()
                 }
             }
         }

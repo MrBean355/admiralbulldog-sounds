@@ -3,14 +3,19 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.service.ReleaseInfo
+import com.github.mrbean355.admiralbulldog.service.UpdateChecker
 import com.github.mrbean355.admiralbulldog.service.hostUrl
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
-import com.github.mrbean355.admiralbulldog.service.whenLaterVersionAvailable
+import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.Installer
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
+import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.ui.showModal
+import com.github.mrbean355.admiralbulldog.ui.toNullable
+import com.vdurmont.semver4j.Semver
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.application.Platform
@@ -21,6 +26,8 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
+import javafx.scene.control.ButtonBar
+import javafx.scene.control.ButtonType
 import javafx.scene.control.Hyperlink
 import javafx.scene.control.Label
 import javafx.scene.control.ProgressBar
@@ -28,6 +35,11 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
 import javafx.stage.Stage
+import javafx.stage.Window
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
@@ -60,7 +72,6 @@ class DotaApplication : Application() {
             padding = Insets(PADDING_MEDIUM)
             alignment = Pos.CENTER
         }
-
         root.children += Label().apply {
             font = Font(TEXT_SIZE_LARGE)
             textProperty().bind(createStringBinding(Callable {
@@ -99,53 +110,80 @@ class DotaApplication : Application() {
             font = Font(TEXT_SIZE_SMALL)
         }
 
-        val newVersion = HBox().apply {
-            alignment = Pos.CENTER
-            children += Label(MSG_NEW_VERSION)
-            children += Hyperlink(LINK_DOWNLOAD).apply {
-                setOnAction { downloadClicked() }
-            }
-            visibleProperty().set(false)
-            managedProperty().bind(visibleProperty())
-        }
-
-        whenLaterVersionAvailable {
-            newVersion.isVisible = true
-        }
-
-        root.children += newVersion
-        monitorGameStateUpdates { onNewGameState() }
-
         primaryStage.finalise(title = TITLE_MAIN_WINDOW, root = root, closeOnEscape = false, onCloseRequest = EventHandler {
             exitProcess(0)
         })
-
-        logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION)
-        if (SoundBytes.shouldSync()) {
-            SyncSoundBytesStage().showModal(owner = primaryStage, wait = true)
-        }
-        resume(primaryStage)
+        onViewCreated(primaryStage)
     }
 
-    private fun resume(primaryStage: Stage) {
-        primaryStage.show()
-        prepareTrayIcon(primaryStage)
+    private fun onViewCreated(stage: Stage) {
+        if (SoundBytes.shouldSync()) {
+            SyncSoundBytesStage().showModal(owner = stage, wait = true)
+        }
 
         val result = runCatching {
-            DotaPath.loadPath(ownerWindow = primaryStage)
+            DotaPath.loadPath(ownerWindow = stage)
         }.onFailure {
-            Alert(Alert.AlertType.ERROR, MSG_SPECIFY_VALID_DOTA_DIR)
-                    .showAndWait()
+            Alert(type = Alert.AlertType.ERROR,
+                    header = HEADER_INSTALLER,
+                    content = MSG_SPECIFY_VALID_DOTA_DIR,
+                    buttons = arrayOf(ButtonType.CLOSE),
+                    owner = stage
+            ).showAndWait()
             exitProcess(-1)
         }
 
+        prepareTrayIcon(stage)
         Installer.installIfNecessary(result.getOrDefault(""))
 
         val invalidSounds = ConfigPersistence.getInvalidSounds()
         if (invalidSounds.isNotEmpty()) {
-            Alert(Alert.AlertType.WARNING, MSG_REMOVED_SOUNDS.format(invalidSounds.joinToString(separator = "\n")))
-                    .showAndWait()
+            Alert(type = Alert.AlertType.WARNING,
+                    header = HEADER_REMOVED_SOUNDS,
+                    content = MSG_REMOVED_SOUNDS.format(invalidSounds.joinToString(separator = "\n")),
+                    buttons = arrayOf(ButtonType.OK),
+                    owner = stage
+            ).showAndWait()
             ConfigPersistence.clearInvalidSounds()
+        }
+
+        val updateChecker = UpdateChecker()
+        GlobalScope.launch {
+            val releaseInfo = updateChecker.getLatestReleaseInfo() ?: return@launch
+            val currentVersion = Semver(APP_VERSION)
+            val latestVersion = Semver(releaseInfo.tagName.removeVersionPrefix())
+            if (latestVersion > currentVersion) {
+                withContext(Dispatchers.Main) {
+                    onNewerVersionAvailable(stage, releaseInfo)
+                }
+            }
+        }
+
+        monitorGameStateUpdates { onNewGameState() }
+        logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION)
+        stage.show()
+    }
+
+    private fun onNewerVersionAvailable(ownerWindow: Window, releaseInfo: ReleaseInfo) {
+        val infoButton = ButtonType("Info", ButtonBar.ButtonData.HELP_2)
+        val downloadButton = ButtonType("Download", ButtonBar.ButtonData.NEXT_FORWARD)
+        val action = Alert(
+                type = Alert.AlertType.INFORMATION,
+                header = HEADER_UPDATE_AVAILABLE,
+                content = """
+                    Version: ${releaseInfo.name}
+                    Published at: ${releaseInfo.publishedAt}
+                """.trimIndent(),
+                buttons = arrayOf(infoButton, downloadButton, ButtonType.CANCEL),
+                owner = ownerWindow
+        ).showAndWait().toNullable()
+
+        if (action === infoButton) {
+            hostServices.showDocument(releaseInfo.htmlUrl)
+            onNewerVersionAvailable(ownerWindow, releaseInfo)
+        } else if (action === downloadButton) {
+            DownloadUpdateStage(releaseInfo)
+                    .show()
         }
     }
 
@@ -173,10 +211,5 @@ class DotaApplication : Application() {
     private fun projectWebsiteClicked() {
         logAnalyticsEvent(eventType = "button_click", eventData = "project_website")
         hostServices.showDocument(URL_PROJECT_WEBSITE)
-    }
-
-    private fun downloadClicked() {
-        logAnalyticsEvent(eventType = "button_click", eventData = "download_latest_version")
-        hostServices.showDocument(URL_DOWNLOAD)
     }
 }

@@ -38,8 +38,6 @@ interface GitHubService {
 data class ReleaseInfo(
         @SerializedName("tag_name") val tagName: String,
         val name: String,
-        val draft: Boolean,
-        @SerializedName("prerelease") val preRelease: Boolean,
         @SerializedName("html_url") val htmlUrl: String,
         @SerializedName("published_at") val publishedAt: Date,
         val assets: List<AssetInfo>) {

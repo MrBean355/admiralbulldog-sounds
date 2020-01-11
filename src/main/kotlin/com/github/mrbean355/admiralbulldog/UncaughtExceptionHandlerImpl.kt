@@ -1,6 +1,8 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
+import com.github.mrbean355.admiralbulldog.ui.Alert
+import com.github.mrbean355.admiralbulldog.ui.toNullable
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.scene.control.Alert
@@ -35,8 +37,9 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
 
         Platform.runLater {
             val discordButton = ButtonType("Discord", ButtonBar.ButtonData.OK_DONE)
-            val result = Alert(Alert.AlertType.ERROR, null, discordButton, ButtonType.CLOSE).run {
-                contentText = """
+            val action = Alert(type = Alert.AlertType.ERROR,
+                    header = HEADER_EXCEPTION,
+                    content = """
                     Whoops! Something bad has happened, sorry!
                     Please consider reporting this issue so it can be fixed.
                     
@@ -44,13 +47,12 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
                     ${file.absolutePath}
                     
                     Please send it to the community on Discord.
-                """.trimIndent()
-                showAndWait()
-            }
-            result.ifPresent {
-                if (it == discordButton) {
-                    hostServices.showDocument("https://discord.gg/pEV4mW5")
-                }
+                """.trimIndent(),
+                    buttons = arrayOf(ButtonType.OK)
+            ).showAndWait().toNullable()
+
+            if (action == discordButton) {
+                hostServices.showDocument("https://discord.gg/pEV4mW5")
             }
         }
     }

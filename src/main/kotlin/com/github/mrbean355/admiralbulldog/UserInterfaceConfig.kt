@@ -43,9 +43,6 @@ const val LINK_PROJECT_WEBSITE = "Website"
 const val LABEL_APP_VERSION = "Version: %s"
 const val URL_DISCORD_INVITE = "https://discordapp.com/invite/pEV4mW5"
 const val URL_PROJECT_WEBSITE = "https://github.com/MrBean355/admiralbulldog-sounds"
-const val MSG_NEW_VERSION = "New version available!"
-const val LINK_DOWNLOAD = "Download"
-const val URL_DOWNLOAD = "https://github.com/MrBean355/admiralbulldog-sounds/releases"
 const val MSG_SPECIFY_VALID_DOTA_DIR = "You need to specify a valid Dota 2 installation directory to use the app."
 const val MSG_REMOVED_SOUNDS = "One or more sounds you were using got removed:\n" +
         "%s\n" +
@@ -53,6 +50,11 @@ const val MSG_REMOVED_SOUNDS = "One or more sounds you were using got removed:\n
 const val MSG_INSTALLER = "Please choose your Dota 2 installation directory."
 const val TITLE_INSTALLER = "Choose Dota 2 directory"
 const val HEADER_INSTALLER = "Installer"
+const val HEADER_UPDATE_AVAILABLE = "Update available!"
+const val HEADER_UPDATER = "Updater"
+const val HEADER_REMOVED_SOUNDS = "Sounds removed"
+const val HEADER_DISCORD_SOUND = "Discord sound"
+const val HEADER_EXCEPTION = "Unexpected error"
 const val MSG_INSTALLER_SUCCESS = "Successfully installed! Please restart Dota if it's open."
 
 /* System Tray */
