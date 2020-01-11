@@ -11,7 +11,7 @@ import javafx.stage.Window
 import org.slf4j.LoggerFactory
 import java.io.File
 
-private const val DOTA_ROOT_DIR_NAME = "dota 2 beta"
+private val DOTA_ROOT_DIR_NAMES = listOf("dota 2", "dota 2 beta")
 private const val GAME_INFO_DIR_PATH = "game/dota/gameinfo.gi"
 
 object DotaPath {
@@ -65,7 +65,9 @@ object DotaPath {
     }
 
     private fun getDotaRootDirectory(path: String): String? {
-        val dotaPath = path.replaceFileSeparators().substringBefore(DOTA_ROOT_DIR_NAME) + DOTA_ROOT_DIR_NAME + File.separatorChar
+        val parts = path.replaceFileSeparators().split(File.separatorChar)
+        val dotaRoot = parts.firstOrNull { it in DOTA_ROOT_DIR_NAMES } ?: return null
+        val dotaPath = path.replaceFileSeparators().substringBefore(dotaRoot) + dotaRoot + File.separatorChar
         val gameInfoFilePath = dotaPath + GAME_INFO_DIR_PATH.replaceFileSeparators()
         return if (File(gameInfoFilePath).exists()) {
             dotaPath
