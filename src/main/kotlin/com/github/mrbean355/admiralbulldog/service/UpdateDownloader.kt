@@ -13,25 +13,25 @@ class UpdateDownloader {
 
     val totalBytes = SimpleLongProperty()
     val progress = SimpleDoubleProperty()
-    var onComplete = { _: String -> }
+    var onComplete: (fileUrl: String) -> Unit = {}
 
     /**
-     * Downloads the JAR asset of the given [releaseInfo], placing it in the current working directory.
+     * Downloads the given asset, placing it in the [destination] directory.
      */
-    suspend fun download(releaseInfo: ReleaseInfo) {
+    suspend fun download(assetInfo: AssetInfo, destination: String) {
         progress.value = 0.0
-        val jarAssetInfo = releaseInfo.getJarAssetInfo() ?: return
-        val response = GitHubService.instance.downloadLatestRelease(jarAssetInfo.downloadUrl)
+        val response = GitHubService.instance.downloadLatestRelease(assetInfo.downloadUrl)
         val body = response.body()
         if (!response.isSuccessful || body == null) {
-            logger.error("New version download failed: $response")
+            logger.error("File download failed: $response")
             return
         }
         withContext(Main) {
             totalBytes.value = body.contentLength()
         }
         val totalBytes = this.totalBytes.value.toDouble()
-        val file = File(jarAssetInfo.name)
+        val dir = if (destination != ".") destination + File.separatorChar else ""
+        val file = File(dir + assetInfo.name)
         logger.info("Writing ${totalBytes.toBigDecimal().toPlainString()} bytes to ${file.absolutePath}")
         file.outputStream().use { output ->
             body.byteStream().use { input ->
@@ -47,7 +47,7 @@ class UpdateDownloader {
                     }
                     bytes = input.read(buffer)
                 }
-                logger.info("Finished downloading new version: ${jarAssetInfo.name}")
+                logger.info("Finished downloading file: ${assetInfo.name}")
                 withContext(Main) {
                     onComplete(file.absolutePath)
                 }

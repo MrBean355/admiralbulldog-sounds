@@ -165,6 +165,7 @@ class DotaApplication : Application() {
     }
 
     private fun onNewerVersionAvailable(ownerWindow: Window, releaseInfo: ReleaseInfo) {
+        val jarAssetInfo = releaseInfo.getJarAssetInfo() ?: return
         val infoButton = ButtonType("Info", ButtonBar.ButtonData.HELP_2)
         val downloadButton = ButtonType("Download", ButtonBar.ButtonData.NEXT_FORWARD)
         val action = Alert(
@@ -182,9 +183,25 @@ class DotaApplication : Application() {
             hostServices.showDocument(releaseInfo.htmlUrl)
             onNewerVersionAvailable(ownerWindow, releaseInfo)
         } else if (action === downloadButton) {
-            DownloadUpdateStage(releaseInfo)
-                    .show()
+            DownloadUpdateStage(jarAssetInfo, destination = ".")
+                    .setOnComplete {
+                        onUpdateDownloaded(ownerWindow, it)
+                    }.show()
         }
+    }
+
+    private fun onUpdateDownloaded(ownerWindow: Window, filePath: String) {
+        Alert(type = Alert.AlertType.INFORMATION,
+                header = HEADER_UPDATER,
+                content = """
+                        Please run the new version in future:
+                        $filePath
+                        The app will now close.
+                    """.trimIndent(),
+                buttons = arrayOf(ButtonType.FINISH),
+                owner = ownerWindow
+        ).showAndWait()
+        exitProcess(0)
     }
 
     private fun onNewGameState() {
