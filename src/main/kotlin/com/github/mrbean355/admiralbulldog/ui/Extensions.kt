@@ -15,6 +15,17 @@ import javafx.stage.Window
 import javafx.stage.WindowEvent
 import java.io.File
 import java.util.Optional
+import java.util.ResourceBundle
+
+val strings: ResourceBundle = ResourceBundle.getBundle("strings")
+
+fun getString(key: String): String {
+    return if (strings.containsKey(key)) strings.getString(key) else key
+}
+
+fun getString(key: String, vararg formatArgs: Any?): String {
+    return getString(key).format(*formatArgs)
+}
 
 fun Stage.showModal(owner: Window, wait: Boolean = false) {
     initModality(WINDOW_MODAL)

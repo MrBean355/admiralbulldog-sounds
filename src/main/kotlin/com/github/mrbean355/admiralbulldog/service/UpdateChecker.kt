@@ -2,7 +2,7 @@ package com.github.mrbean355.admiralbulldog.service
 
 import org.slf4j.LoggerFactory
 
-class UpdateChecker {
+object UpdateChecker {
     private val logger = LoggerFactory.getLogger(UpdateChecker::class.java)
 
     /** @return the info for the latest release, pulled from the GitHub releases page. */
