@@ -160,6 +160,28 @@ object ConfigPersistence {
         save()
     }
 
+    /** @return whether the user has enabled the mod. */
+    fun isModEnabled(): Boolean {
+        return loadedConfig.modEnabled
+    }
+
+    /** Set whether the user has enabled the mod. */
+    fun setModEnabled(enabled: Boolean) {
+        loadedConfig.modEnabled = enabled
+        save()
+    }
+
+    /** @return the version of the currently installed mod, or "0.0.0" if there is none. */
+    fun getModVersion(): String {
+        return loadedConfig.modVersion ?: "0.0.0"
+    }
+
+    /** Set the version of the currently installed mod. */
+    fun setModVersion(version: String) {
+        loadedConfig.modVersion = version
+        save()
+    }
+
     /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
     fun getInvalidSounds(): List<String> {
         val existing = SoundBytes.getAll().map { it.name }
@@ -202,7 +224,7 @@ object ConfigPersistence {
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList())
+        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList(), false, null)
     }
 
     /** Load the default config for a given sound byte `type`. */
@@ -244,7 +266,9 @@ object ConfigPersistence {
             var discordToken: String?,
             var trayNotified: Boolean,
             val sounds: MutableMap<String, Toggle>,
-            var soundBoard: List<String>?
+            var soundBoard: List<String>?,
+            var modEnabled: Boolean,
+            var modVersion: String?
     )
 
     private data class Toggle(

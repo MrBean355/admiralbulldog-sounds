@@ -13,6 +13,8 @@ import java.io.File
 
 private val DOTA_ROOT_DIR_NAMES = listOf("dota 2", "dota 2 beta")
 private const val GAME_INFO_DIR_PATH = "game/dota/gameinfo.gi"
+private const val MOD_DIR_PATH = "game/admiralbulldog"
+const val VPK_FILE_NAME = "pak01_dir.vpk"
 
 object DotaPath {
     private val logger = LoggerFactory.getLogger(DotaPath::class.java)
@@ -62,6 +64,17 @@ object DotaPath {
         }
         logger.error("User selected an invalid Dota directory: $selectedPath")
         throw IllegalArgumentException("Invalid Dota path chosen")
+    }
+
+    /** @return absolute path to the mod directory. */
+    fun getModDirectory(): String {
+        val dotaPath = ConfigPersistence.getDotaPath()!!
+        return dotaPath + MOD_DIR_PATH.replaceFileSeparators()
+    }
+
+    /** @return absolute path to the mod's VPK file. */
+    fun getModFilePath(): String {
+        return getModDirectory() + File.separatorChar + VPK_FILE_NAME
     }
 
     private fun getDotaRootDirectory(path: String): String? {

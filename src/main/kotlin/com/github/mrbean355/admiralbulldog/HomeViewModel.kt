@@ -3,6 +3,7 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.persistence.DotaMod
 import com.github.mrbean355.admiralbulldog.service.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.service.UpdateChecker
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
@@ -25,6 +26,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import javafx.stage.Stage
+import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -114,28 +116,34 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
 
     private suspend fun checkForAppUpdate() {
         logger.info("Checking for app update...")
-        val releaseInfo = UpdateChecker.getLatestReleaseInfo()
+        val releaseInfo = UpdateChecker.getLatestAppReleaseInfo()
         if (releaseInfo == null) {
             logger.warn("Null app release info, giving up")
+            checkForModUpdate()
             return
         }
         val currentVersion = Semver(APP_VERSION)
         val latestVersion = Semver(releaseInfo.tagName.removeVersionPrefix())
         if (latestVersion > currentVersion) {
-            logger.info("Later app version available: $latestVersion")
+            logger.info("Later app version available: ${releaseInfo.tagName}")
             withContext(Main) {
-                if (doesUserWantToUpdate(getString("header_app_update_available"), currentVersion, releaseInfo)) {
+                if (doesUserWantToUpdate(getString("header_app_update_available"), releaseInfo)) {
                     logAnalyticsEvent(eventType = "button_click", eventData = "download_app_update")
                     downloadAppUpdate(releaseInfo)
+                } else {
+                    withContext(Default) {
+                        checkForModUpdate()
+                    }
                 }
             }
         } else {
-            logger.info("Already at latest app version: $currentVersion")
+            logger.info("Already at latest app version: ${releaseInfo.tagName}")
+            checkForModUpdate()
         }
     }
 
     private fun downloadAppUpdate(releaseInfo: ReleaseInfo) {
-        DownloadUpdateStage(releaseInfo.getJarAssetInfo()!!, ".")
+        DownloadUpdateStage(releaseInfo.getJarAssetInfo()!!, destination = ".")
                 .setOnComplete {
                     Alert(type = Alert.AlertType.INFORMATION,
                             header = getString("header_app_update_downloaded"),
@@ -147,20 +155,58 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
                 }.show()
     }
 
-    private fun doesUserWantToUpdate(header: String, currentVersion: Semver, releaseInfo: ReleaseInfo): Boolean {
+    private suspend fun checkForModUpdate() {
+        if (!ConfigPersistence.isModEnabled()) {
+            logger.info("Mod is disabled, skipping update")
+            return
+        }
+        logger.info("Checking for mod update...")
+        val releaseInfo = UpdateChecker.getLatestModReleaseInfo()
+        if (releaseInfo == null) {
+            logger.warn("Null mod release info, giving up")
+            return
+        }
+        if (DotaMod.shouldDownloadUpdate(releaseInfo)) {
+            logger.info("Later mod version available: ${releaseInfo.tagName}")
+            withContext(Main) {
+                if (doesUserWantToUpdate(getString("header_mod_update_available"), releaseInfo)) {
+                    logAnalyticsEvent(eventType = "button_click", eventData = "download_mod_update")
+                    downloadModUpdate(releaseInfo)
+                }
+            }
+        } else {
+            logger.info("Already at latest mod version: ${releaseInfo.tagName}")
+        }
+    }
+
+    private fun downloadModUpdate(releaseInfo: ReleaseInfo) {
+        DownloadUpdateStage(releaseInfo.getModAssetInfo()!!, destination = DotaPath.getModDirectory())
+                .setOnComplete {
+                    // TODO: Update game info file
+                    // TODO: Update version in config
+                    Alert(type = Alert.AlertType.INFORMATION,
+                            header = getString("header_mod_update_downloaded"),
+                            content = getString("msg_mod_update_downloaded", it),
+                            buttons = arrayOf(ButtonType.FINISH),
+                            owner = stage
+                    ).showAndWait()
+                }.show()
+    }
+
+    private fun doesUserWantToUpdate(header: String, releaseInfo: ReleaseInfo): Boolean {
         val whatsNewButton = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
         val downloadButton = ButtonType(getString("btn_download"), ButtonBar.ButtonData.NEXT_FORWARD)
         val action = Alert(
                 type = Alert.AlertType.INFORMATION,
                 header = header,
-                content = getString("msg_app_update_available", currentVersion, releaseInfo.name, releaseInfo.publishedAt),
+                content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
                 buttons = arrayOf(whatsNewButton, downloadButton, ButtonType.CANCEL),
                 owner = stage
         ).showAndWait().toNullable()
 
         if (action === whatsNewButton) {
             hostServices.showDocument(releaseInfo.htmlUrl)
-            return doesUserWantToUpdate(header, currentVersion, releaseInfo)
+            return doesUserWantToUpdate(header, releaseInfo)
         }
         return action === downloadButton
     }

@@ -30,8 +30,11 @@ class UpdateDownloader {
             totalBytes.value = body.contentLength()
         }
         val totalBytes = this.totalBytes.value.toDouble()
-        val dir = if (destination != ".") destination + File.separatorChar else ""
-        val file = File(dir + assetInfo.name)
+        val dir = File(destination)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        val file = File(dir, assetInfo.name)
         logger.info("Writing ${totalBytes.toBigDecimal().toPlainString()} bytes to ${file.absolutePath}")
         file.outputStream().use { output ->
             body.byteStream().use { input ->
