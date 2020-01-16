@@ -168,11 +168,11 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     private suspend fun checkForModUpdate() {
         if (!ConfigPersistence.isModEnabled()) {
             logger.info("Mod is disabled, skipping update")
-            DotaMod.uninstallFromGameInfo()
+            DotaMod.onModDisabled()
             return
         }
         logger.info("Checking for mod update...")
-        DotaMod.installIntoGameInfo()
+        DotaMod.onModEnabled()
         val resource = gitHubRepository.getLatestModRelease()
         val releaseInfo = resource.body()
         if (!resource.isSuccessful || releaseInfo == null) {
@@ -195,8 +195,7 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     private fun downloadModUpdate(releaseInfo: ReleaseInfo) {
         val assetInfo = releaseInfo.getModAssetInfo() ?: return
         DownloadUpdateStage(assetInfo, destination = DotaPath.getModDirectory()) {
-            // TODO: Update game info file
-            // TODO: Update version in config
+            DotaMod.onModDownloaded(releaseInfo)
             Alert(type = Alert.AlertType.INFORMATION,
                     header = getString("header_mod_update_downloaded"),
                     content = getString("msg_mod_update_downloaded"),

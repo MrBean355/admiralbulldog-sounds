@@ -9,7 +9,6 @@ import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.ProgressDialog
 import com.github.mrbean355.admiralbulldog.ui.getString
-import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.control.Alert
@@ -43,7 +42,7 @@ class DotaModViewModel(private val stage: Stage) {
         if (checked) {
             installMod()
         } else {
-            uninstallMod()
+            disableMod()
         }
     }
 
@@ -51,7 +50,7 @@ class DotaModViewModel(private val stage: Stage) {
         val modDirectory = File(DotaPath.getModDirectory())
         logger.info("Installing mod in: ${modDirectory.absolutePath}")
         modDirectory.mkdirs()
-        DotaMod.installIntoGameInfo()
+        DotaMod.onModEnabled()
 
         val progressDialog = ProgressDialog()
         progressDialog.showModal(stage)
@@ -97,7 +96,7 @@ class DotaModViewModel(private val stage: Stage) {
             return
         }
         DownloadUpdateStage(assetInfo, destination = DotaPath.getModDirectory()) {
-            ConfigPersistence.setModVersion(releaseInfo.tagName.removeVersionPrefix())
+            DotaMod.onModDownloaded(releaseInfo)
             Alert(type = Alert.AlertType.INFORMATION,
                     header = getString("header_mod_update_downloaded"),
                     content = getString("msg_mod_update_downloaded"),
@@ -107,8 +106,8 @@ class DotaModViewModel(private val stage: Stage) {
         }.showModal(stage)
     }
 
-    private fun uninstallMod() {
-        DotaMod.uninstallFromGameInfo()
+    private fun disableMod() {
+        DotaMod.onModDisabled()
         Alert(type = Alert.AlertType.INFORMATION,
                 header = "Dota mod uninstalled",
                 content = "Please restart Dota if it's open.",

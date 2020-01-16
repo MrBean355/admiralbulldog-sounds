@@ -55,12 +55,17 @@ object DotaMod {
     }
 
     /** Register the mod in Dota's game info file. */
-    fun installIntoGameInfo() {
+    fun onModEnabled() {
         updateGameInfoFile(install = true)
     }
 
+    /** Update the mod's version in the app's config file. */
+    fun onModDownloaded(releaseInfo: ReleaseInfo) {
+        ConfigPersistence.setModVersion(releaseInfo.tagName.removeVersionPrefix())
+    }
+
     /** Unregister the mod from Dota's game info file. */
-    fun uninstallFromGameInfo() {
+    fun onModDisabled() {
         updateGameInfoFile(install = false)
     }
 
