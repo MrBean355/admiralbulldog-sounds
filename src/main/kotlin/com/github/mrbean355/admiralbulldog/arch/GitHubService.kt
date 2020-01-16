@@ -1,6 +1,5 @@
 package com.github.mrbean355.admiralbulldog.arch
 
-import com.github.mrbean355.admiralbulldog.service.ReleaseInfo
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET

@@ -1,11 +1,13 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
+import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
+import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
+import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
 import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
-import com.github.mrbean355.admiralbulldog.service.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
@@ -78,6 +80,11 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
         DiscordBotStage(hostServices).showModal(owner = stage)
     }
 
+    fun onDotaModClicked() {
+        logAnalyticsEvent(eventType = "button_click", eventData = "dota_mod")
+        DotaModStage(hostServices).showModal(owner = stage)
+    }
+
     fun onDiscordCommunityClicked() {
         logAnalyticsEvent(eventType = "button_click", eventData = "discord_community")
         hostServices.showDocument(URL_DISCORD_INVITE)
@@ -120,7 +127,7 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     private suspend fun checkForAppUpdate() {
         logger.info("Checking for app update...")
         val resource = gitHubRepository.getLatestAppRelease()
-        val releaseInfo = resource.data
+        val releaseInfo = resource.body()
         if (!resource.isSuccessful || releaseInfo == null) {
             logger.warn("Bad app release info response, giving up")
             checkForModUpdate()
@@ -161,11 +168,13 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     private suspend fun checkForModUpdate() {
         if (!ConfigPersistence.isModEnabled()) {
             logger.info("Mod is disabled, skipping update")
+            DotaMod.uninstallFromGameInfo()
             return
         }
         logger.info("Checking for mod update...")
+        DotaMod.installIntoGameInfo()
         val resource = gitHubRepository.getLatestModRelease()
-        val releaseInfo = resource.data
+        val releaseInfo = resource.body()
         if (!resource.isSuccessful || releaseInfo == null) {
             logger.warn("Bad mod release info response, giving up")
             return

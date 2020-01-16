@@ -13,7 +13,9 @@ import javafx.stage.Modality.WINDOW_MODAL
 import javafx.stage.Stage
 import javafx.stage.Window
 import javafx.stage.WindowEvent
+import kotlinx.coroutines.yield
 import java.io.File
+import java.io.InputStream
 import java.util.Optional
 import java.util.ResourceBundle
 
@@ -85,4 +87,22 @@ fun String.removeVersionPrefix(): String {
 
 fun Double.format(decimalPlaces: Int): String {
     return "%.${decimalPlaces}f".format(this)
+}
+
+/**
+ * Stream this [InputStream] into the given [file], calling [onProgress] with the current number of bytes written.
+ */
+suspend fun InputStream.streamToFile(file: File, onProgress: suspend (Long) -> Unit) {
+    file.outputStream().use { output ->
+        var bytesCopied = 0L
+        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+        var bytes = read(buffer)
+        while (bytes >= 0) {
+            yield()
+            output.write(buffer, 0, bytes)
+            bytesCopied += bytes
+            onProgress(bytesCopied)
+            bytes = read(buffer)
+        }
+    }
 }

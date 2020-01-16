@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.service.AssetInfo
+import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.geometry.Insets

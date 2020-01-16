@@ -16,6 +16,9 @@ private const val GAME_INFO_DIR_PATH = "game/dota/gameinfo.gi"
 private const val MOD_DIR_PATH = "game/admiralbulldog"
 const val VPK_FILE_NAME = "pak01_dir.vpk"
 
+/**
+ * Utility for Dota path related things.
+ */
 object DotaPath {
     private val logger = LoggerFactory.getLogger(DotaPath::class.java)
 
@@ -64,6 +67,12 @@ object DotaPath {
         }
         logger.error("User selected an invalid Dota directory: $selectedPath")
         throw IllegalArgumentException("Invalid Dota path chosen")
+    }
+
+    /** @return absolute path to the gameinfo.gi file. */
+    fun getGameInfoFilePath(): String {
+        val dotaPath = ConfigPersistence.getDotaPath()!!
+        return dotaPath + GAME_INFO_DIR_PATH.replaceFileSeparators()
     }
 
     /** @return absolute path to the mod directory. */

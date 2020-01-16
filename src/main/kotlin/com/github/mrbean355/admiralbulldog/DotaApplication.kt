@@ -50,6 +50,9 @@ class DotaApplication : Application() {
             children += Button(getString("btn_discord_bot")).apply {
                 setOnAction { viewModel.onDiscordBotClicked() }
             }
+            children += Button(getString("btn_dota_mod")).apply {
+                setOnAction { viewModel.onDotaModClicked() }
+            }
         }
         root.children += HBox(PADDING_SMALL).apply {
             alignment = Pos.CENTER
