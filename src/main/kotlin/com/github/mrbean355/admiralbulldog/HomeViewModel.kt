@@ -13,7 +13,6 @@ import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.Installer
 import com.github.mrbean355.admiralbulldog.ui.getString
-import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
 import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.ui.showModal
 import com.github.mrbean355.admiralbulldog.ui.toNullable
@@ -57,7 +56,6 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
             SyncSoundBytesStage().showModal(owner = stage, wait = true)
         }
         val dotaPath = loadDotaPath()
-        prepareTrayIcon(stage)
         Installer.installIfNecessary(dotaPath)
         checkForInvalidSounds()
         GlobalScope.launch {

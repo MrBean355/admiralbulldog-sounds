@@ -20,6 +20,7 @@ import javax.imageio.ImageIO
 import kotlin.system.exitProcess
 
 /** Prepare to show a [TrayIcon] when the app is minimized. */
+// TODO: Add a setting to enable/disable this feature.
 fun prepareTrayIcon(stage: Stage) {
     if (!SystemTray.isSupported()) {
         val osName = System.getProperty("os.name")
