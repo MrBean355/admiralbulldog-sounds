@@ -23,7 +23,6 @@ import javafx.stage.Stage
 import kotlin.reflect.KClass
 
 private const val COLUMNS = 3
-private const val INVITE_URL = "https://discordapp.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot&permissions=1"
 
 class DiscordBotStage(private val hostServices: HostServices) : Stage() {
     private val botEnabled = SimpleBooleanProperty(ConfigPersistence.isUsingDiscordBot())
@@ -92,7 +91,7 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
 
     private fun inviteClicked() {
         logAnalyticsEvent(eventType = "button_click", eventData = "invite_bot_to_server")
-        hostServices.showDocument(INVITE_URL)
+        hostServices.showDocument(URL_DISCORD_BOT_INVITE)
     }
 
     private fun soundEventToggled() {

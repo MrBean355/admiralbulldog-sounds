@@ -24,6 +24,12 @@ const val PADDING_MEDIUM = 16.0
 const val TEXT_SIZE_SMALL = 10.0
 const val TEXT_SIZE_LARGE = 18.0
 
+/* Hyperlinks */
+const val URL_DISCORD_SERVER_INVITE = "https://discordapp.com/invite/pEV4mW5"
+const val URL_PROJECT_WEBSITE = "https://github.com/MrBean355/admiralbulldog-sounds"
+const val URL_MOD_INFO = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Dota-Mod"
+const val URL_DISCORD_BOT_INVITE = "https://discordapp.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot&permissions=1"
+
 /* Sync Sound Bytes */
 const val TITLE_SYNC_SOUND_BYTES = "Updating"
 const val MSG_SYNC_WELCOME = "Welcome!\nChecking for new PlaySounds...\n"
@@ -41,8 +47,6 @@ const val ACTION_DISCORD_BOT = "Discord bot"
 const val LINK_DISCORD_COMMUNITY = "Discord community"
 const val LINK_PROJECT_WEBSITE = "Website"
 const val LABEL_APP_VERSION = "Version: %s"
-const val URL_DISCORD_INVITE = "https://discordapp.com/invite/pEV4mW5"
-const val URL_PROJECT_WEBSITE = "https://github.com/MrBean355/admiralbulldog-sounds"
 const val MSG_SPECIFY_VALID_DOTA_DIR = "You need to specify a valid Dota 2 installation directory to use the app."
 const val MSG_REMOVED_SOUNDS = "One or more sounds you were using got removed:\n" +
         "%s\n" +

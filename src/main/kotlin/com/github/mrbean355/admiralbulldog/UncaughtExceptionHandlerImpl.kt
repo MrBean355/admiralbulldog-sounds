@@ -45,7 +45,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
             ).showAndWait().toNullable()
 
             if (action == discordButton) {
-                hostServices.showDocument("https://discord.gg/pEV4mW5")
+                hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
             }
         }
     }

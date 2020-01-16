@@ -85,7 +85,7 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
 
     fun onDiscordCommunityClicked() {
         logAnalyticsEvent(eventType = "button_click", eventData = "discord_community")
-        hostServices.showDocument(URL_DISCORD_INVITE)
+        hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
     }
 
     fun onProjectWebsiteClicked() {
