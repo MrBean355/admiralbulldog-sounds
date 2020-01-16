@@ -38,7 +38,9 @@ class DownloadUpdateViewModel(
             val totalBytes = body.contentLength().toDouble()
             val totalMegabytes = totalBytes / 1024.0 / 1024
             val formatted = totalMegabytes.format(decimalPlaces = 2)
-            header.set("Downloading update ($formatted MB)...")
+            withContext(Main) {
+                header.set("Downloading update ($formatted MB)...")
+            }
             val directory = File(destination)
             if (!directory.exists()) {
                 directory.mkdirs()
