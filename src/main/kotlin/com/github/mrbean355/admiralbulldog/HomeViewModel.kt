@@ -1,11 +1,11 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBytes
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
 import com.github.mrbean355.admiralbulldog.service.ReleaseInfo
-import com.github.mrbean355.admiralbulldog.service.UpdateChecker
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
@@ -32,12 +32,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
+import java.io.File
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
 class HomeViewModel(private val stage: Stage, private val hostServices: HostServices) {
     private val logger = LoggerFactory.getLogger(HomeViewModel::class.java)
     private val hasHeardFromDota = SimpleBooleanProperty(false)
+    private val gitHubRepository = GitHubRepository()
+
     val heading: ObservableValue<String> = Bindings.createStringBinding(Callable {
         if (hasHeardFromDota.get()) getString("msg_connected") else getString("msg_not_connected")
     }, hasHeardFromDota)
@@ -45,7 +48,7 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     val infoMessage: ObservableValue<String> = Bindings.createStringBinding(Callable {
         if (hasHeardFromDota.get()) getString("dsc_connected") else getString("dsc_not_connected")
     }, hasHeardFromDota)
-    val version = SimpleStringProperty(getString("lbl_app_version", APP_VERSION))
+    val version = SimpleStringProperty(getString("lbl_app_version", APP_VERSION.value))
 
     fun init() {
         if (SoundBytes.shouldSync()) {
@@ -64,7 +67,7 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
                 hasHeardFromDota.set(true)
             }
         }
-        logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION)
+        logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION.value)
     }
 
     fun onChangeSoundsClicked() {
@@ -116,15 +119,15 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
 
     private suspend fun checkForAppUpdate() {
         logger.info("Checking for app update...")
-        val releaseInfo = UpdateChecker.getLatestAppReleaseInfo()
-        if (releaseInfo == null) {
-            logger.warn("Null app release info, giving up")
+        val resource = gitHubRepository.getLatestAppRelease()
+        val releaseInfo = resource.data
+        if (!resource.isSuccessful || releaseInfo == null) {
+            logger.warn("Bad app release info response, giving up")
             checkForModUpdate()
             return
         }
-        val currentVersion = Semver(APP_VERSION)
         val latestVersion = Semver(releaseInfo.tagName.removeVersionPrefix())
-        if (latestVersion > currentVersion) {
+        if (latestVersion > APP_VERSION) {
             logger.info("Later app version available: ${releaseInfo.tagName}")
             withContext(Main) {
                 if (doesUserWantToUpdate(getString("header_app_update_available"), releaseInfo)) {
@@ -143,16 +146,16 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     }
 
     private fun downloadAppUpdate(releaseInfo: ReleaseInfo) {
-        DownloadUpdateStage(releaseInfo.getJarAssetInfo()!!, destination = ".")
-                .setOnComplete {
-                    Alert(type = Alert.AlertType.INFORMATION,
-                            header = getString("header_app_update_downloaded"),
-                            content = getString("msg_app_update_downloaded", it),
-                            buttons = arrayOf(ButtonType.FINISH),
-                            owner = stage
-                    ).showAndWait()
-                    exitProcess(0)
-                }.show()
+        val assetInfo = releaseInfo.getAppAssetInfo() ?: return
+        DownloadUpdateStage(assetInfo, destination = ".") {
+            Alert(type = Alert.AlertType.INFORMATION,
+                    header = getString("header_app_update_downloaded"),
+                    content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
+                    buttons = arrayOf(ButtonType.FINISH),
+                    owner = stage
+            ).showAndWait()
+            exitProcess(0)
+        }.showModal(stage)
     }
 
     private suspend fun checkForModUpdate() {
@@ -161,9 +164,10 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
             return
         }
         logger.info("Checking for mod update...")
-        val releaseInfo = UpdateChecker.getLatestModReleaseInfo()
-        if (releaseInfo == null) {
-            logger.warn("Null mod release info, giving up")
+        val resource = gitHubRepository.getLatestModRelease()
+        val releaseInfo = resource.data
+        if (!resource.isSuccessful || releaseInfo == null) {
+            logger.warn("Bad mod release info response, giving up")
             return
         }
         if (DotaMod.shouldDownloadUpdate(releaseInfo)) {
@@ -180,17 +184,17 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     }
 
     private fun downloadModUpdate(releaseInfo: ReleaseInfo) {
-        DownloadUpdateStage(releaseInfo.getModAssetInfo()!!, destination = DotaPath.getModDirectory())
-                .setOnComplete {
-                    // TODO: Update game info file
-                    // TODO: Update version in config
-                    Alert(type = Alert.AlertType.INFORMATION,
-                            header = getString("header_mod_update_downloaded"),
-                            content = getString("msg_mod_update_downloaded", it),
-                            buttons = arrayOf(ButtonType.FINISH),
-                            owner = stage
-                    ).showAndWait()
-                }.show()
+        val assetInfo = releaseInfo.getModAssetInfo() ?: return
+        DownloadUpdateStage(assetInfo, destination = DotaPath.getModDirectory()) {
+            // TODO: Update game info file
+            // TODO: Update version in config
+            Alert(type = Alert.AlertType.INFORMATION,
+                    header = getString("header_mod_update_downloaded"),
+                    content = getString("msg_mod_update_downloaded"),
+                    buttons = arrayOf(ButtonType.FINISH),
+                    owner = stage
+            ).showAndWait()
+        }.showModal(stage)
     }
 
     private fun doesUserWantToUpdate(header: String, releaseInfo: ReleaseInfo): Boolean {

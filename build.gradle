@@ -59,7 +59,7 @@ task generateBuildConfig() {
     file.write("package com.github.mrbean355.admiralbulldog\n" +
             "\n" +
             "@javax.annotation.processing.Generated(\"generateBuildConfig\")\n" +
-            "const val APP_VERSION = \"$version\"")
+            "val APP_VERSION = com.vdurmont.semver4j.Semver(\"$version\")")
 }
 
 compileKotlin.dependsOn(generateBuildConfig)

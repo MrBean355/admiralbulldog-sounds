@@ -15,14 +15,6 @@ private const val SHA_512_ASSET_NAME = "${VPK_FILE_NAME}.sha512"
 
 interface GitHubService {
 
-    /** Query the project's GitHub releases for the latest one. */
-    @GET("https://api.github.com/repos/MrBean355/admiralbulldog-sounds/releases/latest")
-    suspend fun getLatestAppReleaseInfo(): Response<ReleaseInfo>
-
-    /** Query the mod's GitHub releases for the latest one. */
-    @GET("https://api.github.com/repos/MrBean355/admiralbulldog-mod/releases/latest")
-    suspend fun getLatestModReleaseInfo(): Response<ReleaseInfo>
-
     /** Download the release at the given [url]. */
     @GET
     @Streaming
@@ -44,7 +36,7 @@ data class ReleaseInfo(
         @SerializedName("published_at") val publishedAt: Date,
         val assets: List<AssetInfo>) {
 
-    fun getJarAssetInfo(): AssetInfo? {
+    fun getAppAssetInfo(): AssetInfo? {
         return assets.firstOrNull {
             it.name.matches(Regex("admiralbulldog-sounds-.*\\.jar"))
         }
