@@ -8,9 +8,9 @@ import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * A downloaded sound file which the user can choose to be played.
+ * A downloaded sound byte which the user can choose to be played.
  */
-class SoundFile(
+class SoundByte(
         /** Path to the file. */
         private val filePath: String) {
     /** Name of the file, excluding directories. */
@@ -37,7 +37,7 @@ class SoundFile(
     }
 
     override fun toString(): String {
-        return "SoundFile(filePath='$filePath', fileName='$fileName', name='$name')"
+        return "SoundByte(filePath='$filePath', fileName='$fileName', name='$name')"
     }
 
     private companion object {

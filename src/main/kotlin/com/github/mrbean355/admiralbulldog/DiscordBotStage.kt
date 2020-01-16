@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
-import com.github.mrbean355.admiralbulldog.bytes.SoundByte
+import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.ui.finalise
@@ -23,12 +23,11 @@ import javafx.stage.Stage
 import kotlin.reflect.KClass
 
 private const val COLUMNS = 3
-private const val INVITE_URL = "https://discordapp.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot&permissions=1"
 
 class DiscordBotStage(private val hostServices: HostServices) : Stage() {
     private val botEnabled = SimpleBooleanProperty(ConfigPersistence.isUsingDiscordBot())
     private val token = SimpleStringProperty(ConfigPersistence.getDiscordToken())
-    private val toggles: Map<KClass<out SoundByte>, BooleanProperty> = loadToggles()
+    private val toggles: Map<KClass<out SoundEvent>, BooleanProperty> = loadToggles()
 
     init {
         val root = VBox(PADDING_MEDIUM).apply {
@@ -61,8 +60,8 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
 
             var row = 0
             var col = 0
-            SOUND_BYTE_TYPES.forEach {
-                add(CheckBox(it.friendlyName()).apply {
+            SOUND_EVENT_TYPES.forEach {
+                add(CheckBox(it.friendlyName).apply {
                     disableProperty().bind(botEnabled.not())
                     selectedProperty().bindBidirectional(toggles[it])
                     selectedProperty().addListener { _, _, _ ->
@@ -82,8 +81,8 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
         finalise(title = TITLE_DISCORD_BOT, root = root)
     }
 
-    private fun loadToggles(): Map<KClass<out SoundByte>, BooleanProperty> {
-        return SOUND_BYTE_TYPES.associateWith { SimpleBooleanProperty(ConfigPersistence.isPlayedThroughDiscord(it)) }
+    private fun loadToggles(): Map<KClass<out SoundEvent>, BooleanProperty> {
+        return SOUND_EVENT_TYPES.associateWith { SimpleBooleanProperty(ConfigPersistence.isPlayedThroughDiscord(it)) }
     }
 
     private fun enableBotToggled(enabled: Boolean) {
@@ -92,7 +91,7 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
 
     private fun inviteClicked() {
         logAnalyticsEvent(eventType = "button_click", eventData = "invite_bot_to_server")
-        hostServices.showDocument(INVITE_URL)
+        hostServices.showDocument(URL_DISCORD_BOT_INVITE)
     }
 
     private fun soundEventToggled() {

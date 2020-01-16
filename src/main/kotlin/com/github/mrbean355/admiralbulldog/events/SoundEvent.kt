@@ -1,8 +1,8 @@
-package com.github.mrbean355.admiralbulldog.bytes
+package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
 
-val SOUND_BYTE_TYPES = setOf(
+val SOUND_EVENT_TYPES = setOf(
         OnBountyRunesSpawn::class,
         OnDeath::class,
         OnDefeat::class,
@@ -15,12 +15,12 @@ val SOUND_BYTE_TYPES = setOf(
         OnVictory::class,
         Periodically::class)
 
-interface SoundByte {
+interface SoundEvent {
     /** Examine the states and decide if a should should be played. */
     fun shouldPlay(previous: GameState, current: GameState): Boolean
 }
 
-interface RandomSoundByte : SoundByte {
+interface RandomSoundEvent : SoundEvent {
     /** Chance to play a sound byte, from 0 to 1. */
     val chance: Float
 }

@@ -1,47 +1,39 @@
 package com.github.mrbean355.admiralbulldog.service
 
-import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.NOTIFICATION_DISCORD_FAIL
-import com.github.mrbean355.admiralbulldog.assets.SoundFile
+import com.github.mrbean355.admiralbulldog.assets.SoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.persistence.Notifications
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
 private val logger = LoggerFactory.getLogger("DiscordBotService")
 
 /**
- * Play the given [soundFile] on Discord through the bot.
+ * Play the given [soundByte] on Discord through the bot.
  * Can pass in a custom [token] to be used instead of loading one from config.
+ * @return `true` if the sound was actually played through Discord.
  */
-fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.getDiscordToken()) {
+suspend fun playSoundOnDiscord(soundByte: SoundByte, token: String = ConfigPersistence.getDiscordToken()): Boolean {
     if (token.isBlank()) {
         logger.warn("Blank token set!")
-        return
+        return false
     }
-    GlobalScope.launch {
-        val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundFile.fileName))
-        if (!response.isSuccessful) {
-            logger.info("Play sound through Discord failed! soundFile=$soundFile, response=$response")
-            Notifications.put(NOTIFICATION_DISCORD_FAIL.format(soundFile.name))
-            soundFile.play()
-        }
+    val response = service.playSound(PlaySoundRequest(loadUserId(), token, soundByte.fileName))
+    if (!response.isSuccessful) {
+        logger.info("Play sound through Discord failed! soundFile=$soundByte, response=$response")
+        return false
     }
+    return true
 }
 
 /**
@@ -50,23 +42,6 @@ fun playSoundOnDiscord(soundFile: SoundFile, token: String = ConfigPersistence.g
 fun logAnalyticsEvent(eventType: String, eventData: String = "") {
     GlobalScope.launch {
         service.logAnalyticsEvent(AnalyticsRequest(loadUserId(), eventType, eventData))
-    }
-}
-
-/**
- * Invokes [onLaterVersion] if the service says there's a newer app version available.
- */
-fun whenLaterVersionAvailable(onLaterVersion: () -> Unit) {
-    GlobalScope.launch {
-        val response = service.hasLaterVersion(APP_VERSION)
-        if (response.isSuccessful) {
-            val body = response.body() ?: false
-            if (body) {
-                withContext(Main) { onLaterVersion() }
-            }
-        } else {
-            logger.error("Later version check failed! response=$response")
-        }
     }
 }
 
@@ -81,8 +56,6 @@ private interface DiscordBotService {
     @POST("/analytics/logEvent")
     suspend fun logAnalyticsEvent(@Body request: AnalyticsRequest): Response<Void>
 
-    @GET("/metadata/laterVersion")
-    suspend fun hasLaterVersion(@Query("version") version: String): Response<Boolean>
 }
 
 private data class CreateIdResponse(val userId: String)

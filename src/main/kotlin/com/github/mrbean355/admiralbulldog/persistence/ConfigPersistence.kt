@@ -1,10 +1,11 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
-import com.github.mrbean355.admiralbulldog.assets.SoundFile
-import com.github.mrbean355.admiralbulldog.assets.SoundFiles
-import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
-import com.github.mrbean355.admiralbulldog.bytes.SoundByte
+import com.github.mrbean355.admiralbulldog.assets.SoundByte
+import com.github.mrbean355.admiralbulldog.assets.SoundBytes
+import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.google.gson.GsonBuilder
+import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -22,6 +23,7 @@ private const val DEFAULT_VOLUME = 20.0
  * - can be enabled or disabled at runtime by the user
  */
 object ConfigPersistence {
+    private val logger = LoggerFactory.getLogger(ConfigPersistence::class.java)
     private lateinit var loadedConfig: Config
     private val gson = GsonBuilder()
             .setPrettyPrinting()
@@ -37,8 +39,10 @@ object ConfigPersistence {
         }
         if (loadedConfig.port == 0) {
             loadedConfig.port = DEFAULT_PORT
+            logger.info("Defaulting to port $DEFAULT_PORT")
         }
-        addMissingSoundByteDefaults()
+        cleanUpStaleSoundEvents()
+        addMissingSoundEventDefaults()
         save()
     }
 
@@ -54,6 +58,17 @@ object ConfigPersistence {
             loadedConfig.id = id
             save()
         }
+    }
+
+    /** @return the currently chosen Dota installation path. */
+    fun getDotaPath(): String? {
+        return loadedConfig.dotaPath
+    }
+
+    /** Set the Dota installation path. */
+    fun setDotaPath(path: String) {
+        loadedConfig.dotaPath = path
+        save()
     }
 
     /** @return the time when sounds were last synced from the PlaySounds page. */
@@ -104,52 +119,79 @@ object ConfigPersistence {
     }
 
     /** @return `true` if the sound byte is enabled; `false` otherwise. */
-    fun isSoundByteEnabled(type: KClass<out SoundByte>): Boolean {
+    fun isSoundEventEnabled(type: KClass<out SoundEvent>): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.enabled
     }
 
     /** Enable or disable a sound byte. */
-    fun toggleSoundByte(type: KClass<out SoundByte>, enabled: Boolean) {
+    fun toggleSoundEvent(type: KClass<out SoundEvent>, enabled: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.enabled = enabled
         save()
     }
 
     /** @return whether the user has chosen to play the sound byte through Discord. */
-    fun isPlayedThroughDiscord(type: KClass<out SoundByte>): Boolean {
+    fun isPlayedThroughDiscord(type: KClass<out SoundEvent>): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
     }
 
     /** Set whether the user has chosen to play the sound byte through Discord. */
-    fun setPlayedThroughDiscord(type: KClass<out SoundByte>, playThroughDiscord: Boolean) {
+    fun setPlayedThroughDiscord(type: KClass<out SoundEvent>, playThroughDiscord: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.playThroughDiscord = playThroughDiscord
         save()
     }
 
     /** @return all selected sounds for a sound byte if it's enabled; empty list otherwise. */
-    fun getSoundsForType(type: KClass<out SoundByte>): List<SoundFile> {
+    fun getSoundsForType(type: KClass<out SoundEvent>): List<SoundByte> {
         val toggle = loadedConfig.sounds[type.simpleName]!!
         if (toggle.enabled) {
-            return toggle.sounds.mapNotNull { SoundFiles.findSound(it) }
+            return toggle.sounds.mapNotNull { SoundBytes.findSound(it) }
         }
         return emptyList()
     }
 
     /** @return a list of all sounds selected for the sound board. */
-    fun getSoundBoard(): List<SoundFile> {
-        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundFiles.findSound(it) }
+    fun getSoundBoard(): List<SoundByte> {
+        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundBytes.findSound(it) }
     }
 
     /** Set the list of all sounds selected for the sound board. */
-    fun setSoundBoard(soundBoard: List<SoundFile>) {
+    fun setSoundBoard(soundBoard: List<SoundByte>) {
         loadedConfig.soundBoard = soundBoard.map { it.name }
+        save()
+    }
+
+    /** @return whether the user has enabled the mod. */
+    fun isModEnabled(): Boolean {
+        return loadedConfig.modEnabled
+    }
+
+    /** Set whether the user has enabled the mod. */
+    fun setModEnabled(enabled: Boolean) {
+        loadedConfig.modEnabled = enabled
+        save()
+    }
+
+    /** @return the version of the currently installed mod, or "0.0.0" if there is none. */
+    fun getModVersion(): String {
+        return loadedConfig.modVersion ?: "0.0.0"
+    }
+
+    /** Set the version of the currently installed mod. */
+    fun setModVersion(version: String) {
+        loadedConfig.modVersion = version
         save()
     }
 
     /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
     fun getInvalidSounds(): List<String> {
-        val existing = SoundFiles.getAll().map { it.name }
-        return loadedConfig.sounds.flatMap { it.value.sounds }
+        val existing = SoundBytes.getAll().map { it.name }
+        val invalidSounds = loadedConfig.sounds
+                .flatMap { it.value.sounds }
                 .filter { it !in existing }
+        val invalidSoundBoard = loadedConfig.soundBoard
+                ?.filter { it !in existing }
+                .orEmpty()
+        return invalidSounds + invalidSoundBoard
     }
 
     /** Clear user-selected sounds that don't exist on the PlaySounds page from the config. */
@@ -158,11 +200,12 @@ object ConfigPersistence {
         loadedConfig.sounds.forEach { (_, v) ->
             v.sounds.removeAll { it in invalid }
         }
+        loadedConfig.soundBoard = loadedConfig.soundBoard?.filterNot { it in invalid }
         save()
     }
 
     /** Update the given sound byte's config to use the given sound `selection`. */
-    fun saveSoundsForType(type: KClass<out SoundByte>, selection: List<SoundFile>) {
+    fun saveSoundsForType(type: KClass<out SoundEvent>, selection: List<SoundByte>) {
         loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
         save()
     }
@@ -171,6 +214,7 @@ object ConfigPersistence {
     private fun save() {
         val file = File(FILE_NAME)
         if (!file.exists()) {
+            logger.info("Created new config file: ${file.absolutePath}")
             file.createNewFile()
         }
         file.writeText(gson.toJson(loadedConfig))
@@ -178,29 +222,58 @@ object ConfigPersistence {
 
     /** Load the default configs for all sound bytes. */
     private fun loadDefaultConfig(): Config {
-        val sounds = SOUND_BYTE_TYPES.associateWith { loadDefaults(it) }
+        val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList())
+        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList(), false, null)
     }
 
     /** Load the default config for a given sound byte `type`. */
-    private fun loadDefaults(type: KClass<out SoundByte>): Toggle {
+    private fun loadDefaults(type: KClass<out SoundEvent>): Toggle {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
-                ?: return Toggle(enabled = false, playThroughDiscord = false, sounds = mutableListOf())
-
+        if (resource == null) {
+            logger.warn("No defaults resource available for: ${type.simpleName}")
+            return Toggle(enabled = false, playThroughDiscord = false, sounds = mutableListOf())
+        }
         return gson.fromJson(resource.readText(), Toggle::class.java)
     }
 
+    private fun cleanUpStaleSoundEvents() {
+        val validTypes = SOUND_EVENT_TYPES.map { it.simpleName!! }
+        val invalidTypes = loadedConfig.sounds.filterKeys { it !in validTypes }
+        invalidTypes.forEach {
+            loadedConfig.sounds.remove(it.key)
+            logger.info("Removed stale sound event: ${it.key}")
+        }
+    }
+
     /** Checks the loaded `config` map, adding defaults for any missing sound bytes. */
-    private fun addMissingSoundByteDefaults() {
-        SOUND_BYTE_TYPES.forEach {
+    private fun addMissingSoundEventDefaults() {
+        SOUND_EVENT_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
+                logger.info("Loaded defaults for sound event: ${it.simpleName}")
             }
         }
     }
 
-    private data class Config(var port: Int, var id: String?, var lastSync: Long, var volume: Double, var discordBotEnabled: Boolean, var discordToken: String?, var trayNotified: Boolean, val sounds: MutableMap<String, Toggle>, var soundBoard: List<String>?)
+    private data class Config(
+            var port: Int,
+            var id: String?,
+            var dotaPath: String?,
+            var lastSync: Long,
+            var volume: Double,
+            var discordBotEnabled: Boolean,
+            var discordToken: String?,
+            var trayNotified: Boolean,
+            val sounds: MutableMap<String, Toggle>,
+            var soundBoard: List<String>?,
+            var modEnabled: Boolean,
+            var modVersion: String?
+    )
 
-    private data class Toggle(var enabled: Boolean, var playThroughDiscord: Boolean, var sounds: MutableList<String>)
+    private data class Toggle(
+            var enabled: Boolean,
+            var playThroughDiscord: Boolean,
+            var sounds: MutableList<String>
+    )
 }

@@ -1,9 +1,9 @@
 package com.github.mrbean355.admiralbulldog.game
 
-import com.github.mrbean355.admiralbulldog.bytes.RandomSoundByte
-import com.github.mrbean355.admiralbulldog.bytes.SOUND_BYTE_TYPES
-import com.github.mrbean355.admiralbulldog.bytes.SoundByte
-import com.github.mrbean355.admiralbulldog.bytes.random
+import com.github.mrbean355.admiralbulldog.events.RandomSoundEvent
+import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.events.random
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.service.playSoundOnDiscord
 import io.ktor.application.call
@@ -17,12 +17,14 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
 import kotlin.reflect.full.createInstance
 
 private val logger = LoggerFactory.getLogger("GameStateMonitor")
-private val soundBytes = mutableListOf<SoundByte>()
+private val soundEvents = mutableListOf<SoundEvent>()
 private var previousState: GameState? = null
 
 /** Receives game state updates from Dota 2. */
@@ -56,16 +58,16 @@ private fun processGameState(currentState: GameState) {
     // Recreate sound bytes when a new match is entered:
     if (currentMatchId != previousMatchId) {
         previousState = null
-        soundBytes.clear()
-        soundBytes.addAll(SOUND_BYTE_TYPES.map { it.createInstance() })
+        soundEvents.clear()
+        soundEvents.addAll(SOUND_EVENT_TYPES.map { it.createInstance() })
     }
 
     // Play sound bytes that want to be played:
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
-        soundBytes.forEach {
+        soundEvents.forEach {
             if (it.shouldPlay(localPreviousState, currentState)) {
-                if (it is RandomSoundByte) {
+                if (it is RandomSoundEvent) {
                     if (random.nextFloat() < it.chance) {
                         playSoundForType(it)
                     }
@@ -78,18 +80,22 @@ private fun processGameState(currentState: GameState) {
     previousState = currentState
 }
 
-private fun playSoundForType(soundByte: SoundByte) {
-    val choices = ConfigPersistence.getSoundsForType(soundByte::class)
+private fun playSoundForType(soundEvent: SoundEvent) {
+    val choices = ConfigPersistence.getSoundsForType(soundEvent::class)
     if (choices.isNotEmpty()) {
         val choice = choices.random()
-        if (shouldPlayOnDiscord(soundByte)) {
-            playSoundOnDiscord(choice)
+        if (shouldPlayOnDiscord(soundEvent)) {
+            GlobalScope.launch {
+                if (!playSoundOnDiscord(choice)) {
+                    choice.play()
+                }
+            }
         } else {
             choice.play()
         }
     }
 }
 
-private fun shouldPlayOnDiscord(soundByte: SoundByte): Boolean {
-    return ConfigPersistence.isUsingDiscordBot() && ConfigPersistence.isPlayedThroughDiscord(soundByte::class)
+private fun shouldPlayOnDiscord(soundEvent: SoundEvent): Boolean {
+    return ConfigPersistence.isUsingDiscordBot() && ConfigPersistence.isPlayedThroughDiscord(soundEvent::class)
 }

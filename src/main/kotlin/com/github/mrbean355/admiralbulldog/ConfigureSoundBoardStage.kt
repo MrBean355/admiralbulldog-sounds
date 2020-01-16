@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.ui.SoundFileTracker
+import com.github.mrbean355.admiralbulldog.ui.SoundByteTracker
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import javafx.geometry.Insets
 import javafx.scene.control.Button
@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
 class ConfigureSoundBoardStage : Stage() {
-    private val tracker = SoundFileTracker(ConfigPersistence.getSoundBoard())
+    private val tracker = SoundByteTracker(ConfigPersistence.getSoundBoard())
 
     init {
         val root = VBox(PADDING_SMALL)

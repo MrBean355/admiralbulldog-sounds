@@ -1,10 +1,10 @@
-package com.github.mrbean355.admiralbulldog.bytes
+package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.game.Item
 import com.github.mrbean355.admiralbulldog.game.Items
 
-class OnMidasReady : SoundByte {
+class OnMidasReady : SoundEvent {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         return previous.items.isMidasOnCooldown() && current.items.isMidasOffCooldown()

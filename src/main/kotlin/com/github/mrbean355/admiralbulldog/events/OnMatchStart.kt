@@ -1,10 +1,10 @@
-package com.github.mrbean355.admiralbulldog.bytes
+package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.game.MatchState
 
 /** Plays a sound just after the clock hits 0. */
-class OnMatchStart : SoundByte {
+class OnMatchStart : SoundEvent {
     private var played = false
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
