@@ -10,7 +10,10 @@ import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.ProgressDialog
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.showModal
+import javafx.beans.binding.Bindings.createStringBinding
+import javafx.beans.binding.StringBinding
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.stage.Stage
@@ -23,15 +26,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.util.concurrent.Callable
 
 class DotaModViewModel(private val stage: Stage) {
     private val logger = LoggerFactory.getLogger(DotaModViewModel::class.java)
     private val gitHubRepository = GitHubRepository()
     private val coroutineScope = CoroutineScope(Default + Job())
 
+    private val _modVersion = SimpleStringProperty(ConfigPersistence.getModVersion())
     val modEnabled = SimpleBooleanProperty(ConfigPersistence.isModEnabled()).apply {
         addListener { _, _, newValue -> onEnabledCheckChanged(newValue) }
     }
+    val modVersion: StringBinding = createStringBinding(Callable {
+        val version = if (modEnabled.get()) _modVersion.get() else "N/A"
+        getString("label_mod_version", version)
+    }, modEnabled, _modVersion)
 
     fun onClose() {
         coroutineScope.cancel()
@@ -97,6 +106,7 @@ class DotaModViewModel(private val stage: Stage) {
         }
         DownloadUpdateStage(assetInfo, destination = DotaPath.getModDirectory()) {
             DotaMod.onModDownloaded(releaseInfo)
+            _modVersion.set(ConfigPersistence.getModVersion())
             Alert(type = Alert.AlertType.INFORMATION,
                     header = getString("header_mod_update_downloaded"),
                     content = getString("msg_mod_update_downloaded"),
