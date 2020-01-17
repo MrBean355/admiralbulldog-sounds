@@ -49,8 +49,6 @@ class SyncSoundBytesStage : Stage() {
         }, complete = { successful ->
             if (successful) {
                 ConfigPersistence.markLastSync()
-            } else {
-                log.value += MSG_SYNC_FAILED
             }
             setOnCloseRequest { /* Default behaviour */ }
             complete.set(true)
