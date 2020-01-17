@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.assets
 
+import com.github.mrbean355.admiralbulldog.MSG_SYNC_FAILED
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -43,25 +44,34 @@ object SoundBytes {
      */
     fun synchronise(action: (String) -> Unit, complete: (Boolean) -> Unit) {
         val downloaded = AtomicInteger()
+        val failed = AtomicInteger()
         val deleted = AtomicInteger()
         GlobalScope.launch {
             val localFiles = getLocalFiles().toMutableList()
             val response = PlaySounds.listRemoteSoundBytes()
             val remoteFiles = response.body
             if (!response.success || remoteFiles == null) {
+                action(MSG_SYNC_FAILED)
                 withContext(Main) { complete(false) }
                 return@launch
             }
 
             /* Download all remote files that don't exist locally. */
             coroutineScope {
-                remoteFiles.forEach {
-                    localFiles.remove(it.fileName)
+                remoteFiles.forEach { remoteSoundByte ->
+                    localFiles.remove(remoteSoundByte.fileName)
                     launch {
-                        if (!it.existsLocally()) {
-                            PlaySounds.downloadSoundByte(it, SOUNDS_PATH)
-                            downloaded.incrementAndGet()
-                            action("Downloaded: ${it.fileName}")
+                        if (!remoteSoundByte.existsLocally()) {
+                            runCatching {
+                                PlaySounds.downloadSoundByte(remoteSoundByte, SOUNDS_PATH)
+                            }.onSuccess {
+                                downloaded.incrementAndGet()
+                                action("Downloaded: ${remoteSoundByte.fileName}")
+                            }.onFailure {
+                                failed.incrementAndGet()
+                                action("Failed to download: ${remoteSoundByte.fileName}")
+                                logger.error("Failed to download: ${remoteSoundByte.fileName}", it)
+                            }
                         }
                     }
                 }
@@ -79,10 +89,15 @@ object SoundBytes {
             }
 
             allSounds = emptyList()
-            action("Done!\n" +
+            var message = "Done!\n" +
                     "-> Downloaded ${downloaded.get()} new sound(s).\n" +
-                    "-> Deleted ${deleted.get()} old sound(s).\n")
-            withContext(Main) { complete(true) }
+                    "-> Deleted ${deleted.get()} old sound(s).\n"
+            if (failed.get() > 0) {
+                message += "\nFailed to download ${failed.get()} sounds.\n" +
+                        "Please restart the app to try again."
+            }
+            action(message)
+            withContext(Main) { complete(failed.get() == 0) }
         }
     }
 
