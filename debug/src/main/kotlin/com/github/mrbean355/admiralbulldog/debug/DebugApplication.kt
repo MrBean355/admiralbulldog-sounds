@@ -41,6 +41,11 @@ class DebugApplication : Application() {
                     nuulsService.get("8_9Et.mp3")
                 }
             }
+            children += Label().apply {
+                testService("Connecting to GitHub...") {
+                    gitHubService.getLatestReleaseInfo()
+                }
+            }
         }
 
         primaryStage.scene = Scene(root)

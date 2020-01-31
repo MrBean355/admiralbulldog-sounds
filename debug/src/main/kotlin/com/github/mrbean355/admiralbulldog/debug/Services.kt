@@ -46,6 +46,14 @@ val nuulsService: NuulsService = Retrofit.Builder()
         .build()
         .create(NuulsService::class.java)
 
+val gitHubService: GitHubService = Retrofit.Builder()
+        .client(OkHttpClient.Builder()
+                .callTimeout(10, TimeUnit.SECONDS)
+                .build())
+        .baseUrl("https://api.github.com/")
+        .build()
+        .create(GitHubService::class.java)
+
 fun Label.testService(message: String, service: suspend () -> Response<*>) {
     text = message
     GlobalScope.launch {
@@ -89,4 +97,10 @@ interface PlaySoundsService {
 interface NuulsService {
     @GET("{name}")
     suspend fun get(@Path("name") name: String): Response<ResponseBody>
+}
+
+interface GitHubService {
+
+    @GET("repos/MrBean355/admiralbulldog-sounds/releases/latest")
+    suspend fun getLatestReleaseInfo(): Response<ResponseBody>
 }
