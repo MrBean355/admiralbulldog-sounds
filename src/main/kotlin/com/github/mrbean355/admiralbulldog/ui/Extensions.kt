@@ -2,6 +2,9 @@ package com.github.mrbean355.admiralbulldog.ui
 
 import com.github.mrbean355.admiralbulldog.TITLE_MAIN_WINDOW
 import com.github.mrbean355.admiralbulldog.bulldogIcon
+import javafx.beans.binding.Bindings
+import javafx.beans.binding.ObjectBinding
+import javafx.beans.property.ObjectProperty
 import javafx.event.EventHandler
 import javafx.scene.Parent
 import javafx.scene.Scene
@@ -18,6 +21,7 @@ import java.io.File
 import java.io.InputStream
 import java.util.Optional
 import java.util.ResourceBundle
+import java.util.concurrent.Callable
 
 val strings: ResourceBundle = ResourceBundle.getBundle("strings")
 
@@ -87,6 +91,12 @@ fun String.removeVersionPrefix(): String {
 
 fun Double.format(decimalPlaces: Int): String {
     return "%.${decimalPlaces}f".format(this)
+}
+
+fun <T, R> ObjectProperty<T>.map(block: (T) -> R): ObjectBinding<R> {
+    return Bindings.createObjectBinding(Callable {
+        block(this.get())
+    }, this)
 }
 
 /**

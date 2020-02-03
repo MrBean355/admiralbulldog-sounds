@@ -7,16 +7,34 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import org.slf4j.LoggerFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
 private val logger = LoggerFactory.getLogger("DiscordBotService")
+
+sealed class Result<T> {
+    class Success<T>(val data: T?) : Result<T>()
+    class Error<T>(val statusCode: Int) : Result<T>()
+}
+
+suspend fun lookupToken(token: String): Result<String> {
+    val response = service.lookupToken(token)
+    val body = response.body()
+    return if (response.isSuccessful && body != null) {
+        Result.Success(body.charStream().readText())
+    } else {
+        Result.Error(response.code())
+    }
+}
 
 /**
  * Play the given [soundByte] on Discord through the bot.
@@ -49,6 +67,9 @@ private interface DiscordBotService {
 
     @POST("/createId")
     suspend fun createId(): Response<CreateIdResponse>
+
+    @GET("/lookupToken")
+    suspend fun lookupToken(@Query("token") token: String): Response<ResponseBody>
 
     @POST("/")
     suspend fun playSound(@Body request: PlaySoundRequest): Response<Void>
