@@ -1,6 +1,5 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.toNullable
 import javafx.application.HostServices
@@ -25,7 +24,6 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
         val stringWriter = StringWriter()
         e?.printStackTrace(PrintWriter(stringWriter))
         val stackTrace = stringWriter.toString()
-        runCatching { logAnalyticsEvent("unhandled_exception", stackTrace) }
         file.writeText("""
             |os.name      = ${System.getProperty("os.name")}
             |os.version   = ${System.getProperty("os.version")}
