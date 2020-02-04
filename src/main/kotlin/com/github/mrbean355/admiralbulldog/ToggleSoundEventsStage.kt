@@ -5,7 +5,6 @@ import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.MIN_VOLUME
-import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.beans.property.BooleanProperty
@@ -70,7 +69,6 @@ class ToggleSoundEventsStage : Stage() {
     }
 
     private fun configureClicked(type: KClass<out SoundEvent>) {
-        logAnalyticsEvent(eventType = "configure_sound", eventData = type.simpleName.orEmpty().ifEmpty { "unknown" })
         ChooseSoundFilesStage(type).showModal(owner = this)
     }
 }
