@@ -1,7 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch
 
 import okhttp3.ResponseBody
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -12,15 +11,18 @@ class GitHubRepository {
             .build()
             .create(GitHubService::class.java)
 
-    suspend fun getLatestAppRelease(): Response<ReleaseInfo> {
+    suspend fun getLatestAppRelease(): ServiceResponse<ReleaseInfo> {
         return service.getLatestReleaseInfo(GitHubService.REPO_APP)
+                .toServiceResponse()
     }
 
-    suspend fun getLatestModRelease(): Response<ReleaseInfo> {
+    suspend fun getLatestModRelease(): ServiceResponse<ReleaseInfo> {
         return service.getLatestReleaseInfo(GitHubService.REPO_MOD)
+                .toServiceResponse()
     }
 
-    suspend fun downloadAsset(assetInfo: AssetInfo): Response<ResponseBody> {
+    suspend fun downloadAsset(assetInfo: AssetInfo): ServiceResponse<ResponseBody> {
         return service.downloadLatestRelease(assetInfo.downloadUrl)
+                .toServiceResponse()
     }
 }

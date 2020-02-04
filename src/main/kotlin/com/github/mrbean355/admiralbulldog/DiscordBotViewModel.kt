@@ -1,8 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.service.Result
-import com.github.mrbean355.admiralbulldog.service.lookupToken
 import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.beans.binding.Bindings
 import javafx.beans.binding.StringBinding
@@ -20,6 +19,7 @@ import java.util.concurrent.Callable
 
 class DiscordBotViewModel {
     private val coroutineScope = CoroutineScope(Default + Job())
+    private val discordBotRepository = DiscordBotRepository()
     private val lookupResponse = SimpleStringProperty()
 
     val botEnabled = SimpleBooleanProperty(ConfigPersistence.isUsingDiscordBot())
@@ -64,20 +64,17 @@ class DiscordBotViewModel {
         lookupResponse.set(getString("msg_bot_loading"))
 
         coroutineScope.launch {
-            val result = lookupToken(token.get())
+            val response = discordBotRepository.lookUpToken(token.get())
             withContext(Main) {
-                when (result) {
-                    is Result.Success -> {
-                        statusImage.set(Status.GOOD)
-                        lookupResponse.set(getString("msg_bot_active", result.data))
-                    }
-                    is Result.Error -> {
-                        statusImage.set(Status.BAD)
-                        if (result.statusCode == 404) {
-                            lookupResponse.set(getString("msg_bot_not_found"))
-                        } else {
-                            lookupResponse.set(getString("msg_bot_error"))
-                        }
+                if (response.isSuccessful()) {
+                    statusImage.set(Status.GOOD)
+                    lookupResponse.set(getString("msg_bot_active", response.body))
+                } else {
+                    statusImage.set(Status.BAD)
+                    if (response.statusCode == 404) {
+                        lookupResponse.set(getString("msg_bot_not_found"))
+                    } else {
+                        lookupResponse.set(getString("msg_bot_error"))
                     }
                 }
             }

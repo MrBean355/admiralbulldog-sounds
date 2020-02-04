@@ -1,11 +1,11 @@
 package com.github.mrbean355.admiralbulldog.game
 
+import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.events.RandomSoundEvent
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.events.random
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.service.playSoundOnDiscord
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -24,6 +24,7 @@ import kotlin.concurrent.thread
 import kotlin.reflect.full.createInstance
 
 private val logger = LoggerFactory.getLogger("GameStateMonitor")
+private val discordBotRepository by lazy { DiscordBotRepository() }
 private val soundEvents = mutableListOf<SoundEvent>()
 private var previousState: GameState? = null
 
@@ -86,7 +87,8 @@ private fun playSoundForType(soundEvent: SoundEvent) {
         val choice = choices.random()
         if (shouldPlayOnDiscord(soundEvent)) {
             GlobalScope.launch {
-                if (!playSoundOnDiscord(choice)) {
+                val response = discordBotRepository.playSound(choice)
+                if (!response.isSuccessful()) {
                     choice.play()
                 }
             }

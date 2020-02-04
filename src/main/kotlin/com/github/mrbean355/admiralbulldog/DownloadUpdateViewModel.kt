@@ -31,8 +31,8 @@ class DownloadUpdateViewModel(
     fun init() {
         coroutineScope.launch {
             val resource = gitHubRepository.downloadAsset(assetInfo)
-            val body = resource.body()
-            if (!resource.isSuccessful || body == null) {
+            val body = resource.body
+            if (!resource.isSuccessful() || body == null) {
                 return@launch
             }
             val totalBytes = body.contentLength().toDouble()

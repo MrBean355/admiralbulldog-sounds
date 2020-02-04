@@ -1,6 +1,8 @@
 package com.github.mrbean355.admiralbulldog.assets
 
 import com.github.mrbean355.admiralbulldog.MSG_SYNC_FAILED
+import com.github.mrbean355.admiralbulldog.arch.PlaySoundsRepository
+import com.github.mrbean355.admiralbulldog.arch.RemoteSoundByte
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -28,6 +30,7 @@ private val SYNC_PERIOD = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
  */
 object SoundBytes {
     private val logger = LoggerFactory.getLogger(SoundBytes::class.java)
+    private val playSoundsRepository = PlaySoundsRepository()
     private var allSounds = emptyList<SoundByte>()
 
     /** Should we check for new sounds? */
@@ -48,9 +51,9 @@ object SoundBytes {
         val deleted = AtomicInteger()
         GlobalScope.launch {
             val localFiles = getLocalFiles().toMutableList()
-            val response = PlaySounds.listRemoteSoundBytes()
+            val response = playSoundsRepository.listRemoteSounds()
             val remoteFiles = response.body
-            if (!response.success || remoteFiles == null) {
+            if (!response.isSuccessful() || remoteFiles == null) {
                 action(MSG_SYNC_FAILED)
                 withContext(Main) { complete(false) }
                 return@launch
@@ -63,7 +66,7 @@ object SoundBytes {
                     launch {
                         if (!remoteSoundByte.existsLocally()) {
                             runCatching {
-                                PlaySounds.downloadSoundByte(remoteSoundByte, SOUNDS_PATH)
+                                playSoundsRepository.downloadRemoteSound(remoteSoundByte, SOUNDS_PATH)
                             }.onSuccess {
                                 downloaded.incrementAndGet()
                                 action("Downloaded: ${remoteSoundByte.fileName}")
@@ -123,7 +126,7 @@ object SoundBytes {
         return getAll().firstOrNull { it.name == name }
     }
 
-    private fun PlaySounds.RemoteSoundByte.existsLocally(): Boolean {
+    private fun RemoteSoundByte.existsLocally(): Boolean {
         return File("$SOUNDS_PATH/$fileName").exists()
     }
 

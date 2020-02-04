@@ -45,8 +45,8 @@ object DotaMod {
             return false
         }
         val response = gitHubRepository.downloadAsset(checksumAssetInfo)
-        val body = response.body()
-        if (!response.isSuccessful || body == null) {
+        val body = response.body
+        if (!response.isSuccessful() || body == null) {
             logger.error("Error getting checksum, giving up")
             return false
         }

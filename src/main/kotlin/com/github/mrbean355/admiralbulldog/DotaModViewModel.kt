@@ -67,8 +67,8 @@ class DotaModViewModel(private val stage: Stage) {
         coroutineScope.launch {
             logger.info("Checking for mod update...")
             val resource = gitHubRepository.getLatestModRelease()
-            val releaseInfo = resource.body()
-            if (!resource.isSuccessful || releaseInfo == null) {
+            val releaseInfo = resource.body
+            if (!resource.isSuccessful() || releaseInfo == null) {
                 logger.warn("Bad mod release info response, giving up")
                 withContext(Main) {
                     progressDialog.close()

@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.service.hostUrl
+import com.github.mrbean355.admiralbulldog.arch.hostUrl
 import javafx.application.Application
 
 /** Program argument to point to a custom host. Points to prod if omitted. */
