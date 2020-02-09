@@ -5,6 +5,7 @@ import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.finalise
+import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.map
 import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.application.HostServices
@@ -20,6 +21,7 @@ import javafx.scene.control.TextField
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import kotlin.reflect.KClass
@@ -75,9 +77,14 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
                 }
             }
         }
-        root.children += Button(ACTION_SOUND_BOARD).apply {
-            disableProperty().bind(viewModel.botEnabled.not())
-            setOnAction { soundBoardClicked() }
+        root.children += HBox(PADDING_SMALL).apply {
+            children += Button(getString("btn_help")).apply {
+                setOnAction { helpClicked() }
+            }
+            children += Button(ACTION_SOUND_BOARD).apply {
+                disableProperty().bind(viewModel.botEnabled.not())
+                setOnAction { soundBoardClicked() }
+            }
         }
         finalise(title = TITLE_DISCORD_BOT, root = root)
         setOnHiding {
@@ -100,6 +107,10 @@ class DiscordBotStage(private val hostServices: HostServices) : Stage() {
         toggles.forEach { (key, value) ->
             ConfigPersistence.setPlayedThroughDiscord(key, value.value)
         }
+    }
+
+    private fun helpClicked() {
+        hostServices.showDocument(URL_DISCORD_WIKI)
     }
 
     private fun soundBoardClicked() {
