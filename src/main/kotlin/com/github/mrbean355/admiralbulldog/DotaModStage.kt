@@ -20,10 +20,15 @@ class DotaModStage(private val hostServices: HostServices) : Stage() {
         val root = VBox(PADDING_MEDIUM).apply {
             padding = Insets(PADDING_MEDIUM)
         }
+        root.children += Label(getString("label_mod_info"))
         root.children += CheckBox(getString("label_enable_mod")).apply {
             selectedProperty().bindBidirectional(viewModel.modEnabled)
         }
-        root.children += Label(getString("label_mod_info"))
+        root.children += Label(getString("label_temp_disable_description"))
+        root.children += CheckBox(getString("label_temp_disable")).apply {
+            disableProperty().bind(viewModel.modEnabled.not())
+            selectedProperty().bindBidirectional(viewModel.tempDisabled)
+        }
         root.children += VBox(PADDING_SMALL).apply {
             alignment = Pos.CENTER
             children += Hyperlink(getString("btn_mod_info")).apply {

@@ -37,6 +37,9 @@ class DotaModViewModel(private val stage: Stage) {
     val modEnabled = SimpleBooleanProperty(ConfigPersistence.isModEnabled()).apply {
         addListener { _, _, newValue -> onEnabledCheckChanged(newValue) }
     }
+    val tempDisabled = SimpleBooleanProperty(ConfigPersistence.isModTempDisabled()).apply {
+        addListener { _, _, newValue -> onTempDisabledCheckChanged(newValue) }
+    }
     val modVersion: StringBinding = createStringBinding(Callable {
         val version = if (modEnabled.get()) _modVersion.get() else "N/A"
         getString("label_mod_version", version)
@@ -48,7 +51,18 @@ class DotaModViewModel(private val stage: Stage) {
 
     private fun onEnabledCheckChanged(checked: Boolean) {
         ConfigPersistence.setModEnabled(checked)
-        if (checked) {
+        checkModStatus()
+    }
+
+    private fun onTempDisabledCheckChanged(checked: Boolean) {
+        ConfigPersistence.setModTempDisabled(checked)
+        checkModStatus()
+    }
+
+    private fun checkModStatus() {
+        val enabled = modEnabled.get()
+        val tempDisabled = tempDisabled.get()
+        if (enabled && !tempDisabled) {
             installMod()
         } else {
             disableMod()
@@ -117,12 +131,13 @@ class DotaModViewModel(private val stage: Stage) {
     }
 
     private fun disableMod() {
-        DotaMod.onModDisabled()
-        Alert(type = Alert.AlertType.INFORMATION,
-                header = "Dota mod uninstalled",
-                content = "Please restart Dota if it's open.",
-                buttons = arrayOf(ButtonType.OK),
-                owner = stage
-        ).show()
+        if (DotaMod.onModDisabled()) {
+            Alert(type = Alert.AlertType.INFORMATION,
+                    header = "Dota mod uninstalled",
+                    content = "Please restart Dota if it's open.",
+                    buttons = arrayOf(ButtonType.OK),
+                    owner = stage
+            ).show()
+        }
     }
 }

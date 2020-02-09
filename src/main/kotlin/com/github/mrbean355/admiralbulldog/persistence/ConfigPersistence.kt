@@ -171,6 +171,15 @@ object ConfigPersistence {
         save()
     }
 
+    fun isModTempDisabled(): Boolean {
+        return loadedConfig.modTempDisabled
+    }
+
+    fun setModTempDisabled(disabled: Boolean) {
+        loadedConfig.modTempDisabled = disabled
+        save()
+    }
+
     /** @return the version of the currently installed mod, or "0.0.0" if there is none. */
     fun getModVersion(): String {
         return loadedConfig.modVersion ?: "0.0.0"
@@ -224,7 +233,7 @@ object ConfigPersistence {
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList(), false, null)
+        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList(), false, false, null)
     }
 
     /** Load the default config for a given sound byte `type`. */
@@ -268,6 +277,7 @@ object ConfigPersistence {
             val sounds: MutableMap<String, Toggle>,
             var soundBoard: List<String>?,
             var modEnabled: Boolean,
+            var modTempDisabled: Boolean,
             var modVersion: String?
     )
 
