@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
-import com.github.mrbean355.admiralbulldog.assets.SoundByte
+import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.Alert
 import javafx.beans.property.SimpleBooleanProperty
@@ -22,7 +22,7 @@ class SoundBoardViewModel(private val stage: Stage) {
     private val coroutineScope = CoroutineScope(Default + Job())
     private val discordBotRepository = DiscordBotRepository()
 
-    val soundBoard: ObservableList<SoundByte> = FXCollections.observableArrayList<SoundByte>()
+    val soundBoard: ObservableList<SoundBite> = FXCollections.observableArrayList<SoundBite>()
     val isEmpty = SimpleBooleanProperty()
 
     fun init() {
@@ -34,14 +34,14 @@ class SoundBoardViewModel(private val stage: Stage) {
         isEmpty.set(soundBoard.isEmpty())
     }
 
-    fun onSoundClicked(soundByte: SoundByte) {
+    fun onSoundClicked(soundBite: SoundBite) {
         coroutineScope.launch {
-            val response = discordBotRepository.playSound(soundByte)
+            val response = discordBotRepository.playSound(soundBite)
             if (!response.isSuccessful()) {
                 withContext(Dispatchers.Main) {
                     Alert(type = Alert.AlertType.ERROR,
                             header = HEADER_DISCORD_SOUND,
-                            content = MSG_DISCORD_PLAY_FAILED.format(soundByte.name),
+                            content = MSG_DISCORD_PLAY_FAILED.format(soundBite.name),
                             buttons = arrayOf(ButtonType.OK),
                             owner = stage
                     ).show()

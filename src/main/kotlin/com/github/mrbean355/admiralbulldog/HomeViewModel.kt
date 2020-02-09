@@ -5,7 +5,7 @@ import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
-import com.github.mrbean355.admiralbulldog.assets.SoundBytes
+import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
@@ -52,8 +52,8 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     val version = SimpleStringProperty(getString("lbl_app_version", APP_VERSION.value))
 
     fun init() {
-        if (SoundBytes.shouldSync()) {
-            SyncSoundBytesStage().showModal(owner = stage, wait = true)
+        if (SoundBites.shouldSync()) {
+            SyncSoundBitesStage().showModal(owner = stage, wait = true)
         }
         val dotaPath = loadDotaPath()
         Installer.installIfNecessary(dotaPath)

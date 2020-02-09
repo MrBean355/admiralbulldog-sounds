@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.assets.SoundByte
+import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.ui.Space
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import com.github.mrbean355.admiralbulldog.ui.getString
@@ -43,11 +43,11 @@ class SoundBoardStage : Stage() {
         viewModel.init()
     }
 
-    private fun buildSoundBoard(items: List<SoundByte>) {
+    private fun buildSoundBoard(items: List<SoundBite>) {
         soundsContainer.children.clear()
-        items.forEach { soundByte ->
-            soundsContainer.children += Button(soundByte.name).apply {
-                setOnAction { viewModel.onSoundClicked(soundByte) }
+        items.forEach { soundBite ->
+            soundsContainer.children += Button(soundBite.name).apply {
+                setOnAction { viewModel.onSoundClicked(soundBite) }
                 tooltip = Tooltip(TOOLTIP_PLAY_ON_DISCORD)
             }
         }

@@ -21,6 +21,6 @@ interface SoundEvent {
 }
 
 interface RandomSoundEvent : SoundEvent {
-    /** Chance to play a sound byte, from 0 to 1. */
+    /** Chance to play a sound bite, from 0 to 1. */
     val chance: Float
 }

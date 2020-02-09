@@ -28,7 +28,7 @@ class PlaySoundsRepository {
             .build()
             .create(NuulsService::class.java)
 
-    suspend fun listRemoteSounds(): ServiceResponse<List<RemoteSoundByte>> {
+    suspend fun listRemoteSounds(): ServiceResponse<List<RemoteSoundBite>> {
         val response = playSoundsService.getHtml()
         val responseBody = response.body()
         if (!response.isSuccessful || responseBody == null) {
@@ -44,20 +44,20 @@ class PlaySoundsRepository {
                 val url = block.split("data-link=\"")[1].split("\"").first()
                 val fileExtension = url.substringAfterLast('.', missingDelimiterValue = "")
                 val fileName = "$friendlyName.$fileExtension"
-                RemoteSoundByte(fileName, url)
+                RemoteSoundBite(fileName, url)
             })
         }
     }
 
-    suspend fun downloadRemoteSound(remoteSoundByte: RemoteSoundByte, destination: String) {
-        val response = nuulsService.get(remoteSoundByte.url)
+    suspend fun downloadRemoteSound(remoteSoundBite: RemoteSoundBite, destination: String) {
+        val response = nuulsService.get(remoteSoundBite.url)
         val responseBody = response.body()
         if (!response.isSuccessful || responseBody == null) {
-            throw RuntimeException("Unable to download $remoteSoundByte, response=$response")
+            throw RuntimeException("Unable to download $remoteSoundBite, response=$response")
         }
         withContext(Dispatchers.IO) {
             val input = responseBody.byteStream()
-            val output = FileOutputStream("$destination/${remoteSoundByte.fileName}")
+            val output = FileOutputStream("$destination/${remoteSoundBite.fileName}")
             input.transferTo(output)
             output.close()
             input.close()

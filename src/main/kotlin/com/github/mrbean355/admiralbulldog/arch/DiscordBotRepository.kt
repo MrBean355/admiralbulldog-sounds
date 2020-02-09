@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch
 
-import com.github.mrbean355.admiralbulldog.assets.SoundByte
+import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -28,8 +28,8 @@ class DiscordBotRepository {
         }
     }
 
-    suspend fun playSound(soundByte: SoundByte): ServiceResponse<Void> {
-        return service.playSound(PlaySoundRequest(loadUserId(), ConfigPersistence.getDiscordToken(), soundByte.fileName))
+    suspend fun playSound(soundBite: SoundBite): ServiceResponse<Void> {
+        return service.playSound(PlaySoundRequest(loadUserId(), ConfigPersistence.getDiscordToken(), soundBite.fileName))
                 .toServiceResponse()
     }
 

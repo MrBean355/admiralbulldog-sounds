@@ -31,8 +31,8 @@ const val URL_MOD_INFO = "https://github.com/MrBean355/admiralbulldog-sounds/wik
 const val URL_DISCORD_BOT_INVITE = "https://discordapp.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot&permissions=1"
 const val URL_DISCORD_WIKI = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Discord-Bot"
 
-/* Sync Sound Bytes */
-const val TITLE_SYNC_SOUND_BYTES = "Updating"
+/* Sync Sound Bites */
+const val TITLE_SYNC_SOUND_BITES = "Updating"
 const val MSG_SYNC_WELCOME = "Welcome!\nChecking for new PlaySounds...\n"
 const val MSG_SYNC_FAILED = "\nCouldn't connect to PlaySounds page.\nCan't get latest sounds."
 const val ACTION_DONE = "Done"
@@ -52,7 +52,7 @@ const val ACTION_EXIT = "Exit"
 const val TRAY_CAPTION = "Over here!"
 const val TRAY_MESSAGE = "I've minimized to the system tray!"
 
-/* Toggle Sound Bytes */
+/* Toggle Sound Bites */
 const val TITLE_TOGGLE_SOUND_EVENTS = "Enable sounds"
 const val LABEL_VOLUME = "Volume"
 const val VOLUME_MAJOR_TICK_UNIT = MAX_VOLUME / 5.0

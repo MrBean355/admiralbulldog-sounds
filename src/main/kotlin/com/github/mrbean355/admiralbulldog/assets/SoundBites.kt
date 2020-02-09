@@ -2,7 +2,7 @@ package com.github.mrbean355.admiralbulldog.assets
 
 import com.github.mrbean355.admiralbulldog.MSG_SYNC_FAILED
 import com.github.mrbean355.admiralbulldog.arch.PlaySoundsRepository
-import com.github.mrbean355.admiralbulldog.arch.RemoteSoundByte
+import com.github.mrbean355.admiralbulldog.arch.RemoteSoundBite
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -28,10 +28,10 @@ private val SYNC_PERIOD = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
 /**
  * Synchronises our local sounds with the PlaySounds page.
  */
-object SoundBytes {
-    private val logger = LoggerFactory.getLogger(SoundBytes::class.java)
+object SoundBites {
+    private val logger = LoggerFactory.getLogger(SoundBites::class.java)
     private val playSoundsRepository = PlaySoundsRepository()
-    private var allSounds = emptyList<SoundByte>()
+    private var allSounds = emptyList<SoundBite>()
 
     /** Should we check for new sounds? */
     fun shouldSync(): Boolean {
@@ -61,19 +61,19 @@ object SoundBytes {
 
             /* Download all remote files that don't exist locally. */
             coroutineScope {
-                remoteFiles.forEach { remoteSoundByte ->
-                    localFiles.remove(remoteSoundByte.fileName)
+                remoteFiles.forEach { remoteSoundBite ->
+                    localFiles.remove(remoteSoundBite.fileName)
                     launch {
-                        if (!remoteSoundByte.existsLocally()) {
+                        if (!remoteSoundBite.existsLocally()) {
                             runCatching {
-                                playSoundsRepository.downloadRemoteSound(remoteSoundByte, SOUNDS_PATH)
+                                playSoundsRepository.downloadRemoteSound(remoteSoundBite, SOUNDS_PATH)
                             }.onSuccess {
                                 downloaded.incrementAndGet()
-                                action("Downloaded: ${remoteSoundByte.fileName}")
+                                action("Downloaded: ${remoteSoundBite.fileName}")
                             }.onFailure {
                                 failed.incrementAndGet()
-                                action("Failed to download: ${remoteSoundByte.fileName}")
-                                logger.error("Failed to download: ${remoteSoundByte.fileName}", it)
+                                action("Failed to download: ${remoteSoundBite.fileName}")
+                                logger.error("Failed to download: ${remoteSoundBite.fileName}", it)
                             }
                         }
                     }
@@ -105,14 +105,14 @@ object SoundBytes {
     }
 
     /** @return a list of all currently downloaded sounds. */
-    fun getAll(): List<SoundByte> {
+    fun getAll(): List<SoundBite> {
         if (allSounds.isEmpty()) {
             val root = File(SOUNDS_PATH)
             if (!root.exists() || !root.isDirectory) {
                 logger.error("Couldn't find sounds directory")
                 return emptyList()
             }
-            allSounds = root.list()?.map { SoundByte("$SOUNDS_PATH/$it") }
+            allSounds = root.list()?.map { SoundBite("$SOUNDS_PATH/$it") }
                     .orEmpty()
         }
         return allSounds
@@ -122,11 +122,11 @@ object SoundBytes {
      * Find a downloaded sound by name.
      * @return the sound if found, `null` otherwise.
      */
-    fun findSound(name: String): SoundByte? {
+    fun findSound(name: String): SoundBite? {
         return getAll().firstOrNull { it.name == name }
     }
 
-    private fun RemoteSoundByte.existsLocally(): Boolean {
+    private fun RemoteSoundBite.existsLocally(): Boolean {
         return File("$SOUNDS_PATH/$fileName").exists()
     }
 
@@ -144,7 +144,7 @@ object SoundBytes {
     private fun copySpecialSounds() {
         SPECIAL_SOUNDS.forEach {
             if (!File("$SOUNDS_PATH/$it").exists()) {
-                val stream = SoundBytes::class.java.classLoader.getResourceAsStream("$SPECIAL_SOUNDS_PATH/$it")
+                val stream = SoundBites::class.java.classLoader.getResourceAsStream("$SPECIAL_SOUNDS_PATH/$it")
                 if (stream != null) {
                     Files.copy(stream, Paths.get("$SOUNDS_PATH/$it"))
                 }

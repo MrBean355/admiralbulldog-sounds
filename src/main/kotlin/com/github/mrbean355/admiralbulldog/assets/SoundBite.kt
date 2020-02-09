@@ -8,11 +8,12 @@ import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * A downloaded sound byte which the user can choose to be played.
+ * A downloaded sound bite which the user can choose to be played.
  */
-class SoundByte(
+class SoundBite(
         /** Path to the file. */
-        private val filePath: String) {
+        private val filePath: String
+) {
     /** Name of the file, excluding directories. */
     val fileName: String = filePath.substringAfterLast('/')
     /** Name of the file, excluding directories and the file extension. */
@@ -37,7 +38,7 @@ class SoundByte(
     }
 
     override fun toString(): String {
-        return "SoundByte(filePath='$filePath', fileName='$fileName', name='$name')"
+        return "SoundBite(filePath='$filePath', fileName='$fileName', name='$name')"
     }
 
     private companion object {

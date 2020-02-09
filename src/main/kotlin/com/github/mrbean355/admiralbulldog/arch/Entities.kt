@@ -27,7 +27,7 @@ fun <T, R> Response<T>.toServiceResponse(transform: (T) -> R): ServiceResponse<R
 }
 
 /** A sound on the PlaySounds page. */
-data class RemoteSoundByte(
+data class RemoteSoundBite(
         /** Remote file name with extension. */
         val fileName: String,
         /** URL where the file is hosted. */

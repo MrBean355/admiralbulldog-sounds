@@ -51,19 +51,19 @@ fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
     }
 }
 
-/** Play sound bytes that want to be played. */
+/** Play sound bites that want to be played. */
 private fun processGameState(currentState: GameState) {
     val previousMatchId = previousState?.map?.matchid
     val currentMatchId = currentState.map?.matchid
 
-    // Recreate sound bytes when a new match is entered:
+    // Recreate sound bites when a new match is entered:
     if (currentMatchId != previousMatchId) {
         previousState = null
         soundEvents.clear()
         soundEvents.addAll(SOUND_EVENT_TYPES.map { it.createInstance() })
     }
 
-    // Play sound bytes that want to be played:
+    // Play sound bites that want to be played:
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
         soundEvents.forEach {
