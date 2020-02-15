@@ -1,11 +1,18 @@
 package com.github.mrbean355.admiralbulldog.arch
 
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Streaming
+import java.util.concurrent.TimeUnit
 
 interface DiscordBotService {
 
@@ -21,4 +28,18 @@ interface DiscordBotService {
     @POST("/analytics/logEvent")
     suspend fun logAnalyticsEvent(@Body request: AnalyticsRequest): Response<Void>
 
+    @GET("/soundBites/{name}")
+    @Streaming
+    suspend fun downloadSoundBite(@Path("name") name: String): Response<ResponseBody>
+
+    companion object {
+        val INSTANCE: DiscordBotService = Retrofit.Builder()
+                .client(OkHttpClient.Builder()
+                        .callTimeout(10, TimeUnit.SECONDS)
+                        .build())
+                .baseUrl(hostUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create()
+    }
 }
