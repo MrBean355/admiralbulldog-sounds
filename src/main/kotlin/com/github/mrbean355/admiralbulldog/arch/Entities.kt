@@ -25,10 +25,3 @@ fun <T, R> Response<T>.toServiceResponse(transform: (T) -> R): ServiceResponse<R
         ServiceResponse.Error(code())
     }
 }
-
-/** A sound on the PlaySounds page. */
-data class RemoteSoundBite(
-        /** Remote file name with extension. */
-        val fileName: String,
-        /** URL where the file is hosted. */
-        val url: String)

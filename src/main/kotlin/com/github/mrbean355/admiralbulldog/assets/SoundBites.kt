@@ -1,8 +1,7 @@
 package com.github.mrbean355.admiralbulldog.assets
 
 import com.github.mrbean355.admiralbulldog.MSG_SYNC_FAILED
-import com.github.mrbean355.admiralbulldog.arch.PlaySoundsRepository
-import com.github.mrbean355.admiralbulldog.arch.RemoteSoundBite
+import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -30,7 +29,7 @@ private val SYNC_PERIOD = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
  */
 object SoundBites {
     private val logger = LoggerFactory.getLogger(SoundBites::class.java)
-    private val playSoundsRepository = PlaySoundsRepository()
+    private val playSoundsRepository = DiscordBotRepository()
     private var allSounds = emptyList<SoundBite>()
 
     /** Should we check for new sounds? */
@@ -51,7 +50,7 @@ object SoundBites {
         val deleted = AtomicInteger()
         GlobalScope.launch {
             val localFiles = getLocalFiles().toMutableList()
-            val response = playSoundsRepository.listRemoteSounds()
+            val response = playSoundsRepository.listSoundBites()
             val remoteFiles = response.body
             if (!response.isSuccessful() || remoteFiles == null) {
                 action(MSG_SYNC_FAILED)
@@ -61,19 +60,18 @@ object SoundBites {
 
             /* Download all remote files that don't exist locally. */
             coroutineScope {
-                remoteFiles.forEach { remoteSoundBite ->
-                    localFiles.remove(remoteSoundBite.fileName)
+                remoteFiles.forEach { soundBite ->
+                    localFiles.remove(soundBite)
                     launch {
-                        if (!remoteSoundBite.existsLocally()) {
-                            runCatching {
-                                playSoundsRepository.downloadRemoteSound(remoteSoundBite, SOUNDS_PATH)
-                            }.onSuccess {
+                        if (!soundBiteExistsLocally(soundBite)) {
+                            val soundBiteResponse = playSoundsRepository.downloadSoundBite(soundBite, SOUNDS_PATH)
+                            if (soundBiteResponse.isSuccessful()) {
                                 downloaded.incrementAndGet()
-                                action("Downloaded: ${remoteSoundBite.fileName}")
-                            }.onFailure {
+                                action("Downloaded: $soundBite")
+                            } else {
                                 failed.incrementAndGet()
-                                action("Failed to download: ${remoteSoundBite.fileName}")
-                                logger.error("Failed to download: ${remoteSoundBite.fileName}", it)
+                                action("Failed to download: $soundBite")
+                                logger.error("Failed to download: $soundBite; statusCode=${soundBiteResponse.statusCode}")
                             }
                         }
                     }
@@ -126,8 +124,8 @@ object SoundBites {
         return getAll().firstOrNull { it.name == name }
     }
 
-    private fun RemoteSoundBite.existsLocally(): Boolean {
-        return File("$SOUNDS_PATH/$fileName").exists()
+    private fun soundBiteExistsLocally(name: String): Boolean {
+        return File("$SOUNDS_PATH/$name").exists()
     }
 
     private fun getLocalFiles(): List<String> {

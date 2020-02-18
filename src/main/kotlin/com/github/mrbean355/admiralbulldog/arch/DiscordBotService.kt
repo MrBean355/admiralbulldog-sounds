@@ -19,6 +19,13 @@ interface DiscordBotService {
     @POST("/createId")
     suspend fun createId(): Response<CreateIdResponse>
 
+    @GET("/soundBites/list")
+    suspend fun listSoundBites(): Response<List<String>>
+
+    @GET("/soundBites/{name}")
+    @Streaming
+    suspend fun downloadSoundBite(@Path("name") name: String): Response<ResponseBody>
+
     @GET("/lookupToken")
     suspend fun lookUpToken(@Query("token") token: String): Response<ResponseBody>
 
@@ -27,10 +34,6 @@ interface DiscordBotService {
 
     @POST("/analytics/logEvent")
     suspend fun logAnalyticsEvent(@Body request: AnalyticsRequest): Response<Void>
-
-    @GET("/soundBites/{name}")
-    @Streaming
-    suspend fun downloadSoundBite(@Path("name") name: String): Response<ResponseBody>
 
     companion object {
         val INSTANCE: DiscordBotService = Retrofit.Builder()

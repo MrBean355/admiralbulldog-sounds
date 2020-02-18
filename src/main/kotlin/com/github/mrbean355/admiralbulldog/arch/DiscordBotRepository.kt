@@ -4,10 +4,27 @@ import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.io.FileOutputStream
 
 var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
 
 class DiscordBotRepository {
+
+    suspend fun listSoundBites(): ServiceResponse<List<String>> {
+        return callService { DiscordBotService.INSTANCE.listSoundBites() }
+                .toServiceResponse()
+    }
+
+    suspend fun downloadSoundBite(name: String, destination: String): ServiceResponse<Any> {
+        val response = callService { DiscordBotService.INSTANCE.downloadSoundBite(name) }
+        val responseBody = response.body()
+        if (response.isSuccessful && responseBody != null) {
+            FileOutputStream("$destination/$name").use {
+                responseBody.byteStream().copyTo(it)
+            }
+        }
+        return response.toServiceResponse { Any() }
+    }
 
     suspend fun lookUpToken(token: String): ServiceResponse<String> {
         val response = callService { DiscordBotService.INSTANCE.lookUpToken(token) }
