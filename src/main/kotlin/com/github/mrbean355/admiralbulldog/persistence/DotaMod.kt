@@ -45,8 +45,8 @@ object DotaMod {
             return false
         }
         val response = gitHubRepository.downloadAsset(checksumAssetInfo)
-        val body = response.body()
-        if (!response.isSuccessful || body == null) {
+        val body = response.body
+        if (!response.isSuccessful() || body == null) {
             logger.error("Error getting checksum, giving up")
             return false
         }
@@ -56,17 +56,28 @@ object DotaMod {
 
     /** Register the mod in Dota's game info file. */
     fun onModEnabled() {
-        updateGameInfoFile(install = true)
+        if (!ConfigPersistence.isModTempDisabled()) {
+            updateGameInfoFile(install = true)
+        } else {
+            updateGameInfoFile(install = false)
+        }
     }
 
     /** Update the mod's version in the app's config file. */
     fun onModDownloaded(releaseInfo: ReleaseInfo) {
         ConfigPersistence.setModVersion(releaseInfo.tagName.removeVersionPrefix())
+        if (ConfigPersistence.isModTempDisabled()) {
+            ConfigPersistence.setModTempDisabled(false)
+            updateGameInfoFile(install = true)
+        }
     }
 
-    /** Unregister the mod from Dota's game info file. */
-    fun onModDisabled() {
-        updateGameInfoFile(install = false)
+    /**
+     * Unregister the mod from Dota's game info file.
+     * @return `true` if the mod was previously enabled; `false` otherwise.
+     */
+    fun onModDisabled(): Boolean {
+        return updateGameInfoFile(install = false)
     }
 
     /** @return whether the SHA-512 hash of this [File] equals (case insensitive) the given [checksum]. */
@@ -86,7 +97,7 @@ object DotaMod {
         }
     }
 
-    private fun updateGameInfoFile(install: Boolean) {
+    private fun updateGameInfoFile(install: Boolean): Boolean {
         val gameInfo = File(DotaPath.getGameInfoFilePath())
         val builder = StringBuilder()
         var bulldogFound = false
@@ -103,10 +114,13 @@ object DotaMod {
             } else {
                 if (!line.matches(GAME_BULLDOG_PATTERN)) {
                     builder.append(line).append('\n')
+                } else {
+                    bulldogFound = true
                 }
             }
         }
         gameInfo.writeText(builder.toString())
         logger.info("Wrote game info file: ${gameInfo.absolutePath}")
+        return bulldogFound
     }
 }

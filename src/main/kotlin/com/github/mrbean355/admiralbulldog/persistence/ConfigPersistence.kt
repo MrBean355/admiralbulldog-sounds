@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
-import com.github.mrbean355.admiralbulldog.assets.SoundByte
-import com.github.mrbean355.admiralbulldog.assets.SoundBytes
+import com.github.mrbean355.admiralbulldog.assets.SoundBite
+import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.google.gson.GsonBuilder
@@ -17,8 +17,8 @@ const val MAX_VOLUME = 100.0
 private const val DEFAULT_VOLUME = 20.0
 
 /**
- * Facilitates saving & loading the configuration of the sound bytes from a file.
- * Sound bytes:
+ * Facilitates saving & loading the configuration of the sound bites from a file.
+ * Sound bites:
  * - have a list of possible sounds to play, configurable by the user at runtime
  * - can be enabled or disabled at runtime by the user
  */
@@ -118,44 +118,44 @@ object ConfigPersistence {
         return previous
     }
 
-    /** @return `true` if the sound byte is enabled; `false` otherwise. */
+    /** @return `true` if the sound bite is enabled; `false` otherwise. */
     fun isSoundEventEnabled(type: KClass<out SoundEvent>): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.enabled
     }
 
-    /** Enable or disable a sound byte. */
+    /** Enable or disable a sound bite. */
     fun toggleSoundEvent(type: KClass<out SoundEvent>, enabled: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.enabled = enabled
         save()
     }
 
-    /** @return whether the user has chosen to play the sound byte through Discord. */
+    /** @return whether the user has chosen to play the sound bite through Discord. */
     fun isPlayedThroughDiscord(type: KClass<out SoundEvent>): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
     }
 
-    /** Set whether the user has chosen to play the sound byte through Discord. */
+    /** Set whether the user has chosen to play the sound bite through Discord. */
     fun setPlayedThroughDiscord(type: KClass<out SoundEvent>, playThroughDiscord: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.playThroughDiscord = playThroughDiscord
         save()
     }
 
-    /** @return all selected sounds for a sound byte if it's enabled; empty list otherwise. */
-    fun getSoundsForType(type: KClass<out SoundEvent>): List<SoundByte> {
+    /** @return all selected sounds for a sound bite if it's enabled; empty list otherwise. */
+    fun getSoundsForType(type: KClass<out SoundEvent>): List<SoundBite> {
         val toggle = loadedConfig.sounds[type.simpleName]!!
         if (toggle.enabled) {
-            return toggle.sounds.mapNotNull { SoundBytes.findSound(it) }
+            return toggle.sounds.mapNotNull { SoundBites.findSound(it) }
         }
         return emptyList()
     }
 
     /** @return a list of all sounds selected for the sound board. */
-    fun getSoundBoard(): List<SoundByte> {
-        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundBytes.findSound(it) }
+    fun getSoundBoard(): List<SoundBite> {
+        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundBites.findSound(it) }
     }
 
     /** Set the list of all sounds selected for the sound board. */
-    fun setSoundBoard(soundBoard: List<SoundByte>) {
+    fun setSoundBoard(soundBoard: List<SoundBite>) {
         loadedConfig.soundBoard = soundBoard.map { it.name }
         save()
     }
@@ -168,6 +168,15 @@ object ConfigPersistence {
     /** Set whether the user has enabled the mod. */
     fun setModEnabled(enabled: Boolean) {
         loadedConfig.modEnabled = enabled
+        save()
+    }
+
+    fun isModTempDisabled(): Boolean {
+        return loadedConfig.modTempDisabled
+    }
+
+    fun setModTempDisabled(disabled: Boolean) {
+        loadedConfig.modTempDisabled = disabled
         save()
     }
 
@@ -184,7 +193,7 @@ object ConfigPersistence {
 
     /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
     fun getInvalidSounds(): List<String> {
-        val existing = SoundBytes.getAll().map { it.name }
+        val existing = SoundBites.getAll().map { it.name }
         val invalidSounds = loadedConfig.sounds
                 .flatMap { it.value.sounds }
                 .filter { it !in existing }
@@ -204,8 +213,8 @@ object ConfigPersistence {
         save()
     }
 
-    /** Update the given sound byte's config to use the given sound `selection`. */
-    fun saveSoundsForType(type: KClass<out SoundEvent>, selection: List<SoundByte>) {
+    /** Update the given sound bite's config to use the given sound `selection`. */
+    fun saveSoundsForType(type: KClass<out SoundEvent>, selection: List<SoundBite>) {
         loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
         save()
     }
@@ -220,14 +229,14 @@ object ConfigPersistence {
         file.writeText(gson.toJson(loadedConfig))
     }
 
-    /** Load the default configs for all sound bytes. */
+    /** Load the default configs for all sound bites. */
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList(), false, null)
+        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList(), false, false, null)
     }
 
-    /** Load the default config for a given sound byte `type`. */
+    /** Load the default config for a given sound bite `type`. */
     private fun loadDefaults(type: KClass<out SoundEvent>): Toggle {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
         if (resource == null) {
@@ -246,7 +255,7 @@ object ConfigPersistence {
         }
     }
 
-    /** Checks the loaded `config` map, adding defaults for any missing sound bytes. */
+    /** Checks the loaded `config` map, adding defaults for any missing sound bites. */
     private fun addMissingSoundEventDefaults() {
         SOUND_EVENT_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
@@ -268,6 +277,7 @@ object ConfigPersistence {
             val sounds: MutableMap<String, Toggle>,
             var soundBoard: List<String>?,
             var modEnabled: Boolean,
+            var modTempDisabled: Boolean,
             var modVersion: String?
     )
 

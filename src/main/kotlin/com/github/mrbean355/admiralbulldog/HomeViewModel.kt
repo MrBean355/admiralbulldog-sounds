@@ -4,11 +4,11 @@ import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
-import com.github.mrbean355.admiralbulldog.assets.SoundBytes
+import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
+import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
-import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.Installer
@@ -52,8 +52,8 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     val version = SimpleStringProperty(getString("lbl_app_version", APP_VERSION.value))
 
     fun init() {
-        if (SoundBytes.shouldSync()) {
-            SyncSoundBytesStage().showModal(owner = stage, wait = true)
+        if (SoundBites.shouldSync()) {
+            SyncSoundBitesStage().showModal(owner = stage, wait = true)
         }
         val dotaPath = loadDotaPath()
         Installer.installIfNecessary(dotaPath)
@@ -125,8 +125,8 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     private suspend fun checkForAppUpdate() {
         logger.info("Checking for app update...")
         val resource = gitHubRepository.getLatestAppRelease()
-        val releaseInfo = resource.body()
-        if (!resource.isSuccessful || releaseInfo == null) {
+        val releaseInfo = resource.body
+        if (!resource.isSuccessful() || releaseInfo == null) {
             logger.warn("Bad app release info response, giving up")
             checkForModUpdate()
             return
@@ -172,8 +172,8 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
         logger.info("Checking for mod update...")
         DotaMod.onModEnabled()
         val resource = gitHubRepository.getLatestModRelease()
-        val releaseInfo = resource.body()
-        if (!resource.isSuccessful || releaseInfo == null) {
+        val releaseInfo = resource.body
+        if (!resource.isSuccessful() || releaseInfo == null) {
             logger.warn("Bad mod release info response, giving up")
             return
         }

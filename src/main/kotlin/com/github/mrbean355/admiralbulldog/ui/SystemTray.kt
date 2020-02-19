@@ -6,8 +6,8 @@ import com.github.mrbean355.admiralbulldog.DotaApplication
 import com.github.mrbean355.admiralbulldog.TITLE_MAIN_WINDOW
 import com.github.mrbean355.admiralbulldog.TRAY_CAPTION
 import com.github.mrbean355.admiralbulldog.TRAY_MESSAGE
+import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.service.logAnalyticsEvent
 import javafx.application.Platform
 import javafx.stage.Stage
 import java.awt.Image

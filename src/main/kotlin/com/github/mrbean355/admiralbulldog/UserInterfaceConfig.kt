@@ -29,34 +29,19 @@ const val URL_DISCORD_SERVER_INVITE = "https://discordapp.com/invite/pEV4mW5"
 const val URL_PROJECT_WEBSITE = "https://github.com/MrBean355/admiralbulldog-sounds"
 const val URL_MOD_INFO = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Dota-Mod"
 const val URL_DISCORD_BOT_INVITE = "https://discordapp.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot&permissions=1"
+const val URL_DISCORD_WIKI = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Discord-Bot"
 
-/* Sync Sound Bytes */
-const val TITLE_SYNC_SOUND_BYTES = "Updating"
+/* Sync Sound Bites */
+const val TITLE_SYNC_SOUND_BITES = "Updating"
 const val MSG_SYNC_WELCOME = "Welcome!\nChecking for new PlaySounds...\n"
 const val MSG_SYNC_FAILED = "\nCouldn't connect to PlaySounds page.\nCan't get latest sounds."
 const val ACTION_DONE = "Done"
 
 /* Main Window */
 const val TITLE_MAIN_WINDOW = "AdmiralBulldog"
-const val MSG_NOT_CONNECTED = "Waiting to hear from Dota 2..."
-const val MSG_CONNECTED = "Connected to Dota 2!"
-const val DESC_NOT_CONNECTED = "You need to be in a match. Try entering Hero Demo mode."
-const val DESC_CONNECTED = "Ready to play sounds during your matches!"
-const val ACTION_CHANGE_SOUNDS = "Change sounds"
-const val ACTION_DISCORD_BOT = "Discord bot"
-const val LINK_DISCORD_COMMUNITY = "Discord community"
-const val LINK_PROJECT_WEBSITE = "Website"
-const val LABEL_APP_VERSION = "Version: %s"
-const val MSG_SPECIFY_VALID_DOTA_DIR = "You need to specify a valid Dota 2 installation directory to use the app."
-const val MSG_REMOVED_SOUNDS = "One or more sounds you were using got removed:\n" +
-        "%s\n" +
-        "Unfortunately you can't use them any more."
 const val MSG_INSTALLER = "Please choose your Dota 2 installation directory."
 const val TITLE_INSTALLER = "Choose Dota 2 directory"
 const val HEADER_INSTALLER = "Installer"
-const val HEADER_UPDATE_AVAILABLE = "Update available!"
-const val HEADER_UPDATER = "Updater"
-const val HEADER_REMOVED_SOUNDS = "Sounds removed"
 const val HEADER_DISCORD_SOUND = "Discord sound"
 const val HEADER_EXCEPTION = "Unexpected error"
 const val MSG_INSTALLER_SUCCESS = "Successfully installed! Please restart Dota if it's open."
@@ -67,7 +52,7 @@ const val ACTION_EXIT = "Exit"
 const val TRAY_CAPTION = "Over here!"
 const val TRAY_MESSAGE = "I've minimized to the system tray!"
 
-/* Toggle Sound Bytes */
+/* Toggle Sound Bites */
 const val TITLE_TOGGLE_SOUND_EVENTS = "Enable sounds"
 const val LABEL_VOLUME = "Volume"
 const val VOLUME_MAJOR_TICK_UNIT = MAX_VOLUME / 5.0

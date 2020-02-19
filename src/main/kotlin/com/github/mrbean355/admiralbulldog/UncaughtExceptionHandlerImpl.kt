@@ -51,8 +51,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
     private fun getMessage(e: Throwable?, logFile: File): String {
         return if (e is BindException) {
             """
-                It looks like the app may already be running.
-                Please check your system tray; it might be minimized there.
+                It looks like the app may already be running. Only 1 instance can be running at a time.
                 
                 If it's not already running, an error log file was created here:
                 ${logFile.absolutePath}

@@ -1,11 +1,11 @@
 package com.github.mrbean355.admiralbulldog.game
 
+import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.events.RandomSoundEvent
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.events.random
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.service.playSoundOnDiscord
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -24,6 +24,7 @@ import kotlin.concurrent.thread
 import kotlin.reflect.full.createInstance
 
 private val logger = LoggerFactory.getLogger("GameStateMonitor")
+private val discordBotRepository by lazy { DiscordBotRepository() }
 private val soundEvents = mutableListOf<SoundEvent>()
 private var previousState: GameState? = null
 
@@ -50,19 +51,19 @@ fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
     }
 }
 
-/** Play sound bytes that want to be played. */
+/** Play sound bites that want to be played. */
 private fun processGameState(currentState: GameState) {
     val previousMatchId = previousState?.map?.matchid
     val currentMatchId = currentState.map?.matchid
 
-    // Recreate sound bytes when a new match is entered:
+    // Recreate sound bites when a new match is entered:
     if (currentMatchId != previousMatchId) {
         previousState = null
         soundEvents.clear()
         soundEvents.addAll(SOUND_EVENT_TYPES.map { it.createInstance() })
     }
 
-    // Play sound bytes that want to be played:
+    // Play sound bites that want to be played:
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
         soundEvents.forEach {
@@ -86,7 +87,8 @@ private fun playSoundForType(soundEvent: SoundEvent) {
         val choice = choices.random()
         if (shouldPlayOnDiscord(soundEvent)) {
             GlobalScope.launch {
-                if (!playSoundOnDiscord(choice)) {
+                val response = discordBotRepository.playSound(choice)
+                if (!response.isSuccessful()) {
                     choice.play()
                 }
             }

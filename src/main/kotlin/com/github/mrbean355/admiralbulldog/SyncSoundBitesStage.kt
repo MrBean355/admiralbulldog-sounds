@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.assets.SoundBytes
+import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.finalise
 import javafx.application.Platform
@@ -15,7 +15,7 @@ import javafx.scene.control.TextArea
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
-class SyncSoundBytesStage : Stage() {
+class SyncSoundBitesStage : Stage() {
     private val progress = SimpleDoubleProperty()
     private val log = SimpleStringProperty(MSG_SYNC_WELCOME)
     private val complete = SimpleBooleanProperty(false)
@@ -26,7 +26,7 @@ class SyncSoundBytesStage : Stage() {
         }
         root.children += ProgressBar().apply {
             prefWidthProperty().bind(root.widthProperty())
-            progressProperty().bind(this@SyncSoundBytesStage.progress)
+            progressProperty().bind(this@SyncSoundBitesStage.progress)
         }
         root.children += TextArea().apply {
             isEditable = false
@@ -42,7 +42,7 @@ class SyncSoundBytesStage : Stage() {
             setOnAction { close() }
         }
 
-        SoundBytes.synchronise(action = {
+        SoundBites.synchronise(action = {
             Platform.runLater {
                 log.value = "${log.value}\n$it"
             }
@@ -53,7 +53,7 @@ class SyncSoundBytesStage : Stage() {
             setOnCloseRequest { /* Default behaviour */ }
             complete.set(true)
         })
-        finalise(title = TITLE_SYNC_SOUND_BYTES, root = root, onCloseRequest = EventHandler {
+        finalise(title = TITLE_SYNC_SOUND_BITES, root = root, onCloseRequest = EventHandler {
             it.consume()
         })
         width = WINDOW_WIDTH_LARGE
