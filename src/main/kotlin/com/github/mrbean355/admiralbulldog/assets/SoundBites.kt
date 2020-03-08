@@ -2,7 +2,9 @@ package com.github.mrbean355.admiralbulldog.assets
 
 import com.github.mrbean355.admiralbulldog.MSG_SYNC_FAILED
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
@@ -10,17 +12,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Directory that the downloaded sounds live in. */
 private const val SOUNDS_PATH = "sounds"
-/** Directory within resources where special sounds live. */
-private const val SPECIAL_SOUNDS_PATH = "unmonitored"
-/** Special sounds that don't exist on the PlaySounds page. */
-private val SPECIAL_SOUNDS = listOf("herewegoagain.mp3", "useyourmidas.wav", "wefuckinglost.wav")
+
 /** How often (in milliseconds) to check for new sounds. */
 private val SYNC_PERIOD = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
 
@@ -42,14 +39,13 @@ object SoundBites {
      * Synchronise our local sounds with the PlaySounds page.
      * Downloads sounds which don't exist locally.
      * Deletes local sounds which don't exist remotely.
-     * Copies over the [SPECIAL_SOUNDS].
      */
-    fun synchronise(action: (String) -> Unit, complete: (Boolean) -> Unit) {
+    fun synchronise(action: (String) -> Unit, progress: (Double) -> Unit, complete: (Boolean) -> Unit) {
         val downloaded = AtomicInteger()
         val failed = AtomicInteger()
         val deleted = AtomicInteger()
-        GlobalScope.launch {
-            val localFiles = getLocalFiles().toMutableList()
+
+        GlobalScope.launch(context = IO) {
             val response = playSoundsRepository.listSoundBites()
             val remoteFiles = response.body
             if (!response.isSuccessful() || remoteFiles == null) {
@@ -57,22 +53,29 @@ object SoundBites {
                 withContext(Main) { complete(false) }
                 return@launch
             }
+            val invalidLocalFiles = getLocalFiles().filter { it !in remoteFiles.keys }
+            val total = remoteFiles.size.toDouble()
+            var current = 0
 
             /* Download all remote files that don't exist locally. */
             coroutineScope {
-                remoteFiles.forEach { soundBite ->
-                    localFiles.remove(soundBite)
+                remoteFiles.keys.forEach { soundBite ->
                     launch {
-                        if (!soundBiteExistsLocally(soundBite)) {
+                        val existsLocally = soundBiteExistsLocally(soundBite)
+                        val latestChecksum = remoteFiles.getValue(soundBite)
+                        if (!existsLocally || !File("$SOUNDS_PATH/$soundBite").verifyChecksum(latestChecksum)) {
                             val soundBiteResponse = playSoundsRepository.downloadSoundBite(soundBite, SOUNDS_PATH)
                             if (soundBiteResponse.isSuccessful()) {
                                 downloaded.incrementAndGet()
-                                action("Downloaded: $soundBite")
+                                action(if (existsLocally) "Re-downloaded: $soundBite" else "Downloaded: $soundBite")
                             } else {
                                 failed.incrementAndGet()
                                 action("Failed to download: $soundBite")
                                 logger.error("Failed to download: $soundBite; statusCode=${soundBiteResponse.statusCode}")
                             }
+                        }
+                        withContext(Main) {
+                            progress(++current / total)
                         }
                     }
                 }
@@ -80,12 +83,11 @@ object SoundBites {
             /* Delete local files that don't exist remotely. */
             coroutineScope {
                 launch {
-                    localFiles.forEach {
+                    invalidLocalFiles.forEach {
                         File("${SOUNDS_PATH}/$it").delete()
                         deleted.incrementAndGet()
                         action("Deleted old sound: $it")
                     }
-                    copySpecialSounds()
                 }
             }
 
@@ -134,19 +136,6 @@ object SoundBites {
             root.mkdirs()
             return emptyList()
         }
-        return root.list()?.toList().orEmpty().filter {
-            it !in SPECIAL_SOUNDS
-        }
-    }
-
-    private fun copySpecialSounds() {
-        SPECIAL_SOUNDS.forEach {
-            if (!File("$SOUNDS_PATH/$it").exists()) {
-                val stream = SoundBites::class.java.classLoader.getResourceAsStream("$SPECIAL_SOUNDS_PATH/$it")
-                if (stream != null) {
-                    Files.copy(stream, Paths.get("$SOUNDS_PATH/$it"))
-                }
-            }
-        }
+        return root.list()?.toList().orEmpty()
     }
 }

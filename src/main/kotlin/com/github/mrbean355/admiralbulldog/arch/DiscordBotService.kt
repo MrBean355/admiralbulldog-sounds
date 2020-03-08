@@ -1,6 +1,5 @@
 package com.github.mrbean355.admiralbulldog.arch
 
-import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -12,15 +11,14 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Streaming
-import java.util.concurrent.TimeUnit
 
 interface DiscordBotService {
 
     @POST("/createId")
     suspend fun createId(): Response<CreateIdResponse>
 
-    @GET("/soundBites/list")
-    suspend fun listSoundBites(): Response<List<String>>
+    @GET("/soundBites/listV2")
+    suspend fun listSoundBites(): Response<Map<String, String>>
 
     @GET("/soundBites/{name}")
     @Streaming
@@ -37,9 +35,6 @@ interface DiscordBotService {
 
     companion object {
         val INSTANCE: DiscordBotService = Retrofit.Builder()
-                .client(OkHttpClient.Builder()
-                        .callTimeout(10, TimeUnit.SECONDS)
-                        .build())
                 .baseUrl(hostUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
