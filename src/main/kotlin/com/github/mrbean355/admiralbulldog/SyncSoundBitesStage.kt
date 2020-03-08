@@ -7,7 +7,6 @@ import javafx.application.Platform
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleStringProperty
-import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
@@ -46,16 +45,15 @@ class SyncSoundBitesStage : Stage() {
             Platform.runLater {
                 log.value = "${log.value}\n$it"
             }
+        }, progress = {
+            progress.set(it)
         }, complete = { successful ->
             if (successful) {
                 ConfigPersistence.markLastSync()
             }
-            setOnCloseRequest { /* Default behaviour */ }
             complete.set(true)
         })
-        finalise(title = TITLE_SYNC_SOUND_BITES, root = root, onCloseRequest = EventHandler {
-            it.consume()
-        })
+        finalise(title = TITLE_SYNC_SOUND_BITES, root = root)
         width = WINDOW_WIDTH_LARGE
     }
 }

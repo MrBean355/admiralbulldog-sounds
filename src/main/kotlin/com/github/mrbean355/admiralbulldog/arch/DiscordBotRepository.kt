@@ -10,7 +10,7 @@ var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
 
 class DiscordBotRepository {
 
-    suspend fun listSoundBites(): ServiceResponse<List<String>> {
+    suspend fun listSoundBites(): ServiceResponse<Map<String, String>> {
         return callService { DiscordBotService.INSTANCE.listSoundBites() }
                 .toServiceResponse()
     }
@@ -19,8 +19,10 @@ class DiscordBotRepository {
         val response = callService { DiscordBotService.INSTANCE.downloadSoundBite(name) }
         val responseBody = response.body()
         if (response.isSuccessful && responseBody != null) {
-            FileOutputStream("$destination/$name").use {
-                responseBody.byteStream().copyTo(it)
+            responseBody.byteStream().use { input ->
+                FileOutputStream("$destination/$name").use { output ->
+                    input.copyTo(output)
+                }
             }
         }
         return response.toServiceResponse { Any() }
