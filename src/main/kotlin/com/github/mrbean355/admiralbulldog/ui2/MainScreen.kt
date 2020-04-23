@@ -2,6 +2,7 @@ package com.github.mrbean355.admiralbulldog.ui2
 
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui2.home.HomeScreen
+import com.github.mrbean355.admiralbulldog.ui2.sounds.SoundEventsScreen
 import javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE
 import tornadofx.View
 import tornadofx.tab
@@ -14,7 +15,7 @@ class MainScreen : View(getString("app_title")) {
         primaryStage.isResizable = false
         tabClosingPolicy = UNAVAILABLE
         tab<HomeScreen>()
-        tab(getString("tab_sounds"))
+        tab<SoundEventsScreen>()
         tab(getString("tab_discord"))
         tab(getString("tab_mod"))
         tab(getString("tab_settings"))
