@@ -26,10 +26,15 @@ import java.util.Optional
 import java.util.ResourceBundle
 import java.util.concurrent.Callable
 
-val strings: ResourceBundle = ResourceBundle.getBundle("strings")
+private val strings: ResourceBundle = ResourceBundle.getBundle("strings")
+private val stringsV2: ResourceBundle = ResourceBundle.getBundle("strings_v2")
 
 fun getString(key: String): String {
-    return if (strings.containsKey(key)) strings.getString(key) else key
+    return when {
+        strings.containsKey(key) -> strings.getString(key)
+        stringsV2.containsKey(key) -> stringsV2.getString(key)
+        else -> key
+    }
 }
 
 fun getString(key: String, vararg formatArgs: Any?): String {
