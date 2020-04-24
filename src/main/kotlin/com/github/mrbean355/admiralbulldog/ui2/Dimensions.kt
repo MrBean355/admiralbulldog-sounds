@@ -11,5 +11,6 @@ object Spacing {
 }
 
 object Text {
+    const val MEDIUM = 14.0
     const val LARGE = 18.0
 }

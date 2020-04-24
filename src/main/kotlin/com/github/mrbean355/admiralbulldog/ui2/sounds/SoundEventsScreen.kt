@@ -24,13 +24,17 @@ private val INACTIVE_BACKGROUND = Background(BackgroundFill(Color.TRANSPARENT, C
 class SoundEventsScreen : View(getString("tab_sounds")) {
     override val root = scrollpane(fitToWidth = true) {
         vbox {
-            ALL_EVENTS.forEach {
-                label(it.name) {
+            ALL_EVENTS.forEach { soundEvent ->
+                label(soundEvent.name) {
                     paddingHorizontal = Spacing.MEDIUM * 2
                     paddingVertical = Spacing.SMALL * 2
                     fitToParentWidth()
                     onHover { isHovering ->
                         background = if (isHovering) HOVER_BACKGROUND else INACTIVE_BACKGROUND
+                    }
+                    setOnMouseClicked {
+                        find<ConfigureSoundEventScreen>(params = mapOf(ConfigureSoundEventScreen.ARG_EVENT to soundEvent))
+                                .openModal(resizable = false)
                     }
                 }
                 separator()
