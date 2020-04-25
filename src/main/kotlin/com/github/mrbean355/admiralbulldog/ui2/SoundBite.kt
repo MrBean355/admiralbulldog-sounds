@@ -14,7 +14,7 @@ data class SoundBite(val filePath: String) {
     fun play(rate: Double = 100.0) {
         val media = Media(File(filePath).toURI().toString())
         PLAYERS += MediaPlayer(media).apply {
-            this.volume = AppConfig.getVolume() / 100.0
+            this.volume = AppConfig.volumeProperty().value / 100.0
             this.rate = rate / 100.0
             onEndOfMedia = Runnable {
                 dispose()
