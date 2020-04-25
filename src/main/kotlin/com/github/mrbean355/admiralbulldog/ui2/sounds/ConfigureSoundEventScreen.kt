@@ -11,6 +11,8 @@ import com.github.mrbean355.admiralbulldog.ui2.slider
 import javafx.scene.control.Slider
 import javafx.scene.text.Font
 import tornadofx.Fragment
+import tornadofx.action
+import tornadofx.button
 import tornadofx.checkbox
 import tornadofx.field
 import tornadofx.fieldset
@@ -20,8 +22,8 @@ import tornadofx.paddingAll
 import tornadofx.paddingBottom
 
 class ConfigureSoundEventScreen : Fragment() {
-    private val event by param<SoundEvent>()
-    private val viewModel = ConfigureSoundEventViewModel(event)
+    private val soundEvent by param<SoundEvent>()
+    private val viewModel = ConfigureSoundEventViewModel(soundEvent)
 
     override val root = form {
         paddingAll = Spacing.MEDIUM
@@ -54,11 +56,21 @@ class ConfigureSoundEventScreen : Fragment() {
                 }
             }
         }
+        fieldset {
+            button(getString("button_choose_sounds")) {
+                action {
+                    find<ChooseSoundBitesScreen>(params = ChooseSoundBitesScreen.params(soundEvent))
+                            .openModal(resizable = false)
+                }
+            }
+        }
         titleProperty.bind(viewModel.title)
         prefWidth = Window.WIDTH
     }
 
     companion object {
-        const val ARG_EVENT = "event"
+        fun params(soundEvent: SoundEvent): Map<*, Any?> {
+            return mapOf("soundEvent" to soundEvent)
+        }
     }
 }

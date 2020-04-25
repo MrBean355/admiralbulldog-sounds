@@ -33,7 +33,7 @@ class SoundEventsScreen : View(getString("tab_sounds")) {
                         background = if (isHovering) HOVER_BACKGROUND else INACTIVE_BACKGROUND
                     }
                     setOnMouseClicked {
-                        find<ConfigureSoundEventScreen>(params = mapOf(ConfigureSoundEventScreen.ARG_EVENT to soundEvent))
+                        find<ConfigureSoundEventScreen>(params = ConfigureSoundEventScreen.params(soundEvent))
                                 .openModal(resizable = false)
                     }
                 }

@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.ui2.persistance
 
+import com.github.mrbean355.admiralbulldog.ui2.SoundBite
 import com.github.mrbean355.admiralbulldog.ui2.events.SoundEvent
 import com.google.gson.GsonBuilder
 import javafx.beans.property.BooleanProperty
@@ -17,6 +18,7 @@ object AppConfig {
     private val chanceProperties = mutableMapOf<String, DoubleProperty>()
     private val minRateProperties = mutableMapOf<String, DoubleProperty>()
     private val maxRateProperties = mutableMapOf<String, DoubleProperty>()
+    private val soundBiteEnabledProperties = mutableMapOf<String, MutableMap<String, BooleanProperty>>()
 
     init {
         config = if (file.exists()) {
@@ -72,6 +74,27 @@ object AppConfig {
         }
     }
 
+    fun getVolume(): Double {
+        // TODO: Make configurable.
+        return 20.0
+    }
+
+    fun eventSoundBitesProperty(event: SoundEvent, bite: SoundBite): BooleanProperty {
+        val props = soundBiteEnabledProperties.getOrPut(event.key) { mutableMapOf() }
+        return props.getOrPut(bite.name) {
+            object : SimpleBooleanProperty(bite.name in getEvent(event).bites) {
+                override fun invalidated() {
+                    if (value) {
+                        getEvent(event).bites += bite.name
+                    } else {
+                        getEvent(event).bites -= bite.name
+                    }
+                    save()
+                }
+            }
+        }
+    }
+
     private fun getEvent(event: SoundEvent): Event {
         var save = false
         val e = config.events.getOrPut(event.key) {
@@ -99,6 +122,7 @@ object AppConfig {
             var enabled: Boolean = false,
             var chance: Double = 100.0,
             var minRate: Double = 100.0,
-            var maxRate: Double = 100.0
+            var maxRate: Double = 100.0,
+            val bites: MutableSet<String> = mutableSetOf()
     )
 }
