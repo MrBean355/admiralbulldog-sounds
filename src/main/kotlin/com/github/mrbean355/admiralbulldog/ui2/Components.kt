@@ -17,9 +17,9 @@ import tornadofx.slider
 
 fun EventTarget.slider(min: Number, max: Number, valueProperty: DoubleProperty): Slider {
     return slider {
-        valueProperty().bindBidirectional(valueProperty)
         this.min = min.toDouble()
         this.max = max.toDouble()
+        valueProperty().bindBidirectional(valueProperty)
         majorTickUnit = this.max / 4
         minorTickCount = 4
         isShowTickMarks = true
