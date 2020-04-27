@@ -192,7 +192,7 @@ object ConfigPersistence {
     }
 
     /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
-    fun getInvalidSounds(): List<String> {
+    fun getInvalidSounds(): Collection<String> {
         val existing = SoundBites.getAll().map { it.name }
         val invalidSounds = loadedConfig.sounds
                 .flatMap { it.value.sounds }
@@ -200,7 +200,7 @@ object ConfigPersistence {
         val invalidSoundBoard = loadedConfig.soundBoard
                 ?.filter { it !in existing }
                 .orEmpty()
-        return invalidSounds + invalidSoundBoard
+        return (invalidSounds + invalidSoundBoard).toSet()
     }
 
     /** Clear user-selected sounds that don't exist on the PlaySounds page from the config. */
