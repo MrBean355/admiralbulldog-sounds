@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.ui2.sounds
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui2.CheckBoxWithButtonCell
 import com.github.mrbean355.admiralbulldog.ui2.Spacing
-import com.github.mrbean355.admiralbulldog.ui2.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
 import tornadofx.Fragment
 import tornadofx.listview
 import tornadofx.paddingAll
@@ -11,8 +11,8 @@ import tornadofx.textfield
 import tornadofx.vbox
 
 class ChooseSoundBitesScreen : Fragment(getString("title_sound_bites")) {
-    private val soundEvent by param<SoundEvent>()
-    private val viewModel = ChooseSoundBitesViewModel(soundEvent)
+    private val soundTrigger by param<SoundTrigger>()
+    private val viewModel = ChooseSoundBitesViewModel(soundTrigger)
 
     override val root = vbox(spacing = Spacing.SMALL) {
         paddingAll = Spacing.MEDIUM
@@ -30,8 +30,8 @@ class ChooseSoundBitesScreen : Fragment(getString("title_sound_bites")) {
     }
 
     companion object {
-        fun params(soundEvent: SoundEvent): Map<*, Any?> {
-            return mapOf("soundEvent" to soundEvent)
+        fun params(soundTrigger: SoundTrigger): Map<*, Any?> {
+            return mapOf("soundTrigger" to soundTrigger)
         }
     }
 }

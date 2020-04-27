@@ -1,8 +1,8 @@
 package com.github.mrbean355.admiralbulldog.ui2.sounds
 
 import com.github.mrbean355.admiralbulldog.ui2.SoundBite
-import com.github.mrbean355.admiralbulldog.ui2.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.ui2.persistance.AppConfig
+import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
@@ -10,10 +10,10 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.onChange
 
-class ChooseSoundBitesViewModel(private val soundEvent: SoundEvent) {
+class ChooseSoundBitesViewModel(private val soundTrigger: SoundTrigger) {
     private val allSoundBites = SoundBite.getAll().sortedWith(Comparator { lhs, rhs ->
-        val lhsSelected = AppConfig.eventSoundBitesProperty(soundEvent, lhs).value
-        val rhsSelected = AppConfig.eventSoundBitesProperty(soundEvent, rhs).value
+        val lhsSelected = AppConfig.triggerSoundBitesProperty(soundTrigger, lhs).value
+        val rhsSelected = AppConfig.triggerSoundBitesProperty(soundTrigger, rhs).value
         when {
             lhsSelected == rhsSelected -> lhs.name.compareTo(rhs.name, ignoreCase = true)
             lhsSelected -> -1
@@ -37,7 +37,7 @@ class ChooseSoundBitesViewModel(private val soundEvent: SoundEvent) {
     }
 
     fun getEnabledProperty(soundBite: SoundBite): BooleanProperty {
-        return AppConfig.eventSoundBitesProperty(soundEvent, soundBite)
+        return AppConfig.triggerSoundBitesProperty(soundTrigger, soundBite)
     }
 
     fun onPlayButtonClicked(soundBite: SoundBite) {

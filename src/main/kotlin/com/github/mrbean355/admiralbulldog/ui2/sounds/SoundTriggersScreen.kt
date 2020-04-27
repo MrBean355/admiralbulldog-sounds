@@ -2,7 +2,7 @@ package com.github.mrbean355.admiralbulldog.ui2.sounds
 
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui2.Spacing
-import com.github.mrbean355.admiralbulldog.ui2.events.ALL_EVENTS
+import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
 import javafx.geometry.Insets
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
@@ -21,11 +21,11 @@ import tornadofx.vbox
 private val HOVER_BACKGROUND = Background(BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY))
 private val INACTIVE_BACKGROUND = Background(BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
 
-class SoundEventsScreen : View(getString("tab_sounds")) {
+class SoundTriggersScreen : View(getString("tab_sounds")) {
     override val root = scrollpane(fitToWidth = true) {
         vbox {
-            ALL_EVENTS.forEach { soundEvent ->
-                label(soundEvent.name) {
+            SoundTrigger.onEach { trigger ->
+                label(trigger.name) {
                     paddingHorizontal = Spacing.MEDIUM * 2
                     paddingVertical = Spacing.SMALL * 2
                     fitToParentWidth()
@@ -33,7 +33,7 @@ class SoundEventsScreen : View(getString("tab_sounds")) {
                         background = if (isHovering) HOVER_BACKGROUND else INACTIVE_BACKGROUND
                     }
                     setOnMouseClicked {
-                        find<ConfigureSoundEventScreen>(params = ConfigureSoundEventScreen.params(soundEvent))
+                        find<ConfigureSoundTriggerScreen>(params = ConfigureSoundTriggerScreen.params(trigger))
                                 .openModal(resizable = false)
                     }
                 }

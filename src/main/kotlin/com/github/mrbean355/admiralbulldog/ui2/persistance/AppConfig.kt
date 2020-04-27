@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog.ui2.persistance
 
 import com.github.mrbean355.admiralbulldog.ui2.SoundBite
-import com.github.mrbean355.admiralbulldog.ui2.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
 import com.google.gson.GsonBuilder
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
@@ -42,53 +42,59 @@ object AppConfig {
         return property
     }
 
-    fun eventEnabledProperty(event: SoundEvent): BooleanProperty {
-        return enabledProperties.getOrPut(event.key) {
-            booleanProperty(getEvent(event).enabled) {
-                getEvent(event).enabled = it
+    fun triggerEnabledProperty(trigger: SoundTrigger): BooleanProperty {
+        return enabledProperties.getOrPut(trigger.key) {
+            booleanProperty(trigger.load().enabled) {
+                trigger.load().enabled = it
             }
         }
     }
 
-    fun eventChanceProperty(event: SoundEvent): DoubleProperty {
-        return chanceProperties.getOrPut(event.key) {
-            doubleProperty(getEvent(event).chance) {
-                getEvent(event).chance = it
+    fun triggerChanceProperty(trigger: SoundTrigger): DoubleProperty {
+        return chanceProperties.getOrPut(trigger.key) {
+            doubleProperty(trigger.load().chance) {
+                trigger.load().chance = it
             }
         }
     }
 
-    fun eventMinRateProperty(event: SoundEvent): DoubleProperty {
-        return minRateProperties.getOrPut(event.key) {
-            doubleProperty(getEvent(event).minRate) {
-                getEvent(event).minRate = it
+    fun getTriggerSoundBites(trigger: SoundTrigger): Collection<SoundBite> {
+        return trigger.load().bites.map {
+            SoundBite.named(it)
+        }
+    }
+
+    fun triggerMinRateProperty(trigger: SoundTrigger): DoubleProperty {
+        return minRateProperties.getOrPut(trigger.key) {
+            doubleProperty(trigger.load().minRate) {
+                trigger.load().minRate = it
             }
         }
     }
 
-    fun eventMaxRateProperty(event: SoundEvent): DoubleProperty {
-        return maxRateProperties.getOrPut(event.key) {
-            doubleProperty(getEvent(event).maxRate) {
-                getEvent(event).maxRate = it
+    fun triggerMaxRateProperty(trigger: SoundTrigger): DoubleProperty {
+        return maxRateProperties.getOrPut(trigger.key) {
+            doubleProperty(trigger.load().maxRate) {
+                trigger.load().maxRate = it
             }
         }
     }
 
-    fun eventSoundBitesProperty(event: SoundEvent, bite: SoundBite): BooleanProperty {
-        val props = soundBiteEnabledProperties.getOrPut(event.key) { mutableMapOf() }
+    fun triggerSoundBitesProperty(trigger: SoundTrigger, bite: SoundBite): BooleanProperty {
+        val props = soundBiteEnabledProperties.getOrPut(trigger.key) { mutableMapOf() }
         return props.getOrPut(bite.name) {
-            booleanProperty(bite.name in getEvent(event).bites) {
-                if (it) getEvent(event).bites += bite.name
-                else getEvent(event).bites -= bite.name
+            booleanProperty(bite.name in trigger.load().bites) {
+                if (it) trigger.load().bites += bite.name
+                else trigger.load().bites -= bite.name
             }
         }
     }
 
-    private fun getEvent(event: SoundEvent): Event {
+    private fun SoundTrigger.load(): Trigger {
         var save = false
-        val e = config.events.getOrPut(event.key) {
+        val e = config.triggers.getOrPut(key) {
             save = true
-            Event()
+            Trigger()
         }
         if (save) {
             save()
@@ -118,15 +124,15 @@ object AppConfig {
         }
     }
 
-    private inline val SoundEvent.key: String
+    private inline val SoundTrigger.key: String
         get() = this::class.java.simpleName
 
     private class Config(
             var volume: Double = 20.0,
-            val events: MutableMap<String, Event> = mutableMapOf()
+            val triggers: MutableMap<String, Trigger> = mutableMapOf()
     )
 
-    private class Event(
+    private class Trigger(
             var enabled: Boolean = false,
             var chance: Double = 100.0,
             var minRate: Double = 100.0,

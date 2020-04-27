@@ -37,5 +37,9 @@ data class SoundBite(val filePath: String) {
             }
             return CACHE.toList()
         }
+
+        fun named(name: String): SoundBite {
+            return getAll().first { it.name == name }
+        }
     }
 }

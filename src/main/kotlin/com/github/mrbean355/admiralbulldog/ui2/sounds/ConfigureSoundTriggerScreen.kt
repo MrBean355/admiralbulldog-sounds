@@ -4,10 +4,10 @@ import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui2.Spacing
 import com.github.mrbean355.admiralbulldog.ui2.Text
 import com.github.mrbean355.admiralbulldog.ui2.Window
-import com.github.mrbean355.admiralbulldog.ui2.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.ui2.restrictMax
 import com.github.mrbean355.admiralbulldog.ui2.restrictMin
 import com.github.mrbean355.admiralbulldog.ui2.slider
+import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
 import javafx.scene.control.Slider
 import javafx.scene.text.Font
 import tornadofx.Fragment
@@ -21,9 +21,9 @@ import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
 
-class ConfigureSoundEventScreen : Fragment() {
-    private val soundEvent by param<SoundEvent>()
-    private val viewModel = ConfigureSoundEventViewModel(soundEvent)
+class ConfigureSoundTriggerScreen : Fragment() {
+    private val soundTrigger by param<SoundTrigger>()
+    private val viewModel = ConfigureSoundTriggerViewModel(soundTrigger)
 
     override val root = form {
         paddingAll = Spacing.MEDIUM
@@ -36,7 +36,7 @@ class ConfigureSoundEventScreen : Fragment() {
             field(getString("label_enabled")) {
                 checkbox(property = viewModel.enabled)
             }
-            field(getString("label_event_chance")) {
+            field(getString("label_trigger_chance")) {
                 slider(0, 100, viewModel.chance)
             }
         }
@@ -59,7 +59,7 @@ class ConfigureSoundEventScreen : Fragment() {
         fieldset {
             button(getString("button_choose_sounds")) {
                 action {
-                    find<ChooseSoundBitesScreen>(params = ChooseSoundBitesScreen.params(soundEvent))
+                    find<ChooseSoundBitesScreen>(params = ChooseSoundBitesScreen.params(soundTrigger))
                             .openModal(resizable = false)
                 }
             }
@@ -69,8 +69,8 @@ class ConfigureSoundEventScreen : Fragment() {
     }
 
     companion object {
-        fun params(soundEvent: SoundEvent): Map<*, Any?> {
-            return mapOf("soundEvent" to soundEvent)
+        fun params(soundTrigger: SoundTrigger): Map<*, Any?> {
+            return mapOf("soundTrigger" to soundTrigger)
         }
     }
 }
