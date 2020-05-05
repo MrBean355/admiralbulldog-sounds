@@ -29,6 +29,10 @@ interface SoundTrigger {
                 Periodically
         )
 
+        fun getAll(): List<SoundTrigger> {
+            return IMPLEMENTATIONS.toList()
+        }
+
         fun onEach(block: (SoundTrigger) -> Unit) {
             IMPLEMENTATIONS.forEach(block)
         }

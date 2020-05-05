@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.ui2
 
 import com.github.mrbean355.admiralbulldog.ui.getString
+import com.github.mrbean355.admiralbulldog.ui2.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.ui2.home.HomeScreen
 import com.github.mrbean355.admiralbulldog.ui2.settings.SettingsScreen
 import com.github.mrbean355.admiralbulldog.ui2.sounds.SoundTriggersScreen
@@ -17,7 +18,7 @@ class MainScreen : View(getString("app_title")) {
         tabClosingPolicy = UNAVAILABLE
         tab<HomeScreen>()
         tab<SoundTriggersScreen>()
-        tab(getString("tab_discord"))
+        tab<DiscordBotScreen>()
         tab(getString("tab_mod"))
         tab<SettingsScreen>()
     }

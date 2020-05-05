@@ -1,10 +1,13 @@
 package com.github.mrbean355.admiralbulldog.ui2
 
 import com.github.mrbean355.admiralbulldog.playIcon
+import com.github.mrbean355.admiralbulldog.ui.Alert
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.event.EventTarget
+import javafx.scene.control.Alert
 import javafx.scene.control.Button
+import javafx.scene.control.ButtonType
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ListCell
 import javafx.scene.control.Slider
@@ -12,6 +15,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
+import tornadofx.UIComponent
 import tornadofx.action
 import tornadofx.slider
 
@@ -42,6 +46,15 @@ fun Slider.restrictMin(other: Slider) {
             other.value = newValue.toDouble()
         }
     }
+}
+
+fun UIComponent.alert(
+        type: Alert.AlertType,
+        header: String,
+        content: String,
+        buttons: Array<ButtonType> = emptyArray()
+): Alert {
+    return Alert(type, header, content, buttons, owner = currentWindow)
 }
 
 class CheckBoxWithButtonCell(

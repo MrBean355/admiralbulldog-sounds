@@ -1,10 +1,10 @@
 package com.github.mrbean355.admiralbulldog.ui2.sounds
 
-import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.toNullable
 import com.github.mrbean355.admiralbulldog.ui2.Spacing
 import com.github.mrbean355.admiralbulldog.ui2.Text
+import com.github.mrbean355.admiralbulldog.ui2.alert
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
@@ -45,12 +45,11 @@ class SyncSoundBitesScreen : Fragment(getString("title_update_sound_bites")) {
         }
         viewModel.error.onChange {
             val retry = ButtonType(getString("action_retry"), ButtonBar.ButtonData.NEXT_FORWARD)
-            val action = Alert(
+            val action = alert(
                     type = Alert.AlertType.ERROR,
                     header = getString("header_update_sound_bites_failed"),
                     content = getString("content_update_sound_bites_failed"),
-                    buttons = arrayOf(ButtonType.CANCEL, retry),
-                    owner = currentWindow
+                    buttons = arrayOf(ButtonType.CANCEL, retry)
             ).showAndWait().toNullable()
 
             if (action === retry) {

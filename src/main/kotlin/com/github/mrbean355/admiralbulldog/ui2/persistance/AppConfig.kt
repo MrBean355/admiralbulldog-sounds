@@ -7,6 +7,8 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
+import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.StringProperty
 import java.io.File
 
 object AppConfig {
@@ -15,10 +17,13 @@ object AppConfig {
     private val config: Config
 
     private var volumeProperty: DoubleProperty? = null
+    private var discordBotEnabledProperty: BooleanProperty? = null
+    private var discordMagicNumberProperty: StringProperty? = null
     private val enabledProperties = mutableMapOf<String, BooleanProperty>()
     private val chanceProperties = mutableMapOf<String, DoubleProperty>()
     private val minRateProperties = mutableMapOf<String, DoubleProperty>()
     private val maxRateProperties = mutableMapOf<String, DoubleProperty>()
+    private val playThroughDiscordProperties = mutableMapOf<String, BooleanProperty>()
     private val soundBiteEnabledProperties = mutableMapOf<String, MutableMap<String, BooleanProperty>>()
 
     init {
@@ -38,6 +43,28 @@ object AppConfig {
                 config.volume = it
             }
             volumeProperty = property
+        }
+        return property
+    }
+
+    fun discordBotEnabledProperty(): BooleanProperty {
+        var property = discordBotEnabledProperty
+        if (property == null) {
+            property = booleanProperty(config.discordBotEnabled) {
+                config.discordBotEnabled = it
+            }
+            discordBotEnabledProperty = property
+        }
+        return property
+    }
+
+    fun discordMagicNumberProperty(): StringProperty {
+        var property = discordMagicNumberProperty
+        if (property == null) {
+            property = stringProperty(config.discordMagicNumber) {
+                config.discordMagicNumber = it
+            }
+            discordMagicNumberProperty = property
         }
         return property
     }
@@ -76,6 +103,14 @@ object AppConfig {
         return maxRateProperties.getOrPut(trigger.key) {
             doubleProperty(trigger.load().maxRate) {
                 trigger.load().maxRate = it
+            }
+        }
+    }
+
+    fun playThroughDiscordProperty(trigger: SoundTrigger): BooleanProperty {
+        return playThroughDiscordProperties.getOrPut(trigger.key) {
+            booleanProperty(trigger.load().playThroughDiscord) {
+                trigger.load().playThroughDiscord = it
             }
         }
     }
@@ -124,11 +159,22 @@ object AppConfig {
         }
     }
 
+    private fun stringProperty(initialValue: String, onChanged: (String) -> Unit): StringProperty {
+        return object : SimpleStringProperty(initialValue) {
+            override fun invalidated() {
+                onChanged(value)
+                save()
+            }
+        }
+    }
+
     private inline val SoundTrigger.key: String
         get() = this::class.java.simpleName
 
     private class Config(
             var volume: Double = 20.0,
+            var discordBotEnabled: Boolean = false,
+            var discordMagicNumber: String = "",
             val triggers: MutableMap<String, Trigger> = mutableMapOf()
     )
 
@@ -137,6 +183,7 @@ object AppConfig {
             var chance: Double = 100.0,
             var minRate: Double = 100.0,
             var maxRate: Double = 100.0,
+            var playThroughDiscord: Boolean = false,
             val bites: MutableSet<String> = mutableSetOf()
     )
 }

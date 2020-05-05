@@ -2,6 +2,7 @@ package com.github.mrbean355.admiralbulldog.arch
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.ui2.persistance.AppConfig
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.FileOutputStream
@@ -37,6 +38,12 @@ class DiscordBotRepository {
 
     suspend fun playSound(soundBite: SoundBite): ServiceResponse<Void> {
         return callService { DiscordBotService.INSTANCE.playSound(PlaySoundRequest(loadUserId(), ConfigPersistence.getDiscordToken(), soundBite.fileName)) }
+                .toServiceResponse()
+    }
+
+    suspend fun playSoundNew(fileName: String): ServiceResponse<Void> {
+        // TODO: Implement user ID
+        return callService { DiscordBotService.INSTANCE.playSound(PlaySoundRequest("TODO", AppConfig.discordMagicNumberProperty().get(), fileName)) }
                 .toServiceResponse()
     }
 

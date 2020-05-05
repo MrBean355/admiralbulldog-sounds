@@ -1,6 +1,8 @@
 package com.github.mrbean355.admiralbulldog.gsi
 
+import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.game.GameState
+import com.github.mrbean355.admiralbulldog.ui2.SoundBite
 import com.github.mrbean355.admiralbulldog.ui2.persistance.AppConfig
 import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
 import kotlinx.coroutines.CoroutineScope
@@ -12,6 +14,7 @@ import kotlin.random.Random
 
 class DotaClient {
     private val scope = CoroutineScope(Default + SupervisorJob())
+    private val discordBotRepository = DiscordBotRepository()
     private var server = GsiServer(this::processNewGameState)
     private var previousState: GameState? = null
 
@@ -50,7 +53,7 @@ class DotaClient {
                                     val minRate = AppConfig.triggerMinRateProperty(it).value
                                     val maxRate = AppConfig.triggerMaxRateProperty(it).value
                                     val rate = if (minRate != maxRate) Random.nextDouble(from = minRate, until = maxRate) else minRate
-                                    choices.random().play(rate)
+                                    playSoundBite(it, choices.random(), rate)
                                 }
                             }
                         }
@@ -58,6 +61,21 @@ class DotaClient {
                 }
             }
             previousState = newState
+        }
+    }
+
+    /** Play [soundBite] through Discord if applicable. Otherwise, play it locally. */
+    private fun playSoundBite(soundTrigger: SoundTrigger, soundBite: SoundBite, rate: Double) {
+        val discordBotEnabled = AppConfig.discordBotEnabledProperty().get()
+        val playThroughDiscord = AppConfig.playThroughDiscordProperty(soundTrigger).get()
+        if (discordBotEnabled && playThroughDiscord) {
+            scope.launch {
+                if (!discordBotRepository.playSoundNew(soundBite.fileName).isSuccessful()) {
+                    soundBite.play(rate)
+                }
+            }
+        } else {
+            soundBite.play(rate)
         }
     }
 }
