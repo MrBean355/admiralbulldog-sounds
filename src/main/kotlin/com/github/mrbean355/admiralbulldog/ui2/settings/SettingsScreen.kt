@@ -10,7 +10,7 @@ import tornadofx.form
 import tornadofx.paddingAll
 
 class SettingsScreen : View(getString("tab_settings")) {
-    private val viewModel = SettingsViewModel()
+    private val viewModel by inject<SettingsViewModel>()
 
     override val root = form {
         paddingAll = Spacing.MEDIUM

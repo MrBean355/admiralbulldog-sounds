@@ -16,7 +16,7 @@ import tornadofx.vbox
 import tornadofx.visibleWhen
 
 class HomeScreen : View(getString("tab_home")) {
-    private val viewModel = HomeViewModel()
+    private val viewModel by inject<HomeViewModel>()
 
     override val root = vbox(spacing = Spacing.SMALL, alignment = CENTER) {
         paddingAll = Spacing.MEDIUM

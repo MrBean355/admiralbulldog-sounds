@@ -16,11 +16,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import tornadofx.ViewModel
 import tornadofx.stringBinding
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
 
-class SyncSoundBitesViewModel {
+class SyncSoundBitesViewModel : ViewModel() {
     private val newSounds = CopyOnWriteArrayList<SoundBite>()
     private val modifiedSounds = CopyOnWriteArrayList<SoundBite>()
     private val deletedSounds = CopyOnWriteArrayList<String>()

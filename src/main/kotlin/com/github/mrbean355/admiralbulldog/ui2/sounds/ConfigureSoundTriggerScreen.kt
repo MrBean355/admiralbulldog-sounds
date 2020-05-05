@@ -11,6 +11,7 @@ import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
 import javafx.scene.control.Slider
 import javafx.scene.text.Font
 import tornadofx.Fragment
+import tornadofx.Scope
 import tornadofx.action
 import tornadofx.button
 import tornadofx.checkbox
@@ -23,7 +24,7 @@ import tornadofx.paddingBottom
 
 class ConfigureSoundTriggerScreen : Fragment() {
     private val soundTrigger by param<SoundTrigger>()
-    private val viewModel = ConfigureSoundTriggerViewModel(soundTrigger)
+    private val viewModel by inject<ConfigureSoundTriggerViewModel>(Scope(), params)
 
     override val root = form {
         paddingAll = Spacing.MEDIUM

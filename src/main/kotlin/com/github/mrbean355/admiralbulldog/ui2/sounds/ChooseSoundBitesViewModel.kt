@@ -8,9 +8,11 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import tornadofx.ViewModel
 import tornadofx.onChange
 
-class ChooseSoundBitesViewModel(private val soundTrigger: SoundTrigger) {
+class ChooseSoundBitesViewModel : ViewModel() {
+    private val soundTrigger by param<SoundTrigger>()
     private val allSoundBites = SoundBite.getAll().sortedWith(Comparator { lhs, rhs ->
         val lhsSelected = AppConfig.triggerSoundBitesProperty(soundTrigger, lhs).value
         val rhsSelected = AppConfig.triggerSoundBitesProperty(soundTrigger, rhs).value

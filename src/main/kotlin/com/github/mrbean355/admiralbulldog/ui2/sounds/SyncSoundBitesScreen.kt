@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import javafx.scene.text.Font
 import tornadofx.Fragment
+import tornadofx.Scope
 import tornadofx.fitToParentWidth
 import tornadofx.label
 import tornadofx.managedWhen
@@ -21,7 +22,7 @@ import tornadofx.vbox
 import tornadofx.visibleWhen
 
 class SyncSoundBitesScreen : Fragment(getString("title_update_sound_bites")) {
-    private val viewModel = SyncSoundBitesViewModel()
+    private val viewModel by inject<SyncSoundBitesViewModel>(Scope())
 
     override val root = vbox(spacing = Spacing.SMALL) {
         paddingAll = Spacing.MEDIUM

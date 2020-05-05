@@ -5,14 +5,14 @@ import com.github.mrbean355.admiralbulldog.ui2.CheckBoxWithButtonCell
 import com.github.mrbean355.admiralbulldog.ui2.Spacing
 import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
 import tornadofx.Fragment
+import tornadofx.Scope
 import tornadofx.listview
 import tornadofx.paddingAll
 import tornadofx.textfield
 import tornadofx.vbox
 
 class ChooseSoundBitesScreen : Fragment(getString("title_sound_bites")) {
-    private val soundTrigger by param<SoundTrigger>()
-    private val viewModel = ChooseSoundBitesViewModel(soundTrigger)
+    private val viewModel by inject<ChooseSoundBitesViewModel>(Scope(), params)
 
     override val root = vbox(spacing = Spacing.SMALL) {
         paddingAll = Spacing.MEDIUM

@@ -10,10 +10,11 @@ import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import tornadofx.Component
 import kotlin.random.Random
 
-class DotaClient {
-    private val scope = CoroutineScope(Default + SupervisorJob())
+class DotaClient : Component() {
+    private val coroutineScope = CoroutineScope(Default + SupervisorJob())
     private val discordBotRepository = DiscordBotRepository()
     private var server = GsiServer(this::processNewGameState)
     private var previousState: GameState? = null
@@ -23,12 +24,12 @@ class DotaClient {
     }
 
     fun stop() {
-        scope.cancel()
+        coroutineScope.cancel()
         server.stop(gracePeriodMillis = 0, timeoutMillis = 0)
     }
 
     private fun processNewGameState(newState: GameState) {
-        scope.launch {
+        coroutineScope.launch {
             val previousMatchId = previousState?.map?.matchid
             val currentMatchId = newState.map?.matchid
 
@@ -61,6 +62,7 @@ class DotaClient {
                 }
             }
             previousState = newState
+            fire(NewGameStateEvent())
         }
     }
 
@@ -69,7 +71,7 @@ class DotaClient {
         val discordBotEnabled = AppConfig.discordBotEnabledProperty().get()
         val playThroughDiscord = AppConfig.playThroughDiscordProperty(soundTrigger).get()
         if (discordBotEnabled && playThroughDiscord) {
-            scope.launch {
+            coroutineScope.launch {
                 if (!discordBotRepository.playSoundNew(soundBite.fileName).isSuccessful()) {
                     soundBite.play(rate)
                 }

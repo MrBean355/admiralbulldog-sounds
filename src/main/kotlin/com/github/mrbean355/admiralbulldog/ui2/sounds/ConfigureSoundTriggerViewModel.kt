@@ -6,12 +6,15 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
+import tornadofx.ViewModel
 
-class ConfigureSoundTriggerViewModel(trigger: SoundTrigger) {
-    val title: StringProperty = SimpleStringProperty(trigger.name)
-    val description: StringProperty = SimpleStringProperty(trigger.description)
-    val enabled: BooleanProperty = AppConfig.triggerEnabledProperty(trigger)
-    val chance: DoubleProperty = AppConfig.triggerChanceProperty(trigger)
-    val minRate: DoubleProperty = AppConfig.triggerMinRateProperty(trigger)
-    val maxRate: DoubleProperty = AppConfig.triggerMaxRateProperty(trigger)
+class ConfigureSoundTriggerViewModel : ViewModel() {
+    private val soundTrigger by param<SoundTrigger>()
+
+    val title: StringProperty = SimpleStringProperty(soundTrigger.name)
+    val description: StringProperty = SimpleStringProperty(soundTrigger.description)
+    val enabled: BooleanProperty = AppConfig.triggerEnabledProperty(soundTrigger)
+    val chance: DoubleProperty = AppConfig.triggerChanceProperty(soundTrigger)
+    val minRate: DoubleProperty = AppConfig.triggerMinRateProperty(soundTrigger)
+    val maxRate: DoubleProperty = AppConfig.triggerMaxRateProperty(soundTrigger)
 }
