@@ -4,9 +4,11 @@ import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui2.Spacing
 import com.github.mrbean355.admiralbulldog.ui2.slider
+import com.github.mrbean355.admiralbulldog.ui2.update.UpdateFrequencyStringConverter
 import tornadofx.View
 import tornadofx.action
 import tornadofx.button
+import tornadofx.choicebox
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
@@ -26,6 +28,11 @@ class SettingsScreen : View(getString("tab_settings")) {
         fieldset(getString("section_about")) {
             field(getString("label_app_version")) {
                 label(APP_VERSION.toString())
+            }
+            field(getString("label_update_frequency")) {
+                choicebox(property = viewModel.selectedUpdateFrequency, values = viewModel.updateFrequencies) {
+                    converter = UpdateFrequencyStringConverter()
+                }
             }
             field {
                 button(getString("action_check_for_update")) {

@@ -2,14 +2,18 @@ package com.github.mrbean355.admiralbulldog.ui2.persistance
 
 import com.github.mrbean355.admiralbulldog.ui2.SoundBite
 import com.github.mrbean355.admiralbulldog.ui2.triggers.SoundTrigger
+import com.github.mrbean355.admiralbulldog.ui2.update.UpdateFrequency
 import com.google.gson.GsonBuilder
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
+import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import java.io.File
+import java.util.Date
 
 object AppConfig {
     private val file = File("config2.json")
@@ -17,6 +21,7 @@ object AppConfig {
     private val config: Config
 
     private var volumeProperty: DoubleProperty? = null
+    private var updateFrequencyProperty: ObjectProperty<UpdateFrequency>? = null
     private var discordBotEnabledProperty: BooleanProperty? = null
     private var discordMagicNumberProperty: StringProperty? = null
     private val enabledProperties = mutableMapOf<String, BooleanProperty>()
@@ -43,6 +48,26 @@ object AppConfig {
                 config.volume = it
             }
             volumeProperty = property
+        }
+        return property
+    }
+
+    fun getLastUpdateCheck(): Long {
+        return config.lastUpdateCheck
+    }
+
+    fun setLastUpdateCheckToNow() {
+        config.lastUpdateCheck = Date().time
+        save()
+    }
+
+    fun updateFrequencyProperty(): ObjectProperty<UpdateFrequency> {
+        var property = updateFrequencyProperty
+        if (property == null) {
+            property = objectProperty(config.updateFrequency) {
+                config.updateFrequency = it
+            }
+            updateFrequencyProperty = property
         }
         return property
     }
@@ -168,11 +193,22 @@ object AppConfig {
         }
     }
 
+    private fun <T> objectProperty(initialValue: T, onChanged: (T) -> Unit): ObjectProperty<T> {
+        return object : SimpleObjectProperty<T>(initialValue) {
+            override fun invalidated() {
+                onChanged(value)
+                save()
+            }
+        }
+    }
+
     private inline val SoundTrigger.key: String
         get() = this::class.java.simpleName
 
     private class Config(
             var volume: Double = 20.0,
+            var lastUpdateCheck: Long = 0,
+            var updateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
             var discordBotEnabled: Boolean = false,
             var discordMagicNumber: String = "",
             val triggers: MutableMap<String, Trigger> = mutableMapOf()

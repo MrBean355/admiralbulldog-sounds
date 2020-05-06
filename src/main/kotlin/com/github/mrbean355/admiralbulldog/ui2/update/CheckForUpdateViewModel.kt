@@ -8,6 +8,7 @@ import com.github.mrbean355.admiralbulldog.ui.format
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.ui.streamToFile
+import com.github.mrbean355.admiralbulldog.ui2.persistance.AppConfig
 import com.vdurmont.semver4j.Semver
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleDoubleProperty
@@ -80,6 +81,7 @@ class CheckForUpdateViewModel : ViewModel() {
             } else {
                 fire(UpToDateEvent())
             }
+            AppConfig.setLastUpdateCheckToNow()
         }
     }
 
