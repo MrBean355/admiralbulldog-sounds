@@ -68,11 +68,11 @@ object CustomButtonType {
 }
 
 /** Open a modal which shows a confirmation alert when closing. */
-fun UIComponent.openCustomModal(confirmHeader: String, confirmContent: String): Stage? {
+fun UIComponent.openUpdateModal(): Stage? {
     return openModal(stageStyle = StageStyle.UTILITY, escapeClosesWindow = false, resizable = false)?.also { stage ->
         stage.setOnCloseRequest {
             it.consume()
-            val action = alert(Alert.AlertType.WARNING, confirmHeader, confirmContent, arrayOf(ButtonType.YES, ButtonType.NO))
+            val action = alert(Alert.AlertType.WARNING, getString("header_cancel_update"), getString("content_cancel_update"), arrayOf(ButtonType.YES, ButtonType.NO))
                     .showAndWait()
                     .toNullable()
             if (action == ButtonType.YES) {
