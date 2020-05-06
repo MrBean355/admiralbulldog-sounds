@@ -206,6 +206,7 @@ object AppConfig {
         get() = this::class.java.simpleName
 
     private class Config(
+            var version: Int = 1,
             var volume: Double = 20.0,
             var lastUpdateCheck: Long = 0,
             var updateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
