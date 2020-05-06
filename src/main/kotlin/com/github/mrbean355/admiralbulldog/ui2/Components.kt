@@ -2,11 +2,14 @@ package com.github.mrbean355.admiralbulldog.ui2
 
 import com.github.mrbean355.admiralbulldog.playIcon
 import com.github.mrbean355.admiralbulldog.ui.Alert
+import com.github.mrbean355.admiralbulldog.ui.getString
+import com.github.mrbean355.admiralbulldog.ui.toNullable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.event.EventTarget
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
+import javafx.scene.control.ButtonBar.ButtonData.OK_DONE
 import javafx.scene.control.ButtonType
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ListCell
@@ -15,6 +18,8 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
+import javafx.stage.Stage
+import javafx.stage.StageStyle
 import tornadofx.UIComponent
 import tornadofx.action
 import tornadofx.slider
@@ -55,6 +60,26 @@ fun UIComponent.alert(
         buttons: Array<ButtonType> = emptyArray()
 ): Alert {
     return Alert(type, header, content, buttons, owner = currentWindow)
+}
+
+object CustomButtonType {
+    val RETRY = ButtonType(getString("action_retry"), OK_DONE)
+    val DOWNLOAD = ButtonType(getString("action_download"), OK_DONE)
+}
+
+/** Open a modal which shows a confirmation alert when closing. */
+fun UIComponent.openCustomModal(confirmHeader: String, confirmContent: String): Stage? {
+    return openModal(stageStyle = StageStyle.UTILITY, escapeClosesWindow = false, resizable = false)?.also { stage ->
+        stage.setOnCloseRequest {
+            it.consume()
+            val action = alert(Alert.AlertType.WARNING, confirmHeader, confirmContent, arrayOf(ButtonType.YES, ButtonType.NO))
+                    .showAndWait()
+                    .toNullable()
+            if (action == ButtonType.YES) {
+                stage.close()
+            }
+        }
+    }
 }
 
 class CheckBoxWithButtonCell(
