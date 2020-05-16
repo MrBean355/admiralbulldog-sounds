@@ -1,3 +1,5 @@
+![Build](https://github.com/MrBean355/admiralbulldog-sounds/workflows/Java%2012%20CI/badge.svg)
+
 # AdmiralBulldog Sounds
 
 This is an app that plays various [AdmiralBulldog](https://www.twitch.tv/admiralbulldog) sound bites for things that happen in your Dota 2 matches.
