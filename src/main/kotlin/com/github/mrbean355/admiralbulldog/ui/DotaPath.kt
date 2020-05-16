@@ -86,7 +86,7 @@ object DotaPath {
         return getModDirectory() + File.separatorChar + VPK_FILE_NAME
     }
 
-    private fun getDotaRootDirectory(path: String): String? {
+    fun getDotaRootDirectory(path: String): String? {
         val parts = path.replaceFileSeparators().split(File.separatorChar)
         val dotaRoot = parts.firstOrNull { it in DOTA_ROOT_DIR_NAMES } ?: return null
         val dotaPath = path.replaceFileSeparators().substringBefore(dotaRoot) + dotaRoot + File.separatorChar

@@ -20,6 +20,7 @@ object AppConfig {
     private val gson = GsonBuilder().setPrettyPrinting().create()
     private val config: Config
 
+    private var dotaPathProperty: StringProperty? = null
     private var volumeProperty: DoubleProperty? = null
     private var updateFrequencyProperty: ObjectProperty<UpdateFrequency>? = null
     private var discordBotEnabledProperty: BooleanProperty? = null
@@ -39,6 +40,17 @@ object AppConfig {
                 file.writeText(gson.toJson(it))
             }
         }
+    }
+
+    fun dotaPathProperty(): StringProperty {
+        var property = dotaPathProperty
+        if (property == null) {
+            property = stringProperty(config.dotaPath) {
+                config.dotaPath = it
+            }
+            dotaPathProperty = property
+        }
+        return property
     }
 
     fun volumeProperty(): DoubleProperty {
@@ -207,6 +219,7 @@ object AppConfig {
 
     private class Config(
             var version: Int = 1,
+            var dotaPath: String = "",
             var volume: Double = 20.0,
             var lastUpdateCheck: Long = 0,
             var updateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
