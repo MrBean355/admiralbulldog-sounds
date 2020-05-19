@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
@@ -35,11 +36,15 @@ import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.concurrent.Callable
+import kotlin.concurrent.timer
 import kotlin.system.exitProcess
+
+private const val HEARTBEAT_FREQUENCY_MS = 30 * 1_000L
 
 class HomeViewModel(private val stage: Stage, private val hostServices: HostServices) {
     private val logger = LoggerFactory.getLogger(HomeViewModel::class.java)
     private val hasHeardFromDota = SimpleBooleanProperty(false)
+    private val discordBotRepository = DiscordBotRepository()
     private val gitHubRepository = GitHubRepository()
 
     val heading: ObservableValue<String> = Bindings.createStringBinding(Callable {
@@ -52,6 +57,7 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     val version = SimpleStringProperty(getString("lbl_app_version", APP_VERSION.value))
 
     fun init() {
+        sendHeartbeats()
         if (SoundBites.shouldSync()) {
             SyncSoundBitesStage().showModal(owner = stage, wait = true)
         }
@@ -219,5 +225,13 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
             return doesUserWantToUpdate(header, releaseInfo)
         }
         return action === downloadButton
+    }
+
+    private fun sendHeartbeats() {
+        timer(daemon = true, period = HEARTBEAT_FREQUENCY_MS) {
+            GlobalScope.launch {
+                discordBotRepository.sendHeartbeat()
+            }
+        }
     }
 }
