@@ -25,6 +25,7 @@ const val TEXT_SIZE_SMALL = 10.0
 const val TEXT_SIZE_LARGE = 18.0
 
 /* Hyperlinks */
+const val URL_JAVA_DOWNLOAD = "https://www.java.com/en/download"
 const val URL_DISCORD_SERVER_INVITE = "https://discordapp.com/invite/pEV4mW5"
 const val URL_PROJECT_WEBSITE = "https://github.com/MrBean355/admiralbulldog-sounds"
 const val URL_MOD_INFO = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Dota-Mod"
