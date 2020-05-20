@@ -18,7 +18,6 @@ import kotlin.reflect.KClass
 
 /* Dimensions */
 const val WINDOW_WIDTH = 300.0
-const val WINDOW_WIDTH_LARGE = 450.0
 const val PADDING_SMALL = 8.0
 const val PADDING_MEDIUM = 16.0
 const val TEXT_SIZE_SMALL = 10.0
@@ -31,12 +30,6 @@ const val URL_PROJECT_WEBSITE = "https://github.com/MrBean355/admiralbulldog-sou
 const val URL_MOD_INFO = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Dota-Mod"
 const val URL_DISCORD_BOT_INVITE = "https://discordapp.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot&permissions=1"
 const val URL_DISCORD_WIKI = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Discord-Bot"
-
-/* Sync Sound Bites */
-const val TITLE_SYNC_SOUND_BITES = "Updating"
-const val MSG_SYNC_WELCOME = "Welcome!\nChecking for new PlaySounds...\n"
-const val MSG_SYNC_FAILED = "\nCouldn't connect to PlaySounds page.\nCan't get latest sounds."
-const val ACTION_DONE = "Done"
 
 /* Main Window */
 const val TITLE_MAIN_WINDOW = "AdmiralBulldog"

@@ -1,9 +1,9 @@
 package com.github.mrbean355.admiralbulldog.assets
 
-import com.github.mrbean355.admiralbulldog.MSG_SYNC_FAILED
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.ui.getString
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -49,7 +49,7 @@ object SoundBites {
             val response = playSoundsRepository.listSoundBites()
             val remoteFiles = response.body
             if (!response.isSuccessful() || remoteFiles == null) {
-                action(MSG_SYNC_FAILED)
+                action(getString("sync_sound_bites_failed"))
                 withContext(Main) { complete(false) }
                 return@launch
             }

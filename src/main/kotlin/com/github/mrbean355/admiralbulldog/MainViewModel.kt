@@ -66,10 +66,9 @@ class MainViewModel : AppViewModel() {
         ensureGsiInstalled()
 
         if (SoundBites.shouldSync()) {
-            SyncSoundBitesStage().showModal(wait = true)
+            find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, block = true, resizable = false)
         }
 
-        checkForInvalidSounds()
         GlobalScope.launch {
             checkForAppUpdate()
         }
@@ -117,19 +116,6 @@ class MainViewModel : AppViewModel() {
 
     fun onProjectWebsiteClicked() {
         hostServices.showDocument(URL_PROJECT_WEBSITE)
-    }
-
-    private fun checkForInvalidSounds() {
-        val invalidSounds = ConfigPersistence.getInvalidSounds()
-        if (invalidSounds.isNotEmpty()) {
-            Alert(type = Alert.AlertType.WARNING,
-                    header = getString("header_sounds_removed"),
-                    content = getString("msg_sounds_removed", invalidSounds.joinToString(separator = "\n")),
-                    buttons = arrayOf(ButtonType.OK),
-                    owner = primaryStage
-            ).showAndWait()
-            ConfigPersistence.clearInvalidSounds()
-        }
     }
 
     private suspend fun checkForAppUpdate() {
