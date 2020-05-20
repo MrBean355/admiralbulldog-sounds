@@ -11,24 +11,19 @@ import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
-import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.ui.showModal
-import com.github.mrbean355.admiralbulldog.ui.toNullable
 import com.github.mrbean355.admiralbulldog.ui2.installation.InstallationWizard
 import com.vdurmont.semver4j.Semver
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty
-import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tornadofx.Scope
@@ -69,7 +64,7 @@ class MainViewModel : AppViewModel() {
             find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, block = true, resizable = false)
         }
 
-        GlobalScope.launch {
+        coroutineScope.launch {
             checkForAppUpdate()
         }
         monitorGameStateUpdates {
@@ -134,7 +129,7 @@ class MainViewModel : AppViewModel() {
                 if (doesUserWantToUpdate(getString("header_app_update_available"), releaseInfo)) {
                     downloadAppUpdate(releaseInfo)
                 } else {
-                    withContext(Default) {
+                    withContext(coroutineScope.coroutineContext) {
                         checkForModUpdate()
                     }
                 }
@@ -148,12 +143,11 @@ class MainViewModel : AppViewModel() {
     private fun downloadAppUpdate(releaseInfo: ReleaseInfo) {
         val assetInfo = releaseInfo.getAppAssetInfo() ?: return
         DownloadUpdateStage(assetInfo, destination = ".") {
-            Alert(type = Alert.AlertType.INFORMATION,
+            information(
                     header = getString("header_app_update_downloaded"),
                     content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
-                    buttons = arrayOf(ButtonType.FINISH),
-                    owner = primaryStage
-            ).showAndWait()
+                    buttons = *arrayOf(ButtonType.FINISH)
+            )
             exitProcess(0)
         }.showModal(primaryStage)
     }
@@ -188,26 +182,25 @@ class MainViewModel : AppViewModel() {
         val assetInfo = releaseInfo.getModAssetInfo() ?: return
         DownloadUpdateStage(assetInfo, destination = DotaPath.getModDirectory()) {
             DotaMod.onModDownloaded(releaseInfo)
-            Alert(type = Alert.AlertType.INFORMATION,
+            information(
                     header = getString("header_mod_update_downloaded"),
                     content = getString("msg_mod_update_downloaded"),
-                    buttons = arrayOf(ButtonType.FINISH),
-                    owner = primaryStage
-            ).showAndWait()
+                    buttons = *arrayOf(ButtonType.FINISH)
+            )
         }.showModal(primaryStage)
     }
 
     private fun doesUserWantToUpdate(header: String, releaseInfo: ReleaseInfo): Boolean {
         val whatsNewButton = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
         val downloadButton = ButtonType(getString("btn_download"), ButtonBar.ButtonData.NEXT_FORWARD)
-        val action = Alert(
-                type = Alert.AlertType.INFORMATION,
+        var action: ButtonType? = null
+        information(
                 header = header,
                 content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
-                buttons = arrayOf(whatsNewButton, downloadButton, ButtonType.CANCEL),
-                owner = primaryStage
-        ).showAndWait().toNullable()
-
+                buttons = *arrayOf(whatsNewButton, downloadButton, ButtonType.CANCEL)
+        ) {
+            action = it
+        }
         if (action === whatsNewButton) {
             hostServices.showDocument(releaseInfo.htmlUrl)
             return doesUserWantToUpdate(header, releaseInfo)
@@ -217,7 +210,7 @@ class MainViewModel : AppViewModel() {
 
     private fun sendHeartbeats() {
         timer(daemon = true, period = HEARTBEAT_FREQUENCY_MS) {
-            GlobalScope.launch {
+            coroutineScope.launch {
                 discordBotRepository.sendHeartbeat()
             }
         }
