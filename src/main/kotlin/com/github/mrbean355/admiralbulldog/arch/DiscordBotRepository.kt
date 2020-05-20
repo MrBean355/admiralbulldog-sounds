@@ -11,6 +11,10 @@ var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
 
 class DiscordBotRepository {
 
+    suspend fun sendHeartbeat() {
+        callService { DiscordBotService.INSTANCE.heartbeat(loadUserId()) }
+    }
+
     suspend fun listSoundBites(): ServiceResponse<Map<String, String>> {
         return callService { DiscordBotService.INSTANCE.listSoundBites() }
                 .toServiceResponse()

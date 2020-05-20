@@ -17,6 +17,9 @@ interface DiscordBotService {
     @POST("/createId")
     suspend fun createId(): Response<CreateIdResponse>
 
+    @POST("/heartbeat")
+    suspend fun heartbeat(@Query("userId") userId: String): Response<Void>
+
     @GET("/soundBites/listV2")
     suspend fun listSoundBites(): Response<Map<String, String>>
 

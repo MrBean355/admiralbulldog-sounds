@@ -11,6 +11,7 @@ import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.net.BindException
+import kotlin.system.exitProcess
 
 /**
  * [java.lang.Thread.UncaughtExceptionHandler] which creates a log file containing the stack trace with some additional
@@ -20,11 +21,29 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
     : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(t: Thread?, e: Throwable?) {
+        if (e is BindException) {
+            handleBindException()
+        } else {
+            handleGenericException(t, e)
+        }
+    }
+
+    private fun handleBindException() {
+        showDialog("App already running", """
+            It looks like the app is already running.
+            Please make sure there is only 1 instance of the app running.
+            
+            If this is not the case, please report it through Discord.
+        """.trimIndent(), exit = true)
+    }
+
+    private fun handleGenericException(t: Thread?, e: Throwable?) {
         val file = File("crash_log.txt")
         val stringWriter = StringWriter()
         e?.printStackTrace(PrintWriter(stringWriter))
         val stackTrace = stringWriter.toString()
         file.writeText("""
+            |app version  = $APP_VERSION
             |os.name      = ${System.getProperty("os.name")}
             |os.version   = ${System.getProperty("os.version")}
             |os.arch      = ${System.getProperty("os.arch")}
@@ -34,40 +53,32 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
             |$stackTrace
         """.trimMargin())
 
+        showDialog(HEADER_EXCEPTION, """
+            Whoops! Something bad has happened, sorry!
+            Please consider reporting this issue so it can be fixed.
+
+            An error log file was created here:
+            ${file.absolutePath}
+
+            Please send this file through Discord so we can fix this problem.
+        """.trimIndent())
+    }
+
+    private fun showDialog(header: String, message: String, exit: Boolean = false) {
         Platform.runLater {
             val discordButton = ButtonType("Discord", ButtonBar.ButtonData.OK_DONE)
             val action = Alert(type = Alert.AlertType.ERROR,
-                    header = HEADER_EXCEPTION,
-                    content = getMessage(e, file),
+                    header = header,
+                    content = message,
                     buttons = arrayOf(discordButton, ButtonType.OK)
             ).showAndWait().toNullable()
 
             if (action == discordButton) {
                 hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
             }
-        }
-    }
-
-    private fun getMessage(e: Throwable?, logFile: File): String {
-        return if (e is BindException) {
-            """
-                It looks like the app may already be running. Only 1 instance can be running at a time.
-                
-                If it's not already running, an error log file was created here:
-                ${logFile.absolutePath}
-                
-                Please send it to the community on Discord.
-            """.trimIndent()
-        } else {
-            """
-                Whoops! Something bad has happened, sorry!
-                Please consider reporting this issue so it can be fixed.
-
-                An error log file was created here:
-                ${logFile.absolutePath}
-
-                Please send it to the community on Discord.
-            """.trimIndent()
+            if (exit) {
+                exitProcess(-1)
+            }
         }
     }
 }
