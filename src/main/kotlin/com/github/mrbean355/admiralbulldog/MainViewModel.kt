@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
@@ -12,11 +13,12 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
 import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
-import com.github.mrbean355.admiralbulldog.ui.Installer
+import com.github.mrbean355.admiralbulldog.ui.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.ui.showModal
 import com.github.mrbean355.admiralbulldog.ui.toNullable
+import com.github.mrbean355.admiralbulldog.ui2.installation.InstallationWizard
 import com.vdurmont.semver4j.Semver
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
@@ -29,9 +31,10 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tornadofx.ViewModel
+import tornadofx.Scope
 import tornadofx.booleanProperty
 import tornadofx.error
+import tornadofx.find
 import tornadofx.runLater
 import tornadofx.stringBinding
 import tornadofx.stringProperty
@@ -41,7 +44,7 @@ import kotlin.system.exitProcess
 
 private const val HEARTBEAT_FREQUENCY_MS = 30 * 1_000L
 
-class MainViewModel : ViewModel() {
+class MainViewModel : AppViewModel() {
     private val hasHeardFromDota = booleanProperty(false)
     private val discordBotRepository = DiscordBotRepository()
     private val gitHubRepository = GitHubRepository()
@@ -55,12 +58,17 @@ class MainViewModel : ViewModel() {
     }
     val version: StringProperty = stringProperty(getString("lbl_app_version", APP_VERSION.value))
 
-    init {
+    override fun onReady() {
+        logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION.value)
         sendHeartbeats()
+
+        ensureValidDotaPath()
+        ensureGsiInstalled()
+
         if (SoundBites.shouldSync()) {
             SyncSoundBitesStage().showModal(wait = true)
         }
-        Installer.installIfNecessary(loadDotaPath())
+
         checkForInvalidSounds()
         GlobalScope.launch {
             checkForAppUpdate()
@@ -70,7 +78,25 @@ class MainViewModel : ViewModel() {
                 hasHeardFromDota.set(true)
             }
         }
-        logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION.value)
+    }
+
+    private fun ensureValidDotaPath() {
+        if (DotaPath.hasValidSavedPath()) {
+            return
+        }
+        find<InstallationWizard>(scope = Scope()).openModal(block = true, resizable = false)
+        if (!DotaPath.hasValidSavedPath()) {
+            error(getString("install_header"), getString("msg_installer_fail"))
+            exitProcess(-1)
+        }
+    }
+
+    private fun ensureGsiInstalled() {
+        val alreadyInstalled = GameStateIntegration.isInstalled()
+        GameStateIntegration.install()
+        if (!alreadyInstalled) {
+            information(getString("install_header"), getString("msg_installer_success"), ButtonType.FINISH)
+        }
     }
 
     fun onChangeSoundsClicked() {
@@ -91,22 +117,6 @@ class MainViewModel : ViewModel() {
 
     fun onProjectWebsiteClicked() {
         hostServices.showDocument(URL_PROJECT_WEBSITE)
-    }
-
-    private fun loadDotaPath(): String {
-        val result = runCatching {
-            DotaPath.loadPath(primaryStage)
-        }
-        if (result.isSuccess) {
-            return result.getOrThrow()
-        }
-        error(
-                header = getString("header_installer"),
-                content = getString("msg_no_dota_path"),
-                buttons = *arrayOf(ButtonType.CLOSE),
-                owner = primaryStage
-        )
-        exitProcess(-1)
     }
 
     private fun checkForInvalidSounds() {

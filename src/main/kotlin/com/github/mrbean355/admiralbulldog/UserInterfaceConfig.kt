@@ -40,12 +40,8 @@ const val ACTION_DONE = "Done"
 
 /* Main Window */
 const val TITLE_MAIN_WINDOW = "AdmiralBulldog"
-const val MSG_INSTALLER = "Please choose your Dota 2 installation directory."
-const val TITLE_INSTALLER = "Choose Dota 2 directory"
-const val HEADER_INSTALLER = "Installer"
 const val HEADER_DISCORD_SOUND = "Discord sound"
 const val HEADER_EXCEPTION = "Unexpected error"
-const val MSG_INSTALLER_SUCCESS = "Successfully installed! Please restart Dota if it's open."
 
 /* System Tray */
 const val ACTION_SHOW = "Show"
