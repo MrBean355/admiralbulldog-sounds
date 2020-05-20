@@ -41,9 +41,11 @@ fun getString(key: String, vararg formatArgs: Any?): String {
     return getString(key).format(*formatArgs)
 }
 
-fun Stage.showModal(owner: Window, wait: Boolean = false) {
+fun Stage.showModal(owner: Window? = null, wait: Boolean = false) {
     initModality(WINDOW_MODAL)
-    initOwner(owner)
+    if (owner != null) {
+        initOwner(owner)
+    }
     if (wait) {
         showAndWait()
     } else {

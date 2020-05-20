@@ -18,58 +18,55 @@ import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.ui.showModal
 import com.github.mrbean355.admiralbulldog.ui.toNullable
 import com.vdurmont.semver4j.Semver
-import javafx.application.HostServices
-import javafx.application.Platform
-import javafx.beans.binding.Bindings
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.value.ObservableValue
+import javafx.beans.binding.BooleanBinding
+import javafx.beans.binding.StringBinding
+import javafx.beans.property.StringProperty
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
-import javafx.stage.Stage
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.slf4j.LoggerFactory
+import tornadofx.ViewModel
+import tornadofx.booleanProperty
+import tornadofx.error
+import tornadofx.runLater
+import tornadofx.stringBinding
+import tornadofx.stringProperty
 import java.io.File
-import java.util.concurrent.Callable
 import kotlin.concurrent.timer
 import kotlin.system.exitProcess
 
 private const val HEARTBEAT_FREQUENCY_MS = 30 * 1_000L
 
-class HomeViewModel(private val stage: Stage, private val hostServices: HostServices) {
-    private val logger = LoggerFactory.getLogger(HomeViewModel::class.java)
-    private val hasHeardFromDota = SimpleBooleanProperty(false)
+class MainViewModel : ViewModel() {
+    private val hasHeardFromDota = booleanProperty(false)
     private val discordBotRepository = DiscordBotRepository()
     private val gitHubRepository = GitHubRepository()
 
-    val heading: ObservableValue<String> = Bindings.createStringBinding(Callable {
-        if (hasHeardFromDota.get()) getString("msg_connected") else getString("msg_not_connected")
-    }, hasHeardFromDota)
-    val progressBarVisible: ObservableValue<Boolean> = hasHeardFromDota.not()
-    val infoMessage: ObservableValue<String> = Bindings.createStringBinding(Callable {
-        if (hasHeardFromDota.get()) getString("dsc_connected") else getString("dsc_not_connected")
-    }, hasHeardFromDota)
-    val version = SimpleStringProperty(getString("lbl_app_version", APP_VERSION.value))
+    val heading: StringBinding = hasHeardFromDota.stringBinding {
+        if (it == true) getString("msg_connected") else getString("msg_not_connected")
+    }
+    val progressBarVisible: BooleanBinding = hasHeardFromDota.not()
+    val infoMessage: StringBinding = hasHeardFromDota.stringBinding {
+        if (it == true) getString("dsc_connected") else getString("dsc_not_connected")
+    }
+    val version: StringProperty = stringProperty(getString("lbl_app_version", APP_VERSION.value))
 
-    fun init() {
+    init {
         sendHeartbeats()
         if (SoundBites.shouldSync()) {
-            SyncSoundBitesStage().showModal(owner = stage, wait = true)
+            SyncSoundBitesStage().showModal(wait = true)
         }
-        val dotaPath = loadDotaPath()
-        Installer.installIfNecessary(dotaPath)
+        Installer.installIfNecessary(loadDotaPath())
         checkForInvalidSounds()
         GlobalScope.launch {
             checkForAppUpdate()
         }
-        stage.show()
         monitorGameStateUpdates {
-            Platform.runLater {
+            runLater {
                 hasHeardFromDota.set(true)
             }
         }
@@ -77,41 +74,38 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
     }
 
     fun onChangeSoundsClicked() {
-        ToggleSoundEventsStage().showModal(owner = stage)
+        ToggleSoundEventsStage().showModal(owner = primaryStage)
     }
 
     fun onDiscordBotClicked() {
-        DiscordBotStage(hostServices).showModal(owner = stage)
+        DiscordBotStage(hostServices).showModal(owner = primaryStage)
     }
 
     fun onDotaModClicked() {
-        logAnalyticsEvent(eventType = "button_click", eventData = "dota_mod")
-        DotaModStage(hostServices).showModal(owner = stage)
+        DotaModStage(hostServices).showModal(owner = primaryStage)
     }
 
     fun onDiscordCommunityClicked() {
-        logAnalyticsEvent(eventType = "button_click", eventData = "discord_community")
         hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
     }
 
     fun onProjectWebsiteClicked() {
-        logAnalyticsEvent(eventType = "button_click", eventData = "project_website")
         hostServices.showDocument(URL_PROJECT_WEBSITE)
     }
 
     private fun loadDotaPath(): String {
         val result = runCatching {
-            DotaPath.loadPath(stage)
+            DotaPath.loadPath(primaryStage)
         }
         if (result.isSuccess) {
             return result.getOrThrow()
         }
-        Alert(type = Alert.AlertType.ERROR,
+        error(
                 header = getString("header_installer"),
                 content = getString("msg_no_dota_path"),
-                buttons = arrayOf(ButtonType.CLOSE),
-                owner = stage
-        ).showAndWait()
+                buttons = *arrayOf(ButtonType.CLOSE),
+                owner = primaryStage
+        )
         exitProcess(-1)
     }
 
@@ -122,7 +116,7 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
                     header = getString("header_sounds_removed"),
                     content = getString("msg_sounds_removed", invalidSounds.joinToString(separator = "\n")),
                     buttons = arrayOf(ButtonType.OK),
-                    owner = stage
+                    owner = primaryStage
             ).showAndWait()
             ConfigPersistence.clearInvalidSounds()
         }
@@ -142,7 +136,6 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
             logger.info("Later app version available: ${releaseInfo.tagName}")
             withContext(Main) {
                 if (doesUserWantToUpdate(getString("header_app_update_available"), releaseInfo)) {
-                    logAnalyticsEvent(eventType = "button_click", eventData = "download_app_update")
                     downloadAppUpdate(releaseInfo)
                 } else {
                     withContext(Default) {
@@ -163,10 +156,10 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
                     header = getString("header_app_update_downloaded"),
                     content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
                     buttons = arrayOf(ButtonType.FINISH),
-                    owner = stage
+                    owner = primaryStage
             ).showAndWait()
             exitProcess(0)
-        }.showModal(stage)
+        }.showModal(primaryStage)
     }
 
     private suspend fun checkForModUpdate() {
@@ -187,7 +180,6 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
             logger.info("Later mod version available: ${releaseInfo.tagName}")
             withContext(Main) {
                 if (doesUserWantToUpdate(getString("header_mod_update_available"), releaseInfo)) {
-                    logAnalyticsEvent(eventType = "button_click", eventData = "download_mod_update")
                     downloadModUpdate(releaseInfo)
                 }
             }
@@ -204,9 +196,9 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
                     header = getString("header_mod_update_downloaded"),
                     content = getString("msg_mod_update_downloaded"),
                     buttons = arrayOf(ButtonType.FINISH),
-                    owner = stage
+                    owner = primaryStage
             ).showAndWait()
-        }.showModal(stage)
+        }.showModal(primaryStage)
     }
 
     private fun doesUserWantToUpdate(header: String, releaseInfo: ReleaseInfo): Boolean {
@@ -217,7 +209,7 @@ class HomeViewModel(private val stage: Stage, private val hostServices: HostServ
                 header = header,
                 content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
                 buttons = arrayOf(whatsNewButton, downloadButton, ButtonType.CANCEL),
-                owner = stage
+                owner = primaryStage
         ).showAndWait().toNullable()
 
         if (action === whatsNewButton) {
