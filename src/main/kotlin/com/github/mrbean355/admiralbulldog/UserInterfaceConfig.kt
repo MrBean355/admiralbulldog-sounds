@@ -12,7 +12,6 @@ import com.github.mrbean355.admiralbulldog.events.OnSmoked
 import com.github.mrbean355.admiralbulldog.events.OnVictory
 import com.github.mrbean355.admiralbulldog.events.Periodically
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
-import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import javafx.scene.image.Image
 import kotlin.reflect.KClass
 
@@ -41,12 +40,6 @@ const val ACTION_SHOW = "Show"
 const val ACTION_EXIT = "Exit"
 const val TRAY_CAPTION = "Over here!"
 const val TRAY_MESSAGE = "I've minimized to the system tray!"
-
-/* Toggle Sound Bites */
-const val TITLE_TOGGLE_SOUND_EVENTS = "Enable sounds"
-const val LABEL_VOLUME = "Volume"
-const val VOLUME_MAJOR_TICK_UNIT = MAX_VOLUME / 5.0
-const val VOLUME_MINOR_TICK_COUNT = 3
 
 /* Choose Sound Files */
 const val TOOLTIP_PLAY_LOCALLY = "Play on your machine"

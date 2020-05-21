@@ -37,8 +37,6 @@ class DotaModViewModel : AppViewModel() {
         tempDisabled.onChange { onTempDisabledCheckChanged(it) }
     }
 
-    override fun onReady() {}
-
     private fun onEnabledCheckChanged(checked: Boolean) {
         ConfigPersistence.setModEnabled(checked)
         checkModStatus()

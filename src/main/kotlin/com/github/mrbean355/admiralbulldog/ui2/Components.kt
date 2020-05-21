@@ -24,7 +24,7 @@ import tornadofx.UIComponent
 import tornadofx.action
 import tornadofx.slider
 
-fun EventTarget.slider(min: Number, max: Number, valueProperty: DoubleProperty): Slider {
+fun EventTarget.slider(min: Number, max: Number, valueProperty: DoubleProperty, op: Slider.() -> Unit = {}): Slider {
     return slider {
         this.min = min.toDouble()
         this.max = max.toDouble()
@@ -34,6 +34,7 @@ fun EventTarget.slider(min: Number, max: Number, valueProperty: DoubleProperty):
         isShowTickMarks = true
         isShowTickLabels = true
         isSnapToTicks = true
+        op()
     }
 }
 

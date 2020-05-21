@@ -14,7 +14,7 @@ abstract class AppViewModel : ViewModel() {
         runLater { onReady() }
     }
 
-    protected abstract fun onReady()
+    protected open fun onReady() {}
 
     open fun onUndock() {
         coroutineScope.cancel()

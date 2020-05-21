@@ -93,7 +93,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onChangeSoundsClicked() {
-        ToggleSoundEventsStage().showModal(owner = primaryStage)
+        find<ToggleSoundEventsScreen>().openModal(resizable = false)
     }
 
     fun onDiscordBotClicked() {
