@@ -1,12 +1,12 @@
 package com.github.mrbean355.admiralbulldog.mod
 
-import com.github.mrbean355.admiralbulldog.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.logger
+import com.github.mrbean355.admiralbulldog.common.update.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
