@@ -1,4 +1,4 @@
-package com.github.mrbean355.admiralbulldog
+package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
