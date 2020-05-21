@@ -118,16 +118,16 @@ class DotaModViewModel(private val stage: Stage) {
             logger.warn("Bad mod asset info, giving up")
             return
         }
-        DownloadUpdateStage(assetInfo, destination = DotaPath.getModDirectory()) {
-            DotaMod.onModDownloaded(releaseInfo)
-            _modVersion.set(ConfigPersistence.getModVersion())
-            Alert(type = Alert.AlertType.INFORMATION,
-                    header = getString("header_mod_update_downloaded"),
-                    content = getString("msg_mod_update_downloaded"),
-                    buttons = arrayOf(ButtonType.FINISH),
-                    owner = stage
-            ).showAndWait()
-        }.showModal(stage)
+        // TODO: Uncomment me
+//        subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
+//            information(
+//                    header = getString("header_mod_update_downloaded"),
+//                    content = getString("msg_mod_update_downloaded"),
+//                    buttons = *arrayOf(ButtonType.FINISH)
+//            )
+//        }
+//        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
+//                .openModal(escapeClosesWindow = false, block = true, resizable = false)
     }
 
     private fun disableMod() {

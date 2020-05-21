@@ -2,11 +2,16 @@ package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.scene.control.Alert
+import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.FX
 import tornadofx.ViewModel
+
+val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
+val WHATS_NEW_BUTTON = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
+val DOWNLOAD_BUTTON = ButtonType(getString("btn_download"), ButtonBar.ButtonData.NEXT_FORWARD)
 
 /** Get a logger whose name is the simple name of the receiver class. */
 val ViewModel.logger: Logger

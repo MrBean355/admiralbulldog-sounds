@@ -1,44 +1,45 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.ui.format
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.streamToFile
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleDoubleProperty
-import javafx.beans.property.SimpleStringProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
+import javafx.beans.property.DoubleProperty
+import javafx.beans.property.StringProperty
+import javafx.scene.control.ButtonType
+import javafx.scene.control.ProgressIndicator.INDETERMINATE_PROGRESS
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import tornadofx.FXEvent
+import tornadofx.doubleProperty
+import tornadofx.stringProperty
 import java.io.File
 import java.io.FileNotFoundException
 
-class DownloadUpdateViewModel(
-        private val assetInfo: AssetInfo,
-        private val destination: String,
-        private val onDownloadComplete: () -> Unit
-) {
-    private val coroutineScope = CoroutineScope(Default + Job())
+class DownloadUpdateViewModel : AppViewModel() {
     private val gitHubRepository = GitHubRepository()
+    private val assetInfo by param<AssetInfo>()
+    private val destination by param<String>()
 
-    val header = SimpleStringProperty()
-    val progress = SimpleDoubleProperty()
-    val isComplete = SimpleBooleanProperty(false)
-    val error = SimpleStringProperty(null)
+    val header: StringProperty = stringProperty()
+    val progress: DoubleProperty = doubleProperty()
 
-    fun init() {
+    override fun onReady() {
+        download()
+    }
+
+    private fun download() {
         header.set(getString("msg_downloading"))
+        progress.set(INDETERMINATE_PROGRESS)
         coroutineScope.launch {
             val resource = gitHubRepository.downloadAsset(assetInfo)
             val body = resource.body
             if (!resource.isSuccessful() || body == null) {
                 withContext(Main) {
-                    error.value = getString("msg_update_failed_unknown")
+                    showErrorMessage(getString("msg_update_failed_unknown"))
                 }
                 return@launch
             }
@@ -62,23 +63,26 @@ class DownloadUpdateViewModel(
                     }
                 }
                 withContext(Main) {
-                    isComplete.set(true)
-                    onDownloadComplete()
+                    fire(CloseEvent(success = true))
                 }
             } catch (e: FileNotFoundException) {
                 withContext(Main) {
-                    error.value = getString("msg_update_failed_file_not_found")
+                    showErrorMessage(getString("msg_update_failed_file_not_found"))
                 }
             }
         }
     }
 
-    fun onRetryClicked() {
-        error.value = null
-        init()
+    private fun showErrorMessage(message: String) {
+        error(getString("header_update_failed"), message, RETRY_BUTTON, ButtonType.CANCEL) {
+            if (it === RETRY_BUTTON) {
+                download()
+            } else {
+                fire(CloseEvent(success = false))
+            }
+        }
     }
 
-    fun onClose() {
-        coroutineScope.cancel()
-    }
+    class CloseEvent(val success: Boolean) : FXEvent()
+
 }

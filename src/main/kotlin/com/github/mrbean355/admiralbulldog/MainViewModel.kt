@@ -21,7 +21,6 @@ import com.vdurmont.semver4j.Semver
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty
-import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
@@ -142,14 +141,16 @@ class MainViewModel : AppViewModel() {
 
     private fun downloadAppUpdate(releaseInfo: ReleaseInfo) {
         val assetInfo = releaseInfo.getAppAssetInfo() ?: return
-        DownloadUpdateStage(assetInfo, destination = ".") {
+        subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
             information(
                     header = getString("header_app_update_downloaded"),
                     content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
                     buttons = *arrayOf(ButtonType.FINISH)
             )
             exitProcess(0)
-        }.showModal(primaryStage)
+        }
+        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = "."))
+                .openModal(escapeClosesWindow = false, block = true, resizable = false)
     }
 
     private suspend fun checkForModUpdate() {
@@ -180,32 +181,31 @@ class MainViewModel : AppViewModel() {
 
     private fun downloadModUpdate(releaseInfo: ReleaseInfo) {
         val assetInfo = releaseInfo.getModAssetInfo() ?: return
-        DownloadUpdateStage(assetInfo, destination = DotaPath.getModDirectory()) {
-            DotaMod.onModDownloaded(releaseInfo)
+        subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
             information(
                     header = getString("header_mod_update_downloaded"),
                     content = getString("msg_mod_update_downloaded"),
                     buttons = *arrayOf(ButtonType.FINISH)
             )
-        }.showModal(primaryStage)
+        }
+        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
+                .openModal(escapeClosesWindow = false, block = true, resizable = false)
     }
 
     private fun doesUserWantToUpdate(header: String, releaseInfo: ReleaseInfo): Boolean {
-        val whatsNewButton = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
-        val downloadButton = ButtonType(getString("btn_download"), ButtonBar.ButtonData.NEXT_FORWARD)
         var action: ButtonType? = null
         information(
                 header = header,
                 content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
-                buttons = *arrayOf(whatsNewButton, downloadButton, ButtonType.CANCEL)
+                buttons = *arrayOf(WHATS_NEW_BUTTON, DOWNLOAD_BUTTON, ButtonType.CANCEL)
         ) {
             action = it
         }
-        if (action === whatsNewButton) {
+        if (action === WHATS_NEW_BUTTON) {
             hostServices.showDocument(releaseInfo.htmlUrl)
             return doesUserWantToUpdate(header, releaseInfo)
         }
-        return action === downloadButton
+        return action === DOWNLOAD_BUTTON
     }
 
     private fun sendHeartbeats() {

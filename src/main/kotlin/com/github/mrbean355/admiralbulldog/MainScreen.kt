@@ -17,6 +17,7 @@ import tornadofx.progressbar
 import tornadofx.separator
 import tornadofx.vbox
 import tornadofx.visibleWhen
+import tornadofx.whenUndocked
 
 class MainScreen : View(getString("title_app")) {
     val viewModel by inject<MainViewModel>()
@@ -54,6 +55,12 @@ class MainScreen : View(getString("title_app")) {
         }
         label(viewModel.version) {
             font = Font(TEXT_SIZE_SMALL)
+        }
+    }
+
+    init {
+        whenUndocked {
+            viewModel.onUndock()
         }
     }
 }
