@@ -1,6 +1,9 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.arch.AssetInfo
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import tornadofx.FXEvent

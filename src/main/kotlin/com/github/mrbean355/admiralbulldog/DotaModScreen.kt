@@ -1,9 +1,12 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.URL_MOD_INFO
+import com.github.mrbean355.admiralbulldog.common.useSmallFont
 import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.geometry.Pos.CENTER
-import javafx.scene.text.Font
-import tornadofx.View
+import tornadofx.Fragment
 import tornadofx.action
 import tornadofx.checkbox
 import tornadofx.enableWhen
@@ -14,7 +17,7 @@ import tornadofx.spacer
 import tornadofx.vbox
 import tornadofx.whenUndocked
 
-class DotaModScreen : View(getString("title_mod")) {
+class DotaModScreen : Fragment(getString("title_mod")) {
     private val viewModel by inject<DotaModViewModel>()
 
     override val root = vbox(spacing = PADDING_SMALL) {
@@ -33,7 +36,7 @@ class DotaModScreen : View(getString("title_mod")) {
                 action { hostServices.showDocument(URL_MOD_INFO) }
             }
             label(viewModel.formattedModVersion) {
-                font = Font(TEXT_SIZE_SMALL)
+                useSmallFont()
             }
         }
     }

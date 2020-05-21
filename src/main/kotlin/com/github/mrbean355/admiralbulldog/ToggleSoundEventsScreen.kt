@@ -1,14 +1,18 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.SettingsIcon
+import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
+import com.github.mrbean355.admiralbulldog.common.slider
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.ui.getString
-import com.github.mrbean355.admiralbulldog.ui2.slider
 import javafx.scene.control.Tooltip
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.Priority.ALWAYS
-import tornadofx.View
+import tornadofx.Fragment
 import tornadofx.action
 import tornadofx.button
 import tornadofx.checkbox
@@ -19,8 +23,9 @@ import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.row
+import tornadofx.whenUndocked
 
-class ToggleSoundEventsScreen : View(getString("title_toggle_sound_triggers")) {
+class ToggleSoundEventsScreen : Fragment(getString("title_toggle_sound_triggers")) {
     private val viewModel by inject<ToggleSoundEventsViewModel>()
 
     override val root = gridpane {
@@ -46,11 +51,17 @@ class ToggleSoundEventsScreen : View(getString("title_toggle_sound_triggers")) {
                 val checkBox = checkbox(type.friendlyName, viewModel.enabledProperty(type)) {
                     tooltip = Tooltip(type.description)
                 }
-                button(graphic = imageview(settingsIcon())) {
+                button(graphic = imageview(SettingsIcon())) {
                     enableWhen(checkBox.selectedProperty())
                     action { viewModel.onConfigureClicked(type) }
                 }
             }
+        }
+    }
+
+    init {
+        whenUndocked {
+            viewModel.onUndock()
         }
     }
 }

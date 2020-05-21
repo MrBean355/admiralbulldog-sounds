@@ -3,6 +3,8 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
+import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
+import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.ui.format
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.streamToFile

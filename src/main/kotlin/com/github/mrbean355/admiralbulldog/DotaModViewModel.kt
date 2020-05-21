@@ -4,14 +4,16 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
+import com.github.mrbean355.admiralbulldog.common.information
+import com.github.mrbean355.admiralbulldog.common.logger
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
-import com.github.mrbean355.admiralbulldog.ui.ProgressDialog
+import com.github.mrbean355.admiralbulldog.ui.ProgressScreen
 import com.github.mrbean355.admiralbulldog.ui.getString
-import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.beans.property.BooleanProperty
 import javafx.scene.control.ButtonType
+import javafx.stage.StageStyle.UTILITY
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,8 +65,10 @@ class DotaModViewModel : AppViewModel() {
         modDirectory.mkdirs()
         DotaMod.onModEnabled()
 
-        val progressDialog = ProgressDialog()
-        progressDialog.showModal()
+        val progressDialog = find<ProgressScreen>()
+        progressDialog.openModal(stageStyle = UTILITY, escapeClosesWindow = false, resizable = false)?.also { stage ->
+            stage.setOnCloseRequest { it.consume() }
+        }
 
         coroutineScope.launch {
             logger.info("Checking for mod update...")

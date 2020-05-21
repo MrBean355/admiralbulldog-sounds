@@ -1,11 +1,6 @@
 package com.github.mrbean355.admiralbulldog.ui
 
-import com.github.mrbean355.admiralbulldog.ACTION_EXIT
-import com.github.mrbean355.admiralbulldog.ACTION_SHOW
 import com.github.mrbean355.admiralbulldog.DotaApplication
-import com.github.mrbean355.admiralbulldog.TITLE_MAIN_WINDOW
-import com.github.mrbean355.admiralbulldog.TRAY_CAPTION
-import com.github.mrbean355.admiralbulldog.TRAY_MESSAGE
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Platform
@@ -32,15 +27,15 @@ fun prepareTrayIcon(stage: Stage) {
     Platform.setImplicitExit(false)
 
     val popup = PopupMenu()
-    MenuItem(ACTION_SHOW).apply {
+    MenuItem(getString("menu_show")).apply {
         addActionListener { showFromTray(stage) }
         popup.add(this)
     }
-    MenuItem(ACTION_EXIT).apply {
+    MenuItem(getString("menu_exit")).apply {
         addActionListener { exitFromTray() }
         popup.add(this)
     }
-    val trayIcon = TrayIcon(getTrayImage(), TITLE_MAIN_WINDOW, popup).apply {
+    val trayIcon = TrayIcon(getTrayImage(), getString("title_app"), popup).apply {
         addActionListener { showFromTray(stage) }
     }
 
@@ -49,7 +44,7 @@ fun prepareTrayIcon(stage: Stage) {
             minimizeToTray(stage)
             SystemTray.getSystemTray().add(trayIcon)
             if (!ConfigPersistence.getAndSetNotifiedAboutSystemTray()) {
-                trayIcon.displayMessage(TRAY_CAPTION, TRAY_MESSAGE, TrayIcon.MessageType.INFO)
+                trayIcon.displayMessage(getString("tray_caption"), getString("tray_message"), TrayIcon.MessageType.INFO)
             }
         } else {
             SystemTray.getSystemTray().remove(trayIcon)

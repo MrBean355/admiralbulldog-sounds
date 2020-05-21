@@ -2,7 +2,7 @@ package com.github.mrbean355.admiralbulldog.ui
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.playIcon
+import com.github.mrbean355.admiralbulldog.common.PlayIcon
 import javafx.beans.property.BooleanProperty
 import javafx.collections.transformation.SortedList
 import javafx.scene.control.Button
@@ -62,7 +62,7 @@ class SoundBiteTracker(selection: List<SoundBite>) {
     private class CheckBoxWithButtonCell(private val getSelectedProperty: (SoundBite?) -> BooleanProperty?) : ListCell<SoundBite>() {
         private val container = GridPane()
         private val checkBox = CheckBox()
-        private val button = Button("", ImageView(playIcon()))
+        private val button = Button("", ImageView(PlayIcon()))
         private var booleanProperty: BooleanProperty? = null
 
         init {

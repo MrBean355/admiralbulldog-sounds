@@ -1,13 +1,15 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
 import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
 import javafx.scene.control.Tooltip
 import javafx.scene.layout.FlowPane
-import tornadofx.View
+import tornadofx.Fragment
 import tornadofx.action
 import tornadofx.attachTo
 import tornadofx.button
@@ -21,7 +23,7 @@ import tornadofx.vbox
 import tornadofx.visibleWhen
 import tornadofx.whenUndocked
 
-class SoundBoardScreen : View(getString("title_sound_board")) {
+class SoundBoardScreen : Fragment(getString("title_sound_board")) {
     private val viewModel by inject<SoundBoardViewModel>()
 
     override val root = vbox(spacing = PADDING_SMALL) {
@@ -49,7 +51,7 @@ class SoundBoardScreen : View(getString("title_sound_board")) {
     }
 
     private fun onChooseSoundsClicked() {
-        find<ConfigureSoundBoardStage>().openModal(block = true, resizable = false)
+        find<ConfigureSoundBoardScreen>().openModal(block = true, resizable = false)
         viewModel.refresh()
     }
 }

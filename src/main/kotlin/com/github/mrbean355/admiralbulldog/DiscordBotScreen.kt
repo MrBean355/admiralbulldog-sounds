@@ -1,10 +1,14 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
+import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.scene.control.ButtonBar.ButtonData.HELP
 import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
-import tornadofx.View
+import tornadofx.Fragment
 import tornadofx.action
 import tornadofx.button
 import tornadofx.buttonbar
@@ -22,7 +26,7 @@ import tornadofx.textflow
 import tornadofx.vbox
 import tornadofx.whenUndocked
 
-class DiscordBotScreen : View(getString("title_discord_bot")) {
+class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
     private val viewModel by inject<DiscordBotViewModel>()
 
     override val root = vbox(spacing = PADDING_SMALL) {

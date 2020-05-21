@@ -1,9 +1,9 @@
-package com.github.mrbean355.admiralbulldog.ui2.installation
+package com.github.mrbean355.admiralbulldog.installation
 
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.useBoldFont
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.getString
-import com.github.mrbean355.admiralbulldog.ui2.BoldFont
-import com.github.mrbean355.admiralbulldog.ui2.Spacing
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.Fragment
 import tornadofx.action
@@ -20,10 +20,10 @@ class ChooserDotaDirectoryStep : Fragment() {
     private var displayedPath = SimpleStringProperty(getString("install_no_path"))
     private val errorMessage = SimpleStringProperty(null)
 
-    override val root = vbox(spacing = Spacing.MEDIUM) {
+    override val root = vbox(spacing = PADDING_MEDIUM) {
         label(getString("install_path_name"))
         label(displayedPath) {
-            font = BoldFont()
+            useBoldFont()
             isWrapText = true
             fitToParentWidth()
         }

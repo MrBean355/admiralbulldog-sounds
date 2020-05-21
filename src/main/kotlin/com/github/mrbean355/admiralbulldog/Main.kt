@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.arch.hostUrl
+import com.github.mrbean355.admiralbulldog.common.URL_JAVA_DOWNLOAD
 import com.github.mrbean355.admiralbulldog.ui.getString
 import tornadofx.launch
 import java.awt.Desktop

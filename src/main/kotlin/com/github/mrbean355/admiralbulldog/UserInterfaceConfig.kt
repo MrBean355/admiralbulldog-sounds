@@ -12,39 +12,7 @@ import com.github.mrbean355.admiralbulldog.events.OnSmoked
 import com.github.mrbean355.admiralbulldog.events.OnVictory
 import com.github.mrbean355.admiralbulldog.events.Periodically
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
-import javafx.scene.image.Image
 import kotlin.reflect.KClass
-
-/* Dimensions */
-const val WINDOW_WIDTH = 300.0
-const val PADDING_SMALL = 8.0
-const val PADDING_MEDIUM = 16.0
-const val TEXT_SIZE_SMALL = 10.0
-const val TEXT_SIZE_LARGE = 18.0
-
-/* Hyperlinks */
-const val URL_JAVA_DOWNLOAD = "https://www.java.com/en/download"
-const val URL_DISCORD_SERVER_INVITE = "https://discordapp.com/invite/pEV4mW5"
-const val URL_PROJECT_WEBSITE = "https://github.com/MrBean355/admiralbulldog-sounds"
-const val URL_MOD_INFO = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Dota-Mod"
-const val URL_DISCORD_BOT_INVITE = "https://discordapp.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot&permissions=1"
-const val URL_DISCORD_WIKI = "https://github.com/MrBean355/admiralbulldog-sounds/wiki/Discord-Bot"
-
-/* Main Window */
-const val TITLE_MAIN_WINDOW = "AdmiralBulldog"
-const val HEADER_EXCEPTION = "Unexpected error"
-
-/* System Tray */
-const val ACTION_SHOW = "Show"
-const val ACTION_EXIT = "Exit"
-const val TRAY_CAPTION = "Over here!"
-const val TRAY_MESSAGE = "I've minimized to the system tray!"
-
-/* Icons */
-fun bulldogIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg"))
-
-fun playIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("play_arrow_black.png"))
-fun settingsIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("settings_black.png"))
 
 val KClass<out SoundEvent>.friendlyName: String
     get() {

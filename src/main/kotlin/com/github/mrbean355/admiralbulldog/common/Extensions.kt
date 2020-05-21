@@ -1,17 +1,22 @@
-package com.github.mrbean355.admiralbulldog
+package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.ui.getString
+import javafx.beans.property.DoubleProperty
+import javafx.event.EventTarget
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
+import javafx.scene.control.Slider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.FX
 import tornadofx.ViewModel
+import tornadofx.slider
 
 val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
 val WHATS_NEW_BUTTON = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
 val DOWNLOAD_BUTTON = ButtonType(getString("btn_download"), ButtonBar.ButtonData.NEXT_FORWARD)
+val DISCORD_BUTTON = ButtonType("Discord", ButtonBar.ButtonData.OK_DONE)
 
 /** Get a logger whose name is the simple name of the receiver class. */
 val ViewModel.logger: Logger
@@ -28,3 +33,17 @@ inline fun warning(header: String, content: String? = null, vararg buttons: Butt
 
 inline fun error(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
         tornadofx.error(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
+
+fun EventTarget.slider(min: Number, max: Number, valueProperty: DoubleProperty, op: Slider.() -> Unit = {}): Slider {
+    return slider {
+        this.min = min.toDouble()
+        this.max = max.toDouble()
+        valueProperty().bindBidirectional(valueProperty)
+        majorTickUnit = this.max / 4
+        minorTickCount = 4
+        isShowTickMarks = true
+        isShowTickLabels = true
+        isSnapToTicks = true
+        op()
+    }
+}
