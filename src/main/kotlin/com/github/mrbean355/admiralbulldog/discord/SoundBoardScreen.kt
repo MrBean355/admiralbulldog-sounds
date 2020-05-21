@@ -1,4 +1,4 @@
-package com.github.mrbean355.admiralbulldog
+package com.github.mrbean355.admiralbulldog.discord
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM

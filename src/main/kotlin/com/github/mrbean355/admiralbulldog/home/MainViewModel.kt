@@ -1,7 +1,6 @@
 package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.DotaModScreen
 import com.github.mrbean355.admiralbulldog.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.SyncSoundBitesScreen
@@ -20,6 +19,7 @@ import com.github.mrbean355.admiralbulldog.common.URL_PROJECT_WEBSITE
 import com.github.mrbean355.admiralbulldog.common.WHATS_NEW_BUTTON
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.logger
+import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
