@@ -27,6 +27,7 @@ class ToggleSoundEventsViewModel : AppViewModel() {
     fun enabledProperty(type: KClass<out SoundEvent>): BooleanProperty = toggles.getValue(type)
 
     fun onConfigureClicked(type: KClass<out SoundEvent>) {
-        // TODO
+        find<ChooseSoundFilesScreen>(params = ChooseSoundFilesScreen.params(type))
+                .openModal(resizable = false)
     }
 }
