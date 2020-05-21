@@ -1,5 +1,6 @@
-package com.github.mrbean355.admiralbulldog
+package com.github.mrbean355.admiralbulldog.mod
 
+import com.github.mrbean355.admiralbulldog.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
