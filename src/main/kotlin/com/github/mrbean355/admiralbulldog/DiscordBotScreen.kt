@@ -86,7 +86,6 @@ class DiscordBotScreen : View(getString("title_discord_bot")) {
     }
 
     private fun onSoundBoardClicked() {
-        // todo
-//        SoundBoardStage().showModal(owner = this)
+        find<SoundBoardScreen>().openModal(resizable = false)
     }
 }

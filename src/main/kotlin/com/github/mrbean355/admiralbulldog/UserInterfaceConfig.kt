@@ -47,10 +47,6 @@ const val PROMPT_SEARCH = "Search..."
 const val ACTION_SAVE = "Save"
 
 /* Discord Bot */
-const val TITLE_SOUND_BOARD = "Discord sound board"
-const val MSG_DISCORD_PLAY_FAILED = "Couldn't play %s through Discord; is the bot in a voice channel?"
-const val TOOLTIP_PLAY_ON_DISCORD = "Play through Discord"
-const val ACTION_CHOOSE_SOUNDS = "Choose sounds"
 const val TITLE_CONFIGURE_SOUND_BOARD = "Choose sounds"
 
 /* Icons */

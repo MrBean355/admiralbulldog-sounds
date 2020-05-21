@@ -1,33 +1,24 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.ui.Alert
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.collections.FXCollections
+import com.github.mrbean355.admiralbulldog.ui.getString
+import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
-import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
-import javafx.stage.Stage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import tornadofx.booleanProperty
+import tornadofx.toObservable
 
-class SoundBoardViewModel(private val stage: Stage) {
-    private val coroutineScope = CoroutineScope(Default + Job())
+class SoundBoardViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
 
-    val soundBoard: ObservableList<SoundBite> = FXCollections.observableArrayList<SoundBite>()
-    val isEmpty = SimpleBooleanProperty()
-
-    fun init() {
-        refresh()
-    }
+    val soundBoard: ObservableList<SoundBite> = ConfigPersistence.getSoundBoard().toObservable()
+    val isEmpty: BooleanProperty = booleanProperty()
 
     fun refresh() {
         soundBoard.setAll(ConfigPersistence.getSoundBoard())
@@ -38,19 +29,10 @@ class SoundBoardViewModel(private val stage: Stage) {
         coroutineScope.launch {
             val response = discordBotRepository.playSound(soundBite)
             if (!response.isSuccessful()) {
-                withContext(Dispatchers.Main) {
-                    Alert(type = Alert.AlertType.ERROR,
-                            header = HEADER_DISCORD_SOUND,
-                            content = MSG_DISCORD_PLAY_FAILED.format(soundBite.name),
-                            buttons = arrayOf(ButtonType.OK),
-                            owner = stage
-                    ).show()
+                withContext(Main) {
+                    error(getString("header_discord_sound_failed"), getString("content_discord_sound_failed"), ButtonType.OK)
                 }
             }
         }
-    }
-
-    fun onClose() {
-        coroutineScope.cancel()
     }
 }

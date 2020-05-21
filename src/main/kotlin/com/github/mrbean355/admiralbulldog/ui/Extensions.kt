@@ -1,17 +1,14 @@
 package com.github.mrbean355.admiralbulldog.ui
 
-import com.github.mrbean355.admiralbulldog.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.TITLE_MAIN_WINDOW
 import com.github.mrbean355.admiralbulldog.bulldogIcon
 import javafx.event.EventHandler
-import javafx.scene.Node
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
-import javafx.scene.layout.Region
 import javafx.stage.Modality.WINDOW_MODAL
 import javafx.stage.Stage
 import javafx.stage.Window
@@ -80,13 +77,6 @@ fun Alert(
         if (owner != null) {
             initOwner(owner)
         }
-    }
-}
-
-@Suppress("FunctionName")
-fun Space(height: Double = PADDING_SMALL): Node {
-    return Region().apply {
-        prefHeight = height
     }
 }
 
