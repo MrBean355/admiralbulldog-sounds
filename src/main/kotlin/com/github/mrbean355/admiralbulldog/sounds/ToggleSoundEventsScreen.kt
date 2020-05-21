@@ -5,9 +5,7 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.slider
-import com.github.mrbean355.admiralbulldog.description
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
-import com.github.mrbean355.admiralbulldog.friendlyName
 import com.github.mrbean355.admiralbulldog.persistence.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.ui.getString
