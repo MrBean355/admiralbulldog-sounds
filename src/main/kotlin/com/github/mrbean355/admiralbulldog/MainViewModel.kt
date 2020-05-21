@@ -15,7 +15,6 @@ import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
-import com.github.mrbean355.admiralbulldog.ui.showModal
 import com.github.mrbean355.admiralbulldog.ui2.installation.InstallationWizard
 import com.vdurmont.semver4j.Semver
 import javafx.beans.binding.BooleanBinding
@@ -97,7 +96,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onDiscordBotClicked() {
-        DiscordBotStage(hostServices).showModal(owner = primaryStage)
+        find<DiscordBotScreen>().openModal(resizable = false)
     }
 
     fun onDotaModClicked() {

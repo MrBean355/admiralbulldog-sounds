@@ -1,76 +1,85 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.getString
-import javafx.beans.binding.Bindings
 import javafx.beans.binding.StringBinding
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.property.SimpleStringProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.ObjectProperty
+import javafx.beans.property.StringProperty
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Callable
+import tornadofx.booleanProperty
+import tornadofx.objectProperty
+import tornadofx.onChange
+import tornadofx.stringBinding
+import tornadofx.stringProperty
+import kotlin.reflect.KClass
 
-class DiscordBotViewModel {
-    private val coroutineScope = CoroutineScope(Default + Job())
+class DiscordBotViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
-    private val lookupResponse = SimpleStringProperty()
+    private val toggles: Map<KClass<out SoundEvent>, BooleanProperty>
+    private val lookupResponse = stringProperty()
+    private val statusType: ObjectProperty<Status> = objectProperty()
 
-    val botEnabled = SimpleBooleanProperty(ConfigPersistence.isUsingDiscordBot())
-    val token = SimpleStringProperty(ConfigPersistence.getDiscordToken())
-    val statusImage = SimpleObjectProperty<Status>()
-    val status: StringBinding = Bindings.createStringBinding(Callable {
-        if (botEnabled.get()) {
+    val botEnabled: BooleanProperty = booleanProperty(ConfigPersistence.isUsingDiscordBot())
+    val token: StringProperty = stringProperty(ConfigPersistence.getDiscordToken())
+    val statusImage: StringBinding = statusType.stringBinding { it?.image }
+    val status: StringBinding = botEnabled.stringBinding(lookupResponse) {
+        if (it == true) {
             lookupResponse.get()
         } else {
-            statusImage.set(Status.NEUTRAL)
+            statusType.set(Status.NEUTRAL)
             getString("msg_bot_disabled")
         }
-    }, botEnabled, lookupResponse)
+    }
 
     init {
-        botEnabled.addListener { _, _, newValue ->
-            ConfigPersistence.setUsingDiscordBot(newValue)
-            if (newValue) {
+        toggles = SOUND_EVENT_TYPES.associateWith { type ->
+            booleanProperty(ConfigPersistence.isPlayedThroughDiscord(type)).apply {
+                onChange { ConfigPersistence.setPlayedThroughDiscord(type, it) }
+            }
+        }
+        botEnabled.onChange {
+            ConfigPersistence.setUsingDiscordBot(it)
+            if (it) {
                 lookupDiscordGuild()
             }
         }
-        token.addListener { _, _, newValue ->
-            ConfigPersistence.setDiscordToken(newValue)
+        token.onChange {
+            ConfigPersistence.setDiscordToken(it.orEmpty())
             lookupDiscordGuild()
         }
     }
 
-    fun init() {
+    override fun onReady() {
         if (botEnabled.get()) {
             lookupDiscordGuild()
         } else {
-            statusImage.set(Status.NEUTRAL)
+            statusType.set(Status.NEUTRAL)
         }
     }
 
-    fun onClose() {
-        coroutineScope.cancel()
+    fun throughDiscordProperty(type: KClass<out SoundEvent>): BooleanProperty {
+        return toggles.getValue(type)
     }
 
     private fun lookupDiscordGuild() {
-        statusImage.set(Status.LOADING)
+        statusType.set(Status.LOADING)
         lookupResponse.set(getString("msg_bot_loading"))
 
         coroutineScope.launch {
             val response = discordBotRepository.lookUpToken(token.get())
             withContext(Main) {
                 if (response.isSuccessful()) {
-                    statusImage.set(Status.GOOD)
+                    statusType.set(Status.GOOD)
                     lookupResponse.set(getString("msg_bot_active", response.body))
                 } else {
-                    statusImage.set(Status.BAD)
+                    statusType.set(Status.BAD)
                     if (response.statusCode == 404) {
                         lookupResponse.set(getString("msg_bot_not_found"))
                     } else {
@@ -81,7 +90,7 @@ class DiscordBotViewModel {
         }
     }
 
-    enum class Status(val image: String) {
+    private enum class Status(val image: String) {
         NEUTRAL("grey_dot.png"),
         GOOD("green_dot.png"),
         BAD("red_dot.png"),
