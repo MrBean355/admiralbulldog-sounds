@@ -1,13 +1,9 @@
 package com.github.mrbean355.admiralbulldog.ui
 
-import com.github.mrbean355.admiralbulldog.PROMPT_SEARCH
-import com.github.mrbean355.admiralbulldog.TOOLTIP_PLAY_LOCALLY
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.playIcon
 import javafx.beans.property.BooleanProperty
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.collections.FXCollections
 import javafx.collections.transformation.SortedList
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
@@ -19,6 +15,9 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
+import tornadofx.booleanProperty
+import tornadofx.onChange
+import tornadofx.toObservable
 
 /**
  * Manages a [ListView] of all [SoundBite]s, with the ability to filter items based on the input of a search field.
@@ -27,18 +26,18 @@ import javafx.scene.layout.Priority
  */
 class SoundBiteTracker(selection: List<SoundBite>) {
     private val allItems = SoundBites.getAll()
-    private val soundToggles: Map<SoundBite, BooleanProperty> = allItems.associateWith { SimpleBooleanProperty(it in selection) }
-    private val searchResults = FXCollections.observableArrayList(allItems)
+    private val soundToggles: Map<SoundBite, BooleanProperty> = allItems.associateWith { booleanProperty(it in selection) }
+    private val searchResults = allItems.toObservable()
 
     fun createSearchField(): TextField {
         return TextField().apply {
-            promptText = PROMPT_SEARCH
-            textProperty().addListener { _, _, newValue -> filter(newValue) }
+            promptText = getString("prompt_search")
+            textProperty().onChange { filter(it.orEmpty()) }
         }
     }
 
     fun createListView(): ListView<SoundBite> {
-        val sortedList = SortedList<SoundBite>(searchResults, Comparator { lhs, rhs ->
+        val sortedList = SortedList(searchResults, Comparator { lhs, rhs ->
             val lhsSelected = soundToggles[lhs]?.value ?: false
             val rhsSelected = soundToggles[rhs]?.value ?: false
             when {
@@ -47,7 +46,7 @@ class SoundBiteTracker(selection: List<SoundBite>) {
                 else -> 1
             }
         })
-        return ListView<SoundBite>(sortedList).apply {
+        return ListView(sortedList).apply {
             setCellFactory { CheckBoxWithButtonCell { soundToggles[it] } }
         }
     }
@@ -57,8 +56,7 @@ class SoundBiteTracker(selection: List<SoundBite>) {
     }
 
     private fun filter(query: String) {
-        searchResults.clear()
-        searchResults.addAll(allItems.filter { it.name.contains(query.trim(), ignoreCase = true) })
+        searchResults.setAll(allItems.filter { it.name.contains(query.trim(), ignoreCase = true) })
     }
 
     private class CheckBoxWithButtonCell(private val getSelectedProperty: (SoundBite?) -> BooleanProperty?) : ListCell<SoundBite>() {
@@ -84,7 +82,7 @@ class SoundBiteTracker(selection: List<SoundBite>) {
             graphic = container
             checkBox.text = item?.name
             button.setOnAction { item?.play() }
-            button.tooltip = Tooltip(TOOLTIP_PLAY_LOCALLY)
+            button.tooltip = Tooltip(getString("tooltip_play_locally"))
 
             booleanProperty?.let {
                 checkBox.selectedProperty().unbindBidirectional(booleanProperty)

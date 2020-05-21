@@ -2,7 +2,6 @@ package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.ui.getString
-import com.github.mrbean355.admiralbulldog.ui.showModal
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
 import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
@@ -37,7 +36,7 @@ class SoundBoardScreen : View(getString("title_sound_board")) {
             prefHeight = PADDING_SMALL
         }
         buttonbar {
-            button(getString("action_choose_sounds"), NEXT_FORWARD) {
+            button(getString("btn_customise"), NEXT_FORWARD) {
                 action { onChooseSoundsClicked() }
             }
         }
@@ -50,7 +49,7 @@ class SoundBoardScreen : View(getString("title_sound_board")) {
     }
 
     private fun onChooseSoundsClicked() {
-        ConfigureSoundBoardStage().showModal(wait = true)
+        find<ConfigureSoundBoardStage>().openModal(block = true, resizable = false)
         viewModel.refresh()
     }
 }

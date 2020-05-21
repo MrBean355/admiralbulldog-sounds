@@ -32,7 +32,6 @@ const val URL_DISCORD_WIKI = "https://github.com/MrBean355/admiralbulldog-sounds
 
 /* Main Window */
 const val TITLE_MAIN_WINDOW = "AdmiralBulldog"
-const val HEADER_DISCORD_SOUND = "Discord sound"
 const val HEADER_EXCEPTION = "Unexpected error"
 
 /* System Tray */
@@ -40,14 +39,6 @@ const val ACTION_SHOW = "Show"
 const val ACTION_EXIT = "Exit"
 const val TRAY_CAPTION = "Over here!"
 const val TRAY_MESSAGE = "I've minimized to the system tray!"
-
-/* Choose Sound Files */
-const val TOOLTIP_PLAY_LOCALLY = "Play on your machine"
-const val PROMPT_SEARCH = "Search..."
-const val ACTION_SAVE = "Save"
-
-/* Discord Bot */
-const val TITLE_CONFIGURE_SOUND_BOARD = "Choose sounds"
 
 /* Icons */
 fun bulldogIcon() = Image(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg"))
