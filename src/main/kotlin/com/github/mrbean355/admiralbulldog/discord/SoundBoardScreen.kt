@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.discord
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.ui.getString
+import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
 import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD

@@ -5,9 +5,7 @@ import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
 import com.github.mrbean355.admiralbulldog.common.error
-import com.github.mrbean355.admiralbulldog.ui.format
-import com.github.mrbean355.admiralbulldog.ui.getString
-import com.github.mrbean355.admiralbulldog.ui.streamToFile
+import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
@@ -15,11 +13,13 @@ import javafx.scene.control.ProgressIndicator.INDETERMINATE_PROGRESS
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import tornadofx.FXEvent
 import tornadofx.doubleProperty
 import tornadofx.stringProperty
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.InputStream
 
 class DownloadUpdateViewModel : AppViewModel() {
     private val gitHubRepository = GitHubRepository()
@@ -81,6 +81,28 @@ class DownloadUpdateViewModel : AppViewModel() {
                 download()
             } else {
                 fire(CloseEvent(success = false))
+            }
+        }
+    }
+
+    private fun Double.format(decimalPlaces: Int): String {
+        return "%.${decimalPlaces}f".format(this)
+    }
+
+    /**
+     * Stream this [InputStream] into the given [file], calling [onProgress] with the current number of bytes written.
+     */
+    private suspend fun InputStream.streamToFile(file: File, onProgress: suspend (Long) -> Unit) {
+        file.outputStream().use { output ->
+            var bytesCopied = 0L
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            var bytes = read(buffer)
+            while (bytes >= 0) {
+                yield()
+                output.write(buffer, 0, bytes)
+                bytesCopied += bytes
+                onProgress(bytesCopied)
+                bytes = read(buffer)
             }
         }
     }

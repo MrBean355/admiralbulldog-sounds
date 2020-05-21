@@ -1,6 +1,6 @@
-package com.github.mrbean355.admiralbulldog.ui
+package com.github.mrbean355.admiralbulldog.persistence
 
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.common.replaceFileSeparators
 import java.io.File
 
 private val DOTA_ROOT_DIR_NAMES = listOf("dota 2", "dota 2 beta")

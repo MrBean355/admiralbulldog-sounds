@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch
 
-import com.github.mrbean355.admiralbulldog.ui.VPK_FILE_NAME
+import com.github.mrbean355.admiralbulldog.persistence.VPK_FILE_NAME
 import com.google.gson.annotations.SerializedName
 import java.util.Date
 

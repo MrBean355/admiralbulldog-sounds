@@ -2,9 +2,9 @@ package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useLargeFont
 import com.github.mrbean355.admiralbulldog.common.useSmallFont
-import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.geometry.Orientation
 import javafx.geometry.Pos.CENTER
 import tornadofx.View

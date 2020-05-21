@@ -13,8 +13,10 @@ import com.github.mrbean355.admiralbulldog.common.DOWNLOAD_BUTTON
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_PROJECT_WEBSITE
 import com.github.mrbean355.admiralbulldog.common.WHATS_NEW_BUTTON
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.logger
+import com.github.mrbean355.admiralbulldog.common.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.common.update.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
@@ -22,12 +24,10 @@ import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
 import com.github.mrbean355.admiralbulldog.mod.DotaModScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
+import com.github.mrbean355.admiralbulldog.persistence.DotaPath
+import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.sounds.SyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.sounds.ToggleSoundEventsScreen
-import com.github.mrbean355.admiralbulldog.ui.DotaPath
-import com.github.mrbean355.admiralbulldog.ui.GameStateIntegration
-import com.github.mrbean355.admiralbulldog.ui.getString
-import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
 import com.vdurmont.semver4j.Semver
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding

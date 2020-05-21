@@ -2,6 +2,7 @@ package com.github.mrbean355.admiralbulldog.ui
 
 import com.github.mrbean355.admiralbulldog.DotaApplication
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Platform
 import javafx.stage.Stage

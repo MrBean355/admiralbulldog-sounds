@@ -4,14 +4,13 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.logger
 import com.github.mrbean355.admiralbulldog.common.update.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
-import com.github.mrbean355.admiralbulldog.ui.DotaPath
-import com.github.mrbean355.admiralbulldog.ui.ProgressScreen
-import com.github.mrbean355.admiralbulldog.ui.getString
+import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import javafx.beans.property.BooleanProperty
 import javafx.scene.control.ButtonType
 import javafx.stage.StageStyle.UTILITY

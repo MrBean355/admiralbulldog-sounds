@@ -1,6 +1,6 @@
-package com.github.mrbean355.admiralbulldog.ui
+package com.github.mrbean355.admiralbulldog.persistence
 
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.common.replaceFileSeparators
 import org.slf4j.LoggerFactory
 import java.io.File
 

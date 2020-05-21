@@ -3,8 +3,8 @@ package com.github.mrbean355.admiralbulldog.mod
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_MOD_INFO
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useSmallFont
-import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.geometry.Pos.CENTER
 import tornadofx.Fragment
 import tornadofx.action

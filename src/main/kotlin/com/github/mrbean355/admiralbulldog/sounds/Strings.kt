@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.events.OnBountyRunesSpawn
 import com.github.mrbean355.admiralbulldog.events.OnDeath
 import com.github.mrbean355.admiralbulldog.events.OnDefeat
@@ -12,7 +13,6 @@ import com.github.mrbean355.admiralbulldog.events.OnSmoked
 import com.github.mrbean355.admiralbulldog.events.OnVictory
 import com.github.mrbean355.admiralbulldog.events.Periodically
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
-import com.github.mrbean355.admiralbulldog.ui.getString
 import kotlin.reflect.KClass
 
 val KClass<out SoundEvent>.friendlyName: String

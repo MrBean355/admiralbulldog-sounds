@@ -4,9 +4,9 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
-import com.github.mrbean355.admiralbulldog.ui.getString
 import javafx.scene.control.ButtonBar.ButtonData.HELP
 import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
 import tornadofx.Fragment

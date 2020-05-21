@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog
 import com.github.mrbean355.admiralbulldog.common.DISCORD_BUTTON
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.error
-import com.github.mrbean355.admiralbulldog.ui.getString
+import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.scene.control.ButtonType

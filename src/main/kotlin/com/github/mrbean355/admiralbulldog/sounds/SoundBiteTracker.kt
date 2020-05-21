@@ -1,8 +1,9 @@
-package com.github.mrbean355.admiralbulldog.ui
+package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.PlayIcon
+import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.beans.property.BooleanProperty
 import javafx.collections.transformation.SortedList
 import javafx.scene.control.Button

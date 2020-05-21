@@ -2,7 +2,7 @@ package com.github.mrbean355.admiralbulldog.installation
 
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.WIKI_GAME_FILES
-import com.github.mrbean355.admiralbulldog.ui.getString
+import com.github.mrbean355.admiralbulldog.common.getString
 import tornadofx.Fragment
 import tornadofx.action
 import tornadofx.hyperlink

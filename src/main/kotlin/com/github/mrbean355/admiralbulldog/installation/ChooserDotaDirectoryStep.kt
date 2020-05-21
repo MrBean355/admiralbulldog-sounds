@@ -1,9 +1,9 @@
 package com.github.mrbean355.admiralbulldog.installation
 
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useBoldFont
-import com.github.mrbean355.admiralbulldog.ui.DotaPath
-import com.github.mrbean355.admiralbulldog.ui.getString
+import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.Fragment
 import tornadofx.action

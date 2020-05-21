@@ -1,8 +1,9 @@
-package com.github.mrbean355.admiralbulldog.ui
+package com.github.mrbean355.admiralbulldog.mod
 
 import com.github.mrbean355.admiralbulldog.common.PADDING_LARGE
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_SMALL
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useLargeFont
 import javafx.geometry.Pos.CENTER
 import tornadofx.Fragment

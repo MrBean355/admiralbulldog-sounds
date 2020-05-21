@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog.installation
 
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.ui.getString
 import tornadofx.Wizard
 
 class InstallationWizard : Wizard(getString("title_app"), getString("install_header")) {
