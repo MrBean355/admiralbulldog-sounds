@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.common.BulldogIcon
+import com.github.mrbean355.admiralbulldog.home.MainScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import tornadofx.App
 import kotlin.system.exitProcess

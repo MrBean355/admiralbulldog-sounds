@@ -1,4 +1,4 @@
-package com.github.mrbean355.admiralbulldog
+package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
