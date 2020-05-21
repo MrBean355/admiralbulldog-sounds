@@ -101,7 +101,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onDotaModClicked() {
-        DotaModStage(hostServices).showModal(owner = primaryStage)
+        find<DotaModScreen>().openModal(resizable = false)
     }
 
     fun onDiscordCommunityClicked() {
@@ -184,7 +184,7 @@ class MainViewModel : AppViewModel() {
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
             information(
                     header = getString("header_mod_update_downloaded"),
-                    content = getString("msg_mod_update_downloaded"),
+                    content = getString("msg_mod_restart_dota"),
                     buttons = *arrayOf(ButtonType.FINISH)
             )
         }

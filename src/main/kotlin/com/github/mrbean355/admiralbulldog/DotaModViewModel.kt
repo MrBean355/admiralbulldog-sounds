@@ -1,53 +1,43 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
-import com.github.mrbean355.admiralbulldog.ui.Alert
 import com.github.mrbean355.admiralbulldog.ui.DotaPath
 import com.github.mrbean355.admiralbulldog.ui.ProgressDialog
 import com.github.mrbean355.admiralbulldog.ui.getString
 import com.github.mrbean355.admiralbulldog.ui.showModal
-import javafx.beans.binding.Bindings.createStringBinding
-import javafx.beans.binding.StringBinding
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleStringProperty
-import javafx.scene.control.Alert
+import javafx.beans.property.BooleanProperty
 import javafx.scene.control.ButtonType
-import javafx.stage.Stage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.slf4j.LoggerFactory
+import tornadofx.booleanProperty
+import tornadofx.onChange
+import tornadofx.stringBinding
+import tornadofx.stringProperty
 import java.io.File
-import java.util.concurrent.Callable
 
-class DotaModViewModel(private val stage: Stage) {
-    private val logger = LoggerFactory.getLogger(DotaModViewModel::class.java)
+class DotaModViewModel : AppViewModel() {
     private val gitHubRepository = GitHubRepository()
-    private val coroutineScope = CoroutineScope(Default + Job())
+    private val modVersion = stringProperty(ConfigPersistence.getModVersion())
 
-    private val _modVersion = SimpleStringProperty(ConfigPersistence.getModVersion())
-    val modEnabled = SimpleBooleanProperty(ConfigPersistence.isModEnabled()).apply {
-        addListener { _, _, newValue -> onEnabledCheckChanged(newValue) }
-    }
-    val tempDisabled = SimpleBooleanProperty(ConfigPersistence.isModTempDisabled()).apply {
-        addListener { _, _, newValue -> onTempDisabledCheckChanged(newValue) }
-    }
-    val modVersion: StringBinding = createStringBinding(Callable {
-        val version = if (modEnabled.get()) _modVersion.get() else "N/A"
+    val modEnabled: BooleanProperty = booleanProperty(ConfigPersistence.isModEnabled())
+    val tempDisabled: BooleanProperty = booleanProperty(ConfigPersistence.isModTempDisabled())
+    val formattedModVersion = modEnabled.stringBinding(modVersion) {
+        val version = if (it == true) modVersion.get() else getString("label_not_applicable")
         getString("label_mod_version", version)
-    }, modEnabled, _modVersion)
-
-    fun onClose() {
-        coroutineScope.cancel()
     }
+
+    init {
+        modEnabled.onChange { onEnabledCheckChanged(it) }
+        tempDisabled.onChange { onTempDisabledCheckChanged(it) }
+    }
+
+    override fun onReady() {}
 
     private fun onEnabledCheckChanged(checked: Boolean) {
         ConfigPersistence.setModEnabled(checked)
@@ -76,7 +66,7 @@ class DotaModViewModel(private val stage: Stage) {
         DotaMod.onModEnabled()
 
         val progressDialog = ProgressDialog()
-        progressDialog.showModal(stage)
+        progressDialog.showModal()
 
         coroutineScope.launch {
             logger.info("Checking for mod update...")
@@ -101,12 +91,7 @@ class DotaModViewModel(private val stage: Stage) {
             } else {
                 logger.info("Already at latest mod version: ${releaseInfo.tagName}")
                 withContext(Main) {
-                    Alert(type = Alert.AlertType.INFORMATION,
-                            header = "Dota mod installed",
-                            content = getString("msg_mod_update_downloaded"),
-                            buttons = arrayOf(ButtonType.FINISH),
-                            owner = stage
-                    ).showAndWait()
+                    information(getString("header_mod_installed"), getString("msg_mod_restart_dota"), ButtonType.FINISH)
                 }
             }
         }
@@ -118,26 +103,16 @@ class DotaModViewModel(private val stage: Stage) {
             logger.warn("Bad mod asset info, giving up")
             return
         }
-        // TODO: Uncomment me
-//        subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
-//            information(
-//                    header = getString("header_mod_update_downloaded"),
-//                    content = getString("msg_mod_update_downloaded"),
-//                    buttons = *arrayOf(ButtonType.FINISH)
-//            )
-//        }
-//        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
-//                .openModal(escapeClosesWindow = false, block = true, resizable = false)
+        subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
+            information(getString("header_mod_update_downloaded"), getString("msg_mod_restart_dota"), ButtonType.FINISH)
+        }
+        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
+                .openModal(escapeClosesWindow = false, block = true, resizable = false)
     }
 
     private fun disableMod() {
         if (DotaMod.onModDisabled()) {
-            Alert(type = Alert.AlertType.INFORMATION,
-                    header = "Dota mod uninstalled",
-                    content = "Please restart Dota if it's open.",
-                    buttons = arrayOf(ButtonType.OK),
-                    owner = stage
-            ).show()
+            information(getString("header_mod_uninstalled"), getString("msg_mod_restart_dota"), ButtonType.OK)
         }
     }
 }
