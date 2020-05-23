@@ -4,6 +4,7 @@ import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
 import com.google.gson.GsonBuilder
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -42,7 +43,7 @@ object ConfigPersistence {
             logger.info("Defaulting to port $DEFAULT_PORT")
         }
         cleanUpStaleSoundEvents()
-        addMissingSoundEventDefaults()
+        migrateFromOldConfig()
         save()
     }
 
@@ -71,12 +72,52 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return the time when sounds were last synced from the PlaySounds page. */
-    fun getLastSync() = loadedConfig.lastSync
+    fun getAppUpdateFrequency(): UpdateFrequency {
+        return loadedConfig.updates?.appUpdateFrequency!!
+    }
 
-    /** Set the time when sounds were last synced from the PlaySounds page to now. */
-    fun markLastSync() {
+    fun setAppUpdateFrequency(frequency: UpdateFrequency) {
+        loadedConfig.updates?.appUpdateFrequency = frequency
+        save()
+    }
+
+    fun getAppLastUpdateAt(): Long {
+        return loadedConfig.updates?.appUpdateCheck ?: 0
+    }
+
+    fun setAppLastUpdateToNow() {
+        loadedConfig.updates?.appUpdateCheck = System.currentTimeMillis()
+        save()
+    }
+
+    fun getSoundsUpdateFrequency(): UpdateFrequency {
+        return loadedConfig.updates?.soundsUpdateFrequency!!
+    }
+
+    fun getSoundsLastUpdateAt(): Long {
+        return loadedConfig.lastSync
+    }
+
+    fun setSoundsLastUpdateToNow() {
         loadedConfig.lastSync = System.currentTimeMillis()
+        save()
+    }
+
+    fun getModUpdateFrequency(): UpdateFrequency {
+        return loadedConfig.updates?.modUpdateFrequency!!
+    }
+
+    fun setModUpdateFrequency(frequency: UpdateFrequency) {
+        loadedConfig.updates?.modUpdateFrequency = frequency
+        save()
+    }
+
+    fun getModLastUpdateAt(): Long {
+        return loadedConfig.updates?.modUpdateCheck ?: 0
+    }
+
+    fun setModLastUpdateToNow() {
+        loadedConfig.updates?.modUpdateCheck = System.currentTimeMillis()
         save()
     }
 
@@ -233,7 +274,7 @@ object ConfigPersistence {
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
-        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList(), false, false, null)
+        return Config(sounds = sounds.toMutableMap())
     }
 
     /** Load the default config for a given sound bite `type`. */
@@ -256,7 +297,10 @@ object ConfigPersistence {
     }
 
     /** Checks the loaded `config` map, adding defaults for any missing sound bites. */
-    private fun addMissingSoundEventDefaults() {
+    private fun migrateFromOldConfig() {
+        if (loadedConfig.updates == null) {
+            loadedConfig.updates = Updates()
+        }
         SOUND_EVENT_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
@@ -266,19 +310,28 @@ object ConfigPersistence {
     }
 
     private data class Config(
-            var port: Int,
-            var id: String?,
-            var dotaPath: String?,
-            var lastSync: Long,
-            var volume: Double,
-            var discordBotEnabled: Boolean,
-            var discordToken: String?,
-            var trayNotified: Boolean,
-            val sounds: MutableMap<String, Toggle>,
-            var soundBoard: List<String>?,
-            var modEnabled: Boolean,
-            var modTempDisabled: Boolean,
-            var modVersion: String?
+            var port: Int = DEFAULT_PORT,
+            var id: String? = null,
+            var dotaPath: String? = null,
+            var updates: Updates? = Updates(),
+            var lastSync: Long = 0,
+            var volume: Double = DEFAULT_VOLUME,
+            var discordBotEnabled: Boolean = false,
+            var discordToken: String? = null,
+            var trayNotified: Boolean = false,
+            val sounds: MutableMap<String, Toggle> = mutableMapOf(),
+            var soundBoard: List<String>? = listOf(),
+            var modEnabled: Boolean = false,
+            var modTempDisabled: Boolean = false,
+            var modVersion: String? = null
+    )
+
+    private data class Updates(
+            var appUpdateCheck: Long = 0,
+            var appUpdateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
+            var soundsUpdateFrequency: UpdateFrequency = UpdateFrequency.DAILY,
+            var modUpdateCheck: Long? = 0,
+            var modUpdateFrequency: UpdateFrequency = UpdateFrequency.ALWAYS
     )
 
     private data class Toggle(

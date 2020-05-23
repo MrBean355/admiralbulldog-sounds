@@ -3,7 +3,6 @@ package com.github.mrbean355.admiralbulldog.assets
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -12,14 +11,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Directory that the downloaded sounds live in. */
 private const val SOUNDS_PATH = "sounds"
-
-/** How often (in milliseconds) to check for new sounds. */
-private val SYNC_PERIOD = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
 
 /**
  * Synchronises our local sounds with the PlaySounds page.
@@ -28,12 +23,6 @@ object SoundBites {
     private val logger = LoggerFactory.getLogger(SoundBites::class.java)
     private val playSoundsRepository = DiscordBotRepository()
     private var allSounds = emptyList<SoundBite>()
-
-    /** Should we check for new sounds? */
-    fun shouldSync(): Boolean {
-        val lastSync = ConfigPersistence.getLastSync()
-        return System.currentTimeMillis() - lastSync >= SYNC_PERIOD
-    }
 
     /**
      * Synchronise our local sounds with the PlaySounds page.

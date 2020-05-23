@@ -63,7 +63,7 @@ class SyncSoundBitesScreen : Fragment(getString("sync_sound_bites_title")) {
             progress.set(it)
         }, complete = { successful ->
             if (successful) {
-                ConfigPersistence.markLastSync()
+                ConfigPersistence.setSoundsLastUpdateToNow()
             }
             finished.set(true)
         })
