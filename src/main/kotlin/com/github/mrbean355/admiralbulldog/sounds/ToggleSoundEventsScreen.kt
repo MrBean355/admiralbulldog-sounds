@@ -13,6 +13,7 @@ import javafx.scene.control.Tooltip
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.Priority.ALWAYS
 import tornadofx.Fragment
+import tornadofx.Scope
 import tornadofx.action
 import tornadofx.button
 import tornadofx.checkbox
@@ -26,7 +27,7 @@ import tornadofx.row
 import tornadofx.whenUndocked
 
 class ToggleSoundEventsScreen : Fragment(getString("title_toggle_sound_triggers")) {
-    private val viewModel by inject<ToggleSoundEventsViewModel>()
+    private val viewModel by inject<ToggleSoundEventsViewModel>(Scope())
 
     override val root = gridpane {
         hgap = PADDING_SMALL

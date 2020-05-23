@@ -7,6 +7,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useSmallFont
 import javafx.geometry.Pos.CENTER
 import tornadofx.Fragment
+import tornadofx.Scope
 import tornadofx.action
 import tornadofx.checkbox
 import tornadofx.enableWhen
@@ -18,7 +19,7 @@ import tornadofx.vbox
 import tornadofx.whenUndocked
 
 class DotaModScreen : Fragment(getString("title_mod")) {
-    private val viewModel by inject<DotaModViewModel>()
+    private val viewModel by inject<DotaModViewModel>(Scope())
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM

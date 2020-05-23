@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
 import javafx.scene.control.Tooltip
 import javafx.scene.layout.FlowPane
 import tornadofx.Fragment
+import tornadofx.Scope
 import tornadofx.action
 import tornadofx.attachTo
 import tornadofx.button
@@ -24,7 +25,7 @@ import tornadofx.visibleWhen
 import tornadofx.whenUndocked
 
 class SoundBoardScreen : Fragment(getString("title_sound_board")) {
-    private val viewModel by inject<SoundBoardViewModel>()
+    private val viewModel by inject<SoundBoardViewModel>(Scope())
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM

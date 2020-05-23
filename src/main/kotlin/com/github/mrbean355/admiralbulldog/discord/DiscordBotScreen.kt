@@ -10,6 +10,7 @@ import com.github.mrbean355.admiralbulldog.sounds.friendlyName
 import javafx.scene.control.ButtonBar.ButtonData.HELP
 import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
 import tornadofx.Fragment
+import tornadofx.Scope
 import tornadofx.action
 import tornadofx.button
 import tornadofx.buttonbar
@@ -28,7 +29,7 @@ import tornadofx.vbox
 import tornadofx.whenUndocked
 
 class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
-    private val viewModel by inject<DiscordBotViewModel>()
+    private val viewModel by inject<DiscordBotViewModel>(Scope())
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM

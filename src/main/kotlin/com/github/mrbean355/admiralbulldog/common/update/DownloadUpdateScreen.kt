@@ -8,6 +8,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import tornadofx.FXEvent
 import tornadofx.Fragment
+import tornadofx.Scope
 import tornadofx.action
 import tornadofx.button
 import tornadofx.buttonbar
@@ -19,7 +20,7 @@ import tornadofx.vbox
 import tornadofx.whenUndocked
 
 class DownloadUpdateScreen : Fragment(getString("title_app")) {
-    private val viewModel by inject<DownloadUpdateViewModel>(params = params)
+    private val viewModel by inject<DownloadUpdateViewModel>(Scope(), params)
 
     override val root = vbox(PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
