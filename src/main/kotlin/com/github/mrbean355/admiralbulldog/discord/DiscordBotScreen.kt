@@ -1,5 +1,7 @@
 package com.github.mrbean355.admiralbulldog.discord
 
+import com.github.mrbean355.admiralbulldog.arch.EVENT_TYPE_CLICK
+import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
@@ -7,8 +9,7 @@ import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
-import javafx.scene.control.ButtonBar.ButtonData.HELP
-import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
+import javafx.scene.control.ButtonBar.ButtonData.*
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
@@ -67,6 +68,9 @@ class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
             }
         }
         buttonbar {
+            button(getString("btn_discord_bot_commands"), HELP_2) {
+                action { onBotCommandsClicked() }
+            }
             button(getString("action_sound_board"), NEXT_FORWARD) {
                 enableWhen(viewModel.botEnabled)
                 action { onSoundBoardClicked() }
@@ -85,6 +89,11 @@ class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
 
     private fun onInviteClicked() {
         hostServices.showDocument(URL_DISCORD_BOT_INVITE)
+    }
+
+    private fun onBotCommandsClicked() {
+        logAnalyticsEvent(EVENT_TYPE_CLICK, "discord_bot_commands")
+        find<DiscordBotCommandsScreen>().openModal(resizable = false)
     }
 
     private fun onHelpClicked() {

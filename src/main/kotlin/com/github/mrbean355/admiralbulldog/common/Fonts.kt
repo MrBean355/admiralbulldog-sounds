@@ -15,3 +15,7 @@ fun Labeled.useLargeFont() {
 fun Labeled.useBoldFont() {
     font = Font.font(null, FontWeight.BOLD, -1.0)
 }
+
+fun Labeled.useMonospacedFont() {
+    font = Font.font("Lucida Console")
+}
