@@ -210,13 +210,10 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return all selected sounds for a sound bite if it's enabled; empty list otherwise. */
+    /** @return all selected sound bites for a trigger. */
     fun getSoundsForType(type: KClass<out SoundEvent>): List<SoundBite> {
         val toggle = loadedConfig.sounds[type.simpleName]!!
-        if (toggle.enabled) {
-            return toggle.sounds.mapNotNull { SoundBites.findSound(it) }
-        }
-        return emptyList()
+        return toggle.sounds.mapNotNull { SoundBites.findSound(it) }
     }
 
     /** @return a list of all sounds selected for the sound board. */

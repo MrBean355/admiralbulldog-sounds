@@ -65,11 +65,11 @@ private fun processGameState(currentState: GameState) {
     // Play sound bites that want to be played:
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
-        soundEvents.forEach {
-            if (it.shouldPlay(localPreviousState, currentState) && it.doesProc()) {
-                playSoundForType(it)
-            }
-        }
+        soundEvents
+                .filter { ConfigPersistence.isSoundEventEnabled(it::class) }
+                .filter { it.shouldPlay(localPreviousState, currentState) }
+                .filter { it.doesProc() }
+                .forEach { playSoundForType(it) }
     }
     previousState = currentState
 }
