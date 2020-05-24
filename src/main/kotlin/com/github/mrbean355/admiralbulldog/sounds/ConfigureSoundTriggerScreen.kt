@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
+import com.github.mrbean355.admiralbulldog.common.HelpIcon
 import com.github.mrbean355.admiralbulldog.common.MAX_CHANCE
 import com.github.mrbean355.admiralbulldog.common.MAX_RATE
 import com.github.mrbean355.admiralbulldog.common.MIN_CHANCE
@@ -9,8 +10,10 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.RateStringConverter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.slider
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
+import javafx.scene.image.ImageView
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
@@ -19,6 +22,7 @@ import tornadofx.checkbox
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
+import tornadofx.hbox
 import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
@@ -55,8 +59,13 @@ class ConfigureSoundTriggerScreen : Fragment() {
                     labelFormatter = RateStringConverter()
                 }
             }
-            button(getString("btn_test_playback_speed")) {
-                action { find<TestPlaybackSpeedScreen>().openModal(resizable = false) }
+            hbox(spacing = PADDING_SMALL) {
+                button(graphic = ImageView(HelpIcon())) {
+                    action { information(getString("header_about_playback_speed"), getString("content_about_playback_speed")) }
+                }
+                button(getString("btn_test_playback_speed")) {
+                    action { find<TestPlaybackSpeedScreen>().openModal(resizable = false) }
+                }
             }
         }
         fieldset(getString("header_sound_bite_selection")) {
