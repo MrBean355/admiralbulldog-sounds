@@ -1,9 +1,11 @@
 package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
+import kotlin.random.Random
 
 /** Must have healed at least this much percentage. */
 private const val MIN_HP_PERCENTAGE = 5
+
 /** Health required for max chance to play the sound. */
 private const val MAX_HEAL = 500
 
@@ -25,6 +27,6 @@ class OnHeal : SoundEvent {
             // Small heal; ignore.
             return false
         }
-        return random.nextFloat() <= (current.hero.health - previous.hero.health) / MAX_HEAL
+        return Random.nextFloat() <= (current.hero.health - previous.hero.health) / MAX_HEAL
     }
 }

@@ -1,10 +1,8 @@
 package com.github.mrbean355.admiralbulldog.game
 
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
-import com.github.mrbean355.admiralbulldog.events.RandomSoundEvent
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
-import com.github.mrbean355.admiralbulldog.events.random
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import io.ktor.application.call
 import io.ktor.application.install
@@ -21,6 +19,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
+import kotlin.random.Random
 import kotlin.reflect.full.createInstance
 
 private val logger = LoggerFactory.getLogger("GameStateMonitor")
@@ -67,14 +66,8 @@ private fun processGameState(currentState: GameState) {
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
         soundEvents.forEach {
-            if (it.shouldPlay(localPreviousState, currentState)) {
-                if (it is RandomSoundEvent) {
-                    if (random.nextFloat() < it.chance) {
-                        playSoundForType(it)
-                    }
-                } else {
-                    playSoundForType(it)
-                }
+            if (it.shouldPlay(localPreviousState, currentState) && it.doesProc()) {
+                playSoundForType(it)
             }
         }
     }
@@ -89,15 +82,28 @@ private fun playSoundForType(soundEvent: SoundEvent) {
             GlobalScope.launch {
                 val response = discordBotRepository.playSound(choice)
                 if (!response.isSuccessful()) {
-                    choice.play()
+                    choice.play(rate = soundEvent.randomRate())
                 }
             }
         } else {
-            choice.play()
+            choice.play(rate = soundEvent.randomRate())
         }
     }
 }
 
 private fun shouldPlayOnDiscord(soundEvent: SoundEvent): Boolean {
     return ConfigPersistence.isUsingDiscordBot() && ConfigPersistence.isPlayedThroughDiscord(soundEvent::class)
+}
+
+/** @return `true` if the randomised chance falls within the user's chosen chance. */
+private fun SoundEvent.doesProc(): Boolean {
+    val chance = ConfigPersistence.getSoundEventChance(this::class) / 100.0
+    return Random.nextDouble() < chance
+}
+
+/** @return a randomised playback rate. */
+private fun SoundEvent.randomRate(): Double {
+    val min = ConfigPersistence.getSoundEventMinRate(this::class)
+    val max = ConfigPersistence.getSoundEventMaxRate(this::class)
+    return if (min == max) min else Random.nextDouble(min, max)
 }

@@ -2,20 +2,12 @@ package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.PlayIcon
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.useCheckBoxWithButton
 import javafx.beans.property.BooleanProperty
 import javafx.collections.transformation.SortedList
-import javafx.scene.control.Button
-import javafx.scene.control.CheckBox
-import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
 import javafx.scene.control.TextField
-import javafx.scene.control.Tooltip
-import javafx.scene.image.ImageView
-import javafx.scene.layout.ColumnConstraints
-import javafx.scene.layout.GridPane
-import javafx.scene.layout.Priority
 import tornadofx.booleanProperty
 import tornadofx.onChange
 import tornadofx.toObservable
@@ -48,7 +40,11 @@ class SoundBiteTracker(selection: List<SoundBite>) {
             }
         })
         return ListView(sortedList).apply {
-            setCellFactory { CheckBoxWithButtonCell { soundToggles[it] } }
+            useCheckBoxWithButton(
+                    stringConverter = { it.name },
+                    getSelectedProperty = { soundToggles.getValue(it) },
+                    onButtonClicked = { it.play() }
+            )
         }
     }
 
@@ -58,40 +54,5 @@ class SoundBiteTracker(selection: List<SoundBite>) {
 
     private fun filter(query: String) {
         searchResults.setAll(allItems.filter { it.name.contains(query.trim(), ignoreCase = true) })
-    }
-
-    private class CheckBoxWithButtonCell(private val getSelectedProperty: (SoundBite?) -> BooleanProperty?) : ListCell<SoundBite>() {
-        private val container = GridPane()
-        private val checkBox = CheckBox()
-        private val button = Button("", ImageView(PlayIcon()))
-        private var booleanProperty: BooleanProperty? = null
-
-        init {
-            container.columnConstraints.addAll(ColumnConstraints().apply {
-                hgrow = Priority.ALWAYS
-            })
-            container.add(checkBox, 0, 0)
-            container.add(button, 1, 0)
-        }
-
-        override fun updateItem(item: SoundBite?, empty: Boolean) {
-            super.updateItem(item, empty)
-            if (empty) {
-                graphic = null
-                return
-            }
-            graphic = container
-            checkBox.text = item?.name
-            button.setOnAction { item?.play() }
-            button.tooltip = Tooltip(getString("tooltip_play_locally"))
-
-            booleanProperty?.let {
-                checkBox.selectedProperty().unbindBidirectional(booleanProperty)
-            }
-            booleanProperty = getSelectedProperty(item)
-            booleanProperty?.let {
-                checkBox.selectedProperty().bindBidirectional(booleanProperty)
-            }
-        }
     }
 }

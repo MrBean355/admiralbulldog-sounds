@@ -2,6 +2,11 @@ package com.github.mrbean355.admiralbulldog.persistence
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_CHANCE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
+import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
+import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
@@ -13,9 +18,6 @@ import kotlin.reflect.KClass
 private const val FILE_NAME = "config.json"
 private const val DEFAULTS_PATH = "defaults/%s.json"
 private const val DEFAULT_PORT = 12345
-const val MIN_VOLUME = 0.0
-const val MAX_VOLUME = 100.0
-private const val DEFAULT_VOLUME = 20.0
 
 /**
  * Facilitates saving & loading the configuration of the sound bites from a file.
@@ -170,6 +172,33 @@ object ConfigPersistence {
         save()
     }
 
+    fun getSoundEventChance(type: KClass<out SoundEvent>): Double {
+        return loadedConfig.sounds[type.simpleName]?.chance ?: 0.0
+    }
+
+    fun setSoundEventChance(type: KClass<out SoundEvent>, chance: Double) {
+        loadedConfig.sounds[type.simpleName]?.chance = chance
+        save()
+    }
+
+    fun getSoundEventMinRate(type: KClass<out SoundEvent>): Double {
+        return loadedConfig.sounds[type.simpleName]?.minRate ?: 0.0
+    }
+
+    fun setSoundEventMinRate(type: KClass<out SoundEvent>, minRate: Double) {
+        loadedConfig.sounds[type.simpleName]?.minRate = minRate
+        save()
+    }
+
+    fun getSoundEventMaxRate(type: KClass<out SoundEvent>): Double {
+        return loadedConfig.sounds[type.simpleName]?.maxRate ?: 0.0
+    }
+
+    fun setSoundEventMaxRate(type: KClass<out SoundEvent>, maxRate: Double) {
+        loadedConfig.sounds[type.simpleName]?.maxRate = maxRate
+        save()
+    }
+
     /** @return whether the user has chosen to play the sound bite through Discord. */
     fun isPlayedThroughDiscord(type: KClass<out SoundEvent>): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
@@ -282,7 +311,7 @@ object ConfigPersistence {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
         if (resource == null) {
             logger.warn("No defaults resource available for: ${type.simpleName}")
-            return Toggle(enabled = false, playThroughDiscord = false, sounds = mutableListOf())
+            return Toggle()
         }
         return gson.fromJson(resource.readText(), Toggle::class.java)
     }
@@ -306,6 +335,11 @@ object ConfigPersistence {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
                 logger.info("Loaded defaults for sound event: ${it.simpleName}")
             }
+        }
+        loadedConfig.sounds.forEach { (_, toggle) ->
+            if (toggle.chance == null) toggle.chance = DEFAULT_CHANCE
+            if (toggle.minRate == null) toggle.minRate = DEFAULT_RATE
+            if (toggle.maxRate == null) toggle.maxRate = DEFAULT_RATE
         }
     }
 
@@ -335,8 +369,11 @@ object ConfigPersistence {
     )
 
     private data class Toggle(
-            var enabled: Boolean,
-            var playThroughDiscord: Boolean,
-            var sounds: MutableList<String>
+            var enabled: Boolean = false,
+            var chance: Double? = null,
+            var minRate: Double? = null,
+            var maxRate: Double? = null,
+            var playThroughDiscord: Boolean = false,
+            var sounds: MutableList<String> = mutableListOf()
     )
 }

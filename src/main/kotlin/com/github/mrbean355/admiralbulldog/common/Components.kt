@@ -1,12 +1,27 @@
 package com.github.mrbean355.admiralbulldog.common
 
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.event.EventTarget
+import javafx.geometry.Pos.CENTER_LEFT
 import javafx.scene.control.Alert
+import javafx.scene.control.Button
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
+import javafx.scene.control.CheckBox
+import javafx.scene.control.Label
+import javafx.scene.control.ListCell
+import javafx.scene.control.ListView
 import javafx.scene.control.Slider
+import javafx.scene.control.Tooltip
+import javafx.scene.image.ImageView
+import javafx.scene.layout.HBox
+import javafx.scene.layout.Pane
+import javafx.scene.layout.Priority
+import javafx.util.StringConverter
 import tornadofx.FX
+import tornadofx.booleanProperty
+import tornadofx.paddingLeft
 import tornadofx.slider
 
 val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
@@ -37,5 +52,84 @@ fun EventTarget.slider(min: Number, max: Number, valueProperty: DoubleProperty, 
         isShowTickLabels = true
         isSnapToTicks = true
         op()
+    }
+}
+
+@Suppress("FunctionName")
+fun RateStringConverter(): StringConverter<Double> {
+    return object : StringConverter<Double>() {
+
+        override fun toString(input: Double?): String {
+            input ?: return ""
+            return (input / 100.0).toString() + "x"
+        }
+
+        override fun fromString(input: String?): Double {
+            input ?: return 0.0
+            return input.toDouble()
+        }
+    }
+}
+
+fun <T> ListView<T>.useLabelWithButton(stringConverter: (T) -> String, onButtonClicked: (T) -> Unit) {
+    setCellFactory {
+        CheckBoxWithButtonCell(false, stringConverter, { booleanProperty() }, onButtonClicked)
+    }
+}
+
+fun <T> ListView<T>.useCheckBoxWithButton(stringConverter: (T) -> String, getSelectedProperty: (T) -> BooleanProperty, onButtonClicked: (T) -> Unit) {
+    setCellFactory {
+        CheckBoxWithButtonCell(true, stringConverter, getSelectedProperty, onButtonClicked)
+    }
+}
+
+private class CheckBoxWithButtonCell<T>(
+        private val showCheckBox: Boolean,
+        private val stringConverter: (T) -> String,
+        private val getSelectedProperty: (T) -> BooleanProperty,
+        private val onButtonClicked: (T) -> Unit
+) : ListCell<T>() {
+    private val container = HBox()
+    private val checkBox = CheckBox()
+    private val label = Label()
+    private val button = Button("", ImageView(PlayIcon()))
+    private var booleanProperty: BooleanProperty? = null
+
+    init {
+        container.apply {
+            alignment = CENTER_LEFT
+            if (showCheckBox) {
+                children += checkBox
+            }
+            children += label.apply {
+                if (showCheckBox) {
+                    paddingLeft = PADDING_SMALL
+                }
+            }
+            children += Pane().apply {
+                HBox.setHgrow(this, Priority.ALWAYS)
+            }
+            children += button
+        }
+    }
+
+    override fun updateItem(item: T?, empty: Boolean) {
+        super.updateItem(item, empty)
+        if (empty || item == null) {
+            graphic = null
+            return
+        }
+        graphic = container
+        label.text = stringConverter(item)
+        button.setOnAction { onButtonClicked(item) }
+        button.tooltip = Tooltip(getString("tooltip_play_locally"))
+
+        booleanProperty?.let {
+            checkBox.selectedProperty().unbindBidirectional(booleanProperty)
+        }
+        booleanProperty = getSelectedProperty(item)
+        booleanProperty?.let {
+            checkBox.selectedProperty().bindBidirectional(booleanProperty)
+        }
     }
 }

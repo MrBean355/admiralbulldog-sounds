@@ -2,6 +2,7 @@ package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class Periodically : SoundEvent {
     private val minQuietTime = TimeUnit.MINUTES.toSeconds(5)
@@ -10,9 +11,9 @@ class Periodically : SoundEvent {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (nextPlayClockTime == UNINITIALISED) {
-            nextPlayClockTime = current.map!!.clock_time + random.nextLong(minQuietTime, maxQuietTime)
+            nextPlayClockTime = current.map!!.clock_time + Random.nextLong(minQuietTime, maxQuietTime)
         } else if (current.map!!.clock_time >= nextPlayClockTime) {
-            nextPlayClockTime += random.nextLong(minQuietTime, maxQuietTime)
+            nextPlayClockTime += Random.nextLong(minQuietTime, maxQuietTime)
             return true
         }
         return false

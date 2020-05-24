@@ -16,16 +16,18 @@ class SoundBite(
 ) {
     /** Name of the file, excluding directories. */
     val fileName: String = filePath.substringAfterLast('/')
+
     /** Name of the file, excluding directories and the file extension. */
     // FIXME: toUpperCase() is here for backwards compatibility with existing config files. Make case-insensitive?
     val name: String = fileName.substringBeforeLast('.').toUpperCase()
 
-    fun play() {
+    fun play(rate: Double = 100.0) {
         val media = Media(File(filePath).toURI().toString())
         MediaPlayer(media).apply {
             // Without setting the start time, some sounds don't play on MacOS ¯\_(ツ)_/¯
             startTime = Duration.ZERO
             volume = ConfigPersistence.getVolume() / 100.0
+            this.rate = rate / 100.0
             onEndOfMedia = Runnable {
                 dispose()
                 players.remove(this)

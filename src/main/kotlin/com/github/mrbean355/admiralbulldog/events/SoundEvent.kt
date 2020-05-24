@@ -19,8 +19,3 @@ interface SoundEvent {
     /** Examine the states and decide if a should should be played. */
     fun shouldPlay(previous: GameState, current: GameState): Boolean
 }
-
-interface RandomSoundEvent : SoundEvent {
-    /** Chance to play a sound bite, from 0 to 1. */
-    val chance: Float
-}
