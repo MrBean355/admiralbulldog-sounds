@@ -18,7 +18,7 @@ import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
 import com.github.mrbean355.admiralbulldog.sounds.SyncSoundBitesScreen
-import com.github.mrbean355.admiralbulldog.sounds.ToggleSoundEventsScreen
+import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty
@@ -92,7 +92,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onChangeSoundsClicked() {
-        find<ToggleSoundEventsScreen>().openModal(resizable = false)
+        find<ViewSoundTriggersScreen>().openModal(resizable = false)
     }
 
     fun onDiscordBotClicked() {
