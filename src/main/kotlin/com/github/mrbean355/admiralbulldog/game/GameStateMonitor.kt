@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.game
 
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.events.OnHeal
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
@@ -68,7 +69,7 @@ private fun processGameState(currentState: GameState) {
         soundEvents
                 .filter { ConfigPersistence.isSoundEventEnabled(it::class) }
                 .filter { it.shouldPlay(localPreviousState, currentState) }
-                .filter { it.doesProc() }
+                .filter { it.doesProc(localPreviousState, currentState) }
                 .forEach { playSoundForType(it) }
     }
     previousState = currentState
@@ -96,7 +97,10 @@ private fun shouldPlayOnDiscord(soundEvent: SoundEvent): Boolean {
 }
 
 /** @return `true` if the randomised chance falls within the user's chosen chance. */
-private fun SoundEvent.doesProc(): Boolean {
+private fun SoundEvent.doesProc(previousState: GameState, currentState: GameState): Boolean {
+    if (this is OnHeal && ConfigPersistence.isUsingHealSmartChance()) {
+        return doesSmartChanceProc(previousState, currentState)
+    }
     val chance = ConfigPersistence.getSoundEventChance(this::class) / 100.0
     return Random.nextDouble() < chance
 }

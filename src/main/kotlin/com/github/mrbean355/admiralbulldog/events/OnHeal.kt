@@ -27,6 +27,10 @@ class OnHeal : SoundEvent {
             // Small heal; ignore.
             return false
         }
-        return Random.nextFloat() <= (current.hero.health - previous.hero.health) / MAX_HEAL
+        return true
+    }
+
+    fun doesSmartChanceProc(previous: GameState, current: GameState): Boolean {
+        return Random.nextFloat() <= (current.hero!!.health - previous.hero!!.health) / MAX_HEAL
     }
 }

@@ -123,6 +123,15 @@ object ConfigPersistence {
         save()
     }
 
+    fun isUsingHealSmartChance(): Boolean {
+        return loadedConfig.special?.useHealSmartChance ?: true
+    }
+
+    fun setIsUsingHealSmartChance(using: Boolean) {
+        loadedConfig.special?.useHealSmartChance = using
+        save()
+    }
+
     /** @return the current volume, in the range `[0.0, 100.0]`. */
     fun getVolume() = loadedConfig.volume
 
@@ -327,6 +336,9 @@ object ConfigPersistence {
         if (loadedConfig.updates == null) {
             loadedConfig.updates = Updates()
         }
+        if (loadedConfig.special == null) {
+            loadedConfig.special = SpecialConfig()
+        }
         SOUND_EVENT_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
@@ -345,6 +357,7 @@ object ConfigPersistence {
             var id: String? = null,
             var dotaPath: String? = null,
             var updates: Updates? = Updates(),
+            var special: SpecialConfig? = SpecialConfig(),
             var lastSync: Long = 0,
             var volume: Double = DEFAULT_VOLUME,
             var discordBotEnabled: Boolean = false,
@@ -363,6 +376,10 @@ object ConfigPersistence {
             var soundsUpdateFrequency: UpdateFrequency = UpdateFrequency.DAILY,
             var modUpdateCheck: Long? = 0,
             var modUpdateFrequency: UpdateFrequency = UpdateFrequency.ALWAYS
+    )
+
+    private data class SpecialConfig(
+            var useHealSmartChance: Boolean = true
     )
 
     private data class Toggle(

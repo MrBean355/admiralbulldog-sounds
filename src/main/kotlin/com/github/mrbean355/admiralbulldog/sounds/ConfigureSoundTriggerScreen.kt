@@ -20,13 +20,16 @@ import tornadofx.Scope
 import tornadofx.action
 import tornadofx.button
 import tornadofx.checkbox
+import tornadofx.enableWhen
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
 import tornadofx.hbox
 import tornadofx.label
+import tornadofx.managedWhen
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
+import tornadofx.visibleWhen
 import tornadofx.whenUndocked
 import kotlin.reflect.KClass
 
@@ -47,8 +50,18 @@ class ConfigureSoundTriggerScreen : Fragment() {
             }
         }
         fieldset(getString("header_chance_to_play")) {
+            field(getString("label_use_smart_chance")) {
+                visibleWhen(viewModel.showSmartChance)
+                managedWhen(visibleProperty())
+                checkbox(property = viewModel.useSmartChance)
+                button(graphic = ImageView(HelpIcon())) {
+                    action { information(getString("header_about_smart_chance"), getString("content_about_smart_chance")) }
+                }
+            }
             field(getString("label_chance_to_play")) {
-                slider(min = MIN_CHANCE, max = MAX_CHANCE, valueProperty = viewModel.chance)
+                slider(min = MIN_CHANCE, max = MAX_CHANCE, valueProperty = viewModel.chance) {
+                    enableWhen(viewModel.enableChanceSlider)
+                }
             }
         }
         fieldset(getString("header_playback_speed")) {
