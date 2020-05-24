@@ -12,6 +12,7 @@ import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.slider
+import com.github.mrbean355.admiralbulldog.common.useHeaderFont
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import javafx.scene.image.ImageView
 import tornadofx.Fragment
@@ -38,6 +39,8 @@ class ConfigureSoundTriggerScreen : Fragment() {
         fieldset {
             label(viewModel.description) {
                 paddingBottom = PADDING_SMALL
+                useHeaderFont()
+                isWrapText = true
             }
             field(getString("label_enable_sound_trigger")) {
                 checkbox(property = viewModel.enabled)
