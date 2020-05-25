@@ -24,6 +24,10 @@ object ConfigMigration {
     }
 
     private fun version1(obj: JsonObject) {
+        obj.getAsJsonPrimitive("volume").let {
+            // Change volume from double to int.
+            obj.add("volume", JsonPrimitive(it.asDouble.toInt()))
+        }
         obj.configVersion = 2
     }
 

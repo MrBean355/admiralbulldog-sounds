@@ -1,13 +1,10 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
-import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.slider
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import javafx.scene.image.ImageView
 import javafx.scene.layout.ColumnConstraints
@@ -17,7 +14,6 @@ import tornadofx.Scope
 import tornadofx.action
 import tornadofx.button
 import tornadofx.gridpane
-import tornadofx.gridpaneConstraints
 import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.row
@@ -34,16 +30,6 @@ class ViewSoundTriggersScreen : Fragment(getString("title_toggle_sound_triggers"
         columnConstraints.addAll(ColumnConstraints().apply {
             hgrow = ALWAYS
         })
-        row {
-            label(getString("label_volume"))
-        }
-        row {
-            slider(MIN_VOLUME, MAX_VOLUME, viewModel.volumeProperty) {
-                gridpaneConstraints {
-                    columnSpan = 2
-                }
-            }
-        }
         SOUND_TRIGGER_TYPES.forEach { type ->
             row {
                 label(viewModel.textProperty(type)) {

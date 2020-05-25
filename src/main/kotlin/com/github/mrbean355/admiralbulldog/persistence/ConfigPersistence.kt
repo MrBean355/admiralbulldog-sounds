@@ -157,10 +157,10 @@ object ConfigPersistence {
     }
 
     /** @return the current volume, in the range `[0.0, 100.0]`. */
-    fun getVolume() = loadedConfig.volume
+    fun getVolume(): Int = loadedConfig.volume
 
     /** Set the current volume. Will be clamped to the range `[0.0, 100.0]`. */
-    fun setVolume(volume: Double) {
+    fun setVolume(volume: Int) {
         loadedConfig.volume = volume.coerceAtLeast(MIN_VOLUME).coerceAtMost(MAX_VOLUME)
         save()
     }
@@ -384,7 +384,7 @@ object ConfigPersistence {
             var updates: Updates? = Updates(),
             var special: SpecialConfig? = SpecialConfig(),
             var lastSync: Long = 0,
-            var volume: Double = DEFAULT_VOLUME,
+            var volume: Int = DEFAULT_VOLUME,
             var discordBotEnabled: Boolean = false,
             var discordToken: String? = null,
             var trayNotified: Boolean = false,

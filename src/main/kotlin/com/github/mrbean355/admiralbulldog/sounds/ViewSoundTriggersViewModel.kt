@@ -8,19 +8,14 @@ import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.scene.paint.Color
-import tornadofx.doubleProperty
 import tornadofx.objectProperty
-import tornadofx.onChange
 import tornadofx.stringProperty
 
 class ViewSoundTriggersViewModel : AppViewModel() {
     private val text: Map<SoundTriggerType, StringProperty> = SOUND_TRIGGER_TYPES.associateWith { stringProperty() }
     private val colours: Map<SoundTriggerType, ObjectProperty<Color>> = SOUND_TRIGGER_TYPES.associateWith { objectProperty<Color>() }
 
-    val volumeProperty = doubleProperty(ConfigPersistence.getVolume())
-
     init {
-        volumeProperty.onChange(ConfigPersistence::setVolume)
         refresh()
     }
 
