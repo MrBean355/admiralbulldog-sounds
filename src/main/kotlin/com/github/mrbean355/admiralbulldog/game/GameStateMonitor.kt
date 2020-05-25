@@ -67,7 +67,7 @@ private fun processGameState(currentState: GameState) {
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
         soundEvents
-                .filter { ConfigPersistence.isSoundEventEnabled(it::class) }
+                .filter { ConfigPersistence.isSoundTriggerEnabled(it::class) }
                 .filter { it.shouldPlay(localPreviousState, currentState) }
                 .filter { it.doesProc(localPreviousState, currentState) }
                 .forEach { playSoundForType(it) }
@@ -101,13 +101,13 @@ private fun SoundTrigger.doesProc(previousState: GameState, currentState: GameSt
     if (this is OnHeal && ConfigPersistence.isUsingHealSmartChance()) {
         return doesSmartChanceProc(previousState, currentState)
     }
-    val chance = ConfigPersistence.getSoundEventChance(this::class) / 100.0
+    val chance = ConfigPersistence.getSoundTriggerChance(this::class) / 100.0
     return Random.nextDouble() < chance
 }
 
 /** @return a randomised playback rate. */
 private fun SoundTrigger.randomRate(): Double {
-    val min = ConfigPersistence.getSoundEventMinRate(this::class)
-    val max = ConfigPersistence.getSoundEventMaxRate(this::class)
+    val min = ConfigPersistence.getSoundTriggerMinRate(this::class)
+    val max = ConfigPersistence.getSoundTriggerMaxRate(this::class)
     return if (min == max) min else Random.nextDouble(min, max)
 }

@@ -45,7 +45,7 @@ object ConfigPersistence {
             loadedConfig.port = DEFAULT_PORT
             logger.info("Defaulting to port $DEFAULT_PORT")
         }
-        cleanUpStaleSoundEvents()
+        cleanUpStaleSoundTriggers()
         migrateFromOldConfig()
         save()
     }
@@ -189,50 +189,50 @@ object ConfigPersistence {
         return previous
     }
 
-    /** @return `true` if the sound bite is enabled; `false` otherwise. */
-    fun isSoundEventEnabled(type: SoundTriggerType): Boolean {
+    /** @return `true` if the sound trigger is enabled; `false` otherwise. */
+    fun isSoundTriggerEnabled(type: SoundTriggerType): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.enabled
     }
 
-    /** Enable or disable a sound bite. */
-    fun toggleSoundEvent(type: SoundTriggerType, enabled: Boolean) {
+    /** Enable or disable a sound trigger. */
+    fun toggleSoundTrigger(type: SoundTriggerType, enabled: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.enabled = enabled
         save()
     }
 
-    fun getSoundEventChance(type: SoundTriggerType): Double {
+    fun getSoundTriggerChance(type: SoundTriggerType): Double {
         return loadedConfig.sounds[type.simpleName]?.chance ?: 0.0
     }
 
-    fun setSoundEventChance(type: SoundTriggerType, chance: Double) {
+    fun setSoundTriggerChance(type: SoundTriggerType, chance: Double) {
         loadedConfig.sounds[type.simpleName]?.chance = chance
         save()
     }
 
-    fun getSoundEventMinRate(type: SoundTriggerType): Double {
+    fun getSoundTriggerMinRate(type: SoundTriggerType): Double {
         return loadedConfig.sounds[type.simpleName]?.minRate ?: 0.0
     }
 
-    fun setSoundEventMinRate(type: SoundTriggerType, minRate: Double) {
+    fun setSoundTriggerMinRate(type: SoundTriggerType, minRate: Double) {
         loadedConfig.sounds[type.simpleName]?.minRate = minRate
         save()
     }
 
-    fun getSoundEventMaxRate(type: SoundTriggerType): Double {
+    fun getSoundTriggerMaxRate(type: SoundTriggerType): Double {
         return loadedConfig.sounds[type.simpleName]?.maxRate ?: 0.0
     }
 
-    fun setSoundEventMaxRate(type: SoundTriggerType, maxRate: Double) {
+    fun setSoundTriggerMaxRate(type: SoundTriggerType, maxRate: Double) {
         loadedConfig.sounds[type.simpleName]?.maxRate = maxRate
         save()
     }
 
-    /** @return whether the user has chosen to play the sound bite through Discord. */
+    /** @return whether the user has chosen to play the sound trigger through Discord. */
     fun isPlayedThroughDiscord(type: SoundTriggerType): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
     }
 
-    /** Set whether the user has chosen to play the sound bite through Discord. */
+    /** Set whether the user has chosen to play the sound trigger through Discord. */
     fun setPlayedThroughDiscord(type: SoundTriggerType, playThroughDiscord: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.playThroughDiscord = playThroughDiscord
         save()
@@ -308,7 +308,7 @@ object ConfigPersistence {
         save()
     }
 
-    /** Update the given sound bite's config to use the given sound `selection`. */
+    /** Update the given sound trigger's config to use the given sound bite `selection`. */
     fun saveSoundsForType(type: SoundTriggerType, selection: List<SoundBite>) {
         loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
         save()
@@ -324,14 +324,14 @@ object ConfigPersistence {
         file.writeText(gson.toJson(loadedConfig))
     }
 
-    /** Load the default configs for all sound bites. */
+    /** Load the default configs for all sound triggers. */
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_TRIGGER_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
         return Config(sounds = sounds.toMutableMap())
     }
 
-    /** Load the default config for a given sound bite `type`. */
+    /** Load the default config for a given sound trigger. */
     private fun loadDefaults(type: SoundTriggerType): Toggle {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
         if (resource == null) {
@@ -341,16 +341,16 @@ object ConfigPersistence {
         return gson.fromJson(resource.readText(), Toggle::class.java)
     }
 
-    private fun cleanUpStaleSoundEvents() {
+    private fun cleanUpStaleSoundTriggers() {
         val validTypes = SOUND_TRIGGER_TYPES.map { it.simpleName!! }
         val invalidTypes = loadedConfig.sounds.filterKeys { it !in validTypes }
         invalidTypes.forEach {
             loadedConfig.sounds.remove(it.key)
-            logger.info("Removed stale sound event: ${it.key}")
+            logger.info("Removed stale sound trigger: ${it.key}")
         }
     }
 
-    /** Checks the loaded `config` map, adding defaults for any missing sound bites. */
+    /** Checks the loaded `config` map, adding defaults for any missing sound triggers. */
     private fun migrateFromOldConfig() {
         if (loadedConfig.updates == null) {
             loadedConfig.updates = Updates()
@@ -361,7 +361,7 @@ object ConfigPersistence {
         SOUND_TRIGGER_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
-                logger.info("Loaded defaults for sound event: ${it.simpleName}")
+                logger.info("Loaded defaults for sound trigger: ${it.simpleName}")
             }
         }
         loadedConfig.sounds.forEach { (_, toggle) ->

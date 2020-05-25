@@ -45,7 +45,7 @@ class ViewSoundTriggersViewModel : AppViewModel() {
     }
 
     private fun textFor(type: SoundTriggerType): String {
-        return if (ConfigPersistence.isSoundEventEnabled(type)) {
+        return if (ConfigPersistence.isSoundTriggerEnabled(type)) {
             type.friendlyName
         } else {
             getString("label_trigger_disabled", type.friendlyName)
@@ -53,6 +53,6 @@ class ViewSoundTriggersViewModel : AppViewModel() {
     }
 
     private fun colourFor(type: SoundTriggerType): Color {
-        return if (ConfigPersistence.isSoundEventEnabled(type)) Color.BLACK else Color.GRAY
+        return if (ConfigPersistence.isSoundTriggerEnabled(type)) Color.BLACK else Color.GRAY
     }
 }

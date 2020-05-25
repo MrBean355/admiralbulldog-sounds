@@ -22,7 +22,7 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
     /* Basic */
     val title: StringProperty = stringProperty(type.friendlyName)
     val description: StringProperty = stringProperty(type.description)
-    val enabled: BooleanProperty = booleanProperty(ConfigPersistence.isSoundEventEnabled(type))
+    val enabled: BooleanProperty = booleanProperty(ConfigPersistence.isSoundTriggerEnabled(type))
     val soundBiteCount = stringProperty(ConfigPersistence.getSoundsForType(type).size.toString())
 
     /* Chance to play */
@@ -30,7 +30,7 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
     val showSmartChance: BooleanProperty = booleanProperty(type == OnHeal::class)
     val useSmartChance: BooleanProperty = booleanProperty(ConfigPersistence.isUsingHealSmartChance())
     val enableChanceSlider: BooleanBinding = showSmartChance.not().or(useSmartChance.not())
-    val chance: DoubleProperty = doubleProperty(ConfigPersistence.getSoundEventChance(type))
+    val chance: DoubleProperty = doubleProperty(ConfigPersistence.getSoundTriggerChance(type))
 
     /* Periodic */
     val showPeriod: BooleanBinding = showChance.not()
@@ -38,13 +38,13 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
     val maxPeriod: IntegerProperty = intProperty(ConfigPersistence.getMaxPeriod())
 
     /* Playback rate */
-    val minRate: DoubleProperty = doubleProperty(ConfigPersistence.getSoundEventMinRate(type))
-    val maxRate: DoubleProperty = doubleProperty(ConfigPersistence.getSoundEventMaxRate(type))
+    val minRate: DoubleProperty = doubleProperty(ConfigPersistence.getSoundTriggerMinRate(type))
+    val maxRate: DoubleProperty = doubleProperty(ConfigPersistence.getSoundTriggerMaxRate(type))
 
     init {
-        enabled.onChange { ConfigPersistence.toggleSoundEvent(type, it) }
+        enabled.onChange { ConfigPersistence.toggleSoundTrigger(type, it) }
         useSmartChance.onChange { ConfigPersistence.setIsUsingHealSmartChance(it) }
-        chance.onChange { ConfigPersistence.setSoundEventChance(type, it) }
+        chance.onChange { ConfigPersistence.setSoundTriggerChance(type, it) }
         minPeriod.onChange {
             ConfigPersistence.setMinPeriod(it)
             if (it > maxPeriod.get()) {
@@ -58,13 +58,13 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
             }
         }
         minRate.onChange {
-            ConfigPersistence.setSoundEventMinRate(type, it)
+            ConfigPersistence.setSoundTriggerMinRate(type, it)
             if (it > maxRate.get()) {
                 maxRate.set(it)
             }
         }
         maxRate.onChange {
-            ConfigPersistence.setSoundEventMaxRate(type, it)
+            ConfigPersistence.setSoundTriggerMaxRate(type, it)
             if (it < minRate.get()) {
                 minRate.set(it)
             }
