@@ -11,3 +11,8 @@ const val DEFAULT_CHANCE = 100.0
 const val MIN_RATE = 50.0
 const val MAX_RATE = 200.0
 const val DEFAULT_RATE = 100.0
+
+const val MIN_PERIOD = 1
+const val MAX_PERIOD = 30
+const val DEFAULT_MIN_PERIOD = 5
+const val DEFAULT_MAX_PERIOD = 15

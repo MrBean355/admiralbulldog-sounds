@@ -2,14 +2,17 @@ package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.events.OnHeal
+import com.github.mrbean355.admiralbulldog.events.Periodically
 import com.github.mrbean355.admiralbulldog.events.SoundEvent
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
+import javafx.beans.property.IntegerProperty
 import javafx.beans.property.StringProperty
 import tornadofx.booleanProperty
 import tornadofx.doubleProperty
+import tornadofx.intProperty
 import tornadofx.onChange
 import tornadofx.stringProperty
 import kotlin.reflect.KClass
@@ -17,21 +20,44 @@ import kotlin.reflect.KClass
 class ConfigureSoundTriggerViewModel : AppViewModel() {
     private val type: KClass<out SoundEvent> by param()
 
+    /* Basic */
     val title: StringProperty = stringProperty(type.friendlyName)
     val description: StringProperty = stringProperty(type.description)
     val enabled: BooleanProperty = booleanProperty(ConfigPersistence.isSoundEventEnabled(type))
+    val soundBiteCount = stringProperty(ConfigPersistence.getSoundsForType(type).size.toString())
+
+    /* Chance to play */
+    val showChance: BooleanProperty = booleanProperty(type != Periodically::class)
     val showSmartChance: BooleanProperty = booleanProperty(type == OnHeal::class)
     val useSmartChance: BooleanProperty = booleanProperty(ConfigPersistence.isUsingHealSmartChance())
     val enableChanceSlider: BooleanBinding = showSmartChance.not().or(useSmartChance.not())
     val chance: DoubleProperty = doubleProperty(ConfigPersistence.getSoundEventChance(type))
+
+    /* Periodic */
+    val showPeriod: BooleanBinding = showChance.not()
+    val minPeriod: IntegerProperty = intProperty(ConfigPersistence.getMinPeriod())
+    val maxPeriod: IntegerProperty = intProperty(ConfigPersistence.getMaxPeriod())
+
+    /* Playback rate */
     val minRate: DoubleProperty = doubleProperty(ConfigPersistence.getSoundEventMinRate(type))
     val maxRate: DoubleProperty = doubleProperty(ConfigPersistence.getSoundEventMaxRate(type))
-    val soundBiteCount = stringProperty(ConfigPersistence.getSoundsForType(type).size.toString())
 
     init {
         enabled.onChange { ConfigPersistence.toggleSoundEvent(type, it) }
         useSmartChance.onChange { ConfigPersistence.setIsUsingHealSmartChance(it) }
         chance.onChange { ConfigPersistence.setSoundEventChance(type, it) }
+        minPeriod.onChange {
+            ConfigPersistence.setMinPeriod(it)
+            if (it > maxPeriod.get()) {
+                maxPeriod.set(it)
+            }
+        }
+        maxPeriod.onChange {
+            ConfigPersistence.setMaxPeriod(it)
+            if (it < minPeriod.get()) {
+                minPeriod.set(it)
+            }
+        }
         minRate.onChange {
             ConfigPersistence.setSoundEventMinRate(type, it)
             if (it > maxRate.get()) {

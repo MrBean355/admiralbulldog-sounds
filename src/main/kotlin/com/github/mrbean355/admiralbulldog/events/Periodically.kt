@@ -1,21 +1,30 @@
 package com.github.mrbean355.admiralbulldog.events
 
 import com.github.mrbean355.admiralbulldog.game.GameState
-import java.util.concurrent.TimeUnit
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlin.random.Random
 
 class Periodically : SoundEvent {
-    private val minQuietTime = TimeUnit.MINUTES.toSeconds(5)
-    private val maxQuietTime = TimeUnit.MINUTES.toSeconds(15)
     private var nextPlayClockTime = UNINITIALISED
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (nextPlayClockTime == UNINITIALISED) {
-            nextPlayClockTime = current.map!!.clock_time + Random.nextLong(minQuietTime, maxQuietTime)
+            nextPlayClockTime = current.map!!.clock_time + randomiseDelay()
         } else if (current.map!!.clock_time >= nextPlayClockTime) {
-            nextPlayClockTime += Random.nextLong(minQuietTime, maxQuietTime)
+            nextPlayClockTime += randomiseDelay()
             return true
         }
         return false
+    }
+
+    private fun randomiseDelay(): Int {
+        // Cast to double so we can randomise a non-whole amount of minutes.
+        val minQuietTime = ConfigPersistence.getMinPeriod().toDouble()
+        val maxQuietTime = ConfigPersistence.getMaxPeriod().toDouble()
+        return if (minQuietTime != maxQuietTime) {
+            Random.nextDouble(minQuietTime, maxQuietTime)
+        } else {
+            minQuietTime
+        }.toInt() * 60
     }
 }

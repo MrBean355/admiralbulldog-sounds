@@ -2,11 +2,14 @@ package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.common.HelpIcon
 import com.github.mrbean355.admiralbulldog.common.MAX_CHANCE
+import com.github.mrbean355.admiralbulldog.common.MAX_PERIOD
 import com.github.mrbean355.admiralbulldog.common.MAX_RATE
 import com.github.mrbean355.admiralbulldog.common.MIN_CHANCE
+import com.github.mrbean355.admiralbulldog.common.MIN_PERIOD
 import com.github.mrbean355.admiralbulldog.common.MIN_RATE
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.PeriodStringConverter
 import com.github.mrbean355.admiralbulldog.common.RateStringConverter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
 import com.github.mrbean355.admiralbulldog.common.getString
@@ -29,6 +32,7 @@ import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
+import tornadofx.spinner
 import tornadofx.visibleWhen
 import tornadofx.whenUndocked
 import kotlin.reflect.KClass
@@ -50,6 +54,8 @@ class ConfigureSoundTriggerScreen : Fragment() {
             }
         }
         fieldset(getString("header_chance_to_play")) {
+            visibleWhen(viewModel.showChance)
+            managedWhen(visibleProperty())
             field(getString("label_use_smart_chance")) {
                 visibleWhen(viewModel.showSmartChance)
                 managedWhen(visibleProperty())
@@ -61,6 +67,25 @@ class ConfigureSoundTriggerScreen : Fragment() {
             field(getString("label_chance_to_play")) {
                 slider(min = MIN_CHANCE, max = MAX_CHANCE, valueProperty = viewModel.chance) {
                     enableWhen(viewModel.enableChanceSlider)
+                }
+            }
+        }
+        fieldset(getString("header_periodic_trigger")) {
+            visibleWhen(viewModel.showPeriod)
+            managedWhen(visibleProperty())
+            field(getString("label_periodic_trigger_min")) {
+                spinner(min = MIN_PERIOD, max = MAX_PERIOD, property = viewModel.minPeriod, editable = true, enableScroll = true) {
+                    valueFactory.converter = PeriodStringConverter()
+                }
+                label(getString("label_periodic_trigger_minutes"))
+            }
+            field(getString("label_periodic_trigger_max")) {
+                spinner(min = MIN_PERIOD, max = MAX_PERIOD, property = viewModel.maxPeriod, editable = true, enableScroll = true) {
+                    valueFactory.converter = PeriodStringConverter()
+                }
+                label(getString("label_periodic_trigger_minutes"))
+                button(graphic = ImageView(HelpIcon())) {
+                    action { information(getString("header_about_periodic_trigger"), getString("content_about_periodic_trigger")) }
                 }
             }
         }

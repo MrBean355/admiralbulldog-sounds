@@ -3,6 +3,8 @@ package com.github.mrbean355.admiralbulldog.persistence
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_CHANCE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_MAX_PERIOD
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_MIN_PERIOD
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
@@ -129,6 +131,24 @@ object ConfigPersistence {
 
     fun setIsUsingHealSmartChance(using: Boolean) {
         loadedConfig.special?.useHealSmartChance = using
+        save()
+    }
+
+    fun getMinPeriod(): Int {
+        return loadedConfig.special?.minPeriod ?: 0
+    }
+
+    fun setMinPeriod(value: Int) {
+        loadedConfig.special?.minPeriod = value
+        save()
+    }
+
+    fun getMaxPeriod(): Int {
+        return loadedConfig.special?.maxPeriod ?: 0
+    }
+
+    fun setMaxPeriod(value: Int) {
+        loadedConfig.special?.maxPeriod = value
         save()
     }
 
@@ -379,7 +399,9 @@ object ConfigPersistence {
     )
 
     private data class SpecialConfig(
-            var useHealSmartChance: Boolean = true
+            var useHealSmartChance: Boolean = true,
+            var minPeriod: Int = DEFAULT_MIN_PERIOD,
+            var maxPeriod: Int = DEFAULT_MAX_PERIOD
     )
 
     private data class Toggle(

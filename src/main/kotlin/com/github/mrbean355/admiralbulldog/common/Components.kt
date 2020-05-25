@@ -71,6 +71,20 @@ fun RateStringConverter(): StringConverter<Double> {
     }
 }
 
+@Suppress("FunctionName")
+fun PeriodStringConverter(): StringConverter<Number> {
+    return object : StringConverter<Number>() {
+
+        override fun toString(input: Number?): String {
+            return input?.toString() ?: ""
+        }
+
+        override fun fromString(input: String?): Number {
+            return input?.toIntOrNull() ?: 0
+        }
+    }
+}
+
 fun <T> ListView<T>.useLabelWithButton(stringConverter: (T) -> String, onButtonClicked: (T) -> Unit) {
     setCellFactory {
         CheckBoxWithButtonCell(false, stringConverter, { booleanProperty() }, onButtonClicked)
