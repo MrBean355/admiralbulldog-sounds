@@ -3,8 +3,8 @@ package com.github.mrbean355.admiralbulldog.sounds
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.scene.control.ButtonBar.ButtonData.OK_DONE
 import tornadofx.Fragment
 import tornadofx.action

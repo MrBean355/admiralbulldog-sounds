@@ -8,7 +8,7 @@ import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.slider
-import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
 import javafx.scene.image.ImageView
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.Priority.ALWAYS

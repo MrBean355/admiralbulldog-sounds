@@ -7,8 +7,8 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
 import javafx.scene.control.ButtonBar.ButtonData.*
 import tornadofx.Fragment
 import tornadofx.Scope

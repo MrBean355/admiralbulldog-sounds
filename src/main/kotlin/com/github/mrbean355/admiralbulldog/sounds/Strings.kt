@@ -1,18 +1,18 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.events.OnBountyRunesSpawn
-import com.github.mrbean355.admiralbulldog.events.OnDeath
-import com.github.mrbean355.admiralbulldog.events.OnDefeat
-import com.github.mrbean355.admiralbulldog.events.OnHeal
-import com.github.mrbean355.admiralbulldog.events.OnKill
-import com.github.mrbean355.admiralbulldog.events.OnMatchStart
-import com.github.mrbean355.admiralbulldog.events.OnMidasReady
-import com.github.mrbean355.admiralbulldog.events.OnRespawn
-import com.github.mrbean355.admiralbulldog.events.OnSmoked
-import com.github.mrbean355.admiralbulldog.events.OnVictory
-import com.github.mrbean355.admiralbulldog.events.Periodically
-import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
+import com.github.mrbean355.admiralbulldog.triggers.OnBountyRunesSpawn
+import com.github.mrbean355.admiralbulldog.triggers.OnDeath
+import com.github.mrbean355.admiralbulldog.triggers.OnDefeat
+import com.github.mrbean355.admiralbulldog.triggers.OnHeal
+import com.github.mrbean355.admiralbulldog.triggers.OnKill
+import com.github.mrbean355.admiralbulldog.triggers.OnMatchStart
+import com.github.mrbean355.admiralbulldog.triggers.OnMidasReady
+import com.github.mrbean355.admiralbulldog.triggers.OnRespawn
+import com.github.mrbean355.admiralbulldog.triggers.OnSmoked
+import com.github.mrbean355.admiralbulldog.triggers.OnVictory
+import com.github.mrbean355.admiralbulldog.triggers.Periodically
+import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 
 val SoundTriggerType.friendlyName: String
     get() = when (this) {

@@ -16,7 +16,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.slider
 import com.github.mrbean355.admiralbulldog.common.useHeaderFont
-import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
+import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.scene.image.ImageView
 import tornadofx.Fragment
 import tornadofx.Scope

@@ -1,10 +1,10 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
-import com.github.mrbean355.admiralbulldog.events.OnHeal
-import com.github.mrbean355.admiralbulldog.events.Periodically
-import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.triggers.OnHeal
+import com.github.mrbean355.admiralbulldog.triggers.Periodically
+import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty

@@ -9,9 +9,9 @@ import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
-import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
-import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import com.google.gson.GsonBuilder
 import org.slf4j.LoggerFactory
 import java.io.File
