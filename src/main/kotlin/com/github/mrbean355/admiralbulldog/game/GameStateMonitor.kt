@@ -25,7 +25,7 @@ import kotlin.reflect.full.createInstance
 
 private val logger = LoggerFactory.getLogger("GameStateMonitor")
 private val discordBotRepository by lazy { DiscordBotRepository() }
-private val soundEvents = mutableListOf<SoundTrigger>()
+private val soundTriggers = mutableListOf<SoundTrigger>()
 private var previousState: GameState? = null
 
 /** Receives game state updates from Dota 2. */
@@ -59,14 +59,14 @@ private fun processGameState(currentState: GameState) {
     // Recreate sound bites when a new match is entered:
     if (currentMatchId != previousMatchId) {
         previousState = null
-        soundEvents.clear()
-        soundEvents.addAll(SOUND_TRIGGER_TYPES.map { it.createInstance() })
+        soundTriggers.clear()
+        soundTriggers.addAll(SOUND_TRIGGER_TYPES.map { it.createInstance() })
     }
 
     // Play sound bites that want to be played:
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
-        soundEvents
+        soundTriggers
                 .filter { ConfigPersistence.isSoundTriggerEnabled(it::class) }
                 .filter { it.shouldPlay(localPreviousState, currentState) }
                 .filter { it.doesProc(localPreviousState, currentState) }
