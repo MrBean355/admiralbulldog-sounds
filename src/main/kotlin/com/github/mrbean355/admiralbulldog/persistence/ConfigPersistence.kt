@@ -10,7 +10,7 @@ import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
-import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import com.google.gson.GsonBuilder
 import org.slf4j.LoggerFactory
@@ -326,7 +326,7 @@ object ConfigPersistence {
 
     /** Load the default configs for all sound bites. */
     private fun loadDefaultConfig(): Config {
-        val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
+        val sounds = SOUND_TRIGGER_TYPES.associateWith { loadDefaults(it) }
                 .mapKeys { it.key.simpleName!! }
         return Config(sounds = sounds.toMutableMap())
     }
@@ -342,7 +342,7 @@ object ConfigPersistence {
     }
 
     private fun cleanUpStaleSoundEvents() {
-        val validTypes = SOUND_EVENT_TYPES.map { it.simpleName!! }
+        val validTypes = SOUND_TRIGGER_TYPES.map { it.simpleName!! }
         val invalidTypes = loadedConfig.sounds.filterKeys { it !in validTypes }
         invalidTypes.forEach {
             loadedConfig.sounds.remove(it.key)
@@ -358,7 +358,7 @@ object ConfigPersistence {
         if (loadedConfig.special == null) {
             loadedConfig.special = SpecialConfig()
         }
-        SOUND_EVENT_TYPES.forEach {
+        SOUND_TRIGGER_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
                 logger.info("Loaded defaults for sound event: ${it.simpleName}")

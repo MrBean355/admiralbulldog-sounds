@@ -8,7 +8,7 @@ import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
-import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import javafx.scene.control.ButtonBar.ButtonData.*
 import tornadofx.Fragment
 import tornadofx.Scope
@@ -54,7 +54,7 @@ class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
             vgap = PADDING_SMALL
             var row = 0
             var col = 0
-            SOUND_EVENT_TYPES.forEach { type ->
+            SOUND_TRIGGER_TYPES.forEach { type ->
                 checkbox(type.friendlyName, viewModel.throughDiscordProperty(type)) {
                     enableWhen(viewModel.botEnabled)
                     gridpaneConstraints {

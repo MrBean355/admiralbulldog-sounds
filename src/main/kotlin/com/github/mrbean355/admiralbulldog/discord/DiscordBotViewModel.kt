@@ -4,7 +4,7 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.BooleanProperty
@@ -38,7 +38,7 @@ class DiscordBotViewModel : AppViewModel() {
     }
 
     init {
-        toggles = SOUND_EVENT_TYPES.associateWith { type ->
+        toggles = SOUND_TRIGGER_TYPES.associateWith { type ->
             booleanProperty(ConfigPersistence.isPlayedThroughDiscord(type)).apply {
                 onChange { ConfigPersistence.setPlayedThroughDiscord(type, it) }
             }

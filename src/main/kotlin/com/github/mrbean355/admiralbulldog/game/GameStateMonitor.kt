@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.game
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
-import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTrigger
 import io.ktor.application.call
 import io.ktor.application.install
@@ -60,7 +60,7 @@ private fun processGameState(currentState: GameState) {
     if (currentMatchId != previousMatchId) {
         previousState = null
         soundEvents.clear()
-        soundEvents.addAll(SOUND_EVENT_TYPES.map { it.createInstance() })
+        soundEvents.addAll(SOUND_TRIGGER_TYPES.map { it.createInstance() })
     }
 
     // Play sound bites that want to be played:

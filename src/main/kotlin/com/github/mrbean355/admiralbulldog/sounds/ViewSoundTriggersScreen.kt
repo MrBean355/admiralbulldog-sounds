@@ -8,7 +8,7 @@ import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.slider
-import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import javafx.scene.image.ImageView
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.Priority.ALWAYS
@@ -44,7 +44,7 @@ class ViewSoundTriggersScreen : Fragment(getString("title_toggle_sound_triggers"
                 }
             }
         }
-        SOUND_EVENT_TYPES.forEach { type ->
+        SOUND_TRIGGER_TYPES.forEach { type ->
             row {
                 label(viewModel.textProperty(type)) {
                     textFillProperty().bind(viewModel.textColourProperty(type))

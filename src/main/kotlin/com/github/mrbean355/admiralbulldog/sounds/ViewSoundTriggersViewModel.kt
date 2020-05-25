@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.sounds
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.triggers.SOUND_EVENT_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
@@ -14,8 +14,8 @@ import tornadofx.onChange
 import tornadofx.stringProperty
 
 class ViewSoundTriggersViewModel : AppViewModel() {
-    private val text: Map<SoundTriggerType, StringProperty> = SOUND_EVENT_TYPES.associateWith { stringProperty() }
-    private val colours: Map<SoundTriggerType, ObjectProperty<Color>> = SOUND_EVENT_TYPES.associateWith { objectProperty<Color>() }
+    private val text: Map<SoundTriggerType, StringProperty> = SOUND_TRIGGER_TYPES.associateWith { stringProperty() }
+    private val colours: Map<SoundTriggerType, ObjectProperty<Color>> = SOUND_TRIGGER_TYPES.associateWith { objectProperty<Color>() }
 
     val volumeProperty = doubleProperty(ConfigPersistence.getVolume())
 
