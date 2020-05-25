@@ -16,7 +16,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.slider
 import com.github.mrbean355.admiralbulldog.common.useHeaderFont
-import com.github.mrbean355.admiralbulldog.events.SoundTrigger
+import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
 import javafx.scene.image.ImageView
 import tornadofx.Fragment
 import tornadofx.Scope
@@ -35,7 +35,6 @@ import tornadofx.paddingBottom
 import tornadofx.spinner
 import tornadofx.visibleWhen
 import tornadofx.whenUndocked
-import kotlin.reflect.KClass
 
 class ConfigureSoundTriggerScreen : Fragment() {
     private val viewModel by inject<ConfigureSoundTriggerViewModel>(Scope(), params)
@@ -128,7 +127,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
 
     companion object {
 
-        fun params(type: KClass<out SoundTrigger>): Map<String, Any?> {
+        fun params(type: SoundTriggerType): Map<String, Any?> {
             return mapOf("type" to type)
         }
     }

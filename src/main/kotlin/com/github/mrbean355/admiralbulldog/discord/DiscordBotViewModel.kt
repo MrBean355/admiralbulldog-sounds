@@ -4,7 +4,7 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
-import com.github.mrbean355.admiralbulldog.events.SoundTrigger
+import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.BooleanProperty
@@ -18,11 +18,10 @@ import tornadofx.objectProperty
 import tornadofx.onChange
 import tornadofx.stringBinding
 import tornadofx.stringProperty
-import kotlin.reflect.KClass
 
 class DiscordBotViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
-    private val toggles: Map<KClass<out SoundTrigger>, BooleanProperty>
+    private val toggles: Map<SoundTriggerType, BooleanProperty>
     private val lookupResponse = stringProperty()
     private val statusType: ObjectProperty<Status> = objectProperty()
 
@@ -64,7 +63,7 @@ class DiscordBotViewModel : AppViewModel() {
         }
     }
 
-    fun throughDiscordProperty(type: KClass<out SoundTrigger>): BooleanProperty {
+    fun throughDiscordProperty(type: SoundTriggerType): BooleanProperty {
         return toggles.getValue(type)
     }
 

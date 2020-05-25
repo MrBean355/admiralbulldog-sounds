@@ -10,12 +10,11 @@ import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
-import com.github.mrbean355.admiralbulldog.events.SoundTrigger
+import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
 import com.google.gson.GsonBuilder
 import org.slf4j.LoggerFactory
 import java.io.File
-import kotlin.reflect.KClass
 
 private const val FILE_NAME = "config.json"
 private const val DEFAULTS_PATH = "defaults/%s.json"
@@ -191,56 +190,56 @@ object ConfigPersistence {
     }
 
     /** @return `true` if the sound bite is enabled; `false` otherwise. */
-    fun isSoundEventEnabled(type: KClass<out SoundTrigger>): Boolean {
+    fun isSoundEventEnabled(type: SoundTriggerType): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.enabled
     }
 
     /** Enable or disable a sound bite. */
-    fun toggleSoundEvent(type: KClass<out SoundTrigger>, enabled: Boolean) {
+    fun toggleSoundEvent(type: SoundTriggerType, enabled: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.enabled = enabled
         save()
     }
 
-    fun getSoundEventChance(type: KClass<out SoundTrigger>): Double {
+    fun getSoundEventChance(type: SoundTriggerType): Double {
         return loadedConfig.sounds[type.simpleName]?.chance ?: 0.0
     }
 
-    fun setSoundEventChance(type: KClass<out SoundTrigger>, chance: Double) {
+    fun setSoundEventChance(type: SoundTriggerType, chance: Double) {
         loadedConfig.sounds[type.simpleName]?.chance = chance
         save()
     }
 
-    fun getSoundEventMinRate(type: KClass<out SoundTrigger>): Double {
+    fun getSoundEventMinRate(type: SoundTriggerType): Double {
         return loadedConfig.sounds[type.simpleName]?.minRate ?: 0.0
     }
 
-    fun setSoundEventMinRate(type: KClass<out SoundTrigger>, minRate: Double) {
+    fun setSoundEventMinRate(type: SoundTriggerType, minRate: Double) {
         loadedConfig.sounds[type.simpleName]?.minRate = minRate
         save()
     }
 
-    fun getSoundEventMaxRate(type: KClass<out SoundTrigger>): Double {
+    fun getSoundEventMaxRate(type: SoundTriggerType): Double {
         return loadedConfig.sounds[type.simpleName]?.maxRate ?: 0.0
     }
 
-    fun setSoundEventMaxRate(type: KClass<out SoundTrigger>, maxRate: Double) {
+    fun setSoundEventMaxRate(type: SoundTriggerType, maxRate: Double) {
         loadedConfig.sounds[type.simpleName]?.maxRate = maxRate
         save()
     }
 
     /** @return whether the user has chosen to play the sound bite through Discord. */
-    fun isPlayedThroughDiscord(type: KClass<out SoundTrigger>): Boolean {
+    fun isPlayedThroughDiscord(type: SoundTriggerType): Boolean {
         return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
     }
 
     /** Set whether the user has chosen to play the sound bite through Discord. */
-    fun setPlayedThroughDiscord(type: KClass<out SoundTrigger>, playThroughDiscord: Boolean) {
+    fun setPlayedThroughDiscord(type: SoundTriggerType, playThroughDiscord: Boolean) {
         loadedConfig.sounds[type.simpleName]!!.playThroughDiscord = playThroughDiscord
         save()
     }
 
     /** @return all selected sound bites for a trigger. */
-    fun getSoundsForType(type: KClass<out SoundTrigger>): List<SoundBite> {
+    fun getSoundsForType(type: SoundTriggerType): List<SoundBite> {
         val toggle = loadedConfig.sounds[type.simpleName]!!
         return toggle.sounds.mapNotNull { SoundBites.findSound(it) }
     }
@@ -310,7 +309,7 @@ object ConfigPersistence {
     }
 
     /** Update the given sound bite's config to use the given sound `selection`. */
-    fun saveSoundsForType(type: KClass<out SoundTrigger>, selection: List<SoundBite>) {
+    fun saveSoundsForType(type: SoundTriggerType, selection: List<SoundBite>) {
         loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
         save()
     }
@@ -333,7 +332,7 @@ object ConfigPersistence {
     }
 
     /** Load the default config for a given sound bite `type`. */
-    private fun loadDefaults(type: KClass<out SoundTrigger>): Toggle {
+    private fun loadDefaults(type: SoundTriggerType): Toggle {
         val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
         if (resource == null) {
             logger.warn("No defaults resource available for: ${type.simpleName}")

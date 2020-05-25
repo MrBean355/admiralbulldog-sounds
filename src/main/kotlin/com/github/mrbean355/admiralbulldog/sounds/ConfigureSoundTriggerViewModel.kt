@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.sounds
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.events.OnHeal
 import com.github.mrbean355.admiralbulldog.events.Periodically
-import com.github.mrbean355.admiralbulldog.events.SoundTrigger
+import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.BooleanProperty
@@ -15,10 +15,9 @@ import tornadofx.doubleProperty
 import tornadofx.intProperty
 import tornadofx.onChange
 import tornadofx.stringProperty
-import kotlin.reflect.KClass
 
 class ConfigureSoundTriggerViewModel : AppViewModel() {
-    private val type: KClass<out SoundTrigger> by param()
+    private val type: SoundTriggerType by param()
 
     /* Basic */
     val title: StringProperty = stringProperty(type.friendlyName)

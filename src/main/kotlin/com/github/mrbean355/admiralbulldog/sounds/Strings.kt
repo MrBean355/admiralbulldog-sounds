@@ -12,10 +12,9 @@ import com.github.mrbean355.admiralbulldog.events.OnRespawn
 import com.github.mrbean355.admiralbulldog.events.OnSmoked
 import com.github.mrbean355.admiralbulldog.events.OnVictory
 import com.github.mrbean355.admiralbulldog.events.Periodically
-import com.github.mrbean355.admiralbulldog.events.SoundTrigger
-import kotlin.reflect.KClass
+import com.github.mrbean355.admiralbulldog.events.SoundTriggerType
 
-val KClass<out SoundTrigger>.friendlyName: String
+val SoundTriggerType.friendlyName: String
     get() = when (this) {
         OnBountyRunesSpawn::class -> getString("trigger_name_bounty_runes")
         OnDeath::class -> getString("trigger_name_death")
@@ -31,7 +30,7 @@ val KClass<out SoundTrigger>.friendlyName: String
         else -> throw IllegalArgumentException("Unexpected type: $this")
     }
 
-val KClass<out SoundTrigger>.description: String
+val SoundTriggerType.description: String
     get() = when (this) {
         OnBountyRunesSpawn::class -> getString("trigger_desc_bounty_runes")
         OnDeath::class -> getString("trigger_desc_death")
