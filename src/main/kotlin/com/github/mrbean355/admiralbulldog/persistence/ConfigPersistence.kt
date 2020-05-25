@@ -9,12 +9,16 @@ import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
+import com.github.mrbean355.admiralbulldog.persistence.migration.ConfigMigration
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import com.google.gson.GsonBuilder
 import org.slf4j.LoggerFactory
 import java.io.File
+
+/** Version of the config file that this app supports. */
+const val CONFIG_VERSION = 2
 
 private const val FILE_NAME = "config.json"
 private const val DEFAULTS_PATH = "defaults/%s.json"
@@ -37,7 +41,8 @@ object ConfigPersistence {
     fun initialise() {
         val file = File(FILE_NAME)
         loadedConfig = if (file.exists()) {
-            gson.fromJson(file.readText(), Config::class.java)
+            val jsonElement = ConfigMigration.run(file.readText())
+            gson.fromJson(jsonElement, Config::class.java)
         } else {
             loadDefaultConfig()
         }
@@ -372,6 +377,7 @@ object ConfigPersistence {
     }
 
     private data class Config(
+            var version: Int = CONFIG_VERSION,
             var port: Int = DEFAULT_PORT,
             var id: String? = null,
             var dotaPath: String? = null,

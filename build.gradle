@@ -29,6 +29,8 @@ dependencies {
     // TODO: Linux & Mac variants
     // runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:linux"
     // runtimeOnly "org.openjfx:javafx-graphics:${javafx.version}:mac"
+
+    testImplementation 'junit:junit:4.13'
 }
 
 compileKotlin {

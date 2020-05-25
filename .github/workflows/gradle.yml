@@ -13,10 +13,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '12'
-      - name: Build with Gradle
+      - name: Run tests
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon clean jar
+          ./gradlew --no-daemon clean test
+      - name: Build with Gradle
+        run:
+          ./gradlew --no-daemon jar
       - name: Publish artifact
         uses: actions/upload-artifact@master
         with:
