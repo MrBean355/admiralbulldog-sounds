@@ -16,18 +16,18 @@ object DotaPath {
     /** @return `true` if the saved Dota path still points to a valid Dota installation. */
     fun hasValidSavedPath(): Boolean {
         val saved = ConfigPersistence.getDotaPath()
-        return saved != null && saved == getDotaRootDirectory(saved)
+        return saved == getDotaRootDirectory(saved)
     }
 
     /** @return absolute path to the gameinfo.gi file. */
     fun getGameInfoFilePath(): String {
-        val dotaPath = ConfigPersistence.getDotaPath()!!
+        val dotaPath = ConfigPersistence.getDotaPath()
         return dotaPath + GAME_INFO_DIR_PATH.replaceFileSeparators()
     }
 
     /** @return absolute path to the mod directory. */
     fun getModDirectory(): String {
-        val dotaPath = ConfigPersistence.getDotaPath()!!
+        val dotaPath = ConfigPersistence.getDotaPath()
         return dotaPath + MOD_DIR_PATH.replaceFileSeparators()
     }
 

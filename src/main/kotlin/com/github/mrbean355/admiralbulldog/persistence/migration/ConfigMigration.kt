@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.persistence.migration
 
 import com.github.mrbean355.admiralbulldog.persistence.CONFIG_VERSION
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser.parseString
@@ -29,6 +30,8 @@ object ConfigMigration {
     }
 
     private fun version1(obj: JsonObject) {
+        legacy(obj)
+
         // Volume changed from double to int.
         obj.getAsJsonPrimitive("volume").let {
             obj.add("volume", JsonPrimitive(it.asDouble.toInt()))
@@ -51,6 +54,21 @@ object ConfigMigration {
 
         // Done
         obj.configVersion = 2
+    }
+
+    private fun legacy(obj: JsonObject) {
+        if (obj.get("dotaPath") == null) {
+            obj.addProperty("dotaPath", "")
+        }
+        if (obj.get("discordToken") == null) {
+            obj.addProperty("discordToken", "")
+        }
+        if (obj.get("soundBoard") == null) {
+            obj.add("soundBoard", JsonArray())
+        }
+        if (obj.get("modVersion") == null) {
+            obj.addProperty("modVersion", "")
+        }
     }
 
     private var JsonObject.configVersion: Int?

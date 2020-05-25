@@ -70,7 +70,7 @@ object ConfigPersistence {
     }
 
     /** @return the currently chosen Dota installation path. */
-    fun getDotaPath(): String? {
+    fun getDotaPath(): String {
         return loadedConfig.dotaPath
     }
 
@@ -175,7 +175,7 @@ object ConfigPersistence {
     }
 
     /** @return the user's current token if it is set, empty string otherwise. */
-    fun getDiscordToken() = loadedConfig.discordToken.orEmpty()
+    fun getDiscordToken(): String = loadedConfig.discordToken
 
     /** Set the user's Discord token. */
     fun setDiscordToken(token: String) {
@@ -196,62 +196,62 @@ object ConfigPersistence {
 
     /** @return `true` if the sound trigger is enabled; `false` otherwise. */
     fun isSoundTriggerEnabled(type: SoundTriggerType): Boolean {
-        return loadedConfig.sounds[type.simpleName]!!.enabled
+        return loadedConfig.sounds.getValue(type.key).enabled
     }
 
     /** Enable or disable a sound trigger. */
     fun toggleSoundTrigger(type: SoundTriggerType, enabled: Boolean) {
-        loadedConfig.sounds[type.simpleName]!!.enabled = enabled
+        loadedConfig.sounds.getValue(type.key).enabled = enabled
         save()
     }
 
     fun getSoundTriggerChance(type: SoundTriggerType): Double {
-        return loadedConfig.sounds[type.simpleName]?.chance ?: 0.0
+        return loadedConfig.sounds.getValue(type.key).chance
     }
 
     fun setSoundTriggerChance(type: SoundTriggerType, chance: Double) {
-        loadedConfig.sounds[type.simpleName]?.chance = chance
+        loadedConfig.sounds.getValue(type.key).chance = chance
         save()
     }
 
     fun getSoundTriggerMinRate(type: SoundTriggerType): Double {
-        return loadedConfig.sounds[type.simpleName]?.minRate ?: 0.0
+        return loadedConfig.sounds.getValue(type.key).minRate
     }
 
     fun setSoundTriggerMinRate(type: SoundTriggerType, minRate: Double) {
-        loadedConfig.sounds[type.simpleName]?.minRate = minRate
+        loadedConfig.sounds.getValue(type.key).minRate = minRate
         save()
     }
 
     fun getSoundTriggerMaxRate(type: SoundTriggerType): Double {
-        return loadedConfig.sounds[type.simpleName]?.maxRate ?: 0.0
+        return loadedConfig.sounds.getValue(type.key).maxRate
     }
 
     fun setSoundTriggerMaxRate(type: SoundTriggerType, maxRate: Double) {
-        loadedConfig.sounds[type.simpleName]?.maxRate = maxRate
+        loadedConfig.sounds.getValue(type.key).maxRate = maxRate
         save()
     }
 
     /** @return whether the user has chosen to play the sound trigger through Discord. */
     fun isPlayedThroughDiscord(type: SoundTriggerType): Boolean {
-        return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
+        return loadedConfig.sounds.getValue(type.key).playThroughDiscord
     }
 
     /** Set whether the user has chosen to play the sound trigger through Discord. */
     fun setPlayedThroughDiscord(type: SoundTriggerType, playThroughDiscord: Boolean) {
-        loadedConfig.sounds[type.simpleName]!!.playThroughDiscord = playThroughDiscord
+        loadedConfig.sounds.getValue(type.key).playThroughDiscord = playThroughDiscord
         save()
     }
 
     /** @return all selected sound bites for a trigger. */
     fun getSoundsForType(type: SoundTriggerType): List<SoundBite> {
-        val toggle = loadedConfig.sounds[type.simpleName]!!
+        val toggle = loadedConfig.sounds.getValue(type.key)
         return toggle.sounds.mapNotNull { SoundBites.findSound(it) }
     }
 
     /** @return a list of all sounds selected for the sound board. */
     fun getSoundBoard(): List<SoundBite> {
-        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundBites.findSound(it) }
+        return loadedConfig.soundBoard.mapNotNull { SoundBites.findSound(it) }
     }
 
     /** Set the list of all sounds selected for the sound board. */
@@ -280,9 +280,9 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return the version of the currently installed mod, or "0.0.0" if there is none. */
+    /** @return the version of the currently installed mod, or an empty string if there is none. */
     fun getModVersion(): String {
-        return loadedConfig.modVersion ?: "0.0.0"
+        return loadedConfig.modVersion
     }
 
     /** Set the version of the currently installed mod. */
@@ -298,8 +298,7 @@ object ConfigPersistence {
                 .flatMap { it.value.sounds }
                 .filter { it !in existing }
         val invalidSoundBoard = loadedConfig.soundBoard
-                ?.filter { it !in existing }
-                .orEmpty()
+                .filter { it !in existing }
         return (invalidSounds + invalidSoundBoard).toSet()
     }
 
@@ -309,13 +308,13 @@ object ConfigPersistence {
         loadedConfig.sounds.forEach { (_, v) ->
             v.sounds.removeAll { it in invalid }
         }
-        loadedConfig.soundBoard = loadedConfig.soundBoard?.filterNot { it in invalid }
+        loadedConfig.soundBoard = loadedConfig.soundBoard.filterNot { it in invalid }
         save()
     }
 
     /** Update the given sound trigger's config to use the given sound bite `selection`. */
     fun saveSoundsForType(type: SoundTriggerType, selection: List<SoundBite>) {
-        loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
+        loadedConfig.sounds.getValue(type.key).sounds = selection.map { it.name }.toMutableList()
         save()
     }
 
@@ -332,7 +331,7 @@ object ConfigPersistence {
     /** Load the default configs for all sound triggers. */
     private fun loadDefaultConfig(): Config {
         val sounds = SOUND_TRIGGER_TYPES.associateWith { loadDefaults(it) }
-                .mapKeys { it.key.simpleName!! }
+                .mapKeys { it.key.key }
         return Config(sounds = sounds.toMutableMap())
     }
 
@@ -347,7 +346,7 @@ object ConfigPersistence {
     }
 
     private fun cleanUpStaleSoundTriggers() {
-        val validTypes = SOUND_TRIGGER_TYPES.map { it.simpleName!! }
+        val validTypes = SOUND_TRIGGER_TYPES.map { it.key }
         val invalidTypes = loadedConfig.sounds.filterKeys { it !in validTypes }
         invalidTypes.forEach {
             loadedConfig.sounds.remove(it.key)
@@ -359,29 +358,32 @@ object ConfigPersistence {
     private fun migrateFromOldConfig() {
         SOUND_TRIGGER_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
-                loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
+                loadedConfig.sounds[it.key] = loadDefaults(it)
                 logger.info("Loaded defaults for sound trigger: ${it.simpleName}")
             }
         }
     }
 
+    private val SoundTriggerType.key: String
+        get() = simpleName ?: java.name
+
     private data class Config(
             var version: Int = CONFIG_VERSION,
             var port: Int = DEFAULT_PORT,
             var id: String? = null,
-            var dotaPath: String? = null,
+            var dotaPath: String = "",
             var updates: Updates = Updates(),
             var special: SpecialConfig = SpecialConfig(),
             var lastSync: Long = 0,
             var volume: Int = DEFAULT_VOLUME,
             var discordBotEnabled: Boolean = false,
-            var discordToken: String? = null,
+            var discordToken: String = "",
             var trayNotified: Boolean = false,
             val sounds: MutableMap<String, Toggle> = mutableMapOf(),
-            var soundBoard: List<String>? = listOf(),
+            var soundBoard: List<String> = listOf(),
             var modEnabled: Boolean = false,
             var modTempDisabled: Boolean = false,
-            var modVersion: String? = null
+            var modVersion: String = ""
     )
 
     private data class Updates(

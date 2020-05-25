@@ -30,7 +30,7 @@ object DotaMod {
             logger.info("No VPK found, download")
             return true
         }
-        val currentVersion = Semver(ConfigPersistence.getModVersion())
+        val currentVersion = Semver(ConfigPersistence.getModVersion().ifBlank { "0.0.0" })
         val latestVersion = Semver(releaseInfo.tagName.removeVersionPrefix())
         if (latestVersion > currentVersion) {
             logger.info("Newer version available, download")
