@@ -81,25 +81,25 @@ object ConfigPersistence {
     }
 
     fun getAppUpdateFrequency(): UpdateFrequency {
-        return loadedConfig.updates?.appUpdateFrequency!!
+        return loadedConfig.updates.appUpdateFrequency
     }
 
     fun setAppUpdateFrequency(frequency: UpdateFrequency) {
-        loadedConfig.updates?.appUpdateFrequency = frequency
+        loadedConfig.updates.appUpdateFrequency = frequency
         save()
     }
 
     fun getAppLastUpdateAt(): Long {
-        return loadedConfig.updates?.appUpdateCheck ?: 0
+        return loadedConfig.updates.appUpdateCheck
     }
 
     fun setAppLastUpdateToNow() {
-        loadedConfig.updates?.appUpdateCheck = System.currentTimeMillis()
+        loadedConfig.updates.appUpdateCheck = System.currentTimeMillis()
         save()
     }
 
     fun getSoundsUpdateFrequency(): UpdateFrequency {
-        return loadedConfig.updates?.soundsUpdateFrequency!!
+        return loadedConfig.updates.soundsUpdateFrequency
     }
 
     fun getSoundsLastUpdateAt(): Long {
@@ -112,47 +112,47 @@ object ConfigPersistence {
     }
 
     fun getModUpdateFrequency(): UpdateFrequency {
-        return loadedConfig.updates?.modUpdateFrequency!!
+        return loadedConfig.updates.modUpdateFrequency
     }
 
     fun setModUpdateFrequency(frequency: UpdateFrequency) {
-        loadedConfig.updates?.modUpdateFrequency = frequency
+        loadedConfig.updates.modUpdateFrequency = frequency
         save()
     }
 
     fun getModLastUpdateAt(): Long {
-        return loadedConfig.updates?.modUpdateCheck ?: 0
+        return loadedConfig.updates.modUpdateCheck
     }
 
     fun setModLastUpdateToNow() {
-        loadedConfig.updates?.modUpdateCheck = System.currentTimeMillis()
+        loadedConfig.updates.modUpdateCheck = System.currentTimeMillis()
         save()
     }
 
     fun isUsingHealSmartChance(): Boolean {
-        return loadedConfig.special?.useHealSmartChance ?: true
+        return loadedConfig.special.useHealSmartChance
     }
 
     fun setIsUsingHealSmartChance(using: Boolean) {
-        loadedConfig.special?.useHealSmartChance = using
+        loadedConfig.special.useHealSmartChance = using
         save()
     }
 
     fun getMinPeriod(): Int {
-        return loadedConfig.special?.minPeriod ?: 0
+        return loadedConfig.special.minPeriod
     }
 
     fun setMinPeriod(value: Int) {
-        loadedConfig.special?.minPeriod = value
+        loadedConfig.special.minPeriod = value
         save()
     }
 
     fun getMaxPeriod(): Int {
-        return loadedConfig.special?.maxPeriod ?: 0
+        return loadedConfig.special.maxPeriod
     }
 
     fun setMaxPeriod(value: Int) {
-        loadedConfig.special?.maxPeriod = value
+        loadedConfig.special.maxPeriod = value
         save()
     }
 
@@ -357,22 +357,11 @@ object ConfigPersistence {
 
     /** Checks the loaded `config` map, adding defaults for any missing sound triggers. */
     private fun migrateFromOldConfig() {
-        if (loadedConfig.updates == null) {
-            loadedConfig.updates = Updates()
-        }
-        if (loadedConfig.special == null) {
-            loadedConfig.special = SpecialConfig()
-        }
         SOUND_TRIGGER_TYPES.forEach {
             if (loadedConfig.sounds[it.simpleName] == null) {
                 loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
                 logger.info("Loaded defaults for sound trigger: ${it.simpleName}")
             }
-        }
-        loadedConfig.sounds.forEach { (_, toggle) ->
-            if (toggle.chance == null) toggle.chance = DEFAULT_CHANCE
-            if (toggle.minRate == null) toggle.minRate = DEFAULT_RATE
-            if (toggle.maxRate == null) toggle.maxRate = DEFAULT_RATE
         }
     }
 
@@ -381,8 +370,8 @@ object ConfigPersistence {
             var port: Int = DEFAULT_PORT,
             var id: String? = null,
             var dotaPath: String? = null,
-            var updates: Updates? = Updates(),
-            var special: SpecialConfig? = SpecialConfig(),
+            var updates: Updates = Updates(),
+            var special: SpecialConfig = SpecialConfig(),
             var lastSync: Long = 0,
             var volume: Int = DEFAULT_VOLUME,
             var discordBotEnabled: Boolean = false,
@@ -399,7 +388,7 @@ object ConfigPersistence {
             var appUpdateCheck: Long = 0,
             var appUpdateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
             var soundsUpdateFrequency: UpdateFrequency = UpdateFrequency.DAILY,
-            var modUpdateCheck: Long? = 0,
+            var modUpdateCheck: Long = 0,
             var modUpdateFrequency: UpdateFrequency = UpdateFrequency.ALWAYS
     )
 
@@ -411,9 +400,9 @@ object ConfigPersistence {
 
     private data class Toggle(
             var enabled: Boolean = false,
-            var chance: Double? = null,
-            var minRate: Double? = null,
-            var maxRate: Double? = null,
+            var chance: Double = DEFAULT_CHANCE,
+            var minRate: Double = DEFAULT_RATE,
+            var maxRate: Double = DEFAULT_RATE,
             var playThroughDiscord: Boolean = false,
             var sounds: MutableList<String> = mutableListOf()
     )
