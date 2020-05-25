@@ -16,7 +16,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.slider
 import com.github.mrbean355.admiralbulldog.common.useHeaderFont
-import com.github.mrbean355.admiralbulldog.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.events.SoundTrigger
 import javafx.scene.image.ImageView
 import tornadofx.Fragment
 import tornadofx.Scope
@@ -128,7 +128,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
 
     companion object {
 
-        fun params(type: KClass<out SoundEvent>): Map<String, Any?> {
+        fun params(type: KClass<out SoundTrigger>): Map<String, Any?> {
             return mapOf("type" to type)
         }
     }

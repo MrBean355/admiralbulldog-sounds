@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.game
 import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.events.OnHeal
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
-import com.github.mrbean355.admiralbulldog.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.events.SoundTrigger
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import io.ktor.application.call
 import io.ktor.application.install
@@ -25,7 +25,7 @@ import kotlin.reflect.full.createInstance
 
 private val logger = LoggerFactory.getLogger("GameStateMonitor")
 private val discordBotRepository by lazy { DiscordBotRepository() }
-private val soundEvents = mutableListOf<SoundEvent>()
+private val soundEvents = mutableListOf<SoundTrigger>()
 private var previousState: GameState? = null
 
 /** Receives game state updates from Dota 2. */
@@ -75,29 +75,29 @@ private fun processGameState(currentState: GameState) {
     previousState = currentState
 }
 
-private fun playSoundForType(soundEvent: SoundEvent) {
-    val choices = ConfigPersistence.getSoundsForType(soundEvent::class)
+private fun playSoundForType(soundTrigger: SoundTrigger) {
+    val choices = ConfigPersistence.getSoundsForType(soundTrigger::class)
     if (choices.isNotEmpty()) {
         val choice = choices.random()
-        if (shouldPlayOnDiscord(soundEvent)) {
+        if (shouldPlayOnDiscord(soundTrigger)) {
             GlobalScope.launch {
                 val response = discordBotRepository.playSound(choice)
                 if (!response.isSuccessful()) {
-                    choice.play(rate = soundEvent.randomRate())
+                    choice.play(rate = soundTrigger.randomRate())
                 }
             }
         } else {
-            choice.play(rate = soundEvent.randomRate())
+            choice.play(rate = soundTrigger.randomRate())
         }
     }
 }
 
-private fun shouldPlayOnDiscord(soundEvent: SoundEvent): Boolean {
-    return ConfigPersistence.isUsingDiscordBot() && ConfigPersistence.isPlayedThroughDiscord(soundEvent::class)
+private fun shouldPlayOnDiscord(soundTrigger: SoundTrigger): Boolean {
+    return ConfigPersistence.isUsingDiscordBot() && ConfigPersistence.isPlayedThroughDiscord(soundTrigger::class)
 }
 
 /** @return `true` if the randomised chance falls within the user's chosen chance. */
-private fun SoundEvent.doesProc(previousState: GameState, currentState: GameState): Boolean {
+private fun SoundTrigger.doesProc(previousState: GameState, currentState: GameState): Boolean {
     if (this is OnHeal && ConfigPersistence.isUsingHealSmartChance()) {
         return doesSmartChanceProc(previousState, currentState)
     }
@@ -106,7 +106,7 @@ private fun SoundEvent.doesProc(previousState: GameState, currentState: GameStat
 }
 
 /** @return a randomised playback rate. */
-private fun SoundEvent.randomRate(): Double {
+private fun SoundTrigger.randomRate(): Double {
     val min = ConfigPersistence.getSoundEventMinRate(this::class)
     val max = ConfigPersistence.getSoundEventMaxRate(this::class)
     return if (min == max) min else Random.nextDouble(min, max)

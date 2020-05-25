@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.sounds
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
-import com.github.mrbean355.admiralbulldog.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.events.SoundTrigger
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
@@ -15,8 +15,8 @@ import tornadofx.stringProperty
 import kotlin.reflect.KClass
 
 class ViewSoundTriggersViewModel : AppViewModel() {
-    private val text: Map<KClass<out SoundEvent>, StringProperty> = SOUND_EVENT_TYPES.associateWith { stringProperty() }
-    private val colours: Map<KClass<out SoundEvent>, ObjectProperty<Color>> = SOUND_EVENT_TYPES.associateWith { objectProperty<Color>() }
+    private val text: Map<KClass<out SoundTrigger>, StringProperty> = SOUND_EVENT_TYPES.associateWith { stringProperty() }
+    private val colours: Map<KClass<out SoundTrigger>, ObjectProperty<Color>> = SOUND_EVENT_TYPES.associateWith { objectProperty<Color>() }
 
     val volumeProperty = doubleProperty(ConfigPersistence.getVolume())
 
@@ -25,11 +25,11 @@ class ViewSoundTriggersViewModel : AppViewModel() {
         refresh()
     }
 
-    fun textProperty(type: KClass<out SoundEvent>): StringProperty = text.getValue(type)
+    fun textProperty(type: KClass<out SoundTrigger>): StringProperty = text.getValue(type)
 
-    fun textColourProperty(type: KClass<out SoundEvent>): ObjectProperty<Color> = colours.getValue(type)
+    fun textColourProperty(type: KClass<out SoundTrigger>): ObjectProperty<Color> = colours.getValue(type)
 
-    fun onConfigureClicked(type: KClass<out SoundEvent>) {
+    fun onConfigureClicked(type: KClass<out SoundTrigger>) {
         find<ConfigureSoundTriggerScreen>(params = ConfigureSoundTriggerScreen.params(type))
                 .openModal(block = true, resizable = false)
 
@@ -45,7 +45,7 @@ class ViewSoundTriggersViewModel : AppViewModel() {
         }
     }
 
-    private fun textFor(type: KClass<out SoundEvent>): String {
+    private fun textFor(type: KClass<out SoundTrigger>): String {
         return if (ConfigPersistence.isSoundEventEnabled(type)) {
             type.friendlyName
         } else {
@@ -53,7 +53,7 @@ class ViewSoundTriggersViewModel : AppViewModel() {
         }
     }
 
-    private fun colourFor(type: KClass<out SoundEvent>): Color {
+    private fun colourFor(type: KClass<out SoundTrigger>): Color {
         return if (ConfigPersistence.isSoundEventEnabled(type)) Color.BLACK else Color.GRAY
     }
 }

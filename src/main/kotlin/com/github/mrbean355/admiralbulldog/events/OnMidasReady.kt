@@ -4,7 +4,7 @@ import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.game.Item
 import com.github.mrbean355.admiralbulldog.game.Items
 
-class OnMidasReady : SoundEvent {
+class OnMidasReady : SoundTrigger {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         return previous.items.isMidasOnCooldown() && current.items.isMidasOffCooldown()

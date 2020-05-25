@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.sounds
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.events.SoundTrigger
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.control.ButtonBar.ButtonData.OK_DONE
 import tornadofx.Fragment
@@ -15,7 +15,7 @@ import tornadofx.vbox
 import kotlin.reflect.KClass
 
 class ChooseSoundFilesScreen : Fragment() {
-    private val type by param<KClass<out SoundEvent>>()
+    private val type by param<KClass<out SoundTrigger>>()
     private val tracker = SoundBiteTracker(ConfigPersistence.getSoundsForType(type))
 
     override val root = vbox(spacing = PADDING_SMALL) {
@@ -40,7 +40,7 @@ class ChooseSoundFilesScreen : Fragment() {
 
     companion object {
 
-        fun params(type: KClass<out SoundEvent>): Map<String, Any?> {
+        fun params(type: KClass<out SoundTrigger>): Map<String, Any?> {
             return mapOf("type" to type)
         }
     }

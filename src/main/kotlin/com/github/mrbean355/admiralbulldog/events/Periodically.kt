@@ -4,7 +4,7 @@ import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlin.random.Random
 
-class Periodically : SoundEvent {
+class Periodically : SoundTrigger {
     private var nextPlayClockTime = UNINITIALISED
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {

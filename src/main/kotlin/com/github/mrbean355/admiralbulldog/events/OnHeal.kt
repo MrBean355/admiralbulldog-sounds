@@ -16,7 +16,7 @@ private const val MAX_HEAL = 500
  * A heal amount of [MAX_HEAL] or more gives a 100% chance to play the sound.
  * The heal amount must be at least [MIN_HP_PERCENTAGE] percent of the hero's max HP.
  */
-class OnHeal : SoundEvent {
+class OnHeal : SoundTrigger {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (previous.hero!!.health <= 0F) {

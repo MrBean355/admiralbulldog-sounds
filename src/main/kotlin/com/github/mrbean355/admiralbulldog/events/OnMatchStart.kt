@@ -4,7 +4,7 @@ import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.game.MatchState
 
 /** Plays a sound just after the clock hits 0. */
-class OnMatchStart : SoundEvent {
+class OnMatchStart : SoundTrigger {
     private var played = false
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {

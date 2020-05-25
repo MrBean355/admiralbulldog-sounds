@@ -16,7 +16,7 @@ val SOUND_EVENT_TYPES = setOf(
         Periodically::class
 )
 
-interface SoundEvent {
+interface SoundTrigger {
     /** Examine the states and decide if a should should be played. */
     fun shouldPlay(previous: GameState, current: GameState): Boolean
 }
