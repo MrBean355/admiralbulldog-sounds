@@ -8,6 +8,20 @@ import org.junit.Test
 class ConfigMigrationTest {
 
     @Test
+    fun testMigrationFromLegacyConfig() {
+        val input = loadJson("config-legacy.json")
+
+        val output = ConfigMigration.run(input) as JsonObject
+
+        // Convert to non-nullable properties:
+        assertEquals("", output.getAsJsonPrimitive("id").asString)
+        assertEquals("", output.getAsJsonPrimitive("dotaPath").asString)
+        assertEquals("", output.getAsJsonPrimitive("discordToken").asString)
+        assertEquals(0, output.getAsJsonArray("soundBoard").size())
+        assertEquals("", output.getAsJsonPrimitive("modVersion").asString)
+    }
+
+    @Test
     fun testMigrationFromUnVersionedConfig() {
         val input = loadJson("config-1.json")
 
@@ -35,6 +49,19 @@ class ConfigMigrationTest {
             assertTrue(it.getAsJsonPrimitive("useHealSmartChance").asBoolean)
             assertEquals(5, it.getAsJsonPrimitive("minPeriod").asInt)
             assertEquals(15, it.getAsJsonPrimitive("maxPeriod").asInt)
+        }
+
+        // Convert sounds to lower case:
+        output.getAsJsonObject("sounds").entrySet().forEach { trigger ->
+            val sounds = trigger.value.asJsonObject.getAsJsonArray("sounds")
+            sounds.forEach { sound ->
+                assertTrue(sound.asString.none { it.isUpperCase() })
+            }
+        }
+
+        // Convert sound board to lower case:
+        output.getAsJsonArray("soundBoard").forEach { sound ->
+            assertTrue(sound.asString.none { it.isUpperCase() })
         }
 
         assertEquals(2, output.get("version").asInt)
