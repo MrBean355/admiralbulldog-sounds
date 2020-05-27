@@ -45,3 +45,19 @@ val SoundTriggerType.description: String
         Periodically::class -> getString("trigger_desc_periodically")
         else -> throw IllegalArgumentException("Unexpected type: $this")
     }
+
+val SoundTriggerType.tableHeader: String
+    get() = when (this) {
+        OnBountyRunesSpawn::class -> getString("trigger_header_bounty_runes")
+        OnDeath::class -> getString("trigger_header_death")
+        OnDefeat::class -> getString("trigger_header_defeat")
+        OnHeal::class -> getString("trigger_header_heal")
+        OnKill::class -> getString("trigger_header_kill")
+        OnMatchStart::class -> getString("trigger_header_match_start")
+        OnMidasReady::class -> getString("trigger_header_midas_ready")
+        OnRespawn::class -> getString("trigger_header_respawn")
+        OnSmoked::class -> getString("trigger_header_smoked")
+        OnVictory::class -> getString("trigger_header_victory")
+        Periodically::class -> getString("trigger_header_periodically")
+        else -> throw IllegalArgumentException("Unexpected type: $this")
+    }

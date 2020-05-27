@@ -249,6 +249,17 @@ object ConfigPersistence {
         return toggle.sounds.mapNotNull { SoundBites.findSound(it) }
     }
 
+    fun isSoundSelectedForType(type: SoundTriggerType, soundBite: SoundBite): Boolean {
+        return loadedConfig.sounds.getValue(type.key).sounds.contains(soundBite.name)
+    }
+
+    fun setSoundSelectedForType(type: SoundTriggerType, soundBite: SoundBite, selected: Boolean) {
+        loadedConfig.sounds.getValue(type.key).sounds.let {
+            if (selected) it += soundBite.name else it -= soundBite.name
+        }
+        save()
+    }
+
     /** @return a list of all sounds selected for the sound board. */
     fun getSoundBoard(): List<SoundBite> {
         return loadedConfig.soundBoard.mapNotNull { SoundBites.findSound(it) }
@@ -256,7 +267,7 @@ object ConfigPersistence {
 
     /** Set the list of all sounds selected for the sound board. */
     fun setSoundBoard(soundBoard: List<SoundBite>) {
-        loadedConfig.soundBoard = soundBoard.map { it.name }
+        loadedConfig.soundBoard.setAll(soundBoard.map { it.name })
         save()
     }
 
@@ -308,13 +319,13 @@ object ConfigPersistence {
         loadedConfig.sounds.forEach { (_, v) ->
             v.sounds.removeAll { it in invalid }
         }
-        loadedConfig.soundBoard = loadedConfig.soundBoard.filterNot { it in invalid }
+        loadedConfig.soundBoard.setAll(loadedConfig.soundBoard.filterNot { it in invalid })
         save()
     }
 
     /** Update the given sound trigger's config to use the given sound bite `selection`. */
     fun saveSoundsForType(type: SoundTriggerType, selection: List<SoundBite>) {
-        loadedConfig.sounds.getValue(type.key).sounds = selection.map { it.name }.toMutableList()
+        loadedConfig.sounds.getValue(type.key).sounds.setAll(selection.map { it.name })
         save()
     }
 
@@ -367,6 +378,11 @@ object ConfigPersistence {
     private val SoundTriggerType.key: String
         get() = simpleName ?: java.name
 
+    private fun <T> MutableCollection<T>.setAll(newItems: Iterable<T>) {
+        clear()
+        addAll(newItems)
+    }
+
     private data class Config(
             var version: Int = CONFIG_VERSION,
             var port: Int = DEFAULT_PORT,
@@ -380,7 +396,7 @@ object ConfigPersistence {
             var discordToken: String = "",
             var trayNotified: Boolean = false,
             val sounds: MutableMap<String, Toggle> = mutableMapOf(),
-            var soundBoard: List<String> = listOf(),
+            val soundBoard: MutableList<String> = mutableListOf(),
             var modEnabled: Boolean = false,
             var modTempDisabled: Boolean = false,
             var modVersion: String = ""
@@ -406,6 +422,6 @@ object ConfigPersistence {
             var minRate: Double = DEFAULT_RATE,
             var maxRate: Double = DEFAULT_RATE,
             var playThroughDiscord: Boolean = false,
-            var sounds: MutableList<String> = mutableListOf()
+            val sounds: MutableList<String> = mutableListOf()
     )
 }

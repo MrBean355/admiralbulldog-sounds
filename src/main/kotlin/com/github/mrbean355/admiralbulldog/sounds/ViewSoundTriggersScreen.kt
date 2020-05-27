@@ -5,7 +5,9 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.sounds.manager.SoundManagerScreen
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
+import javafx.scene.control.ButtonBar
 import javafx.scene.image.ImageView
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.Priority.ALWAYS
@@ -13,6 +15,7 @@ import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
 import tornadofx.button
+import tornadofx.buttonbar
 import tornadofx.gridpane
 import tornadofx.label
 import tornadofx.paddingAll
@@ -37,6 +40,13 @@ class ViewSoundTriggersScreen : Fragment(getString("title_toggle_sound_triggers"
                 }
                 button(graphic = ImageView(SettingsIcon())) {
                     action { viewModel.onConfigureClicked(type) }
+                }
+            }
+        }
+        row {
+            buttonbar {
+                button(getString("btn_manage_sounds"), ButtonBar.ButtonData.NEXT_FORWARD) {
+                    action { find<SoundManagerScreen>().openModal(resizable = false) }
                 }
             }
         }

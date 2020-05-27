@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.common
 
+import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.event.EventTarget
@@ -13,6 +14,8 @@ import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
 import javafx.scene.control.Slider
+import javafx.scene.control.TableCell
+import javafx.scene.control.TableColumn
 import javafx.scene.control.Tooltip
 import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
@@ -20,8 +23,14 @@ import javafx.scene.layout.Pane
 import javafx.scene.layout.Priority
 import javafx.util.StringConverter
 import tornadofx.FX
+import tornadofx.action
 import tornadofx.booleanProperty
+import tornadofx.button
+import tornadofx.hbox
+import tornadofx.label
+import tornadofx.paddingAll
 import tornadofx.paddingLeft
+import tornadofx.rowItem
 import tornadofx.slider
 
 val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
@@ -97,6 +106,12 @@ fun <T> ListView<T>.useCheckBoxWithButton(stringConverter: (T) -> String, getSel
     }
 }
 
+fun TableColumn<SoundBite, String>.useLabelWithPlayButton(onButtonClicked: (SoundBite) -> Unit) {
+    setCellFactory {
+        SoundBiteTableCell(onButtonClicked)
+    }
+}
+
 private class CheckBoxWithButtonCell<T>(
         private val showCheckBox: Boolean,
         private val stringConverter: (T) -> String,
@@ -144,6 +159,24 @@ private class CheckBoxWithButtonCell<T>(
         booleanProperty = getSelectedProperty(item)
         booleanProperty?.let {
             checkBox.selectedProperty().bindBidirectional(booleanProperty)
+        }
+    }
+}
+
+private class SoundBiteTableCell(private val onButtonClicked: (SoundBite) -> Unit) : TableCell<SoundBite, String>() {
+
+    override fun updateItem(item: String?, empty: Boolean) {
+        super.updateItem(item, empty)
+        if (item == null || empty) {
+            graphic = null
+            return
+        }
+        graphic = hbox(spacing = PADDING_SMALL, alignment = CENTER_LEFT) {
+            button(graphic = ImageView(PlayIcon())) {
+                paddingAll = 2
+                action { onButtonClicked(rowItem) }
+            }
+            label(item)
         }
     }
 }
