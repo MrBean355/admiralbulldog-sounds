@@ -105,11 +105,12 @@ class DotaModViewModel : AppViewModel() {
             logger.warn("Bad mod asset info, giving up")
             return
         }
+        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
+                .openModal(escapeClosesWindow = false, resizable = false)
+
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
             information(getString("header_mod_update_downloaded"), getString("msg_mod_restart_dota"), ButtonType.FINISH)
         }
-        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
-                .openModal(escapeClosesWindow = false, block = true, resizable = false)
     }
 
     private fun disableMod() {

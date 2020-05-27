@@ -125,6 +125,10 @@ class UpdateViewModel : AppViewModel() {
 
     private fun downloadAppUpdate(releaseInfo: ReleaseInfo) {
         val assetInfo = releaseInfo.getAppAssetInfo() ?: return
+
+        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = "."))
+                .openModal(escapeClosesWindow = false, resizable = false)
+
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
             ConfigPersistence.setAppLastUpdateToNow()
             information(
@@ -134,12 +138,14 @@ class UpdateViewModel : AppViewModel() {
             )
             exitProcess(0)
         }
-        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = "."))
-                .openModal(escapeClosesWindow = false, block = true, resizable = false)
     }
 
     private fun downloadModUpdate(releaseInfo: ReleaseInfo) {
         val assetInfo = releaseInfo.getModAssetInfo() ?: return
+
+        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
+                .openModal(escapeClosesWindow = false, resizable = false)
+
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
             ConfigPersistence.setModLastUpdateToNow()
             information(
@@ -148,7 +154,5 @@ class UpdateViewModel : AppViewModel() {
                     buttons = *arrayOf(ButtonType.FINISH)
             )
         }
-        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
-                .openModal(escapeClosesWindow = false, block = true, resizable = false)
     }
 }

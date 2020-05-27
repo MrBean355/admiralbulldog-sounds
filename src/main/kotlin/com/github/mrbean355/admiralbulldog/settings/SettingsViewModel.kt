@@ -54,7 +54,7 @@ class SettingsViewModel : AppViewModel() {
     }
 
     fun onUpdateSoundsClicked() {
-        find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, block = true, resizable = false)
+        find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, resizable = false)
     }
 
     fun onCheckForModUpdateClicked() {
