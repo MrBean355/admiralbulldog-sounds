@@ -18,8 +18,7 @@ class SoundBite(
     val fileName: String = filePath.substringAfterLast('/')
 
     /** Name of the file, excluding directories and the file extension. */
-    // FIXME: toUpperCase() is here for backwards compatibility with existing config files. Make case-insensitive?
-    val name: String = fileName.substringBeforeLast('.').toUpperCase()
+    val name: String = fileName.substringBeforeLast('.')
 
     fun play(rate: Double = 100.0) {
         val media = Media(File(filePath).toURI().toString())
