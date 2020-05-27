@@ -5,8 +5,8 @@ import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.application.HostServices
-import javafx.application.Platform
 import javafx.scene.control.ButtonType
+import tornadofx.runLater
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -34,7 +34,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
             Please make sure there is only 1 instance of the app running.
             
             If this is not the case, please report it through Discord.
-        """.trimIndent(), exit = true)
+        """.trimIndent(), exitAfterwards = true)
     }
 
     private fun handleGenericException(t: Thread?, e: Throwable?) {
@@ -64,13 +64,15 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
         """.trimIndent())
     }
 
-    private fun showDialog(header: String, message: String, exit: Boolean = false) {
-        Platform.runLater {
+    private fun showDialog(header: String, message: String, exitAfterwards: Boolean = false) {
+        runLater {
             error(header, message, DISCORD_BUTTON, ButtonType.OK) {
                 if (it === DISCORD_BUTTON) {
                     hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
                 }
-                exitProcess(-1)
+                if (exitAfterwards) {
+                    exitProcess(-1)
+                }
             }
         }
     }
