@@ -51,12 +51,12 @@ class DiscordBotRepository {
 
     private suspend fun loadUserId(): String {
         val userId = ConfigPersistence.getId()
-        if (userId != null) {
+        if (userId.isNotEmpty()) {
             return userId
         }
         return mutex.withLock {
             val userId2 = ConfigPersistence.getId()
-            if (userId2 != null) {
+            if (userId.isNotEmpty()) {
                 userId2
             } else {
                 val response = callService { DiscordBotService.INSTANCE.createId() }

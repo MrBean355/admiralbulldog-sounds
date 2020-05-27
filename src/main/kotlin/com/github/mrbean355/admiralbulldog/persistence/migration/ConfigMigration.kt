@@ -57,6 +57,9 @@ object ConfigMigration {
     }
 
     private fun legacy(obj: JsonObject) {
+        if (obj.get("id") == null) {
+            obj.addProperty("id", "")
+        }
         if (obj.get("dotaPath") == null) {
             obj.addProperty("dotaPath", "")
         }

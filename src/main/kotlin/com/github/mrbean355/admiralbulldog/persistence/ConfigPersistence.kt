@@ -59,7 +59,7 @@ object ConfigPersistence {
     fun getPort() = loadedConfig.port
 
     /** @return the user's ID. */
-    fun getId() = loadedConfig.id
+    fun getId(): String = loadedConfig.id
 
     /** Set the user's ID. */
     fun setId(id: String) {
@@ -386,7 +386,7 @@ object ConfigPersistence {
     private data class Config(
             var version: Int = CONFIG_VERSION,
             var port: Int = DEFAULT_PORT,
-            var id: String? = null,
+            var id: String = "",
             var dotaPath: String = "",
             var updates: Updates = Updates(),
             var special: SpecialConfig = SpecialConfig(),
