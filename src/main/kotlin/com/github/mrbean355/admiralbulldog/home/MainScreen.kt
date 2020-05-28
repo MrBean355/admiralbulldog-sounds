@@ -82,6 +82,7 @@ class MainScreen : View(getString("title_app")) {
     }
 
     init {
+        currentStage?.isResizable = false
         whenUndocked {
             viewModel.onUndock()
         }
