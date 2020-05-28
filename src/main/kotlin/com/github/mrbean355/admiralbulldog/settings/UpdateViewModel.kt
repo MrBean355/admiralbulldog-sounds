@@ -147,6 +147,7 @@ class UpdateViewModel : AppViewModel() {
                 .openModal(escapeClosesWindow = false, resizable = false)
 
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
+            ConfigPersistence.setModVersion(releaseInfo.tagName.removeVersionPrefix())
             ConfigPersistence.setModLastUpdateToNow()
             information(
                     header = getString("header_mod_update_downloaded"),
