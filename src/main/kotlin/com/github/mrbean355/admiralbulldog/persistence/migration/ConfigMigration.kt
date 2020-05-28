@@ -69,6 +69,9 @@ object ConfigMigration {
         }
         obj.add("soundBoard", newSoundBoard)
 
+        // System tray was added back; notify when minimised.
+        obj.addProperty("trayNotified", false)
+
         // Done
         obj.configVersion = 2
     }

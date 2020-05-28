@@ -7,17 +7,24 @@ import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.warning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.SyncSoundBitesScreen
+import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
 import kotlinx.coroutines.launch
+import tornadofx.booleanProperty
 import tornadofx.intProperty
 import tornadofx.objectProperty
 import tornadofx.onChange
+import java.awt.SystemTray
 
 class SettingsViewModel : AppViewModel() {
     private val updateViewModel by inject<UpdateViewModel>()
 
     val appVolume: IntegerProperty = intProperty(ConfigPersistence.getVolume())
+    val traySupported: BooleanProperty = booleanProperty(SystemTray.isSupported())
+    val minimizeToTray: BooleanProperty = booleanProperty(ConfigPersistence.isMinimizeToTray())
+    val alwaysShowTrayIcon: BooleanProperty = booleanProperty(ConfigPersistence.isAlwaysShowTrayIcon())
 
     val updateFrequencies: List<UpdateFrequency> = UpdateFrequency.values().toList()
     val appUpdateFrequency: ObjectProperty<UpdateFrequency> = objectProperty(ConfigPersistence.getAppUpdateFrequency())
@@ -26,6 +33,14 @@ class SettingsViewModel : AppViewModel() {
 
     init {
         appVolume.onChange { ConfigPersistence.setVolume(it) }
+        minimizeToTray.onChange {
+            ConfigPersistence.setMinimizeToTray(it)
+            refreshSystemTray()
+        }
+        alwaysShowTrayIcon.onChange {
+            ConfigPersistence.setAlwaysShowTrayIcon(it)
+            refreshSystemTray()
+        }
         appUpdateFrequency.onChange {
             it?.let { ConfigPersistence.setAppUpdateFrequency(it) }
         }

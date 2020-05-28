@@ -1,8 +1,7 @@
 package com.github.mrbean355.admiralbulldog.persistence.migration
 
 import com.google.gson.JsonObject
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 
 class ConfigMigrationTest {
@@ -63,6 +62,8 @@ class ConfigMigrationTest {
         output.getAsJsonArray("soundBoard").forEach { sound ->
             assertTrue(sound.asString.none { it.isUpperCase() })
         }
+
+        assertFalse(output.getAsJsonPrimitive("trayNotified").asBoolean)
 
         assertEquals(2, output.get("version").asInt)
     }

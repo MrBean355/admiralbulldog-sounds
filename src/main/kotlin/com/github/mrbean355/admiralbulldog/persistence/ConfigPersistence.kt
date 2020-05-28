@@ -194,6 +194,20 @@ object ConfigPersistence {
         return previous
     }
 
+    fun isMinimizeToTray(): Boolean = loadedConfig.minimizeToTray
+
+    fun setMinimizeToTray(minimize: Boolean) {
+        loadedConfig.minimizeToTray = minimize
+        save()
+    }
+
+    fun isAlwaysShowTrayIcon(): Boolean = loadedConfig.alwaysShowTrayIcon
+
+    fun setAlwaysShowTrayIcon(show: Boolean) {
+        loadedConfig.alwaysShowTrayIcon = show
+        save()
+    }
+
     /** @return `true` if the sound trigger is enabled; `false` otherwise. */
     fun isSoundTriggerEnabled(type: SoundTriggerType): Boolean {
         return loadedConfig.sounds.getValue(type.key).enabled
@@ -394,6 +408,8 @@ object ConfigPersistence {
             var volume: Int = DEFAULT_VOLUME,
             var discordBotEnabled: Boolean = false,
             var discordToken: String = "",
+            var minimizeToTray: Boolean = true,
+            var alwaysShowTrayIcon: Boolean = false,
             var trayNotified: Boolean = false,
             val sounds: MutableMap<String, Toggle> = mutableMapOf(),
             val soundBoard: MutableList<String> = mutableListOf(),
