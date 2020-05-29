@@ -36,6 +36,9 @@ interface DiscordBotService {
     @POST("/analytics/logEvent")
     suspend fun logAnalyticsEvent(@Body request: AnalyticsRequest): Response<Void>
 
+    @GET("/mods")
+    suspend fun listMods(): Response<List<DotaMod>>
+
     companion object {
         val INSTANCE: DiscordBotService = Retrofit.Builder()
                 .baseUrl(hostUrl)

@@ -22,6 +22,19 @@ data class PlaySoundRequest(
         val soundFileName: String
 )
 
+data class DotaMod(
+        val name: String,
+        val description: String,
+        val version: Int,
+        val parts: List<DotaModPart>
+)
+
+data class DotaModPart(
+        val name: String,
+        val url: String,
+        val vpkPath: String
+)
+
 data class ReleaseInfo(
         @SerializedName("tag_name")
         val tagName: String,

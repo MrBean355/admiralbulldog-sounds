@@ -11,7 +11,7 @@ import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
-import com.github.mrbean355.admiralbulldog.mod.DotaModScreen
+import com.github.mrbean355.admiralbulldog.mod.ChooseModTypeScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
@@ -100,7 +100,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onDotaModClicked() {
-        find<DotaModScreen>().openModal(resizable = false)
+        find<ChooseModTypeScreen>().openModal(resizable = false)
     }
 
     fun onDiscordCommunityClicked() {
