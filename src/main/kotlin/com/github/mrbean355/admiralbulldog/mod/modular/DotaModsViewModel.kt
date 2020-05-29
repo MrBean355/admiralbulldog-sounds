@@ -23,7 +23,7 @@ class DotaModsViewModel : ViewModel() {
     private val repo = DotaModRepository()
 
     val showProgress: BooleanProperty = booleanProperty(true)
-    val root: ObjectProperty<TreeItem<String>> = objectProperty()
+    val root: ObjectProperty<TreeItem<ModTreeItem>?> = objectProperty()
 
     init {
         coroutineScope.launch {
@@ -37,10 +37,10 @@ class DotaModsViewModel : ViewModel() {
                 return@launch
             }
 
-            val root = TreeItem<String>()
-            body.forEach { mod ->
-                root.children += CheckBoxTreeItem(mod.name).apply {
-                    children += mod.parts.map { CheckBoxTreeItem(it.name) }
+            val root = TreeItem<ModTreeItem>()
+            body.sortedBy { it.name.toLowerCase() }.forEach { mod ->
+                root.children += CheckBoxTreeItem(ModTreeItem(mod)).apply {
+                    children += mod.parts.map { CheckBoxTreeItem(ModTreeItem(mod, part = it)) }
                 }
             }
 
@@ -52,13 +52,18 @@ class DotaModsViewModel : ViewModel() {
     }
 
     fun onSaveClicked() {
-        val selection = mutableMapOf<String, List<String>>()
-        root.get().children.forEach { mod ->
-            selection[mod.value] = mod.children
-                    .filterIsInstance<CheckBoxTreeItem<String>>()
-                    .filter { it.isSelected }
-                    .map { it.value }
-        }
+        val root = root.get() ?: return
+
+        val selection = root.children
+                .flatMap { it.children }
+                .filterIsInstance<CheckBoxTreeItem<ModTreeItem>>()
+                .filter { it.isSelected }
+                .map { it.value }
+
+        val mapped = selection.groupBy { it.mod }
+                .mapValues { items -> items.value.map { it.part } }
+
+        println(mapped)
         // TODO: Compile VPK from selection
     }
 
