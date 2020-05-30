@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog.game
 
-import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES

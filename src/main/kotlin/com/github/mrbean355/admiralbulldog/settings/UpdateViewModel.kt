@@ -2,10 +2,10 @@ package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
-import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
+import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.common.DOWNLOAD_BUTTON
 import com.github.mrbean355.admiralbulldog.common.WHATS_NEW_BUTTON
 import com.github.mrbean355.admiralbulldog.common.getString

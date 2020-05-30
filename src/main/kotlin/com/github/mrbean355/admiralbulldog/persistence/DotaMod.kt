@@ -1,8 +1,8 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
-import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getModChecksumAssetInfo
+import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.common.removeVersionPrefix
 import com.vdurmont.semver4j.Semver

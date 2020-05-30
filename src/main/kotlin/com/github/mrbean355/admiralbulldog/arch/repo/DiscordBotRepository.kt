@@ -1,5 +1,12 @@
-package com.github.mrbean355.admiralbulldog.arch
+package com.github.mrbean355.admiralbulldog.arch.repo
 
+import com.github.mrbean355.admiralbulldog.arch.AnalyticsRequest
+import com.github.mrbean355.admiralbulldog.arch.DotaMod
+import com.github.mrbean355.admiralbulldog.arch.PlaySoundRequest
+import com.github.mrbean355.admiralbulldog.arch.ServiceResponse
+import com.github.mrbean355.admiralbulldog.arch.callService
+import com.github.mrbean355.admiralbulldog.arch.service.DiscordBotService
+import com.github.mrbean355.admiralbulldog.arch.toServiceResponse
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.sync.Mutex
@@ -47,6 +54,10 @@ class DiscordBotRepository {
     suspend fun logAnalyticsEvent(eventType: String, eventData: String): ServiceResponse<Void> {
         return callService { DiscordBotService.INSTANCE.logAnalyticsEvent(AnalyticsRequest(loadUserId(), eventType, eventData)) }
                 .toServiceResponse()
+    }
+
+    suspend fun listMods(): ServiceResponse<List<DotaMod>> {
+        return DiscordBotService.INSTANCE.listMods().toServiceResponse()
     }
 
     private suspend fun loadUserId(): String {

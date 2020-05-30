@@ -1,9 +1,9 @@
 package com.github.mrbean355.admiralbulldog.mod
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
-import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
+import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.logger

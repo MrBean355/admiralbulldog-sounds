@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog.discord
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
-import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES

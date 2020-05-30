@@ -1,5 +1,10 @@
-package com.github.mrbean355.admiralbulldog.arch
+package com.github.mrbean355.admiralbulldog.arch.service
 
+import com.github.mrbean355.admiralbulldog.arch.AnalyticsRequest
+import com.github.mrbean355.admiralbulldog.arch.CreateIdResponse
+import com.github.mrbean355.admiralbulldog.arch.DotaMod
+import com.github.mrbean355.admiralbulldog.arch.PlaySoundRequest
+import com.github.mrbean355.admiralbulldog.arch.repo.hostUrl
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit

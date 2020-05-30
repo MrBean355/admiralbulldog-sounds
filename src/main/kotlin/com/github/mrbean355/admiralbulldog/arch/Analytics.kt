@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch
 
+import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

@@ -2,7 +2,7 @@ package com.github.mrbean355.admiralbulldog.common.update
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.AssetInfo
-import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
+import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
 import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString

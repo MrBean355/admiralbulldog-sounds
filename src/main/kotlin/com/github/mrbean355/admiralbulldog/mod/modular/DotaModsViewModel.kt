@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog.mod.modular
 
-import com.github.mrbean355.admiralbulldog.arch.DotaModRepository
+import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.beans.property.BooleanProperty
@@ -20,7 +20,7 @@ import tornadofx.objectProperty
 
 class DotaModsViewModel : ViewModel() {
     private val coroutineScope = CoroutineScope(IO + SupervisorJob())
-    private val repo = DotaModRepository()
+    private val repo = DiscordBotRepository()
 
     val showProgress: BooleanProperty = booleanProperty(true)
     val root: ObjectProperty<TreeItem<ModTreeItem>?> = objectProperty()

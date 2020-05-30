@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog.assets
 
-import com.github.mrbean355.admiralbulldog.arch.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.common.getString
 import kotlinx.coroutines.Dispatchers.IO
