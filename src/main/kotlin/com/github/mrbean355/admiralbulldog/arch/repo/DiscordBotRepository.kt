@@ -57,7 +57,8 @@ class DiscordBotRepository {
     }
 
     suspend fun listMods(): ServiceResponse<List<DotaMod>> {
-        return DiscordBotService.INSTANCE.listMods().toServiceResponse()
+        return callService { DiscordBotService.INSTANCE.listMods() }
+                .toServiceResponse()
     }
 
     private suspend fun loadUserId(): String {
