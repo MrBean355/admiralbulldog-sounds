@@ -4,6 +4,7 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
+import com.github.mrbean355.admiralbulldog.common.confirmation
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.logger
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tornadofx.booleanProperty
 import tornadofx.onChange
+import tornadofx.runLater
 import tornadofx.stringBinding
 import tornadofx.stringProperty
 import java.io.File
@@ -35,13 +37,26 @@ class DotaModViewModel : AppViewModel() {
     }
 
     init {
-        modEnabled.onChange { onEnabledCheckChanged(it) }
+        modEnabled.onChange { runLater { onEnabledCheckChanged(it) } }
         tempDisabled.onChange { onTempDisabledCheckChanged(it) }
     }
 
     private fun onEnabledCheckChanged(checked: Boolean) {
-        ConfigPersistence.setModEnabled(checked)
-        checkModStatus()
+        val proceed = {
+            ConfigPersistence.setModEnabled(checked)
+            checkModStatus()
+        }
+        if (checked) {
+            confirmation(getString("header_close_dota"), getString("content_close_dota")) {
+                if (it === ButtonType.OK) {
+                    proceed()
+                } else {
+                    modEnabled.set(false)
+                }
+            }
+        } else {
+            proceed()
+        }
     }
 
     private fun onTempDisabledCheckChanged(checked: Boolean) {
