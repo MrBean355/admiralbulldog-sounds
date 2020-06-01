@@ -7,6 +7,7 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.useBoldFont
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import javafx.scene.control.ButtonBar.ButtonData.*
@@ -24,6 +25,7 @@ import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
+import tornadofx.paddingTop
 import tornadofx.textfield
 import tornadofx.textflow
 import tornadofx.vbox
@@ -48,7 +50,10 @@ class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
             imageview(viewModel.statusImage)
             label(viewModel.status)
         }
-        label(getString("label_play_through_discord"))
+        label(getString("label_play_through_discord")) {
+            paddingTop = PADDING_SMALL
+            useBoldFont()
+        }
         gridpane {
             hgap = PADDING_SMALL
             vgap = PADDING_SMALL
