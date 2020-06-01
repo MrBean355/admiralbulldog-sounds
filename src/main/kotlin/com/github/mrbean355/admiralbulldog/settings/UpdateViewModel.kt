@@ -151,7 +151,7 @@ class UpdateViewModel : AppViewModel() {
             ConfigPersistence.setModLastUpdateToNow()
             information(
                     header = getString("header_mod_update_downloaded"),
-                    content = getString("msg_mod_restart_dota"),
+                    content = getString("content_mod_installed"),
                     buttons = *arrayOf(ButtonType.FINISH)
             )
         }

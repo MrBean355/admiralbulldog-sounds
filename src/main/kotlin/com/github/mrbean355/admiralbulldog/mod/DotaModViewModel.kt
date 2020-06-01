@@ -24,10 +24,12 @@ import tornadofx.runLater
 import tornadofx.stringBinding
 import tornadofx.stringProperty
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
 
 class DotaModViewModel : AppViewModel() {
     private val gitHubRepository = GitHubRepository()
     private val modVersion = stringProperty(ConfigPersistence.getModVersion())
+    private val skipCheckChanged = AtomicBoolean(false)
 
     val modEnabled: BooleanProperty = booleanProperty(ConfigPersistence.isModEnabled())
     val tempDisabled: BooleanProperty = booleanProperty(ConfigPersistence.isModTempDisabled())
@@ -38,30 +40,37 @@ class DotaModViewModel : AppViewModel() {
 
     init {
         modEnabled.onChange { runLater { onEnabledCheckChanged(it) } }
-        tempDisabled.onChange { onTempDisabledCheckChanged(it) }
+        tempDisabled.onChange { runLater { onTempDisabledCheckChanged(it) } }
     }
 
     private fun onEnabledCheckChanged(checked: Boolean) {
-        val proceed = {
-            ConfigPersistence.setModEnabled(checked)
-            checkModStatus()
+        if (skipCheckChanged.getAndSet(false)) {
+            return
         }
-        if (checked) {
-            confirmation(getString("header_close_dota"), getString("content_close_dota")) {
-                if (it === ButtonType.OK) {
-                    proceed()
-                } else {
-                    modEnabled.set(false)
-                }
+        confirmation(getString("header_close_dota"), getString("content_close_dota")) {
+            if (it === ButtonType.OK) {
+                ConfigPersistence.setModEnabled(checked)
+                checkModStatus()
+            } else {
+                skipCheckChanged.set(true)
+                modEnabled.set(!checked)
             }
-        } else {
-            proceed()
         }
     }
 
     private fun onTempDisabledCheckChanged(checked: Boolean) {
-        ConfigPersistence.setModTempDisabled(checked)
-        checkModStatus()
+        if (skipCheckChanged.getAndSet(false)) {
+            return
+        }
+        confirmation(getString("header_close_dota"), getString("content_close_dota")) {
+            if (it === ButtonType.OK) {
+                ConfigPersistence.setModTempDisabled(checked)
+                checkModStatus()
+            } else {
+                skipCheckChanged.set(true)
+                tempDisabled.set(!checked)
+            }
+        }
     }
 
     private fun checkModStatus() {
@@ -108,7 +117,7 @@ class DotaModViewModel : AppViewModel() {
             } else {
                 logger.info("Already at latest mod version: ${releaseInfo.tagName}")
                 withContext(Main) {
-                    information(getString("header_mod_installed"), getString("msg_mod_restart_dota"), ButtonType.FINISH)
+                    information(getString("header_mod_installed"), getString("content_mod_installed"), ButtonType.FINISH)
                 }
             }
         }
@@ -124,13 +133,13 @@ class DotaModViewModel : AppViewModel() {
                 .openModal(escapeClosesWindow = false, resizable = false)
 
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
-            information(getString("header_mod_update_downloaded"), getString("msg_mod_restart_dota"), ButtonType.FINISH)
+            information(getString("header_mod_update_downloaded"), getString("content_mod_installed"), ButtonType.FINISH)
         }
     }
 
     private fun disableMod() {
         if (DotaMod.onModDisabled()) {
-            information(getString("header_mod_uninstalled"), getString("msg_mod_restart_dota"), ButtonType.OK)
+            information(getString("header_mod_uninstalled"), getString("content_mod_uninstalled"), ButtonType.OK)
         }
     }
 }

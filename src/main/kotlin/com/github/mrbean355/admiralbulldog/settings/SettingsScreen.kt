@@ -11,6 +11,7 @@ import tornadofx.action
 import tornadofx.button
 import tornadofx.checkbox
 import tornadofx.choicebox
+import tornadofx.enableWhen
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
@@ -62,6 +63,7 @@ class SettingsScreen : Fragment(getString("title_settings")) {
                 }
             }
             field(getString("settings_field_mod_update")) {
+                enableWhen(viewModel.modEnabled)
                 choicebox(viewModel.modUpdateFrequency, viewModel.updateFrequencies) {
                     converter = UpdateFrequencyStringConverter()
                 }
