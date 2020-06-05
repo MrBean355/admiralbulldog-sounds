@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.github.mrbean355'
-version '1.9.2'
+version '1.9.3'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
