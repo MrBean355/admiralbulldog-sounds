@@ -3,7 +3,6 @@ package com.github.mrbean355.admiralbulldog.arch.repo
 import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.ServiceResponse
-import com.github.mrbean355.admiralbulldog.arch.callService
 import com.github.mrbean355.admiralbulldog.arch.service.GitHubService
 import com.github.mrbean355.admiralbulldog.arch.toServiceResponse
 import okhttp3.ResponseBody

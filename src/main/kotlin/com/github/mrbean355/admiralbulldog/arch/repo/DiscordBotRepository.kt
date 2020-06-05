@@ -4,7 +4,6 @@ import com.github.mrbean355.admiralbulldog.arch.AnalyticsRequest
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.PlaySoundRequest
 import com.github.mrbean355.admiralbulldog.arch.ServiceResponse
-import com.github.mrbean355.admiralbulldog.arch.callService
 import com.github.mrbean355.admiralbulldog.arch.service.DiscordBotService
 import com.github.mrbean355.admiralbulldog.arch.toServiceResponse
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
@@ -85,8 +84,13 @@ class DiscordBotRepository {
     }
 
     suspend fun listMods(): ServiceResponse<List<DotaMod>> {
-        return callService { DiscordBotService.INSTANCE.listMods() }
-                .toServiceResponse()
+        return try {
+            DiscordBotService.INSTANCE.listMods()
+                    .toServiceResponse()
+        } catch (t: Throwable) {
+            logger.error("Failed to log analytics event", t)
+            ServiceResponse.Exception()
+        }
     }
 
     private suspend fun loadUserId(): String {
