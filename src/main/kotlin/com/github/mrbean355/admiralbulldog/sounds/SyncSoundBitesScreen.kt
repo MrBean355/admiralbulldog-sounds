@@ -4,7 +4,6 @@ import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.warning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import javafx.scene.control.ButtonBar.ButtonData.OK_DONE
@@ -68,12 +67,7 @@ class SyncSoundBitesScreen : Fragment(getString("sync_sound_bites_title")) {
             finished.set(true)
         })
         finished.onChange {
-            ConfigPersistence.getInvalidSounds().also {
-                if (it.isNotEmpty()) {
-                    warning(getString("header_sounds_removed"), getString("msg_sounds_removed", it.joinToString()))
-                }
-            }
-            ConfigPersistence.clearInvalidSounds()
+            SoundBites.checkForInvalidSounds()
         }
     }
 }

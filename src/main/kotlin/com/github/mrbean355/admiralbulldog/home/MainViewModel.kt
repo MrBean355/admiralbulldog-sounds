@@ -4,6 +4,7 @@ import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_PROJECT_WEBSITE
 import com.github.mrbean355.admiralbulldog.common.getString
@@ -114,6 +115,8 @@ class MainViewModel : AppViewModel() {
     private fun checkForNewSounds() {
         if (updateViewModel.shouldCheckForNewSounds()) {
             find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, block = true, resizable = false)
+        } else {
+            SoundBites.checkForInvalidSounds()
         }
     }
 

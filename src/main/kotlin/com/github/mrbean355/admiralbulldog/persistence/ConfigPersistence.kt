@@ -316,25 +316,21 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
-    fun getInvalidSounds(): Collection<String> {
-        val existing = SoundBites.getAll().map { it.name }
-        val invalidSounds = loadedConfig.sounds
-                .flatMap { it.value.sounds }
-                .filter { it !in existing }
-        val invalidSoundBoard = loadedConfig.soundBoard
-                .filter { it !in existing }
-        return (invalidSounds + invalidSoundBoard).toSet()
-    }
+    /**
+     * Returns a collection of sound names that were selected by the user but don't exist locally.
+     * When called, the returned sounds will not be returned by future calls.
+     */
+    fun takeInvalidSounds(): Collection<String> {
+        val localSounds = SoundBites.getAll().map { it.name }
+        val invalidSounds = ((loadedConfig.sounds.flatMap { it.value.sounds }) + loadedConfig.soundBoard)
+                .distinct()
+                .filter { it !in localSounds }
+                .filter { it !in loadedConfig.invalidSounds }
 
-    /** Clear user-selected sounds that don't exist on the PlaySounds page from the config. */
-    fun clearInvalidSounds() {
-        val invalid = getInvalidSounds()
-        loadedConfig.sounds.forEach { (_, v) ->
-            v.sounds.removeAll { it in invalid }
-        }
-        loadedConfig.soundBoard.setAll(loadedConfig.soundBoard.filterNot { it in invalid })
+        loadedConfig.invalidSounds += invalidSounds
         save()
+
+        return invalidSounds
     }
 
     /** Update the given sound trigger's config to use the given sound bite `selection`. */
@@ -413,6 +409,7 @@ object ConfigPersistence {
             var trayNotified: Boolean = false,
             val sounds: MutableMap<String, Toggle> = mutableMapOf(),
             val soundBoard: MutableList<String> = mutableListOf(),
+            val invalidSounds: MutableSet<String> = mutableSetOf(),
             var modEnabled: Boolean = false,
             var modTempDisabled: Boolean = false,
             var modVersion: String = ""
