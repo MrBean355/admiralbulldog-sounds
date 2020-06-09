@@ -59,13 +59,6 @@
         "USEYOURMIDAS"
       ]
     },
-    "OnRespawn": {
-      "enabled": true,
-      "playThroughDiscord": false,
-      "sounds": [
-        "HEREWEGOAGAIN"
-      ]
-    },
     "OnSmoked": {
       "enabled": true,
       "playThroughDiscord": true,

@@ -2,7 +2,7 @@ package com.github.mrbean355.admiralbulldog.persistence.migration
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import com.google.gson.JsonParser.parseString
 import com.google.gson.JsonPrimitive
 
 class From0To1Migration : Migration(from = 0, to = 1) {
@@ -16,7 +16,7 @@ class From0To1Migration : Migration(from = 0, to = 1) {
         }
 
         // New property: updates.
-        config.add("updates", JsonParser.parseString("{ \"appUpdateCheck\": 0, \"appUpdateFrequency\": \"WEEKLY\", \"soundsUpdateFrequency\": \"DAILY\", \"modUpdateCheck\": 0, \"modUpdateFrequency\": \"ALWAYS\" }"))
+        config.add("updates", parseString("{ \"appUpdateCheck\": 0, \"appUpdateFrequency\": \"WEEKLY\", \"soundsUpdateFrequency\": \"DAILY\", \"modUpdateCheck\": 0, \"modUpdateFrequency\": \"ALWAYS\" }"))
 
         // New "sounds" object properties: chance, minRate, maxRate.
         config.getAsJsonObject("sounds").entrySet().forEach { (_, el) ->
@@ -28,7 +28,7 @@ class From0To1Migration : Migration(from = 0, to = 1) {
         }
 
         // New property: special.
-        config.add("special", JsonParser.parseString("{ \"useHealSmartChance\": true, \"minPeriod\": 5, \"maxPeriod\": 15 }"))
+        config.add("special", parseString("{ \"useHealSmartChance\": true, \"minPeriod\": 5, \"maxPeriod\": 15 }"))
 
         // Convert sound bite names to lower case (as on the PlaySounds page).
         config.getAsJsonObject("sounds").entrySet().forEach { trigger ->
@@ -52,21 +52,24 @@ class From0To1Migration : Migration(from = 0, to = 1) {
     }
 
     /** Make sure there are no null properties. */
-    private fun doLegacyMigration(obj: JsonObject) {
-        if (obj.get("id") == null) {
-            obj.addProperty("id", "")
+    private fun doLegacyMigration(config: JsonObject) {
+        if (config.get("id") == null) {
+            config.addProperty("id", "")
         }
-        if (obj.get("dotaPath") == null) {
-            obj.addProperty("dotaPath", "")
+        if (config.get("dotaPath") == null) {
+            config.addProperty("dotaPath", "")
         }
-        if (obj.get("discordToken") == null) {
-            obj.addProperty("discordToken", "")
+        if (config.get("discordToken") == null) {
+            config.addProperty("discordToken", "")
         }
-        if (obj.get("soundBoard") == null) {
-            obj.add("soundBoard", JsonArray())
+        if (config.get("soundBoard") == null) {
+            config.add("soundBoard", JsonArray())
         }
-        if (obj.get("modVersion") == null) {
-            obj.addProperty("modVersion", "")
+        if (config.get("modVersion") == null) {
+            config.addProperty("modVersion", "")
+        }
+        if (config.getAsJsonObject("sounds").get("OnRespawn") == null) {
+            config.getAsJsonObject("sounds").add("OnRespawn", parseString("{ \"enabled\": \"false\", \"playThroughDiscord\": false, \"sounds\": [] }"))
         }
     }
 }

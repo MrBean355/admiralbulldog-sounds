@@ -25,6 +25,7 @@ class From0To1MigrationTest {
         assertEquals("", config.getAsJsonPrimitive("discordToken").asString)
         assertEquals(0, config.getAsJsonArray("soundBoard").size())
         assertEquals("", config.getAsJsonPrimitive("modVersion").asString)
+        assertNotNull(config.getAsJsonObject("sounds").get("OnRespawn"))
     }
 
     @Test

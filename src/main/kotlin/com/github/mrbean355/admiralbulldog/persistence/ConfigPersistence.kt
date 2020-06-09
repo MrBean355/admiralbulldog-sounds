@@ -21,7 +21,6 @@ import java.io.File
 const val CONFIG_VERSION = 1
 
 private const val FILE_NAME = "config.json"
-private const val DEFAULTS_PATH = "defaults/%s.json"
 private const val DEFAULT_PORT = 12345
 
 /**
@@ -51,7 +50,6 @@ object ConfigPersistence {
             logger.info("Defaulting to port $DEFAULT_PORT")
         }
         cleanUpStaleSoundTriggers()
-        migrateFromOldConfig()
         save()
     }
 
@@ -351,19 +349,11 @@ object ConfigPersistence {
 
     /** Load the default configs for all sound triggers. */
     private fun loadDefaultConfig(): Config {
-        val sounds = SOUND_TRIGGER_TYPES.associateWith { loadDefaults(it) }
-                .mapKeys { it.key.key }
-        return Config(sounds = sounds.toMutableMap())
-    }
-
-    /** Load the default config for a given sound trigger. */
-    private fun loadDefaults(type: SoundTriggerType): Toggle {
-        val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
-        if (resource == null) {
-            logger.warn("No defaults resource available for: ${type.simpleName}")
-            return Toggle()
-        }
-        return gson.fromJson(resource.readText(), Toggle::class.java)
+        return Config(sounds = SOUND_TRIGGER_TYPES
+                .map { it.key }
+                .associateWith { Toggle() }
+                .toMutableMap()
+        )
     }
 
     private fun cleanUpStaleSoundTriggers() {
@@ -372,16 +362,6 @@ object ConfigPersistence {
         invalidTypes.forEach {
             loadedConfig.sounds.remove(it.key)
             logger.info("Removed stale sound trigger: ${it.key}")
-        }
-    }
-
-    /** Checks the loaded `config` map, adding defaults for any missing sound triggers. */
-    private fun migrateFromOldConfig() {
-        SOUND_TRIGGER_TYPES.forEach {
-            if (loadedConfig.sounds[it.simpleName] == null) {
-                loadedConfig.sounds[it.key] = loadDefaults(it)
-                logger.info("Loaded defaults for sound trigger: ${it.simpleName}")
-            }
         }
     }
 
