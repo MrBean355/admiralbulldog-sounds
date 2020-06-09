@@ -1,11 +1,11 @@
 package com.github.mrbean355.admiralbulldog.persistence.migration
 
 import com.github.mrbean355.admiralbulldog.persistence.CONFIG_VERSION
-import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser.parseString
 import com.google.gson.JsonPrimitive
+import org.slf4j.LoggerFactory
 
 /**
  * Migrate old `config.json` files to be compatible with this app version.
@@ -13,88 +13,63 @@ import com.google.gson.JsonPrimitive
  * We can't serialise objects here, because those objects may have changed since that config version was introduced.
  * Instead we have to add manual JSON string representations of what the objects looked like at time of implementation.
  */
-object ConfigMigration {
+class ConfigMigration {
+    private val logger = LoggerFactory.getLogger(ConfigMigration::class.java)
 
     fun run(json: String): JsonElement {
-        return parseString(json).asJsonObject
-                .also { migrate(it) }
+        val config = parseString(json).asJsonObject
+        var version = config.version
+
+        if (version == CONFIG_VERSION) {
+            logger.info("Already migrated to version $version.")
+            return config
+        }
+
+        check(version < CONFIG_VERSION) { "Unsupported config version: $version. Please run a later version of the app." }
+
+        // Apply migrations until we reach the version we support.
+        while (version < CONFIG_VERSION) {
+            val migration = migrations.single { it.from == version }
+            logger.info("Migrate from ${migration.from} to ${migration.to}")
+            migration.migrate(config)
+            version = migration.to
+            config.version = version
+        }
+
+        // Forget about invalid sounds when upgrading.
+        clearInvalidSounds(config)
+        logger.info("Finished migrating to version $version.")
+
+        return config
     }
 
-    private fun migrate(obj: JsonObject) {
-        when (obj.configVersion) {
-            CONFIG_VERSION -> return
-            null -> version1(obj)
-            else -> throw RuntimeException("Unexpected config version: ${obj.configVersion}")
+    /** Remove sound bite entries from triggers & sound board that are in the 'invalidSounds' list. */
+    private fun clearInvalidSounds(obj: JsonObject) {
+        val invalidSounds = obj.getAsJsonArray("invalidSounds")?.map { it.asString }
+        if (invalidSounds.isNullOrEmpty()) {
+            return
         }
-        migrate(obj)
-    }
-
-    private fun version1(obj: JsonObject) {
-        legacy(obj)
-
-        // Volume changed from double to int.
-        obj.getAsJsonPrimitive("volume").let {
-            obj.add("volume", JsonPrimitive(it.asDouble.toInt()))
-        }
-
-        // New property: updates
-        obj.add("updates", parseString("{ \"appUpdateCheck\": 0, \"appUpdateFrequency\": \"WEEKLY\", \"soundsUpdateFrequency\": \"DAILY\", \"modUpdateCheck\": 0, \"modUpdateFrequency\": \"ALWAYS\" }"))
-
-        // New "sounds" object properties: chance, minRate, maxRate
-        obj.getAsJsonObject("sounds").entrySet().forEach { (_, el) ->
-            el.asJsonObject.apply {
-                addProperty("chance", 100.0)
-                addProperty("minRate", 100.0)
-                addProperty("maxRate", 100.0)
-            }
-        }
-
-        // New property: special
-        obj.add("special", parseString("{ \"useHealSmartChance\": true, \"minPeriod\": 5, \"maxPeriod\": 15 }"))
-
-        // Convert sound bite names to lower case (as on the PlaySounds page).
         obj.getAsJsonObject("sounds").entrySet().forEach { trigger ->
-            val jsonObject = trigger.value.asJsonObject
-            val newItems = JsonArray()
-            jsonObject.getAsJsonArray("sounds").forEach { sound ->
-                newItems.add(sound.asString.toLowerCase())
+            trigger.value.asJsonObject.getAsJsonArray("sounds").removeAll {
+                it.asString in invalidSounds
             }
-            jsonObject.add("sounds", newItems)
         }
-
-        // Same as above for the sound board.
-        val newSoundBoard = JsonArray()
-        obj.getAsJsonArray("soundBoard").forEach { sound ->
-            newSoundBoard.add(sound.asString.toLowerCase())
-        }
-        obj.add("soundBoard", newSoundBoard)
-
-        // System tray was added back; notify when minimised.
-        obj.addProperty("trayNotified", false)
-
-        // Done
-        obj.configVersion = 2
-    }
-
-    private fun legacy(obj: JsonObject) {
-        if (obj.get("id") == null) {
-            obj.addProperty("id", "")
-        }
-        if (obj.get("dotaPath") == null) {
-            obj.addProperty("dotaPath", "")
-        }
-        if (obj.get("discordToken") == null) {
-            obj.addProperty("discordToken", "")
-        }
-        if (obj.get("soundBoard") == null) {
-            obj.add("soundBoard", JsonArray())
-        }
-        if (obj.get("modVersion") == null) {
-            obj.addProperty("modVersion", "")
+        obj.getAsJsonArray("soundBoard").removeAll {
+            it.asString in invalidSounds
         }
     }
 
-    private var JsonObject.configVersion: Int?
-        get() = get("version")?.asInt
+    private var JsonObject.version: Int
+        get() = get("version")?.asInt ?: 0
         set(value) = add("version", JsonPrimitive(value))
+
+    private val migrations: List<Migration> = listOf(
+            From0To1Migration()
+    )
+}
+
+abstract class Migration(val from: Int, val to: Int) {
+
+    abstract fun migrate(config: JsonObject)
+
 }

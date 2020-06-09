@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 /** Version of the config file that this app supports. */
-const val CONFIG_VERSION = 2
+const val CONFIG_VERSION = 1
 
 private const val FILE_NAME = "config.json"
 private const val DEFAULTS_PATH = "defaults/%s.json"
@@ -41,7 +41,7 @@ object ConfigPersistence {
     fun initialise() {
         val file = File(FILE_NAME)
         loadedConfig = if (file.exists()) {
-            val jsonElement = ConfigMigration.run(file.readText())
+            val jsonElement = ConfigMigration().run(file.readText())
             gson.fromJson(jsonElement, Config::class.java)
         } else {
             loadDefaultConfig()
