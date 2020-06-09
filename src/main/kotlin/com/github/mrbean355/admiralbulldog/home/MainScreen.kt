@@ -61,8 +61,8 @@ class MainScreen : View(getString("title_app")) {
                     action { viewModel.onDiscordCommunityClicked() }
                 }
                 separator(Orientation.VERTICAL)
-                hyperlink(getString("btn_project_website")) {
-                    action { viewModel.onProjectWebsiteClicked() }
+                hyperlink(getString("btn_telegram_channel")) {
+                    action { viewModel.onTelegramChannelClicked() }
                 }
             }
             label(viewModel.version) {

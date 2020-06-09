@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.common.URL_PROJECT_WEBSITE
 import com.github.mrbean355.admiralbulldog.common.confirmation
 import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
@@ -86,5 +87,9 @@ class SettingsViewModel : AppViewModel() {
                 }
             }
         }
+    }
+
+    fun onProjectWebsiteClicked() {
+        hostServices.showDocument(URL_PROJECT_WEBSITE)
     }
 }

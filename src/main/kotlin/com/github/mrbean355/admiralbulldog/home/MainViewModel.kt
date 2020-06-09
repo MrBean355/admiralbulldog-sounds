@@ -6,7 +6,7 @@ import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
-import com.github.mrbean355.admiralbulldog.common.URL_PROJECT_WEBSITE
+import com.github.mrbean355.admiralbulldog.common.URL_TELEGRAM_CHANNEL
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
@@ -108,8 +108,8 @@ class MainViewModel : AppViewModel() {
         hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
     }
 
-    fun onProjectWebsiteClicked() {
-        hostServices.showDocument(URL_PROJECT_WEBSITE)
+    fun onTelegramChannelClicked() {
+        hostServices.showDocument(URL_TELEGRAM_CHANNEL)
     }
 
     private fun checkForNewSounds() {

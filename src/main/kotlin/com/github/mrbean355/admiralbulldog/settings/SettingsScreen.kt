@@ -15,6 +15,7 @@ import tornadofx.enableWhen
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
+import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.paddingAll
@@ -71,6 +72,9 @@ class SettingsScreen : Fragment(getString("title_settings")) {
                     action { viewModel.onCheckForModUpdateClicked() }
                 }
             }
+        }
+        hyperlink(getString("btn_project_website")) {
+            action { viewModel.onProjectWebsiteClicked() }
         }
     }
 
