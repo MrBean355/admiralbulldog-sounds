@@ -23,7 +23,11 @@ class OnHeal : SoundTrigger {
             // We get healed on respawn; ignore.
             return false
         }
-        if (current.hero!!.health_percent - previous.hero.health_percent < MIN_HP_PERCENTAGE) {
+        if (current.hero!!.max_health != previous.hero.max_health) {
+            // Ignore heals caused by increasing max HP.
+            return false
+        }
+        if (current.hero.health_percent - previous.hero.health_percent < MIN_HP_PERCENTAGE) {
             // Small heal; ignore.
             return false
         }
