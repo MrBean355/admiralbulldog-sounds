@@ -8,7 +8,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.warning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.sounds.SyncSoundBitesScreen
+import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty

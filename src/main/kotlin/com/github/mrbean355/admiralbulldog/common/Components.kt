@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
+import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.event.EventTarget
@@ -17,19 +18,26 @@ import javafx.scene.control.Slider
 import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.Tooltip
+import javafx.scene.control.TreeCell
+import javafx.scene.control.TreeItem
+import javafx.scene.control.TreeView
 import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
-import javafx.scene.layout.Priority
+import javafx.scene.layout.Priority.ALWAYS
 import javafx.util.StringConverter
 import tornadofx.FX
 import tornadofx.action
 import tornadofx.booleanProperty
 import tornadofx.button
 import tornadofx.hbox
+import tornadofx.hgrow
 import tornadofx.label
+import tornadofx.managedWhen
 import tornadofx.paddingAll
+import tornadofx.paddingHorizontal
 import tornadofx.paddingLeft
+import tornadofx.paddingVertical
 import tornadofx.rowItem
 import tornadofx.slider
 
@@ -136,7 +144,7 @@ private class CheckBoxWithButtonCell<T>(
                 }
             }
             children += Pane().apply {
-                HBox.setHgrow(this, Priority.ALWAYS)
+                hgrow = ALWAYS
             }
             children += button
         }
@@ -178,5 +186,65 @@ private class SoundBiteTableCell(private val onButtonClicked: (SoundBite) -> Uni
             }
             label(item)
         }
+    }
+}
+
+// ========================= SOUND BITE TREE CELL ========================= \\
+
+fun TreeView<SoundBiteTreeModel>.useSoundBiteCells() {
+    setCellFactory {
+        SoundBiteTreeCell()
+    }
+}
+
+@Suppress("FunctionName")
+fun SoundBiteTreeItem(label: String, items: Collection<String>): TreeItem<SoundBiteTreeModel> {
+    return TreeItem(SoundBiteTreeModel("$label (${items.size})")).apply {
+        children += items.sorted().map {
+            val soundName = it.substringBeforeLast('.')
+            TreeItem(SoundBiteTreeModel(soundName, SoundBites.findSound(soundName)))
+        }
+    }
+}
+
+class SoundBiteTreeModel(label: String, val soundBite: SoundBite? = null) {
+    val label: String = soundBite?.name ?: label
+}
+
+private class SoundBiteTreeCell : TreeCell<SoundBiteTreeModel>() {
+    private val root = HBox()
+    private val label = Label()
+    private val button = Button("", ImageView(PlayIcon()))
+
+    init {
+        root.apply {
+            alignment = CENTER_LEFT
+            children += label
+            children += Pane().apply {
+                hgrow = ALWAYS
+            }
+            children += button.apply {
+                paddingHorizontal = PADDING_SMALL
+                paddingVertical = PADDING_TINY
+                managedWhen(visibleProperty())
+            }
+            children += Pane().apply {
+                prefWidth = PADDING_TINY
+            }
+        }
+    }
+
+    override fun updateItem(item: SoundBiteTreeModel?, empty: Boolean) {
+        super.updateItem(item, empty)
+        if (item == null || empty) {
+            graphic = null
+            return
+        }
+        label.text = item.label
+        button.isVisible = item.soundBite != null
+        button.action {
+            item.soundBite?.play()
+        }
+        graphic = root
     }
 }

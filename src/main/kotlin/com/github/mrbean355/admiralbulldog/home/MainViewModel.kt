@@ -18,8 +18,8 @@ import com.github.mrbean355.admiralbulldog.persistence.DotaMod
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
-import com.github.mrbean355.admiralbulldog.sounds.SyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
+import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty

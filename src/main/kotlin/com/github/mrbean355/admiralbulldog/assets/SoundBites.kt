@@ -5,15 +5,13 @@ import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.warning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.CopyOnWriteArrayList
 
 /** Directory that the downloaded sounds live in. */
 private const val SOUNDS_PATH = "sounds"
@@ -26,73 +24,73 @@ object SoundBites {
     private val playSoundsRepository = DiscordBotRepository()
     private var allSounds = emptyList<SoundBite>()
 
+    class SyncResult(
+            val newSounds: Collection<String>,
+            val changedSounds: Collection<String>,
+            val deletedSounds: Collection<String>,
+            val failedSounds: Collection<String>
+    )
+
     /**
      * Synchronise our local sounds with the PlaySounds page.
      * Downloads sounds which don't exist locally.
      * Deletes local sounds which don't exist remotely.
+     *
+     * @return [SyncResult] with all the affected sound bites if successful; `null` if unsuccessful.
      */
-    fun synchronise(action: (String) -> Unit, progress: (Double) -> Unit, complete: (Boolean) -> Unit) {
-        val downloaded = AtomicInteger()
-        val failed = AtomicInteger()
-        val deleted = AtomicInteger()
+    suspend fun synchronise(progress: (Double) -> Unit): SyncResult? {
+        val response = playSoundsRepository.listSoundBites()
+        val remoteFiles = response.body
 
-        GlobalScope.launch(context = IO) {
-            val response = playSoundsRepository.listSoundBites()
-            val remoteFiles = response.body
-            if (!response.isSuccessful() || remoteFiles == null) {
-                action(getString("sync_sound_bites_failed"))
-                withContext(Main) { complete(false) }
-                return@launch
-            }
-            val invalidLocalFiles = getLocalFiles().filter { it !in remoteFiles.keys }
-            val total = remoteFiles.size.toDouble()
-            var current = 0
-
-            /* Download all remote files that don't exist locally. */
-            coroutineScope {
-                remoteFiles.keys.forEach { soundBite ->
-                    launch {
-                        val existsLocally = soundBiteExistsLocally(soundBite)
-                        val latestChecksum = remoteFiles.getValue(soundBite)
-                        if (!existsLocally || !File("$SOUNDS_PATH/$soundBite").verifyChecksum(latestChecksum)) {
-                            val soundBiteResponse = playSoundsRepository.downloadSoundBite(soundBite, SOUNDS_PATH)
-                            if (soundBiteResponse.isSuccessful()) {
-                                downloaded.incrementAndGet()
-                                action(if (existsLocally) "Re-downloaded: $soundBite" else "Downloaded: $soundBite")
-                            } else {
-                                failed.incrementAndGet()
-                                action("Failed to download: $soundBite")
-                                logger.error("Failed to download: $soundBite; statusCode=${soundBiteResponse.statusCode}")
-                            }
-                        }
-                        withContext(Main) {
-                            progress(++current / total)
-                        }
-                    }
-                }
-            }
-            /* Delete local files that don't exist remotely. */
-            coroutineScope {
-                launch {
-                    invalidLocalFiles.forEach {
-                        File("${SOUNDS_PATH}/$it").delete()
-                        deleted.incrementAndGet()
-                        action("Deleted old sound: $it")
-                    }
-                }
-            }
-
-            allSounds = emptyList()
-            var message = "Done!\n" +
-                    "-> Downloaded ${downloaded.get()} new sound(s).\n" +
-                    "-> Deleted ${deleted.get()} old sound(s).\n"
-            if (failed.get() > 0) {
-                message += "\nFailed to download ${failed.get()} sounds.\n" +
-                        "Please restart the app to try again."
-            }
-            action(message)
-            withContext(Main) { complete(failed.get() == 0) }
+        if (!response.isSuccessful() || remoteFiles == null) {
+            logger.error("Failed to list sound bites: $response")
+            return null
         }
+
+        allSounds = emptyList()
+
+        val newSounds = CopyOnWriteArrayList<String>()
+        val changedSounds = CopyOnWriteArrayList<String>()
+        val deletedSounds = CopyOnWriteArrayList<String>()
+        val failedSounds = CopyOnWriteArrayList<String>()
+
+        val filesToDelete = getLocalFiles().filter { it !in remoteFiles.keys }
+        val total = remoteFiles.size.toDouble()
+        var current = 0
+
+        /* Download all remote files that don't exist locally. */
+        coroutineScope {
+            remoteFiles.keys.forEach { soundBite ->
+                launch {
+                    val existsLocally = soundBiteExistsLocally(soundBite)
+                    val latestChecksum = remoteFiles.getValue(soundBite)
+                    if (!existsLocally || !File("$SOUNDS_PATH/$soundBite").verifyChecksum(latestChecksum)) {
+                        val soundBiteResponse = playSoundsRepository.downloadSoundBite(soundBite, SOUNDS_PATH)
+                        if (soundBiteResponse.isSuccessful()) {
+                            if (existsLocally) {
+                                changedSounds += soundBite
+                            } else {
+                                newSounds += soundBite
+                            }
+                        } else {
+                            logger.error("Failed to download: $soundBite; statusCode=${soundBiteResponse.statusCode}")
+                            failedSounds += soundBite
+                        }
+                    }
+                    withContext(Main) {
+                        progress(++current / total)
+                    }
+                }
+            }
+        }
+
+        /* Delete local files that don't exist remotely. */
+        filesToDelete.forEach {
+            File("${SOUNDS_PATH}/$it").delete()
+            deletedSounds += it
+        }
+
+        return SyncResult(newSounds, changedSounds, deletedSounds, failedSounds)
     }
 
     /** @return a list of all currently downloaded sounds. */
