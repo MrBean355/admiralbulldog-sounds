@@ -4,24 +4,17 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2.2.0
       - name: Set up JDK 12
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v1.3.0
         with:
           java-version: '12'
-      - name: Run tests
+      - name: Build
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon clean test
-      - name: Build with Gradle
+          ./gradlew clean jar
+      - name: Run tests
         run:
-          ./gradlew --no-daemon jar
-      - name: Publish artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: admiralbulldog-sounds
-          path: build/libs/
+          ./gradlew test
