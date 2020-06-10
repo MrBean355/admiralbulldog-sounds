@@ -7,6 +7,7 @@ import com.github.mrbean355.admiralbulldog.common.SoundBiteTreeItem
 import com.github.mrbean355.admiralbulldog.common.SoundBiteTreeModel
 import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
@@ -49,6 +50,9 @@ class SyncSoundBitesViewModel : AppViewModel() {
             withContext(Main) {
                 tree.set(root)
                 finished.set(true)
+                if (result.failedSounds.isEmpty()) {
+                    ConfigPersistence.setSoundsLastUpdateToNow()
+                }
                 SoundBites.checkForInvalidSounds()
             }
         }
