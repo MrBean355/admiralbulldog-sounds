@@ -11,6 +11,8 @@ import javafx.scene.control.cell.CheckBoxTableCell
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.SmartResize
+import tornadofx.action
+import tornadofx.button
 import tornadofx.column
 import tornadofx.paddingAll
 import tornadofx.readonlyColumn
@@ -44,6 +46,11 @@ class SoundManagerScreen : Fragment(getString("title_sound_bite_manager")) {
                     isResizable = false
                     weightedWidth(1)
                 }
+            }
+        }
+        button(getString("btn_volume_manager")) {
+            action {
+                find<VolumeManagerScreen>().openModal(resizable = false)
             }
         }
     }

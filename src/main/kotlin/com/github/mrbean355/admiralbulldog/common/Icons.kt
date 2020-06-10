@@ -16,9 +16,9 @@ fun SettingsIcon(): Image = loadImage("settings_black.png")
 fun HelpIcon(): Image = loadImage("help.png")
 
 @Suppress("FunctionName")
-fun WeirdChampIcon(): Image = loadImage("weird_champ.png")
+fun AddIcon(): Image = loadImage("plus.png")
 
 @Suppress("FunctionName")
-fun PoggiesIcon(): Image = loadImage("poggies.png")
+fun DeleteIcon(): Image = loadImage("trash.png")
 
 private fun loadImage(name: String) = Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))

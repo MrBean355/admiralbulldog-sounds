@@ -191,9 +191,9 @@ private class SoundBiteTableCell(private val onButtonClicked: (SoundBite) -> Uni
 
 // ========================= SOUND BITE TREE CELL ========================= \\
 
-fun TreeView<SoundBiteTreeModel>.useSoundBiteCells() {
+fun TreeView<SoundBiteTreeModel>.useSoundBiteCells(onPlayClicked: (SoundBite) -> Unit) {
     setCellFactory {
-        SoundBiteTreeCell()
+        SoundBiteTreeCell(onPlayClicked)
     }
 }
 
@@ -211,7 +211,7 @@ class SoundBiteTreeModel(label: String, val soundBite: SoundBite? = null) {
     val label: String = soundBite?.name ?: label
 }
 
-private class SoundBiteTreeCell : TreeCell<SoundBiteTreeModel>() {
+private class SoundBiteTreeCell(private val onPlayClicked: (SoundBite) -> Unit) : TreeCell<SoundBiteTreeModel>() {
     private val root = HBox()
     private val label = Label()
     private val button = Button("", ImageView(PlayIcon()))
@@ -243,8 +243,45 @@ private class SoundBiteTreeCell : TreeCell<SoundBiteTreeModel>() {
         label.text = item.label
         button.isVisible = item.soundBite != null
         button.action {
-            item.soundBite?.play()
+            item.soundBite?.let(onPlayClicked)
         }
+        graphic = root
+    }
+}
+
+// ========================= VOLUME LIST CELL ========================= \\
+
+fun ListView<Volume>.useVolumeCells() {
+    setCellFactory {
+        VolumeListCell()
+    }
+}
+
+class Volume(val name: String, val volume: Int)
+
+private class VolumeListCell : ListCell<Volume>() {
+    private val root = HBox()
+    private val label = Label()
+    private val volume = Label()
+
+    init {
+        root.apply {
+            children += label
+            children += Pane().apply {
+                hgrow = ALWAYS
+            }
+            children += volume
+        }
+    }
+
+    override fun updateItem(item: Volume?, empty: Boolean) {
+        super.updateItem(item, empty)
+        if (item == null || empty) {
+            graphic = null
+            return
+        }
+        label.text = item.name
+        volume.text = "${item.volume}%"
         graphic = root
     }
 }

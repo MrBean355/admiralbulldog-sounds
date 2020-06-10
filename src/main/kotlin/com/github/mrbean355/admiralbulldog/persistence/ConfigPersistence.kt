@@ -331,6 +331,24 @@ object ConfigPersistence {
         return invalidSounds
     }
 
+    fun getSoundBiteVolumes(): Map<String, Int> {
+        return loadedConfig.volumes.toMap()
+    }
+
+    fun getSoundBiteVolume(name: String): Int? {
+        return loadedConfig.volumes[name]
+    }
+
+    fun addSoundBiteVolume(name: String, volume: Int) {
+        loadedConfig.volumes[name] = volume
+        save()
+    }
+
+    fun removeSoundBiteVolume(name: String) {
+        loadedConfig.volumes.remove(name)
+        save()
+    }
+
     /** Update the given sound trigger's config to use the given sound bite `selection`. */
     fun saveSoundsForType(type: SoundTriggerType, selection: List<SoundBite>) {
         loadedConfig.sounds.getValue(type.key).sounds.setAll(selection.map { it.name })
@@ -390,6 +408,7 @@ object ConfigPersistence {
             val sounds: MutableMap<String, Toggle> = mutableMapOf(),
             val soundBoard: MutableList<String> = mutableListOf(),
             val invalidSounds: MutableSet<String> = mutableSetOf(),
+            val volumes: MutableMap<String, Int> = mutableMapOf(),
             var modEnabled: Boolean = false,
             var modTempDisabled: Boolean = false,
             var modVersion: String = ""

@@ -40,7 +40,9 @@ class SyncSoundBitesScreen : Fragment(getString("sync_sound_bites_title")) {
             managedWhen(visibleProperty())
             rootProperty().bind(viewModel.tree)
             isShowRoot = false
-            useSoundBiteCells()
+            useSoundBiteCells {
+                it.play()
+            }
         }
         buttonbar {
             button(getString("btn_cancel"), type = CANCEL_CLOSE) {
