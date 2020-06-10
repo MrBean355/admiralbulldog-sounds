@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.installation
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useBoldFont
@@ -7,11 +8,14 @@ import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.Fragment
 import tornadofx.action
+import tornadofx.addClass
 import tornadofx.button
 import tornadofx.chooseDirectory
 import tornadofx.fitToParentWidth
 import tornadofx.label
+import tornadofx.managedWhen
 import tornadofx.vbox
+import tornadofx.visibleWhen
 import java.io.File
 
 class ChooserDotaDirectoryStep : Fragment() {
@@ -26,6 +30,11 @@ class ChooserDotaDirectoryStep : Fragment() {
             useBoldFont()
             isWrapText = true
             fitToParentWidth()
+        }
+        label(errorMessage) {
+            visibleWhen(textProperty().isNotEmpty)
+            managedWhen(visibleProperty())
+            addClass(AppStyles.inlineError)
         }
         button(getString("install_choose")) {
             action(::onChooseClicked)
