@@ -133,6 +133,8 @@ class DotaModViewModel : AppViewModel() {
                 .openModal(escapeClosesWindow = false, resizable = false)
 
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
+            DotaMod.onModDownloaded(releaseInfo)
+            ConfigPersistence.setModLastUpdateToNow()
             information(getString("header_mod_update_downloaded"), getString("content_mod_installed"), ButtonType.FINISH)
         }
     }
