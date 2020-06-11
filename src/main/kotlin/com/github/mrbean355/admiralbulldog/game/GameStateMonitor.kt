@@ -106,8 +106,8 @@ private fun SoundTrigger.doesProc(previousState: GameState, currentState: GameSt
 }
 
 /** @return a randomised playback rate. */
-private fun SoundTrigger.randomRate(): Double {
+private fun SoundTrigger.randomRate(): Int {
     val min = ConfigPersistence.getSoundTriggerMinRate(this::class)
     val max = ConfigPersistence.getSoundTriggerMaxRate(this::class)
-    return if (min == max) min else Random.nextDouble(min, max)
+    return if (min == max) min else Random.nextInt(min, max)
 }

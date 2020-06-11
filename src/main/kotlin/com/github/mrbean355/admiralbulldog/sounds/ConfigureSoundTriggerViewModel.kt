@@ -7,11 +7,9 @@ import com.github.mrbean355.admiralbulldog.triggers.Periodically
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.BooleanProperty
-import javafx.beans.property.DoubleProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.StringProperty
 import tornadofx.booleanProperty
-import tornadofx.doubleProperty
 import tornadofx.intProperty
 import tornadofx.onChange
 import tornadofx.stringProperty
@@ -29,8 +27,8 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
     val showChance: BooleanProperty = booleanProperty(type != Periodically::class)
     val showSmartChance: BooleanProperty = booleanProperty(type == OnHeal::class)
     val useSmartChance: BooleanProperty = booleanProperty(ConfigPersistence.isUsingHealSmartChance())
-    val enableChanceSlider: BooleanBinding = showSmartChance.not().or(useSmartChance.not())
-    val chance: DoubleProperty = doubleProperty(ConfigPersistence.getSoundTriggerChance(type))
+    val enableChanceSpinner: BooleanBinding = showSmartChance.not().or(useSmartChance.not())
+    val chance: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerChance(type))
 
     /* Periodic */
     val showPeriod: BooleanBinding = showChance.not()
@@ -38,8 +36,8 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
     val maxPeriod: IntegerProperty = intProperty(ConfigPersistence.getMaxPeriod())
 
     /* Playback rate */
-    val minRate: DoubleProperty = doubleProperty(ConfigPersistence.getSoundTriggerMinRate(type))
-    val maxRate: DoubleProperty = doubleProperty(ConfigPersistence.getSoundTriggerMaxRate(type))
+    val minRate: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerMinRate(type))
+    val maxRate: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerMaxRate(type))
 
     init {
         enabled.onChange { ConfigPersistence.toggleSoundTrigger(type, it) }

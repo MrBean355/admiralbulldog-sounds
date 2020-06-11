@@ -1,13 +1,11 @@
 package com.github.mrbean355.admiralbulldog.sounds.manager
 
 import com.github.mrbean355.admiralbulldog.common.MAX_INDIVIDUAL_VOLUME
-import com.github.mrbean355.admiralbulldog.common.MIN_INDIVIDUAL_VOLUME
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.PeriodStringConverter
 import com.github.mrbean355.admiralbulldog.common.PlayIcon
-import com.github.mrbean355.admiralbulldog.common.VOLUME_STEP
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.volumeSpinner
 import javafx.scene.control.ButtonBar
 import javafx.scene.image.ImageView
 import tornadofx.Fragment
@@ -21,7 +19,6 @@ import tornadofx.label
 import tornadofx.onChange
 import tornadofx.paddingAll
 import tornadofx.runLater
-import tornadofx.spinner
 import tornadofx.textfield
 import tornadofx.vbox
 
@@ -38,9 +35,7 @@ class ChooseVolumeScreen : Fragment(getString("title_choose_volume")) {
                     runLater(this::end)
                 }
             }
-            spinner(min = MIN_INDIVIDUAL_VOLUME, max = MAX_INDIVIDUAL_VOLUME, amountToStepBy = VOLUME_STEP, property = viewModel.volume, editable = true, enableScroll = true) {
-                valueFactory.converter = PeriodStringConverter()
-            }
+            volumeSpinner(viewModel.volume, MAX_INDIVIDUAL_VOLUME)
             button(graphic = ImageView(PlayIcon())) {
                 enableWhen(viewModel.hasSoundBite)
                 action {

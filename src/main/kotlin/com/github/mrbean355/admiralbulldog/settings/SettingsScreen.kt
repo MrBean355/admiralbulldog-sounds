@@ -1,11 +1,8 @@
 package com.github.mrbean355.admiralbulldog.settings
 
-import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
-import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PeriodStringConverter
-import com.github.mrbean355.admiralbulldog.common.VOLUME_STEP
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.volumeSpinner
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
@@ -17,10 +14,8 @@ import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
 import tornadofx.hyperlink
-import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.paddingAll
-import tornadofx.spinner
 import tornadofx.visibleWhen
 import tornadofx.whenUndocked
 
@@ -31,10 +26,7 @@ class SettingsScreen : Fragment(getString("title_settings")) {
         paddingAll = PADDING_MEDIUM
         fieldset {
             field(getString("label_volume")) {
-                spinner(min = MIN_VOLUME, max = MAX_VOLUME, amountToStepBy = VOLUME_STEP, property = viewModel.appVolume, editable = true, enableScroll = true) {
-                    valueFactory.converter = PeriodStringConverter()
-                }
-                label(getString("label_percentage"))
+                volumeSpinner(viewModel.appVolume)
             }
         }
         fieldset {

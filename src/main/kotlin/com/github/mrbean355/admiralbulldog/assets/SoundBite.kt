@@ -31,7 +31,7 @@ class SoundBite(
      * - Plays at the user's chosen individual volume if applicable.
      * - Else plays at [DEFAULT_INDIVIDUAL_VOLUME].
      */
-    fun play(rate: Double = DEFAULT_RATE, volume: Int = -1) {
+    fun play(rate: Int = DEFAULT_RATE, volume: Int = -1) {
         val media = Media(File(filePath).toURI().toString())
         MediaPlayer(media).apply {
             // Without setting the start time, some sounds don't play on MacOS ¯\_(ツ)_/¯

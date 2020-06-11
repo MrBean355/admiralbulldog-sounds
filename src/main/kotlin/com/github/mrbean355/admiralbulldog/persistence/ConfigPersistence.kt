@@ -217,29 +217,29 @@ object ConfigPersistence {
         save()
     }
 
-    fun getSoundTriggerChance(type: SoundTriggerType): Double {
+    fun getSoundTriggerChance(type: SoundTriggerType): Int {
         return loadedConfig.sounds.getValue(type.key).chance
     }
 
-    fun setSoundTriggerChance(type: SoundTriggerType, chance: Double) {
+    fun setSoundTriggerChance(type: SoundTriggerType, chance: Int) {
         loadedConfig.sounds.getValue(type.key).chance = chance
         save()
     }
 
-    fun getSoundTriggerMinRate(type: SoundTriggerType): Double {
+    fun getSoundTriggerMinRate(type: SoundTriggerType): Int {
         return loadedConfig.sounds.getValue(type.key).minRate
     }
 
-    fun setSoundTriggerMinRate(type: SoundTriggerType, minRate: Double) {
+    fun setSoundTriggerMinRate(type: SoundTriggerType, minRate: Int) {
         loadedConfig.sounds.getValue(type.key).minRate = minRate
         save()
     }
 
-    fun getSoundTriggerMaxRate(type: SoundTriggerType): Double {
+    fun getSoundTriggerMaxRate(type: SoundTriggerType): Int {
         return loadedConfig.sounds.getValue(type.key).maxRate
     }
 
-    fun setSoundTriggerMaxRate(type: SoundTriggerType, maxRate: Double) {
+    fun setSoundTriggerMaxRate(type: SoundTriggerType, maxRate: Int) {
         loadedConfig.sounds.getValue(type.key).maxRate = maxRate
         save()
     }
@@ -430,9 +430,9 @@ object ConfigPersistence {
 
     private data class Toggle(
             var enabled: Boolean = false,
-            var chance: Double = DEFAULT_CHANCE,
-            var minRate: Double = DEFAULT_RATE,
-            var maxRate: Double = DEFAULT_RATE,
+            var chance: Int = DEFAULT_CHANCE,
+            var minRate: Int = DEFAULT_RATE,
+            var maxRate: Int = DEFAULT_RATE,
             var playThroughDiscord: Boolean = false,
             val sounds: MutableList<String> = mutableListOf()
     )

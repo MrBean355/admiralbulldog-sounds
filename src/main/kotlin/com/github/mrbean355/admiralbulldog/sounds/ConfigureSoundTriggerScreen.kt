@@ -1,20 +1,14 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.common.HelpIcon
-import com.github.mrbean355.admiralbulldog.common.MAX_CHANCE
-import com.github.mrbean355.admiralbulldog.common.MAX_PERIOD
-import com.github.mrbean355.admiralbulldog.common.MAX_RATE
-import com.github.mrbean355.admiralbulldog.common.MIN_CHANCE
-import com.github.mrbean355.admiralbulldog.common.MIN_PERIOD
-import com.github.mrbean355.admiralbulldog.common.MIN_RATE
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.PeriodStringConverter
-import com.github.mrbean355.admiralbulldog.common.RateStringConverter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
+import com.github.mrbean355.admiralbulldog.common.chanceSpinner
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
-import com.github.mrbean355.admiralbulldog.common.slider
+import com.github.mrbean355.admiralbulldog.common.periodSpinner
+import com.github.mrbean355.admiralbulldog.common.rateSpinner
 import com.github.mrbean355.admiralbulldog.common.useHeaderFont
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.scene.image.ImageView
@@ -27,12 +21,10 @@ import tornadofx.enableWhen
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
-import tornadofx.hbox
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
-import tornadofx.spinner
 import tornadofx.visibleWhen
 import tornadofx.whenUndocked
 
@@ -64,8 +56,8 @@ class ConfigureSoundTriggerScreen : Fragment() {
                 }
             }
             field(getString("label_chance_to_play")) {
-                slider(min = MIN_CHANCE, max = MAX_CHANCE, valueProperty = viewModel.chance) {
-                    enableWhen(viewModel.enableChanceSlider)
+                chanceSpinner(viewModel.chance) {
+                    enableWhen(viewModel.enableChanceSpinner)
                 }
             }
         }
@@ -73,15 +65,11 @@ class ConfigureSoundTriggerScreen : Fragment() {
             visibleWhen(viewModel.showPeriod)
             managedWhen(visibleProperty())
             field(getString("label_periodic_trigger_min")) {
-                spinner(min = MIN_PERIOD, max = MAX_PERIOD, property = viewModel.minPeriod, editable = true, enableScroll = true) {
-                    valueFactory.converter = PeriodStringConverter()
-                }
+                periodSpinner(viewModel.minPeriod)
                 label(getString("label_periodic_trigger_minutes"))
             }
             field(getString("label_periodic_trigger_max")) {
-                spinner(min = MIN_PERIOD, max = MAX_PERIOD, property = viewModel.maxPeriod, editable = true, enableScroll = true) {
-                    valueFactory.converter = PeriodStringConverter()
-                }
+                periodSpinner(viewModel.maxPeriod)
                 label(getString("label_periodic_trigger_minutes"))
                 button(graphic = ImageView(HelpIcon())) {
                     action { information(getString("header_about_periodic_trigger"), getString("content_about_periodic_trigger")) }
@@ -90,22 +78,16 @@ class ConfigureSoundTriggerScreen : Fragment() {
         }
         fieldset(getString("header_playback_speed")) {
             field(getString("label_min_playback_speed")) {
-                slider(min = MIN_RATE, max = MAX_RATE, valueProperty = viewModel.minRate) {
-                    labelFormatter = RateStringConverter()
-                }
+                rateSpinner(viewModel.minRate)
             }
             field(getString("label_max_playback_speed")) {
-                slider(min = MIN_RATE, max = MAX_RATE, valueProperty = viewModel.maxRate) {
-                    labelFormatter = RateStringConverter()
-                }
-            }
-            hbox(spacing = PADDING_SMALL) {
+                rateSpinner(viewModel.maxRate)
                 button(graphic = ImageView(HelpIcon())) {
                     action { information(getString("header_about_playback_speed"), getString("content_about_playback_speed")) }
                 }
-                button(getString("btn_test_playback_speed")) {
-                    action { find<TestPlaybackSpeedScreen>().openModal(resizable = false) }
-                }
+            }
+            button(getString("btn_test_playback_speed")) {
+                action { find<TestPlaybackSpeedScreen>().openModal(resizable = false) }
             }
         }
         fieldset(getString("header_sound_bite_selection")) {
