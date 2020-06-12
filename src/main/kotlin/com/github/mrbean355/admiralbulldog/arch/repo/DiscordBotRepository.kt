@@ -7,6 +7,8 @@ import com.github.mrbean355.admiralbulldog.arch.ServiceResponse
 import com.github.mrbean355.admiralbulldog.arch.service.DiscordBotService
 import com.github.mrbean355.admiralbulldog.arch.toServiceResponse
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_INDIVIDUAL_VOLUME
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -63,9 +65,10 @@ class DiscordBotRepository {
         }
     }
 
-    suspend fun playSound(soundBite: SoundBite): ServiceResponse<Void> {
+    suspend fun playSound(soundBite: SoundBite, rate: Int = DEFAULT_RATE): ServiceResponse<Void> {
+        val volume = ConfigPersistence.getSoundBiteVolume(soundBite.name) ?: DEFAULT_INDIVIDUAL_VOLUME
         return try {
-            DiscordBotService.INSTANCE.playSound(PlaySoundRequest(loadUserId(), ConfigPersistence.getDiscordToken(), soundBite.fileName))
+            DiscordBotService.INSTANCE.playSound(PlaySoundRequest(loadUserId(), ConfigPersistence.getDiscordToken(), soundBite.fileName, volume, rate))
                     .toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Failed to play sound through Discord: $soundBite", t)

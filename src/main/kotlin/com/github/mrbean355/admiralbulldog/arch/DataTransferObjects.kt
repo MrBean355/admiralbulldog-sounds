@@ -19,7 +19,9 @@ data class AnalyticsRequest(
 data class PlaySoundRequest(
         val userId: String,
         val token: String,
-        val soundFileName: String
+        val soundFileName: String,
+        val volume: Int,
+        val rate: Int
 )
 
 data class DotaMod(

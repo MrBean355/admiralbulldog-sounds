@@ -79,15 +79,16 @@ private fun playSoundForType(soundTrigger: SoundTrigger) {
     val choices = ConfigPersistence.getSoundsForType(soundTrigger::class)
     if (choices.isNotEmpty()) {
         val choice = choices.random()
+        val rate = soundTrigger.randomRate()
         if (shouldPlayOnDiscord(soundTrigger)) {
             GlobalScope.launch {
-                val response = discordBotRepository.playSound(choice)
+                val response = discordBotRepository.playSound(choice, rate)
                 if (!response.isSuccessful()) {
-                    choice.play(rate = soundTrigger.randomRate())
+                    choice.play(rate)
                 }
             }
         } else {
-            choice.play(rate = soundTrigger.randomRate())
+            choice.play(rate)
         }
     }
 }
