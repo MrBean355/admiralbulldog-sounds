@@ -58,19 +58,6 @@ class From0To1MigrationTest {
             assertEquals(15, it.getAsJsonPrimitive("maxPeriod").asInt)
         }
 
-        // Convert sounds to lower case:
-        config.getAsJsonObject("sounds").entrySet().forEach { trigger ->
-            val sounds = trigger.value.asJsonObject.getAsJsonArray("sounds")
-            sounds.forEach { sound ->
-                assertTrue(sound.asString.none { it.isUpperCase() })
-            }
-        }
-
-        // Convert sound board to lower case:
-        config.getAsJsonArray("soundBoard").forEach { sound ->
-            assertTrue(sound.asString.none { it.isUpperCase() })
-        }
-
         assertFalse(config.getAsJsonPrimitive("trayNotified").asBoolean)
     }
 }

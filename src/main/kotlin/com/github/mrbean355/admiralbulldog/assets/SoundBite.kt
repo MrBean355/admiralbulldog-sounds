@@ -19,8 +19,11 @@ class SoundBite(
     /** Name of the file, excluding directories. */
     val fileName: String = filePath.substringAfterLast('/')
 
-    /** Name of the file, excluding directories and the file extension. */
-    val name: String = fileName.substringBeforeLast('.')
+    /**
+     * Name of the file, excluding directories and the file extension.
+     * `toUpperCase()` is for backwards compatibility of the config file.
+     */
+    val name: String = fileName.substringBeforeLast('.').toUpperCase()
 
     /**
      * Play the sound bite using at the given [rate] and [volume].
