@@ -41,7 +41,6 @@ class SoundManagerScreen : Fragment(getString("title_sound_bite_manager")) {
                     cellFactory = CheckBoxTableCell.forTableColumn {
                         viewModel.getCellProperty(trigger, it)
                     }
-                    isReorderable = false
                     isSortable = false
                     isResizable = false
                     weightedWidth(1)
