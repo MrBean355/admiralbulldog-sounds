@@ -4,6 +4,7 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.useBoldFont
 import com.github.mrbean355.admiralbulldog.common.useLargeFont
 import com.github.mrbean355.admiralbulldog.common.useSmallFont
 import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
@@ -64,6 +65,9 @@ class MainScreen : View(getString("title_app")) {
                 hyperlink(getString("btn_telegram_channel")) {
                     action { viewModel.onTelegramChannelClicked() }
                 }
+            }
+            label(getString("label_welcome_message")) {
+                useBoldFont()
             }
             label(viewModel.version) {
                 useSmallFont()
