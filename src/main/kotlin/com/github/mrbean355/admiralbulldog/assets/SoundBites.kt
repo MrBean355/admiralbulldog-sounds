@@ -47,8 +47,6 @@ object SoundBites {
             return null
         }
 
-        allSounds = emptyList()
-
         val newSounds = CopyOnWriteArrayList<String>()
         val changedSounds = CopyOnWriteArrayList<String>()
         val deletedSounds = CopyOnWriteArrayList<String>()
@@ -90,6 +88,7 @@ object SoundBites {
             deletedSounds += it
         }
 
+        allSounds = emptyList()
         return SyncResult(newSounds, changedSounds, deletedSounds, failedSounds)
     }
 
@@ -112,7 +111,7 @@ object SoundBites {
      * @return the sound if found, `null` otherwise.
      */
     fun findSound(name: String): SoundBite? {
-        return getAll().firstOrNull { it.name == name }
+        return getAll().firstOrNull { it.name.equals(name, ignoreCase = true) }
     }
 
     /** Show a warning message if the user selected sounds that don't exist locally. */
