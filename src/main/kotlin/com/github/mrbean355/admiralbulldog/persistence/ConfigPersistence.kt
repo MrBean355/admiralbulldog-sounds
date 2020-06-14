@@ -100,6 +100,11 @@ object ConfigPersistence {
         return loadedConfig.updates.soundsUpdateFrequency
     }
 
+    fun setSoundsUpdateFrequency(frequency: UpdateFrequency) {
+        loadedConfig.updates.soundsUpdateFrequency = frequency
+        save()
+    }
+
     fun getSoundsLastUpdateAt(): Long {
         return loadedConfig.lastSync
     }

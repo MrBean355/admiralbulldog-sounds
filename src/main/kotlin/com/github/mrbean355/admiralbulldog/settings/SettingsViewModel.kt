@@ -48,6 +48,9 @@ class SettingsViewModel : AppViewModel() {
         appUpdateFrequency.onChange {
             it?.let { ConfigPersistence.setAppUpdateFrequency(it) }
         }
+        soundsUpdateFrequency.onChange {
+            it?.let { ConfigPersistence.setSoundsUpdateFrequency(it) }
+        }
         modUpdateFrequency.onChange {
             it?.let {
                 ConfigPersistence.setModUpdateFrequency(it)
