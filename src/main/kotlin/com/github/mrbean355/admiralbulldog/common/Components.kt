@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.common
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import javafx.beans.property.BooleanProperty
@@ -28,16 +29,14 @@ import javafx.scene.layout.Priority.ALWAYS
 import javafx.util.StringConverter
 import tornadofx.FX
 import tornadofx.action
+import tornadofx.addClass
 import tornadofx.booleanProperty
 import tornadofx.button
 import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.label
 import tornadofx.managedWhen
-import tornadofx.paddingAll
-import tornadofx.paddingHorizontal
 import tornadofx.paddingLeft
-import tornadofx.paddingVertical
 import tornadofx.rowItem
 import tornadofx.spinner
 
@@ -144,7 +143,9 @@ private class CheckBoxWithButtonCell<T>(
             children += Pane().apply {
                 hgrow = ALWAYS
             }
-            children += button
+            children += button.apply {
+                addClass(AppStyles.iconButton)
+            }
         }
     }
 
@@ -179,7 +180,7 @@ private class SoundBiteTableCell(private val onButtonClicked: (SoundBite) -> Uni
         }
         graphic = hbox(spacing = PADDING_SMALL, alignment = CENTER_LEFT) {
             button(graphic = ImageView(PlayIcon())) {
-                paddingAll = 2
+                addClass(AppStyles.iconButton)
                 action { onButtonClicked(rowItem) }
             }
             label(item)
@@ -222,8 +223,7 @@ private class SoundBiteTreeCell(private val onPlayClicked: (SoundBite) -> Unit) 
                 hgrow = ALWAYS
             }
             children += button.apply {
-                paddingHorizontal = PADDING_SMALL
-                paddingVertical = PADDING_TINY
+                addClass(AppStyles.iconButton)
                 managedWhen(visibleProperty())
             }
             children += Pane().apply {

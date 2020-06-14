@@ -2,6 +2,7 @@ package com.github.mrbean355.admiralbulldog.discord
 
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.SoundBiteTracker
@@ -18,6 +19,7 @@ class ConfigureSoundBoardScreen : Fragment(getString("title_customise_sound_boar
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
+        prefWidth = WINDOW_WIDTH
         children += tracker.createSearchField()
         children += tracker.createListView()
         buttonbar {

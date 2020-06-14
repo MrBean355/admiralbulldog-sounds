@@ -9,7 +9,9 @@ import javafx.scene.text.FontWeight.BOLD
 import javafx.stage.Stage
 import tornadofx.App
 import tornadofx.Stylesheet
+import tornadofx.box
 import tornadofx.cssclass
+import tornadofx.px
 import kotlin.system.exitProcess
 
 class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(), stylesheet = *arrayOf(AppStyles::class)) {
@@ -33,12 +35,16 @@ class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(
 class AppStyles : Stylesheet() {
     companion object {
         val inlineError by cssclass()
+        val iconButton by cssclass()
     }
 
     init {
         inlineError {
             textFill = RED
             fontWeight = BOLD
+        }
+        iconButton {
+            padding = box(vertical = 2.px, horizontal = 4.px)
         }
     }
 }

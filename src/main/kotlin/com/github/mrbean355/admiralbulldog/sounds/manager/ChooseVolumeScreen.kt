@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.sounds.manager
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.MAX_INDIVIDUAL_VOLUME
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
@@ -11,6 +12,7 @@ import javafx.scene.image.ImageView
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
+import tornadofx.addClass
 import tornadofx.button
 import tornadofx.buttonbar
 import tornadofx.enableWhen
@@ -37,6 +39,7 @@ class ChooseVolumeScreen : Fragment(getString("title_choose_volume")) {
             }
             volumeSpinner(viewModel.volume, MAX_INDIVIDUAL_VOLUME)
             button(graphic = ImageView(PlayIcon())) {
+                addClass(AppStyles.iconButton)
                 enableWhen(viewModel.hasSoundBite)
                 action {
                     viewModel.onPlayClicked()
