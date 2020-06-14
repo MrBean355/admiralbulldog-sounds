@@ -88,6 +88,8 @@ object SoundBites {
             deletedSounds += it
         }
 
+        ConfigPersistence.removeInvalidSounds(getAll().map { it.name })
+
         allSounds = emptyList()
         return SyncResult(newSounds, changedSounds, deletedSounds, failedSounds)
     }
@@ -116,7 +118,7 @@ object SoundBites {
 
     /** Show a warning message if the user selected sounds that don't exist locally. */
     fun checkForInvalidSounds() {
-        ConfigPersistence.takeInvalidSounds().also {
+        ConfigPersistence.findInvalidSounds().also {
             if (it.isNotEmpty()) {
                 warning(getString("header_sounds_removed"), getString("msg_sounds_removed", it.joinToString()))
             }

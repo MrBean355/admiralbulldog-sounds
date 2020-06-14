@@ -323,7 +323,7 @@ object ConfigPersistence {
      * Returns a collection of sound names that were selected by the user but don't exist locally.
      * When called, the returned sounds will not be returned by future calls.
      */
-    fun takeInvalidSounds(): Collection<String> {
+    fun findInvalidSounds(): Collection<String> {
         val localSounds = SoundBites.getAll().map { it.name }
         val invalidSounds = ((loadedConfig.sounds.flatMap { it.value.sounds }) + loadedConfig.soundBoard)
                 .distinct()
@@ -334,6 +334,11 @@ object ConfigPersistence {
         save()
 
         return invalidSounds
+    }
+
+    fun removeInvalidSounds(victims: Collection<String>) {
+        loadedConfig.invalidSounds.removeAll(victims)
+        save()
     }
 
     fun getSoundBiteVolumes(): Map<String, Int> {
