@@ -63,17 +63,14 @@ jar {
 }
 
 task generateBuildConfig() {
-    final dir = project.file('build/generated/com/github/mrbean355/admiralbulldog')
-    dir.mkdirs()
-
-    final file = project.file("$dir/BuildConfig.kt")
+    final file = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/BuildConfig.kt")
     file.createNewFile()
     file.write("package com.github.mrbean355.admiralbulldog\n" +
             "\n" +
-            "val APP_VERSION = com.vdurmont.semver4j.Semver(\"$version\")\n" +
+            "import com.vdurmont.semver4j.Semver\n" +
             "\n" +
-            "const val DISTRIBUTION = \"$platform\""
-    )
+            "val APP_VERSION: Semver = Semver(\"$version\")\n" +
+            "const val DISTRIBUTION: String = \"$platform\"\n")
 }
 
 compileKotlin.dependsOn(generateBuildConfig)
