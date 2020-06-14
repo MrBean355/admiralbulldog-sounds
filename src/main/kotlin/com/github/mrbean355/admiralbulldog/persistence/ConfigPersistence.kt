@@ -2,19 +2,26 @@ package com.github.mrbean355.admiralbulldog.persistence
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.events.SOUND_EVENT_TYPES
-import com.github.mrbean355.admiralbulldog.events.SoundEvent
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_CHANCE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_MAX_PERIOD
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_MIN_PERIOD
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
+import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
+import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
+import com.github.mrbean355.admiralbulldog.persistence.migration.ConfigMigration
+import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
+import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import com.google.gson.GsonBuilder
 import org.slf4j.LoggerFactory
 import java.io.File
-import kotlin.reflect.KClass
+
+/** Version of the config file that this app supports. */
+const val CONFIG_VERSION = 1
 
 private const val FILE_NAME = "config.json"
-private const val DEFAULTS_PATH = "defaults/%s.json"
 private const val DEFAULT_PORT = 12345
-const val MIN_VOLUME = 0.0
-const val MAX_VOLUME = 100.0
-private const val DEFAULT_VOLUME = 20.0
 
 /**
  * Facilitates saving & loading the configuration of the sound bites from a file.
@@ -33,7 +40,8 @@ object ConfigPersistence {
     fun initialise() {
         val file = File(FILE_NAME)
         loadedConfig = if (file.exists()) {
-            gson.fromJson(file.readText(), Config::class.java)
+            val jsonElement = ConfigMigration().run(file.readText())
+            gson.fromJson(jsonElement, Config::class.java)
         } else {
             loadDefaultConfig()
         }
@@ -41,8 +49,7 @@ object ConfigPersistence {
             loadedConfig.port = DEFAULT_PORT
             logger.info("Defaulting to port $DEFAULT_PORT")
         }
-        cleanUpStaleSoundEvents()
-        addMissingSoundEventDefaults()
+        cleanUpStaleSoundTriggers()
         save()
     }
 
@@ -50,7 +57,7 @@ object ConfigPersistence {
     fun getPort() = loadedConfig.port
 
     /** @return the user's ID. */
-    fun getId() = loadedConfig.id
+    fun getId(): String = loadedConfig.id
 
     /** Set the user's ID. */
     fun setId(id: String) {
@@ -61,7 +68,7 @@ object ConfigPersistence {
     }
 
     /** @return the currently chosen Dota installation path. */
-    fun getDotaPath(): String? {
+    fun getDotaPath(): String {
         return loadedConfig.dotaPath
     }
 
@@ -71,20 +78,92 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return the time when sounds were last synced from the PlaySounds page. */
-    fun getLastSync() = loadedConfig.lastSync
+    fun getAppUpdateFrequency(): UpdateFrequency {
+        return loadedConfig.updates.appUpdateFrequency
+    }
 
-    /** Set the time when sounds were last synced from the PlaySounds page to now. */
-    fun markLastSync() {
+    fun setAppUpdateFrequency(frequency: UpdateFrequency) {
+        loadedConfig.updates.appUpdateFrequency = frequency
+        save()
+    }
+
+    fun getAppLastUpdateAt(): Long {
+        return loadedConfig.updates.appUpdateCheck
+    }
+
+    fun setAppLastUpdateToNow() {
+        loadedConfig.updates.appUpdateCheck = System.currentTimeMillis()
+        save()
+    }
+
+    fun getSoundsUpdateFrequency(): UpdateFrequency {
+        return loadedConfig.updates.soundsUpdateFrequency
+    }
+
+    fun setSoundsUpdateFrequency(frequency: UpdateFrequency) {
+        loadedConfig.updates.soundsUpdateFrequency = frequency
+        save()
+    }
+
+    fun getSoundsLastUpdateAt(): Long {
+        return loadedConfig.lastSync
+    }
+
+    fun setSoundsLastUpdateToNow() {
         loadedConfig.lastSync = System.currentTimeMillis()
         save()
     }
 
+    fun getModUpdateFrequency(): UpdateFrequency {
+        return loadedConfig.updates.modUpdateFrequency
+    }
+
+    fun setModUpdateFrequency(frequency: UpdateFrequency) {
+        loadedConfig.updates.modUpdateFrequency = frequency
+        save()
+    }
+
+    fun getModLastUpdateAt(): Long {
+        return loadedConfig.updates.modUpdateCheck
+    }
+
+    fun setModLastUpdateToNow() {
+        loadedConfig.updates.modUpdateCheck = System.currentTimeMillis()
+        save()
+    }
+
+    fun isUsingHealSmartChance(): Boolean {
+        return loadedConfig.special.useHealSmartChance
+    }
+
+    fun setIsUsingHealSmartChance(using: Boolean) {
+        loadedConfig.special.useHealSmartChance = using
+        save()
+    }
+
+    fun getMinPeriod(): Int {
+        return loadedConfig.special.minPeriod
+    }
+
+    fun setMinPeriod(value: Int) {
+        loadedConfig.special.minPeriod = value
+        save()
+    }
+
+    fun getMaxPeriod(): Int {
+        return loadedConfig.special.maxPeriod
+    }
+
+    fun setMaxPeriod(value: Int) {
+        loadedConfig.special.maxPeriod = value
+        save()
+    }
+
     /** @return the current volume, in the range `[0.0, 100.0]`. */
-    fun getVolume() = loadedConfig.volume
+    fun getVolume(): Int = loadedConfig.volume
 
     /** Set the current volume. Will be clamped to the range `[0.0, 100.0]`. */
-    fun setVolume(volume: Double) {
+    fun setVolume(volume: Int) {
         loadedConfig.volume = volume.coerceAtLeast(MIN_VOLUME).coerceAtMost(MAX_VOLUME)
         save()
     }
@@ -99,7 +178,7 @@ object ConfigPersistence {
     }
 
     /** @return the user's current token if it is set, empty string otherwise. */
-    fun getDiscordToken() = loadedConfig.discordToken.orEmpty()
+    fun getDiscordToken(): String = loadedConfig.discordToken
 
     /** Set the user's Discord token. */
     fun setDiscordToken(token: String) {
@@ -118,45 +197,94 @@ object ConfigPersistence {
         return previous
     }
 
-    /** @return `true` if the sound bite is enabled; `false` otherwise. */
-    fun isSoundEventEnabled(type: KClass<out SoundEvent>): Boolean {
-        return loadedConfig.sounds[type.simpleName]!!.enabled
-    }
+    fun isMinimizeToTray(): Boolean = loadedConfig.minimizeToTray
 
-    /** Enable or disable a sound bite. */
-    fun toggleSoundEvent(type: KClass<out SoundEvent>, enabled: Boolean) {
-        loadedConfig.sounds[type.simpleName]!!.enabled = enabled
+    fun setMinimizeToTray(minimize: Boolean) {
+        loadedConfig.minimizeToTray = minimize
         save()
     }
 
-    /** @return whether the user has chosen to play the sound bite through Discord. */
-    fun isPlayedThroughDiscord(type: KClass<out SoundEvent>): Boolean {
-        return loadedConfig.sounds[type.simpleName]!!.playThroughDiscord
-    }
+    fun isAlwaysShowTrayIcon(): Boolean = loadedConfig.alwaysShowTrayIcon
 
-    /** Set whether the user has chosen to play the sound bite through Discord. */
-    fun setPlayedThroughDiscord(type: KClass<out SoundEvent>, playThroughDiscord: Boolean) {
-        loadedConfig.sounds[type.simpleName]!!.playThroughDiscord = playThroughDiscord
+    fun setAlwaysShowTrayIcon(show: Boolean) {
+        loadedConfig.alwaysShowTrayIcon = show
         save()
     }
 
-    /** @return all selected sounds for a sound bite if it's enabled; empty list otherwise. */
-    fun getSoundsForType(type: KClass<out SoundEvent>): List<SoundBite> {
-        val toggle = loadedConfig.sounds[type.simpleName]!!
-        if (toggle.enabled) {
-            return toggle.sounds.mapNotNull { SoundBites.findSound(it) }
+    /** @return `true` if the sound trigger is enabled; `false` otherwise. */
+    fun isSoundTriggerEnabled(type: SoundTriggerType): Boolean {
+        return loadedConfig.sounds.getValue(type.key).enabled
+    }
+
+    /** Enable or disable a sound trigger. */
+    fun toggleSoundTrigger(type: SoundTriggerType, enabled: Boolean) {
+        loadedConfig.sounds.getValue(type.key).enabled = enabled
+        save()
+    }
+
+    fun getSoundTriggerChance(type: SoundTriggerType): Int {
+        return loadedConfig.sounds.getValue(type.key).chance
+    }
+
+    fun setSoundTriggerChance(type: SoundTriggerType, chance: Int) {
+        loadedConfig.sounds.getValue(type.key).chance = chance
+        save()
+    }
+
+    fun getSoundTriggerMinRate(type: SoundTriggerType): Int {
+        return loadedConfig.sounds.getValue(type.key).minRate
+    }
+
+    fun setSoundTriggerMinRate(type: SoundTriggerType, minRate: Int) {
+        loadedConfig.sounds.getValue(type.key).minRate = minRate
+        save()
+    }
+
+    fun getSoundTriggerMaxRate(type: SoundTriggerType): Int {
+        return loadedConfig.sounds.getValue(type.key).maxRate
+    }
+
+    fun setSoundTriggerMaxRate(type: SoundTriggerType, maxRate: Int) {
+        loadedConfig.sounds.getValue(type.key).maxRate = maxRate
+        save()
+    }
+
+    /** @return whether the user has chosen to play the sound trigger through Discord. */
+    fun isPlayedThroughDiscord(type: SoundTriggerType): Boolean {
+        return loadedConfig.sounds.getValue(type.key).playThroughDiscord
+    }
+
+    /** Set whether the user has chosen to play the sound trigger through Discord. */
+    fun setPlayedThroughDiscord(type: SoundTriggerType, playThroughDiscord: Boolean) {
+        loadedConfig.sounds.getValue(type.key).playThroughDiscord = playThroughDiscord
+        save()
+    }
+
+    /** @return all selected sound bites for a trigger. */
+    fun getSoundsForType(type: SoundTriggerType): List<SoundBite> {
+        val toggle = loadedConfig.sounds.getValue(type.key)
+        return toggle.sounds.mapNotNull { SoundBites.findSound(it) }
+    }
+
+    fun isSoundSelectedForType(type: SoundTriggerType, soundBite: SoundBite): Boolean {
+        return loadedConfig.sounds.getValue(type.key).sounds.contains(soundBite.name)
+    }
+
+    fun setSoundSelectedForType(type: SoundTriggerType, soundBite: SoundBite, selected: Boolean) {
+        loadedConfig.sounds.getValue(type.key).sounds.let {
+            if (selected) it += soundBite.name else it -= soundBite.name
         }
-        return emptyList()
+        save()
     }
 
     /** @return a list of all sounds selected for the sound board. */
     fun getSoundBoard(): List<SoundBite> {
-        return loadedConfig.soundBoard.orEmpty().mapNotNull { SoundBites.findSound(it) }
+        return loadedConfig.soundBoard.mapNotNull { SoundBites.findSound(it) }
     }
 
     /** Set the list of all sounds selected for the sound board. */
     fun setSoundBoard(soundBoard: List<SoundBite>) {
-        loadedConfig.soundBoard = soundBoard.map { it.name }
+        loadedConfig.soundBoard.setAll(soundBoard.map { it.name })
         save()
     }
 
@@ -180,9 +308,9 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return the version of the currently installed mod, or "0.0.0" if there is none. */
+    /** @return the version of the currently installed mod, or an empty string if there is none. */
     fun getModVersion(): String {
-        return loadedConfig.modVersion ?: "0.0.0"
+        return loadedConfig.modVersion
     }
 
     /** Set the version of the currently installed mod. */
@@ -191,31 +319,49 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return a list of user-selected sounds that don't exist on the PlaySounds page. */
-    fun getInvalidSounds(): List<String> {
-        val existing = SoundBites.getAll().map { it.name }
-        val invalidSounds = loadedConfig.sounds
-                .flatMap { it.value.sounds }
-                .filter { it !in existing }
-        val invalidSoundBoard = loadedConfig.soundBoard
-                ?.filter { it !in existing }
-                .orEmpty()
-        return invalidSounds + invalidSoundBoard
+    /**
+     * Returns a collection of sound names that were selected by the user but don't exist locally.
+     * When called, the returned sounds will not be returned by future calls.
+     */
+    fun findInvalidSounds(): Collection<String> {
+        val localSounds = SoundBites.getAll().map { it.name }
+        val invalidSounds = ((loadedConfig.sounds.flatMap { it.value.sounds }) + loadedConfig.soundBoard)
+                .distinct()
+                .filter { it !in localSounds }
+                .filter { it !in loadedConfig.invalidSounds }
+
+        loadedConfig.invalidSounds += invalidSounds
+        save()
+
+        return invalidSounds
     }
 
-    /** Clear user-selected sounds that don't exist on the PlaySounds page from the config. */
-    fun clearInvalidSounds() {
-        val invalid = getInvalidSounds()
-        loadedConfig.sounds.forEach { (_, v) ->
-            v.sounds.removeAll { it in invalid }
-        }
-        loadedConfig.soundBoard = loadedConfig.soundBoard?.filterNot { it in invalid }
+    fun removeInvalidSounds(victims: Collection<String>) {
+        loadedConfig.invalidSounds.removeAll(victims)
         save()
     }
 
-    /** Update the given sound bite's config to use the given sound `selection`. */
-    fun saveSoundsForType(type: KClass<out SoundEvent>, selection: List<SoundBite>) {
-        loadedConfig.sounds[type.simpleName]!!.sounds = selection.map { it.name }.toMutableList()
+    fun getSoundBiteVolumes(): Map<String, Int> {
+        return loadedConfig.volumes.toMap()
+    }
+
+    fun getSoundBiteVolume(name: String): Int? {
+        return loadedConfig.volumes[name]
+    }
+
+    fun addSoundBiteVolume(name: String, volume: Int) {
+        loadedConfig.volumes[name] = volume
+        save()
+    }
+
+    fun removeSoundBiteVolume(name: String) {
+        loadedConfig.volumes.remove(name)
+        save()
+    }
+
+    /** Update the given sound trigger's config to use the given sound bite `selection`. */
+    fun saveSoundsForType(type: SoundTriggerType, selection: List<SoundBite>) {
+        loadedConfig.sounds.getValue(type.key).sounds.setAll(selection.map { it.name })
         save()
     }
 
@@ -229,61 +375,75 @@ object ConfigPersistence {
         file.writeText(gson.toJson(loadedConfig))
     }
 
-    /** Load the default configs for all sound bites. */
+    /** Load the default configs for all sound triggers. */
     private fun loadDefaultConfig(): Config {
-        val sounds = SOUND_EVENT_TYPES.associateWith { loadDefaults(it) }
-                .mapKeys { it.key.simpleName!! }
-        return Config(0, null, null, 0L, DEFAULT_VOLUME, false, null, false, sounds.toMutableMap(), emptyList(), false, false, null)
+        return Config(sounds = SOUND_TRIGGER_TYPES
+                .map { it.key }
+                .associateWith { Toggle() }
+                .toMutableMap()
+        )
     }
 
-    /** Load the default config for a given sound bite `type`. */
-    private fun loadDefaults(type: KClass<out SoundEvent>): Toggle {
-        val resource = javaClass.classLoader.getResource(DEFAULTS_PATH.format(type.simpleName))
-        if (resource == null) {
-            logger.warn("No defaults resource available for: ${type.simpleName}")
-            return Toggle(enabled = false, playThroughDiscord = false, sounds = mutableListOf())
-        }
-        return gson.fromJson(resource.readText(), Toggle::class.java)
-    }
-
-    private fun cleanUpStaleSoundEvents() {
-        val validTypes = SOUND_EVENT_TYPES.map { it.simpleName!! }
+    private fun cleanUpStaleSoundTriggers() {
+        val validTypes = SOUND_TRIGGER_TYPES.map { it.key }
         val invalidTypes = loadedConfig.sounds.filterKeys { it !in validTypes }
         invalidTypes.forEach {
             loadedConfig.sounds.remove(it.key)
-            logger.info("Removed stale sound event: ${it.key}")
+            logger.info("Removed stale sound trigger: ${it.key}")
         }
     }
 
-    /** Checks the loaded `config` map, adding defaults for any missing sound bites. */
-    private fun addMissingSoundEventDefaults() {
-        SOUND_EVENT_TYPES.forEach {
-            if (loadedConfig.sounds[it.simpleName] == null) {
-                loadedConfig.sounds[it.simpleName!!] = loadDefaults(it)
-                logger.info("Loaded defaults for sound event: ${it.simpleName}")
-            }
-        }
+    private val SoundTriggerType.key: String
+        get() = simpleName ?: java.name
+
+    private fun <T> MutableCollection<T>.setAll(newItems: Iterable<T>) {
+        clear()
+        addAll(newItems)
     }
 
     private data class Config(
-            var port: Int,
-            var id: String?,
-            var dotaPath: String?,
-            var lastSync: Long,
-            var volume: Double,
-            var discordBotEnabled: Boolean,
-            var discordToken: String?,
-            var trayNotified: Boolean,
-            val sounds: MutableMap<String, Toggle>,
-            var soundBoard: List<String>?,
-            var modEnabled: Boolean,
-            var modTempDisabled: Boolean,
-            var modVersion: String?
+            var version: Int = CONFIG_VERSION,
+            var port: Int = DEFAULT_PORT,
+            var id: String = "",
+            var dotaPath: String = "",
+            var updates: Updates = Updates(),
+            var special: SpecialConfig = SpecialConfig(),
+            var lastSync: Long = 0,
+            var volume: Int = DEFAULT_VOLUME,
+            var discordBotEnabled: Boolean = false,
+            var discordToken: String = "",
+            var minimizeToTray: Boolean = true,
+            var alwaysShowTrayIcon: Boolean = false,
+            var trayNotified: Boolean = false,
+            val sounds: MutableMap<String, Toggle> = mutableMapOf(),
+            val soundBoard: MutableList<String> = mutableListOf(),
+            val invalidSounds: MutableSet<String> = mutableSetOf(),
+            val volumes: MutableMap<String, Int> = mutableMapOf(),
+            var modEnabled: Boolean = false,
+            var modTempDisabled: Boolean = false,
+            var modVersion: String = ""
+    )
+
+    private data class Updates(
+            var appUpdateCheck: Long = 0,
+            var appUpdateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
+            var soundsUpdateFrequency: UpdateFrequency = UpdateFrequency.DAILY,
+            var modUpdateCheck: Long = 0,
+            var modUpdateFrequency: UpdateFrequency = UpdateFrequency.ALWAYS
+    )
+
+    private data class SpecialConfig(
+            var useHealSmartChance: Boolean = true,
+            var minPeriod: Int = DEFAULT_MIN_PERIOD,
+            var maxPeriod: Int = DEFAULT_MAX_PERIOD
     )
 
     private data class Toggle(
-            var enabled: Boolean,
-            var playThroughDiscord: Boolean,
-            var sounds: MutableList<String>
+            var enabled: Boolean = false,
+            var chance: Int = DEFAULT_CHANCE,
+            var minRate: Int = DEFAULT_RATE,
+            var maxRate: Int = DEFAULT_RATE,
+            var playThroughDiscord: Boolean = false,
+            val sounds: MutableList<String> = mutableListOf()
     )
 }

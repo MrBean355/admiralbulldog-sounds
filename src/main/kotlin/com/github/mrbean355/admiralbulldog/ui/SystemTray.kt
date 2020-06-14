@@ -1,26 +1,23 @@
 package com.github.mrbean355.admiralbulldog.ui
 
-import com.github.mrbean355.admiralbulldog.ACTION_EXIT
-import com.github.mrbean355.admiralbulldog.ACTION_SHOW
 import com.github.mrbean355.admiralbulldog.DotaApplication
-import com.github.mrbean355.admiralbulldog.TITLE_MAIN_WINDOW
-import com.github.mrbean355.admiralbulldog.TRAY_CAPTION
-import com.github.mrbean355.admiralbulldog.TRAY_MESSAGE
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Platform
+import javafx.application.Platform.runLater
 import javafx.stage.Stage
-import java.awt.Image
+import tornadofx.onChange
 import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.SystemTray
 import java.awt.TrayIcon
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
-import kotlin.system.exitProcess
+
+private var trayIcon: TrayIcon? = null
 
 /** Prepare to show a [TrayIcon] when the app is minimized. */
-// TODO: Add a setting to enable/disable this feature.
 fun prepareTrayIcon(stage: Stage) {
     if (!SystemTray.isSupported()) {
         val osName = System.getProperty("os.name")
@@ -29,55 +26,83 @@ fun prepareTrayIcon(stage: Stage) {
         logAnalyticsEvent(eventType = "tray_unsupported", eventData = "os.name=$osName,os.version=$osVersion,os.arch=$osArch")
         return
     }
-    Platform.setImplicitExit(false)
 
+    trayIcon = buildTrayIcon(stage)
+    refreshSystemTray()
+
+    stage.iconifiedProperty().onChange { minimised ->
+        if (minimised) onAppMinimised(stage) else onAppMaximised()
+    }
+    stage.setOnCloseRequest {
+        it.consume()
+        Platform.exit()
+    }
+}
+
+fun refreshSystemTray() {
+    Platform.setImplicitExit(!ConfigPersistence.isMinimizeToTray())
+    if (ConfigPersistence.isAlwaysShowTrayIcon()) {
+        if (trayIcon !in SystemTray.getSystemTray().trayIcons) {
+            SystemTray.getSystemTray().add(trayIcon)
+        }
+    } else {
+        SystemTray.getSystemTray().remove(trayIcon)
+    }
+}
+
+private fun buildTrayIcon(stage: Stage): TrayIcon {
     val popup = PopupMenu()
-    MenuItem(ACTION_SHOW).apply {
-        addActionListener { showFromTray(stage) }
+    MenuItem(getString("menu_show")).apply {
+        addActionListener { maximiseFromTray(stage) }
         popup.add(this)
     }
-    MenuItem(ACTION_EXIT).apply {
+    MenuItem(getString("menu_close")).apply {
         addActionListener { exitFromTray() }
         popup.add(this)
     }
-    val trayIcon = TrayIcon(getTrayImage(), TITLE_MAIN_WINDOW, popup).apply {
-        addActionListener { showFromTray(stage) }
-    }
-
-    stage.iconifiedProperty().addListener { _, _, newValue ->
-        if (newValue) {
-            minimizeToTray(stage)
-            SystemTray.getSystemTray().add(trayIcon)
-            if (!ConfigPersistence.getAndSetNotifiedAboutSystemTray()) {
-                trayIcon.displayMessage(TRAY_CAPTION, TRAY_MESSAGE, TrayIcon.MessageType.INFO)
-            }
-        } else {
-            SystemTray.getSystemTray().remove(trayIcon)
-        }
+    return TrayIcon(getTrayImage(), getString("title_app"), popup).apply {
+        isImageAutoSize = true
+        addActionListener { maximiseFromTray(stage) }
     }
 }
 
-private fun getTrayImage(): Image {
-    val size = SystemTray.getSystemTray().trayIconSize
-    val image = ImageIO.read(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg"))
-    return image.getScaledInstance(size.width, size.height, BufferedImage.TYPE_INT_ARGB)
+private fun onAppMinimised(stage: Stage) {
+    if (ConfigPersistence.isMinimizeToTray()) {
+        minimizeToTray(stage)
+    }
+    if (!ConfigPersistence.isAlwaysShowTrayIcon()) {
+        SystemTray.getSystemTray().add(trayIcon)
+    }
+    if (!ConfigPersistence.getAndSetNotifiedAboutSystemTray()) {
+        trayIcon?.displayMessage(getString("tray_caption"), getString("tray_message"), TrayIcon.MessageType.INFO)
+    }
 }
 
-private fun showFromTray(stage: Stage) {
-    Platform.runLater {
+private fun onAppMaximised() {
+    if (!ConfigPersistence.isAlwaysShowTrayIcon()) {
+        SystemTray.getSystemTray().remove(trayIcon)
+    }
+}
+
+private fun getTrayImage(): BufferedImage {
+    return ImageIO.read(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg"))
+}
+
+private fun maximiseFromTray(stage: Stage) {
+    runLater {
         stage.isIconified = false
         stage.show()
     }
 }
 
 private fun minimizeToTray(stage: Stage) {
-    Platform.runLater {
+    runLater {
         stage.hide()
     }
 }
 
 private fun exitFromTray() {
-    Platform.runLater {
-        exitProcess(0)
+    runLater {
+        Platform.exit()
     }
 }

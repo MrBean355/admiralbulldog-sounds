@@ -1,4 +1,6 @@
 package com.github.mrbean355.admiralbulldog
 
-@javax.annotation.processing.Generated("generateBuildConfig")
-val APP_VERSION = com.vdurmont.semver4j.Semver("1.9.3")
+import com.vdurmont.semver4j.Semver
+
+val APP_VERSION: Semver = Semver("1.10.0-beta.1")
+const val DISTRIBUTION: String = "win"

@@ -1,5 +1,7 @@
 package com.github.mrbean355.admiralbulldog.assets
 
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_INDIVIDUAL_VOLUME
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer
@@ -16,16 +18,34 @@ class SoundBite(
 ) {
     /** Name of the file, excluding directories. */
     val fileName: String = filePath.substringAfterLast('/')
-    /** Name of the file, excluding directories and the file extension. */
-    // FIXME: toUpperCase() is here for backwards compatibility with existing config files. Make case-insensitive?
+
+    /**
+     * Name of the file, excluding directories and the file extension.
+     * `toUpperCase()` is for backwards compatibility of the config file.
+     */
     val name: String = fileName.substringBeforeLast('.').toUpperCase()
 
-    fun play() {
+    /**
+     * Play the sound bite using at the given [rate] and [volume].
+     * The volume is combined with the global app volume.
+     *
+     * If no [rate] argument is given, plays at [DEFAULT_RATE].
+     * If no [volume] argument is given:
+     * - Plays at the user's chosen individual volume if applicable.
+     * - Else plays at [DEFAULT_INDIVIDUAL_VOLUME].
+     */
+    fun play(rate: Int = DEFAULT_RATE, volume: Int = -1) {
         val media = Media(File(filePath).toURI().toString())
         MediaPlayer(media).apply {
             // Without setting the start time, some sounds don't play on MacOS ¯\_(ツ)_/¯
             startTime = Duration.ZERO
-            volume = ConfigPersistence.getVolume() / 100.0
+            val individualVolume = if (volume == -1) {
+                ConfigPersistence.getSoundBiteVolume(name) ?: DEFAULT_INDIVIDUAL_VOLUME
+            } else {
+                volume
+            }
+            this.volume = (ConfigPersistence.getVolume() / 100.0) * (individualVolume / 100.0)
+            this.rate = rate / 100.0
             onEndOfMedia = Runnable {
                 dispose()
                 players.remove(this)

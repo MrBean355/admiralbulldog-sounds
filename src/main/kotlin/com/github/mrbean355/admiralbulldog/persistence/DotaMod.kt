@@ -1,11 +1,10 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
-import com.github.mrbean355.admiralbulldog.arch.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getModChecksumAssetInfo
+import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
-import com.github.mrbean355.admiralbulldog.ui.DotaPath
-import com.github.mrbean355.admiralbulldog.ui.removeVersionPrefix
+import com.github.mrbean355.admiralbulldog.common.removeVersionPrefix
 import com.vdurmont.semver4j.Semver
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -31,7 +30,7 @@ object DotaMod {
             logger.info("No VPK found, download")
             return true
         }
-        val currentVersion = Semver(ConfigPersistence.getModVersion())
+        val currentVersion = Semver(ConfigPersistence.getModVersion().ifBlank { "0.0.0" })
         val latestVersion = Semver(releaseInfo.tagName.removeVersionPrefix())
         if (latestVersion > currentVersion) {
             logger.info("Newer version available, download")

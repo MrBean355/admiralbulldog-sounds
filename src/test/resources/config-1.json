@@ -1,0 +1,108 @@
+{
+  "port": 12345,
+  "id": "9edbbd3c-ffb6-4415-bd1d-c5e62dc2d441",
+  "dotaPath": "C:\\Steam Library\\steamapps\\common\\dota 2 beta\\",
+  "lastSync": 0,
+  "volume": 20.2,
+  "discordBotEnabled": true,
+  "discordToken": "c804503a-5f08-11ea-bc55-0242ac130003",
+  "trayNotified": false,
+  "sounds": {
+    "OnBountyRunesSpawn": {
+      "enabled": true,
+      "playThroughDiscord": true,
+      "sounds": [
+        "ROONS"
+      ]
+    },
+    "OnDeath": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "AWOO",
+        "BABYRAGE"
+      ]
+    },
+    "OnDefeat": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "WEFUCKINGLOST"
+      ]
+    },
+    "OnHeal": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "EEL"
+      ]
+    },
+    "OnKill": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "AREDOINGIT",
+        "BERRYDISGUSTING",
+        "BLBLBL"
+      ]
+    },
+    "OnMatchStart": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "ASSEMBLE",
+        "STAYHOME",
+        "TEAMPEPEGA"
+      ]
+    },
+    "OnMidasReady": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "USEYOURMIDAS"
+      ]
+    },
+    "OnRespawn": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "HEREWEGOAGAIN"
+      ]
+    },
+    "OnSmoked": {
+      "enabled": true,
+      "playThroughDiscord": true,
+      "sounds": [
+        "WEED"
+      ]
+    },
+    "Periodically": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "ADMIRALC",
+        "ALLIANCE",
+        "ALLO",
+        "AYAWUTFACE",
+        "BRUH"
+      ]
+    },
+    "OnVictory": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "VIVON"
+      ]
+    }
+  },
+  "soundBoard": [
+    "11",
+    "KEKW",
+    "OHKEKKEKKEK",
+    "OHNO",
+    "OHNONO"
+  ],
+  "modEnabled": true,
+  "modTempDisabled": false,
+  "modVersion": "1.11.8"
+}

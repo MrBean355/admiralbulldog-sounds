@@ -1,12 +1,12 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.ui.Alert
-import com.github.mrbean355.admiralbulldog.ui.toNullable
+import com.github.mrbean355.admiralbulldog.common.DISCORD_BUTTON
+import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
+import com.github.mrbean355.admiralbulldog.common.error
+import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.application.HostServices
-import javafx.application.Platform
-import javafx.scene.control.Alert
-import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
+import tornadofx.runLater
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -15,7 +15,7 @@ import kotlin.system.exitProcess
 
 /**
  * [java.lang.Thread.UncaughtExceptionHandler] which creates a log file containing the stack trace with some additional
- * info. Also shows an [Alert] to the user, asking them to report the issue on Discord.
+ * info. Also shows an alert to the user, asking them to report the issue on Discord.
  */
 class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
     : Thread.UncaughtExceptionHandler {
@@ -34,7 +34,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
             Please make sure there is only 1 instance of the app running.
             
             If this is not the case, please report it through Discord.
-        """.trimIndent(), exit = true)
+        """.trimIndent(), exitAfterwards = true)
     }
 
     private fun handleGenericException(t: Thread?, e: Throwable?) {
@@ -43,7 +43,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
         e?.printStackTrace(PrintWriter(stringWriter))
         val stackTrace = stringWriter.toString()
         file.writeText("""
-            |app version  = $APP_VERSION
+            |app version  = $APP_VERSION [$DISTRIBUTION]
             |os.name      = ${System.getProperty("os.name")}
             |os.version   = ${System.getProperty("os.version")}
             |os.arch      = ${System.getProperty("os.arch")}
@@ -53,7 +53,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
             |$stackTrace
         """.trimMargin())
 
-        showDialog(HEADER_EXCEPTION, """
+        showDialog(getString("title_unknown_error"), """
             Whoops! Something bad has happened, sorry!
             Please consider reporting this issue so it can be fixed.
 
@@ -64,20 +64,15 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
         """.trimIndent())
     }
 
-    private fun showDialog(header: String, message: String, exit: Boolean = false) {
-        Platform.runLater {
-            val discordButton = ButtonType("Discord", ButtonBar.ButtonData.OK_DONE)
-            val action = Alert(type = Alert.AlertType.ERROR,
-                    header = header,
-                    content = message,
-                    buttons = arrayOf(discordButton, ButtonType.OK)
-            ).showAndWait().toNullable()
-
-            if (action == discordButton) {
-                hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
-            }
-            if (exit) {
-                exitProcess(-1)
+    private fun showDialog(header: String, message: String, exitAfterwards: Boolean = false) {
+        runLater {
+            error(header, message, DISCORD_BUTTON, ButtonType.OK) {
+                if (it === DISCORD_BUTTON) {
+                    hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
+                }
+                if (exitAfterwards) {
+                    exitProcess(-1)
+                }
             }
         }
     }

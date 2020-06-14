@@ -1,81 +1,50 @@
 package com.github.mrbean355.admiralbulldog
 
+import com.github.mrbean355.admiralbulldog.common.BulldogIcon
+import com.github.mrbean355.admiralbulldog.home.MainScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.ui.finalise
-import com.github.mrbean355.admiralbulldog.ui.getString
-import javafx.application.Application
-import javafx.event.EventHandler
-import javafx.geometry.Insets
-import javafx.geometry.Pos
-import javafx.scene.control.Button
-import javafx.scene.control.Hyperlink
-import javafx.scene.control.Label
-import javafx.scene.control.ProgressBar
-import javafx.scene.layout.HBox
-import javafx.scene.layout.VBox
-import javafx.scene.text.Font
+import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
+import javafx.scene.paint.Color.RED
+import javafx.scene.text.FontWeight.BOLD
 import javafx.stage.Stage
+import tornadofx.App
+import tornadofx.Stylesheet
+import tornadofx.box
+import tornadofx.cssclass
+import tornadofx.px
 import kotlin.system.exitProcess
 
-class DotaApplication : Application() {
+class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(), stylesheet = *arrayOf(AppStyles::class)) {
 
     override fun init() {
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandlerImpl(hostServices))
         ConfigPersistence.initialise()
     }
 
-    override fun start(primaryStage: Stage) {
-        val viewModel = HomeViewModel(primaryStage, hostServices)
-        val root = VBox(PADDING_SMALL).apply {
-            padding = Insets(PADDING_MEDIUM)
-            alignment = Pos.CENTER
-        }
-        root.children += Label().apply {
-            font = Font(TEXT_SIZE_LARGE)
-            textProperty().bind(viewModel.heading)
-        }
-        root.children += ProgressBar().apply {
-            prefWidthProperty().bind(root.widthProperty())
-            visibleProperty().bind(viewModel.progressBarVisible)
-            managedProperty().bind(visibleProperty())
-        }
-        root.children += Label().apply {
-            textProperty().bind(viewModel.infoMessage)
-        }
-        root.children += HBox(PADDING_SMALL).apply {
-            alignment = Pos.CENTER
-            children += Button(getString("btn_change_sounds")).apply {
-                setOnAction { viewModel.onChangeSoundsClicked() }
-            }
-            children += Button(getString("btn_discord_bot")).apply {
-                setOnAction { viewModel.onDiscordBotClicked() }
-            }
-            children += Button(getString("btn_dota_mod")).apply {
-                setOnAction { viewModel.onDotaModClicked() }
-            }
-        }
-        root.children += HBox(PADDING_SMALL).apply {
-            alignment = Pos.CENTER
-            children += Hyperlink(getString("btn_discord_community")).apply {
-                setOnAction { viewModel.onDiscordCommunityClicked() }
-            }
-            children += Hyperlink(getString("btn_project_website")).apply {
-                setOnAction { viewModel.onProjectWebsiteClicked() }
-            }
-        }
-        root.children += Label().apply {
-            font = Font(TEXT_SIZE_SMALL)
-            textProperty().bind(viewModel.version)
-        }
+    override fun start(stage: Stage) {
+        super.start(stage)
+        prepareTrayIcon(stage)
+    }
 
-        primaryStage.finalise(
-                title = getString("title_app"),
-                root = root,
-                closeOnEscape = false,
-                onCloseRequest = EventHandler {
-                    exitProcess(0)
-                }
-        )
-        viewModel.init()
+    override fun stop() {
+        super.stop()
+        exitProcess(0)
+    }
+}
+
+class AppStyles : Stylesheet() {
+    companion object {
+        val inlineError by cssclass()
+        val iconButton by cssclass()
+    }
+
+    init {
+        inlineError {
+            textFill = RED
+            fontWeight = BOLD
+        }
+        iconButton {
+            padding = box(vertical = 2.px, horizontal = 4.px)
+        }
     }
 }

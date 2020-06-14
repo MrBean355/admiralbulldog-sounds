@@ -1,0 +1,90 @@
+{
+  "port": 12345,
+  "lastSync": 0,
+  "volume": 20.2,
+  "discordBotEnabled": true,
+  "trayNotified": true,
+  "sounds": {
+    "OnBountyRunesSpawn": {
+      "enabled": true,
+      "playThroughDiscord": true,
+      "sounds": [
+        "ROONS"
+      ]
+    },
+    "OnDeath": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "AWOO",
+        "BABYRAGE"
+      ]
+    },
+    "OnDefeat": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "WEFUCKINGLOST"
+      ]
+    },
+    "OnHeal": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "EEL"
+      ]
+    },
+    "OnKill": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "AREDOINGIT",
+        "BERRYDISGUSTING",
+        "BLBLBL"
+      ]
+    },
+    "OnMatchStart": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "ASSEMBLE",
+        "STAYHOME",
+        "TEAMPEPEGA"
+      ]
+    },
+    "OnMidasReady": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "USEYOURMIDAS"
+      ]
+    },
+    "OnSmoked": {
+      "enabled": true,
+      "playThroughDiscord": true,
+      "sounds": [
+        "WEED"
+      ]
+    },
+    "Periodically": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "ADMIRALC",
+        "ALLIANCE",
+        "ALLO",
+        "AYAWUTFACE",
+        "BRUH"
+      ]
+    },
+    "OnVictory": {
+      "enabled": true,
+      "playThroughDiscord": false,
+      "sounds": [
+        "VIVON"
+      ]
+    }
+  },
+  "modEnabled": true,
+  "modTempDisabled": false
+}

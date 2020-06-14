@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch
 
-import com.github.mrbean355.admiralbulldog.ui.VPK_FILE_NAME
+import com.github.mrbean355.admiralbulldog.persistence.VPK_FILE_NAME
 import com.google.gson.annotations.SerializedName
 import java.util.Date
 
@@ -19,7 +19,22 @@ data class AnalyticsRequest(
 data class PlaySoundRequest(
         val userId: String,
         val token: String,
-        val soundFileName: String
+        val soundFileName: String,
+        val volume: Int,
+        val rate: Int
+)
+
+data class DotaMod(
+        val name: String,
+        val description: String,
+        val version: Int,
+        val parts: List<DotaModPart>
+)
+
+data class DotaModPart(
+        val name: String,
+        val url: String,
+        val vpkPath: String
 )
 
 data class ReleaseInfo(

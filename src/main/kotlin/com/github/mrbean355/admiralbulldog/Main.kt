@@ -1,8 +1,9 @@
 package com.github.mrbean355.admiralbulldog
 
-import com.github.mrbean355.admiralbulldog.arch.hostUrl
-import com.github.mrbean355.admiralbulldog.ui.getString
-import javafx.application.Application
+import com.github.mrbean355.admiralbulldog.arch.repo.hostUrl
+import com.github.mrbean355.admiralbulldog.common.URL_JAVA_DOWNLOAD
+import com.github.mrbean355.admiralbulldog.common.getString
+import tornadofx.launch
 import java.awt.Desktop
 import java.net.URI
 import javax.swing.JOptionPane.*
@@ -16,7 +17,7 @@ private const val MIN_JAVA_VERSION = 8
 fun main(args: Array<String>) {
     if (getJavaMajorVersion() >= MIN_JAVA_VERSION) {
         setCustomHostUrl(args)
-        Application.launch(DotaApplication::class.java)
+        launch<DotaApplication>()
     } else {
         showJavaUnsupportedMessage()
     }
