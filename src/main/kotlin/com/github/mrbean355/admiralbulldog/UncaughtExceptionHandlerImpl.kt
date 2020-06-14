@@ -43,7 +43,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
         e?.printStackTrace(PrintWriter(stringWriter))
         val stackTrace = stringWriter.toString()
         file.writeText("""
-            |app version  = $APP_VERSION
+            |app version  = $APP_VERSION [$DISTRIBUTION]
             |os.name      = ${System.getProperty("os.name")}
             |os.version   = ${System.getProperty("os.version")}
             |os.arch      = ${System.getProperty("os.arch")}

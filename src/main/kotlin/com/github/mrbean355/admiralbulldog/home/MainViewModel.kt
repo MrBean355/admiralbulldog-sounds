@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
+import com.github.mrbean355.admiralbulldog.DISTRIBUTION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
@@ -49,7 +50,7 @@ class MainViewModel : AppViewModel() {
     val infoMessage: StringBinding = hasHeardFromDota.stringBinding {
         if (it == true) getString("dsc_connected") else getString("dsc_not_connected")
     }
-    val version: StringProperty = stringProperty(getString("lbl_app_version", APP_VERSION.value))
+    val version: StringProperty = stringProperty(getString("lbl_app_version", APP_VERSION.value, DISTRIBUTION))
 
     override fun onReady() {
         logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION.value)
