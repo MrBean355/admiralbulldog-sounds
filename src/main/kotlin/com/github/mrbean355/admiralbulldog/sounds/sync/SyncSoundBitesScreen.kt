@@ -8,17 +8,19 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useSoundBiteCells
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import javafx.scene.control.ButtonBar.ButtonData.OK_DONE
+import javafx.scene.input.KeyCode.ESCAPE
+import javafx.scene.input.KeyEvent
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
 import tornadofx.button
 import tornadofx.buttonbar
-import tornadofx.enableWhen
 import tornadofx.fitToParentWidth
 import tornadofx.managedWhen
 import tornadofx.onChange
 import tornadofx.paddingAll
 import tornadofx.progressbar
+import tornadofx.runLater
 import tornadofx.treeview
 import tornadofx.vbox
 import tornadofx.visibleWhen
@@ -46,10 +48,13 @@ class SyncSoundBitesScreen : Fragment(getString("sync_sound_bites_title")) {
         }
         buttonbar {
             button(getString("btn_cancel"), type = CANCEL_CLOSE) {
+                visibleWhen(viewModel.finished.not())
+                managedWhen(visibleProperty())
                 action { close() }
             }
             button(getString("btn_done"), type = OK_DONE) {
-                enableWhen(viewModel.finished)
+                visibleWhen(viewModel.finished)
+                managedWhen(visibleProperty())
                 action { close() }
             }
         }
@@ -64,6 +69,13 @@ class SyncSoundBitesScreen : Fragment(getString("sync_sound_bites_title")) {
         }
         subscribe<SyncSoundBitesViewModel.CloseEvent> {
             close()
+        }
+        runLater {
+            currentStage?.addEventFilter(KeyEvent.KEY_PRESSED) {
+                if (it.code == ESCAPE && viewModel.finished.get()) {
+                    close()
+                }
+            }
         }
     }
 }
