@@ -34,7 +34,6 @@ class SoundManagerScreen : Fragment(getString("title_sound_bite_manager")) {
             readonlyColumn(getString("column_sound_bite"), SoundBite::name) {
                 weightedWidth(2)
                 useLabelWithPlayButton { it.play() }
-                reorderableProperty()
                 isResizable = false
             }
             columnResizePolicy = SmartResize.POLICY
