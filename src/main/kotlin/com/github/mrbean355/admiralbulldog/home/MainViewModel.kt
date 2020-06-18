@@ -1,13 +1,13 @@
 package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.DISTRIBUTION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_TELEGRAM_CHANNEL
+import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
@@ -50,7 +50,7 @@ class MainViewModel : AppViewModel() {
     val infoMessage: StringBinding = hasHeardFromDota.stringBinding {
         if (it == true) getString("dsc_connected") else getString("dsc_not_connected")
     }
-    val version: StringProperty = stringProperty(getString("lbl_app_version", APP_VERSION.value, DISTRIBUTION))
+    val version: StringProperty = stringProperty(getString("lbl_app_version", APP_VERSION.value, getDistributionName()))
 
     override fun onReady() {
         logAnalyticsEvent(eventType = "app_start", eventData = APP_VERSION.value)
