@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch
 
+import com.github.mrbean355.admiralbulldog.DISTRIBUTION
 import com.github.mrbean355.admiralbulldog.persistence.VPK_FILE_NAME
 import com.google.gson.annotations.SerializedName
 import java.util.Date
@@ -56,7 +57,7 @@ data class AssetInfo(
 
 //==================== Extensions ====================\\
 
-private val JAR_FILE_PATTERN = Regex("admiralbulldog-sounds-.*\\.jar")
+private val JAR_FILE_PATTERN = Regex("admiralbulldog-sounds-$DISTRIBUTION-.*\\.jar")
 private const val SHA_512_ASSET_NAME = "${VPK_FILE_NAME}.sha512"
 
 /** @return [AssetInfo] for the app's main JAR file. */
