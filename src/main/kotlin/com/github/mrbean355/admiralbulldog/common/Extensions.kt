@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.common
 
+import com.github.mrbean355.admiralbulldog.DISTRIBUTION
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tornadofx.ViewModel
@@ -30,4 +31,10 @@ fun String.replaceFileSeparators(): String {
 
 fun String.removeVersionPrefix(): String {
     return replace(Regex("^v"), "")
+}
+
+fun getDistributionName(): String {
+    return DISTRIBUTION.capitalize().let {
+        if (it == "Win") "Windows" else it
+    }
 }
