@@ -13,8 +13,7 @@ data class CreateIdResponse(
 
 data class AnalyticsRequest(
         val userId: String,
-        val eventType: String,
-        val eventData: String
+        val properties: Map<String, String>
 )
 
 data class PlaySoundRequest(

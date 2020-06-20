@@ -1,7 +1,5 @@
 package com.github.mrbean355.admiralbulldog.discord
 
-import com.github.mrbean355.admiralbulldog.arch.EVENT_TYPE_CLICK
-import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
@@ -97,7 +95,6 @@ class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
     }
 
     private fun onBotCommandsClicked() {
-        logAnalyticsEvent(EVENT_TYPE_CLICK, "discord_bot_commands")
         find<DiscordBotCommandsScreen>().openModal(resizable = false)
     }
 
