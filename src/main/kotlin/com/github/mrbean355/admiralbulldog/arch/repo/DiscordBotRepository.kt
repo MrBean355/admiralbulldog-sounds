@@ -76,9 +76,9 @@ class DiscordBotRepository {
         }
     }
 
-    suspend fun logAnalyticsEvent(eventType: String, eventData: String): ServiceResponse<Void> {
+    suspend fun logAnalyticsProperties(properties: Map<String, Any>): ServiceResponse<Void> {
         return try {
-            DiscordBotService.INSTANCE.logAnalyticsEvent(AnalyticsRequest(loadUserId(), eventType, eventData))
+            DiscordBotService.INSTANCE.logAnalyticsProperties(AnalyticsRequest(loadUserId(), properties.mapValues { it.value.toString() }))
                     .toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Failed to log analytics event", t)

@@ -38,8 +38,8 @@ interface DiscordBotService {
     @POST("/")
     suspend fun playSound(@Body request: PlaySoundRequest): Response<Void>
 
-    @POST("/analytics/logEvent")
-    suspend fun logAnalyticsEvent(@Body request: AnalyticsRequest): Response<Void>
+    @POST("/analytics/logProperties")
+    suspend fun logAnalyticsProperties(@Body request: AnalyticsRequest): Response<Void>
 
     @GET("/mods")
     suspend fun listMods(): Response<List<DotaMod>>

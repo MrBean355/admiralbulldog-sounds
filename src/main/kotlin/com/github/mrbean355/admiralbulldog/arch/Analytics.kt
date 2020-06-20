@@ -1,15 +1,23 @@
 package com.github.mrbean355.admiralbulldog.arch
 
+import com.github.mrbean355.admiralbulldog.APP_VERSION
+import com.github.mrbean355.admiralbulldog.DISTRIBUTION
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 
 private val discordBotRepository = DiscordBotRepository()
 
-const val EVENT_TYPE_CLICK = "button_click"
-
-fun logAnalyticsEvent(eventType: String, eventData: String = "") {
-    GlobalScope.launch {
-        discordBotRepository.logAnalyticsEvent(eventType, eventData)
-    }
+suspend fun logAnalyticsProperties() {
+    discordBotRepository.logAnalyticsProperties(mapOf(
+            "app.version" to APP_VERSION,
+            "app.distribution" to DISTRIBUTION,
+            "app.update" to ConfigPersistence.getAppUpdateFrequency(),
+            "sounds.update" to ConfigPersistence.getSoundsUpdateFrequency(),
+            "tray.enabled" to ConfigPersistence.isMinimizeToTray(),
+            "tray.permanent" to ConfigPersistence.isAlwaysShowTrayIcon(),
+            "bot.enabled" to ConfigPersistence.isUsingDiscordBot(),
+            "mod.enabled" to ConfigPersistence.isModEnabled(),
+            "mod.version" to ConfigPersistence.getModVersion(),
+            "mod.update" to ConfigPersistence.getModUpdateFrequency()
+    ))
 }

@@ -1,7 +1,6 @@
 package com.github.mrbean355.admiralbulldog.ui
 
 import com.github.mrbean355.admiralbulldog.DotaApplication
-import com.github.mrbean355.admiralbulldog.arch.logAnalyticsEvent
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Platform
@@ -20,10 +19,6 @@ private var trayIcon: TrayIcon? = null
 /** Prepare to show a [TrayIcon] when the app is minimized. */
 fun prepareTrayIcon(stage: Stage) {
     if (!SystemTray.isSupported()) {
-        val osName = System.getProperty("os.name")
-        val osVersion = System.getProperty("os.version")
-        val osArch = System.getProperty("os.arch")
-        logAnalyticsEvent(eventType = "tray_unsupported", eventData = "os.name=$osName,os.version=$osVersion,os.arch=$osArch")
         return
     }
 
