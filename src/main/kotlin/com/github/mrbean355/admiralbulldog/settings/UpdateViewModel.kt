@@ -6,12 +6,7 @@ import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
-import com.github.mrbean355.admiralbulldog.common.DOWNLOAD_BUTTON
-import com.github.mrbean355.admiralbulldog.common.WHATS_NEW_BUTTON
-import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.information
-import com.github.mrbean355.admiralbulldog.common.logger
-import com.github.mrbean355.admiralbulldog.common.removeVersionPrefix
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.common.update.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaMod
@@ -112,7 +107,7 @@ class UpdateViewModel : AppViewModel() {
         information(
                 header = header,
                 content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
-                buttons = *arrayOf(WHATS_NEW_BUTTON, DOWNLOAD_BUTTON, ButtonType.CANCEL)
+                buttons = arrayOf(WHATS_NEW_BUTTON, DOWNLOAD_BUTTON, ButtonType.CANCEL)
         ) {
             action = it
         }
@@ -134,7 +129,7 @@ class UpdateViewModel : AppViewModel() {
             information(
                     header = getString("header_app_update_downloaded"),
                     content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
-                    buttons = *arrayOf(ButtonType.FINISH)
+                    buttons = arrayOf(ButtonType.FINISH)
             )
             exitProcess(0)
         }
@@ -152,7 +147,7 @@ class UpdateViewModel : AppViewModel() {
             information(
                     header = getString("header_mod_update_downloaded"),
                     content = getString("content_mod_installed"),
-                    buttons = *arrayOf(ButtonType.FINISH)
+                    buttons = arrayOf(ButtonType.FINISH)
             )
         }
     }
