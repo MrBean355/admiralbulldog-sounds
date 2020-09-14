@@ -1,16 +1,17 @@
 package com.github.mrbean355.admiralbulldog.mod.modular
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.useBoldFont
 import javafx.geometry.Pos
 import javafx.geometry.Pos.CENTER
 import javafx.scene.control.cell.CheckBoxTreeCell
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
+import tornadofx.addClass
 import tornadofx.button
 import tornadofx.collapseAll
 import tornadofx.expandAll
@@ -33,7 +34,7 @@ class DotaModsScreen : Fragment(getString("title_mod")) {
         paddingAll = PADDING_MEDIUM
         prefWidth = WINDOW_WIDTH
         label(getString("label_choose_mod_parts")) {
-            useBoldFont()
+            addClass(AppStyles.boldFont)
             alignment = CENTER
         }
         progressbar {

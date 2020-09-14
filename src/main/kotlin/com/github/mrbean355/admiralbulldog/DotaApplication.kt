@@ -33,12 +33,33 @@ class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(
 }
 
 class AppStyles : Stylesheet() {
+
     companion object {
+        val boldFont by cssclass()
+        val smallFont by cssclass()
+        val mediumFont by cssclass()
+        val largeFont by cssclass()
+        val monospacedFont by cssclass()
         val inlineError by cssclass()
         val iconButton by cssclass()
     }
 
     init {
+        boldFont {
+            fontWeight = BOLD
+        }
+        smallFont {
+            fontSize = 10.px
+        }
+        mediumFont {
+            fontSize = 14.px
+        }
+        largeFont {
+            fontSize = 18.px
+        }
+        monospacedFont {
+            fontFamily = "Lucida Console"
+        }
         inlineError {
             textFill = RED
             fontWeight = BOLD

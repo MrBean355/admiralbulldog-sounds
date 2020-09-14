@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.HelpIcon
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
@@ -9,12 +10,12 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.common.periodSpinner
 import com.github.mrbean355.admiralbulldog.common.rateSpinner
-import com.github.mrbean355.admiralbulldog.common.useHeaderFont
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.scene.image.ImageView
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
+import tornadofx.addClass
 import tornadofx.button
 import tornadofx.checkbox
 import tornadofx.enableWhen
@@ -36,8 +37,8 @@ class ConfigureSoundTriggerScreen : Fragment() {
         paddingAll = PADDING_MEDIUM
         fieldset {
             label(viewModel.description) {
+                addClass(AppStyles.mediumFont, AppStyles.boldFont)
                 paddingBottom = PADDING_SMALL
-                useHeaderFont()
                 isWrapText = true
             }
             field(getString("label_enable_sound_trigger")) {

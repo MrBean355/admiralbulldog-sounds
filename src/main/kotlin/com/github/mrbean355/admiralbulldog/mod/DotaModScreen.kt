@@ -1,14 +1,15 @@
 package com.github.mrbean355.admiralbulldog.mod
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_MOD_INFO
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.useSmallFont
 import javafx.geometry.Pos.CENTER
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
+import tornadofx.addClass
 import tornadofx.checkbox
 import tornadofx.enableWhen
 import tornadofx.hyperlink
@@ -37,7 +38,7 @@ class DotaModScreen : Fragment(getString("title_mod")) {
                 action { hostServices.showDocument(URL_MOD_INFO) }
             }
             label(viewModel.formattedModVersion) {
-                useSmallFont()
+                addClass(AppStyles.smallFont)
             }
         }
     }

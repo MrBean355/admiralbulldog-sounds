@@ -1,11 +1,11 @@
 package com.github.mrbean355.admiralbulldog.discord
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.useBoldFont
-import com.github.mrbean355.admiralbulldog.common.useMonospacedFont
 import tornadofx.Fragment
+import tornadofx.addClass
 import tornadofx.gridpane
 import tornadofx.gridpaneConstraints
 import tornadofx.label
@@ -20,7 +20,7 @@ class DiscordBotCommandsScreen : Fragment(getString("title_discord_bot_commands"
         vgap = PADDING_SMALL
         row {
             label(getString("discord_command_header")) {
-                useBoldFont()
+                addClass(AppStyles.boldFont)
                 gridpaneConstraints {
                     columnSpan = 2
                 }
@@ -28,49 +28,49 @@ class DiscordBotCommandsScreen : Fragment(getString("title_discord_bot_commands"
         }
         row {
             label("!help") {
-                useMonospacedFont()
+                addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_help"))
         }
         row {
             label("!roons") {
-                useMonospacedFont()
+                addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_roons"))
         }
         row {
             label("!seeya") {
-                useMonospacedFont()
+                addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_seeya"))
         }
         row {
             label("!magic") {
-                useMonospacedFont()
+                addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_magic"))
         }
         row {
             label("!follow") {
-                useMonospacedFont()
+                addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_follow"))
         }
         row {
             label("!unfollow") {
-                useMonospacedFont()
+                addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_unfollow"))
         }
         row {
             label("!volume") {
-                useMonospacedFont()
+                addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_get_volume"))
         }
         row {
             label("!volume x") {
-                useMonospacedFont()
+                addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_set_volume"))
         }

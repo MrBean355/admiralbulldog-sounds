@@ -1,12 +1,10 @@
 package com.github.mrbean355.admiralbulldog.home
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.useBoldFont
-import com.github.mrbean355.admiralbulldog.common.useLargeFont
-import com.github.mrbean355.admiralbulldog.common.useSmallFont
 import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
@@ -14,6 +12,7 @@ import javafx.geometry.Pos.CENTER
 import javafx.scene.image.ImageView
 import tornadofx.View
 import tornadofx.action
+import tornadofx.addClass
 import tornadofx.button
 import tornadofx.fitToParentWidth
 import tornadofx.hbox
@@ -38,7 +37,7 @@ class MainScreen : View(getString("title_app")) {
         vbox(spacing = PADDING_SMALL, alignment = CENTER) {
             paddingAll = PADDING_MEDIUM
             label(viewModel.heading) {
-                useLargeFont()
+                addClass(AppStyles.largeFont)
             }
             progressbar {
                 fitToParentWidth()
@@ -67,10 +66,10 @@ class MainScreen : View(getString("title_app")) {
                 }
             }
             label(getString("label_welcome_message")) {
-                useBoldFont()
+                addClass(AppStyles.boldFont)
             }
             label(viewModel.version) {
-                useSmallFont()
+                addClass(AppStyles.smallFont)
             }
         }
         button(graphic = ImageView(SettingsIcon())) {

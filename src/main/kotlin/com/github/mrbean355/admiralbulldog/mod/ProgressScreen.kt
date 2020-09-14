@@ -1,12 +1,13 @@
 package com.github.mrbean355.admiralbulldog.mod
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_LARGE
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.useLargeFont
 import javafx.geometry.Pos.CENTER
 import tornadofx.Fragment
+import tornadofx.addClass
 import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.progressindicator
@@ -20,7 +21,7 @@ class ProgressScreen : Fragment(getString("title_loading")) {
         paddingAll = PADDING_LARGE
         progressindicator()
         label(getString("label_loading")) {
-            useLargeFont()
+            addClass(AppStyles.largeFont)
         }
     }
 }
