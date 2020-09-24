@@ -1,17 +1,13 @@
 package com.github.mrbean355.admiralbulldog.assets
 
-import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.DISTRIBUTION
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_INDIVIDUAL_VOLUME
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
+import com.github.mrbean355.admiralbulldog.exception.PlaySoundErrorFile
+import com.github.mrbean355.admiralbulldog.exception.writeExceptionLog
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer
-import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.PrintWriter
-import java.io.StringWriter
-import java.util.Date
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -72,23 +68,8 @@ class SoundBite(
         private val players = CopyOnWriteArrayList<MediaPlayer>()
 
         private fun logError(filePath: String, t: Throwable) {
-            val stackTrace = StringWriter().let {
-                t.printStackTrace(PrintWriter(it))
-                it.toString()
-            }
             synchronized(this) {
-                LoggerFactory.getLogger(SoundBite::class.java).error("Failed to play sound '$filePath'", t)
-                File("play_sound_error.txt").writeText("""
-                    |Play sound exception on ${Date()}:
-                    |app version  = $APP_VERSION [$DISTRIBUTION]
-                    |os.name      = ${System.getProperty("os.name")}
-                    |os.version   = ${System.getProperty("os.version")}
-                    |os.arch      = ${System.getProperty("os.arch")}
-                    |java.version = ${System.getProperty("java.version")}
-                    |thread info  = $t
-                    
-                    |$stackTrace
-                """.trimMargin())
+                t.writeExceptionLog(PlaySoundErrorFile, message = "Couldn't play '$filePath'")
             }
         }
     }
