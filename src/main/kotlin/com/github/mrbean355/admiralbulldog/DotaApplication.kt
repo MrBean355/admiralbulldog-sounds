@@ -1,17 +1,14 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.common.BulldogIcon
+import com.github.mrbean355.admiralbulldog.exception.UncaughtExceptionHandlerImpl
 import com.github.mrbean355.admiralbulldog.home.MainScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
 import javafx.scene.paint.Color.RED
 import javafx.scene.text.FontWeight.BOLD
 import javafx.stage.Stage
-import tornadofx.App
-import tornadofx.Stylesheet
-import tornadofx.box
-import tornadofx.cssclass
-import tornadofx.px
+import tornadofx.*
 import kotlin.system.exitProcess
 
 class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(), stylesheet = *arrayOf(AppStyles::class)) {

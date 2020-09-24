@@ -2,13 +2,7 @@ package com.github.mrbean355.admiralbulldog.persistence
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_CHANCE
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_MAX_PERIOD
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_MIN_PERIOD
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
-import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
-import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.persistence.migration.ConfigMigration
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
@@ -209,6 +203,14 @@ object ConfigPersistence {
     fun setAlwaysShowTrayIcon(show: Boolean) {
         loadedConfig.alwaysShowTrayIcon = show
         save()
+    }
+
+    /** @return sound trigger types that are enabled. */
+    fun getEnabledSoundTriggers(): Collection<SoundTriggerType> {
+        return loadedConfig.sounds
+                .filterValues { it.enabled }
+                .keys
+                .map { SOUND_TRIGGER_TYPES.first { type -> it == type.simpleName } }
     }
 
     /** @return `true` if the sound trigger is enabled; `false` otherwise. */

@@ -2,10 +2,11 @@ package com.github.mrbean355.admiralbulldog.assets
 
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_INDIVIDUAL_VOLUME
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
+import com.github.mrbean355.admiralbulldog.exception.PlaySoundErrorFile
+import com.github.mrbean355.admiralbulldog.exception.writeExceptionLog
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer
-import javafx.util.Duration
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -35,25 +36,27 @@ class SoundBite(
      * - Else plays at [DEFAULT_INDIVIDUAL_VOLUME].
      */
     fun play(rate: Int = DEFAULT_RATE, volume: Int = -1) {
-        val media = Media(File(filePath).toURI().toString())
-        MediaPlayer(media).apply {
-            // Without setting the start time, some sounds don't play on MacOS ¯\_(ツ)_/¯
-            startTime = Duration.ZERO
-            val individualVolume = if (volume == -1) {
-                ConfigPersistence.getSoundBiteVolume(name) ?: DEFAULT_INDIVIDUAL_VOLUME
-            } else {
-                volume
+        try {
+            val media = Media(File(filePath).toURI().toString())
+            MediaPlayer(media).apply {
+                val individualVolume = if (volume == -1) {
+                    ConfigPersistence.getSoundBiteVolume(name) ?: DEFAULT_INDIVIDUAL_VOLUME
+                } else {
+                    volume
+                }
+                this.volume = (ConfigPersistence.getVolume() / 100.0) * (individualVolume / 100.0)
+                this.rate = rate / 100.0
+                onEndOfMedia = Runnable {
+                    dispose()
+                    players.remove(this)
+                }
+                // Keep a strong reference to players until they finish.
+                // Prevents sounds stopping early due to garbage collection.
+                players += this
+                play()
             }
-            this.volume = (ConfigPersistence.getVolume() / 100.0) * (individualVolume / 100.0)
-            this.rate = rate / 100.0
-            onEndOfMedia = Runnable {
-                dispose()
-                players.remove(this)
-            }
-            // Keep a strong reference to players until they finish.
-            // Prevents sounds stopping early due to garbage collection.
-            players += this
-            play()
+        } catch (t: Throwable) {
+            logError(filePath, t)
         }
     }
 
@@ -63,5 +66,11 @@ class SoundBite(
 
     private companion object {
         private val players = CopyOnWriteArrayList<MediaPlayer>()
+
+        private fun logError(filePath: String, t: Throwable) {
+            synchronized(this) {
+                t.writeExceptionLog(PlaySoundErrorFile, message = "Couldn't play '$filePath'")
+            }
+        }
     }
 }
