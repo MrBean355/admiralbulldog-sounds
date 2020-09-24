@@ -5,11 +5,7 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
-import com.github.mrbean355.admiralbulldog.common.URL_TELEGRAM_CHANNEL
-import com.github.mrbean355.admiralbulldog.common.getDistributionName
-import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.information
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
@@ -26,13 +22,8 @@ import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
 import kotlinx.coroutines.launch
-import tornadofx.Scope
-import tornadofx.booleanProperty
+import tornadofx.*
 import tornadofx.error
-import tornadofx.find
-import tornadofx.runLater
-import tornadofx.stringBinding
-import tornadofx.stringProperty
 import kotlin.concurrent.timer
 import kotlin.system.exitProcess
 
@@ -137,7 +128,12 @@ class MainViewModel : AppViewModel() {
 
     private fun checkForModUpdate() {
         if (ConfigPersistence.isModEnabled()) {
+            val modUninstalled = !ConfigPersistence.isModTempDisabled() && !DotaMod.isModInGameInfoFile()
             DotaMod.onModEnabled()
+            if (modUninstalled) {
+                // If the user has enabled the mod, but it isn't in the game info file, warn them.
+                warning(getString("header_mod_uninstalled"), getString("content_mod_missing_from_game_info"))
+            }
             if (updateViewModel.shouldCheckForModUpdate()) {
                 coroutineScope.launch {
                     updateViewModel.checkForModUpdate()
