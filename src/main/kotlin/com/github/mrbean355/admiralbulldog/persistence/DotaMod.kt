@@ -51,6 +51,14 @@ object DotaMod {
         return !vpk.verifyChecksum(checksum)
     }
 
+    /** @return `true` if the gameinfo.gi file includes the mod. */
+    fun isModInGameInfoFile(): Boolean {
+        val gameInfo = File(DotaPath.getGameInfoFilePath())
+        return gameInfo.readLines().any { line ->
+            line.matches(GAME_BULLDOG_PATTERN)
+        }
+    }
+
     /** Register the mod in Dota's game info file. */
     fun onModEnabled() {
         if (!ConfigPersistence.isModTempDisabled()) {
