@@ -11,6 +11,7 @@ import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.net.BindException
+import java.util.Date
 import kotlin.system.exitProcess
 
 /**
@@ -43,6 +44,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
         e?.printStackTrace(PrintWriter(stringWriter))
         val stackTrace = stringWriter.toString()
         file.writeText("""
+            |Unhandled exception on ${Date()}:
             |app version  = $APP_VERSION [$DISTRIBUTION]
             |os.name      = ${System.getProperty("os.name")}
             |os.version   = ${System.getProperty("os.version")}
