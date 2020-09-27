@@ -1,7 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch.repo
 
 import com.github.mrbean355.admiralbulldog.arch.AnalyticsRequest
-import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.PlaySoundRequest
 import com.github.mrbean355.admiralbulldog.arch.ServiceResponse
 import com.github.mrbean355.admiralbulldog.arch.service.DiscordBotService
@@ -79,16 +78,6 @@ class DiscordBotRepository {
     suspend fun logAnalyticsProperties(properties: Map<String, Any>): ServiceResponse<Void> {
         return try {
             DiscordBotService.INSTANCE.logAnalyticsProperties(AnalyticsRequest(loadUserId(), properties.mapValues { it.value.toString() }))
-                    .toServiceResponse()
-        } catch (t: Throwable) {
-            logger.error("Failed to log analytics event", t)
-            ServiceResponse.Exception()
-        }
-    }
-
-    suspend fun listMods(): ServiceResponse<List<DotaMod>> {
-        return try {
-            DiscordBotService.INSTANCE.listMods()
                     .toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Failed to log analytics event", t)

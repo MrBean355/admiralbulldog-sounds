@@ -1,31 +1,25 @@
 package com.github.mrbean355.admiralbulldog.mod.modular
 
-import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.DotaMod
+import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
 import javafx.beans.property.BooleanProperty
-import javafx.beans.property.ObjectProperty
-import javafx.scene.control.CheckBoxTreeItem
-import javafx.scene.control.TreeItem
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
+import javafx.collections.ObservableList
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tornadofx.FXEvent
-import tornadofx.ViewModel
-import tornadofx.booleanProperty
-import tornadofx.objectProperty
+import tornadofx.*
 
-class DotaModsViewModel : ViewModel() {
-    private val coroutineScope = CoroutineScope(IO + SupervisorJob())
-    private val repo = DiscordBotRepository()
+class DotaModsViewModel : AppViewModel() {
+    private val repo = DotaModRepository()
+    private val checkedProperties = mutableMapOf<String, BooleanProperty>()
 
     val showProgress: BooleanProperty = booleanProperty(true)
-    val root: ObjectProperty<TreeItem<ModTreeItem>?> = objectProperty()
+    val items: ObservableList<DotaMod> = observableListOf()
 
-    init {
+    override fun onReady() {
         coroutineScope.launch {
             val response = repo.listMods()
             val body = response.body
@@ -37,34 +31,24 @@ class DotaModsViewModel : ViewModel() {
                 return@launch
             }
 
-            val root = TreeItem<ModTreeItem>()
-            body.sortedBy { it.name.toLowerCase() }.forEach { mod ->
-                root.children += CheckBoxTreeItem(ModTreeItem(mod)).apply {
-                    children += mod.parts.map { CheckBoxTreeItem(ModTreeItem(mod, part = it)) }
-                }
-            }
-
             withContext(Main) {
                 showProgress.set(false)
-                this@DotaModsViewModel.root.set(root)
+                items.setAll(body.sortedBy { it.name.toLowerCase() })
             }
         }
     }
 
+    fun getCheckedProperty(dotaMod: DotaMod): BooleanProperty {
+        return checkedProperties.getOrPut(dotaMod.name) { booleanProperty(false) }
+    }
+
     fun onSaveClicked() {
-        val root = root.get() ?: return
+        val selection = items.filter {
+            checkedProperties[it.name]?.value ?: false
+        }
 
-        val selection = root.children
-                .flatMap { it.children }
-                .filterIsInstance<CheckBoxTreeItem<ModTreeItem>>()
-                .filter { it.isSelected }
-                .map { it.value }
-
-        val mapped = selection.groupBy { it.mod }
-                .mapValues { items -> items.value.map { it.part } }
-
-        println(mapped)
-        // TODO: Compile VPK from selection
+        // TODO: Download & install enabled mods.
+        // TODO: Uninstall disabled mods.
     }
 
     class CloseEvent : FXEvent()

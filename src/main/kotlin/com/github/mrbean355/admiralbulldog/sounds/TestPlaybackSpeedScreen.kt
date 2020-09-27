@@ -1,22 +1,8 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.rateSpinner
-import com.github.mrbean355.admiralbulldog.common.useLabelWithButton
+import com.github.mrbean355.admiralbulldog.common.*
 import javafx.geometry.Pos.CENTER_LEFT
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.hbox
-import tornadofx.intProperty
-import tornadofx.label
-import tornadofx.listview
-import tornadofx.paddingAll
-import tornadofx.textfield
-import tornadofx.vbox
-import tornadofx.whenUndocked
+import tornadofx.*
 
 class TestPlaybackSpeedScreen : Fragment(getString("title_test_playback")) {
     private val viewModel by inject<TestPlaybackSpeedViewModel>(Scope())
@@ -33,6 +19,8 @@ class TestPlaybackSpeedScreen : Fragment(getString("title_test_playback")) {
         }
         listview(viewModel.displayItems) {
             useLabelWithButton(
+                    buttonImage = PlayIcon(),
+                    buttonTooltip = getString("tooltip_play_locally"),
                     stringConverter = { it.name },
                     onButtonClicked = { it.play(rate = rate.get()) }
             )

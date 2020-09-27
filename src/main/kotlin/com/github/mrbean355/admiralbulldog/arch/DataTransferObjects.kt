@@ -25,16 +25,12 @@ data class PlaySoundRequest(
 )
 
 data class DotaMod(
+        val id: String,
         val name: String,
         val description: String,
-        val version: Int,
-        val parts: List<DotaModPart>
-)
-
-data class DotaModPart(
-        val name: String,
-        val url: String,
-        val vpkPath: String
+        val size: Long,
+        val hash: String,
+        val downloadUrl: String
 )
 
 data class ReleaseInfo(

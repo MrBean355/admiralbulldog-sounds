@@ -10,12 +10,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
-import retrofit2.http.Streaming
+import retrofit2.http.*
 
 interface DiscordBotService {
 
@@ -41,7 +36,7 @@ interface DiscordBotService {
     @POST("/analytics/logProperties")
     suspend fun logAnalyticsProperties(@Body request: AnalyticsRequest): Response<Void>
 
-    @GET("/mods")
+    @GET("/mods/list")
     suspend fun listMods(): Response<List<DotaMod>>
 
     companion object {

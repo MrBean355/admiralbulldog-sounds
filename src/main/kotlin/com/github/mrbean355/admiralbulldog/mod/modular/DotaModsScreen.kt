@@ -1,31 +1,10 @@
 package com.github.mrbean355.admiralbulldog.mod.modular
 
 import com.github.mrbean355.admiralbulldog.AppStyles
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
-import com.github.mrbean355.admiralbulldog.common.getString
-import javafx.geometry.Pos
+import com.github.mrbean355.admiralbulldog.arch.DotaMod
+import com.github.mrbean355.admiralbulldog.common.*
 import javafx.geometry.Pos.CENTER
-import javafx.scene.control.cell.CheckBoxTreeCell
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.collapseAll
-import tornadofx.expandAll
-import tornadofx.fitToParentWidth
-import tornadofx.hbox
-import tornadofx.hyperlink
-import tornadofx.label
-import tornadofx.managedWhen
-import tornadofx.onChange
-import tornadofx.paddingAll
-import tornadofx.progressbar
-import tornadofx.treeview
-import tornadofx.vbox
-import tornadofx.visibleWhen
+import tornadofx.*
 
 class DotaModsScreen : Fragment(getString("title_mod")) {
     private val viewModel by inject<DotaModsViewModel>(Scope())
@@ -42,23 +21,14 @@ class DotaModsScreen : Fragment(getString("title_mod")) {
             visibleWhen(viewModel.showProgress)
             managedWhen(visibleProperty())
         }
-        hbox(spacing = PADDING_SMALL, alignment = Pos.BOTTOM_RIGHT) {
-            hyperlink(getString("btn_expand_all")) {
-                action { viewModel.root.get()?.expandAll() }
-            }
-            hyperlink(getString("btn_collapse_all")) {
-                action {
-                    viewModel.root.get()?.apply {
-                        collapseAll()
-                        isExpanded = true
-                    }
-                }
-            }
-        }
-        treeview<ModTreeItem> {
-            rootProperty().bind(viewModel.root)
-            isShowRoot = false
-            cellFactory = CheckBoxTreeCell.forTreeView()
+        listview(viewModel.items) {
+            useCheckBoxWithButton(
+                    buttonImage = HelpIcon(),
+                    buttonTooltip = getString("tooltip_more_info"),
+                    getSelectedProperty = viewModel::getCheckedProperty,
+                    stringConverter = { it.name },
+                    onButtonClicked = this@DotaModsScreen::showModInfo
+            )
         }
         button(getString("btn_save")) {
             action { viewModel.onSaveClicked() }
@@ -71,6 +41,25 @@ class DotaModsScreen : Fragment(getString("title_mod")) {
         }
         subscribe<DotaModsViewModel.CloseEvent> {
             close()
+        }
+        whenUndocked {
+            viewModel.onUndock()
+        }
+    }
+
+    private fun showModInfo(mod: DotaMod) {
+        information(mod.name, """
+            ${mod.description}
+            ${getString("label_mod_download_size", getDownloadSize(mod))}
+        """.trimIndent())
+    }
+
+    private fun getDownloadSize(mod: DotaMod): String {
+        val kb = mod.size / 1024.0
+        return if (kb >= 1024.0) {
+            "%.1f MB".format(kb / 1024.0)
+        } else {
+            "%.1f KB".format(kb)
         }
     }
 }
