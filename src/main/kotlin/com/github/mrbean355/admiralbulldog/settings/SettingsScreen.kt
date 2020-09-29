@@ -56,7 +56,7 @@ class SettingsScreen : Fragment(getString("title_settings")) {
                     action { viewModel.onUpdateSoundsClicked() }
                 }
             }
-            field(getString("settings_field_mod_update")) {
+            field(getString("settings_field_mod_updates")) {
                 enableWhen(viewModel.modEnabled)
                 choicebox(viewModel.modUpdateFrequency, viewModel.updateFrequencies) {
                     converter = UpdateFrequencyStringConverter()

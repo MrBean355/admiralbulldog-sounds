@@ -13,21 +13,12 @@ class GitHubRepository {
 
     suspend fun getLatestAppRelease(): ServiceResponse<ReleaseInfo> {
         return try {
-            GitHubService.INSTANCE.getLatestReleaseInfo(GitHubService.REPO_APP).toServiceResponse()
+            GitHubService.INSTANCE.getLatestReleaseInfo().toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Failed to get latest app release", t)
             ServiceResponse.Exception()
         }
 
-    }
-
-    suspend fun getLatestModRelease(): ServiceResponse<ReleaseInfo> {
-        return try {
-            GitHubService.INSTANCE.getLatestReleaseInfo(GitHubService.REPO_MOD).toServiceResponse()
-        } catch (t: Throwable) {
-            logger.error("Failed to get latest mod release", t)
-            ServiceResponse.Exception()
-        }
     }
 
     suspend fun downloadAsset(assetInfo: AssetInfo): ServiceResponse<ResponseBody> {

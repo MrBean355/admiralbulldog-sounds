@@ -2,7 +2,6 @@ package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
-import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
@@ -11,8 +10,7 @@ import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
-import com.github.mrbean355.admiralbulldog.mod.ChooseModTypeScreen
-import com.github.mrbean355.admiralbulldog.mod.showProgressScreen
+import com.github.mrbean355.admiralbulldog.mods.DotaModsScreen
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
@@ -22,7 +20,6 @@ import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
-import javafx.scene.control.ButtonType.CANCEL
 import kotlinx.coroutines.launch
 import tornadofx.*
 import tornadofx.error
@@ -96,7 +93,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onDotaModClicked() {
-        find<ChooseModTypeScreen>().openModal(resizable = false)
+        find<DotaModsScreen>().openModal(resizable = false)
     }
 
     fun onDiscordCommunityClicked() {
@@ -130,35 +127,10 @@ class MainViewModel : AppViewModel() {
     }
 
     private fun checkForModUpdate() {
-        viewModelScope.launch {
-            val updates = dotaModRepository.checkForUpdates()
-            if (updates.isNotEmpty()) {
-                information(
-                        header = getString("header_mod_update_available2"),
-                        content = getString("content_mod_update_available2", updates.joinToString() { it.name }),
-                        buttons = arrayOf(DOWNLOAD_BUTTON, CANCEL)
-                ) {
-                    if (it === DOWNLOAD_BUTTON) {
-                        downloadModUpdates(updates)
-                    }
-                }
-            }
+        if (!updateViewModel.shouldCheckForModUpdate()) {
+            return
         }
-    }
-
-    private suspend fun downloadModUpdates(mods: Collection<DotaMod>) {
-        val progressScreen = showProgressScreen()
-        val allSucceeded = dotaModRepository.updateMods(mods)
-        progressScreen.close()
-        if (allSucceeded) {
-            information(getString("header_mod_update_succeeded"), getString("content_mod_update_succeeded"))
-        } else {
-            warning(getString("header_mod_update_failed"), getString("content_mod_update_failed"), RETRY_BUTTON, CANCEL) {
-                if (it === RETRY_BUTTON) {
-                    downloadModUpdates(mods)
-                }
-            }
-        }
+        updateViewModel.checkForModUpdates()
     }
 
     private fun sendHeartbeats() {

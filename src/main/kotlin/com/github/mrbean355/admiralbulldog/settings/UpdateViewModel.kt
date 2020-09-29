@@ -2,24 +2,26 @@ package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
-import com.github.mrbean355.admiralbulldog.arch.getModAssetInfo
+import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.common.update.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.persistence.DotaMod
-import com.github.mrbean355.admiralbulldog.persistence.DotaPath
+import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import com.vdurmont.semver4j.Semver
 import javafx.scene.control.ButtonType
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.system.exitProcess
 
 class UpdateViewModel : AppViewModel() {
     private val gitHubRepository = GitHubRepository()
+    private val dotaModRepository = DotaModRepository()
 
     fun shouldCheckForAppUpdate(): Boolean {
         return ConfigPersistence.getAppUpdateFrequency().lessThanTimeSince(ConfigPersistence.getAppLastUpdateAt())
@@ -68,35 +70,20 @@ class UpdateViewModel : AppViewModel() {
         }
     }
 
-    /**
-     * Check if there's a mod update available, prompting the user to download if there is.
-     * @param onError         called if the check fails.
-     * @param onUpdateSkipped invoked if the user chooses not to download the update.
-     * @param onNoUpdate      called if there's no update available, or the users skips the download.
-     */
-    suspend fun checkForModUpdate(onError: () -> Unit = {}, onUpdateSkipped: () -> Unit = {}, onNoUpdate: () -> Unit = {}) {
-        val resource = gitHubRepository.getLatestModRelease()
-        val releaseInfo = resource.body
-        if (!resource.isSuccessful() || releaseInfo == null) {
-            withContext(Main) {
-                logger.error("Failed to check for mod update")
-                onError()
-            }
-            return
-        }
-        if (DotaMod.shouldDownloadUpdate(releaseInfo)) {
-            logger.info("New mod version available: $releaseInfo")
-            withContext(Main) {
-                if (doesUserWantToUpdate(getString("header_mod_update_available"), releaseInfo)) {
-                    downloadModUpdate(releaseInfo)
-                } else {
-                    onUpdateSkipped()
+    fun checkForModUpdates(onNoUpdate: () -> Unit = {}) {
+        viewModelScope.launch {
+            val updates = dotaModRepository.checkForUpdates()
+            if (updates.isNotEmpty()) {
+                information(
+                        header = getString("header_mod_updates_available"),
+                        content = getString("content_mod_updates_available", updates.joinToString { it.name }),
+                        buttons = arrayOf(UPDATE_BUTTON, ButtonType.CANCEL)
+                ) {
+                    if (it === UPDATE_BUTTON) {
+                        downloadModUpdates(updates)
+                    }
                 }
-            }
-        } else {
-            logger.info("Already on latest mod version")
-            ConfigPersistence.setModLastUpdateToNow()
-            withContext(Main) {
+            } else {
                 onNoUpdate()
             }
         }
@@ -107,7 +94,7 @@ class UpdateViewModel : AppViewModel() {
         information(
                 header = header,
                 content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
-                buttons = arrayOf(WHATS_NEW_BUTTON, DOWNLOAD_BUTTON, ButtonType.CANCEL)
+                buttons = arrayOf(WHATS_NEW_BUTTON, UPDATE_BUTTON, ButtonType.CANCEL)
         ) {
             action = it
         }
@@ -115,7 +102,7 @@ class UpdateViewModel : AppViewModel() {
             hostServices.showDocument(releaseInfo.htmlUrl)
             return doesUserWantToUpdate(header, releaseInfo)
         }
-        return action === DOWNLOAD_BUTTON
+        return action === UPDATE_BUTTON
     }
 
     private fun downloadAppUpdate(releaseInfo: ReleaseInfo) {
@@ -135,20 +122,18 @@ class UpdateViewModel : AppViewModel() {
         }
     }
 
-    private fun downloadModUpdate(releaseInfo: ReleaseInfo) {
-        val assetInfo = releaseInfo.getModAssetInfo() ?: return
-
-        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = DotaPath.getModDirectory()))
-                .openModal(escapeClosesWindow = false, resizable = false)
-
-        subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
-            DotaMod.onModDownloaded(releaseInfo)
-            ConfigPersistence.setModLastUpdateToNow()
-            information(
-                    header = getString("header_mod_update_downloaded"),
-                    content = getString("content_mod_installed"),
-                    buttons = arrayOf(ButtonType.FINISH)
-            )
+    private suspend fun downloadModUpdates(mods: Collection<DotaMod>) {
+        val progressScreen = showProgressScreen()
+        val allSucceeded = dotaModRepository.updateMods(mods)
+        progressScreen.close()
+        if (allSucceeded) {
+            information(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
+        } else {
+            warning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
+                if (it === RETRY_BUTTON) {
+                    downloadModUpdates(mods)
+                }
+            }
         }
     }
 }

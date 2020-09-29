@@ -1,7 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch
 
 import com.github.mrbean355.admiralbulldog.DISTRIBUTION
-import com.github.mrbean355.admiralbulldog.persistence.VPK_FILE_NAME
 import com.google.gson.annotations.SerializedName
 import java.util.Date
 
@@ -53,25 +52,10 @@ data class AssetInfo(
 //==================== Extensions ====================\\
 
 private val JAR_FILE_PATTERN = Regex("admiralbulldog-sounds-$DISTRIBUTION-.*\\.jar")
-private const val SHA_512_ASSET_NAME = "${VPK_FILE_NAME}.sha512"
 
 /** @return [AssetInfo] for the app's main JAR file. */
 fun ReleaseInfo.getAppAssetInfo(): AssetInfo? {
     return assets.firstOrNull {
         it.name.matches(JAR_FILE_PATTERN)
-    }
-}
-
-/** @return [AssetInfo] for the mod's VPK file. */
-fun ReleaseInfo.getModAssetInfo(): AssetInfo? {
-    return assets.firstOrNull {
-        it.name == VPK_FILE_NAME
-    }
-}
-
-/** @return [AssetInfo] for the mod's checksum file. */
-fun ReleaseInfo.getModChecksumAssetInfo(): AssetInfo? {
-    return assets.firstOrNull {
-        it.name == SHA_512_ASSET_NAME
     }
 }

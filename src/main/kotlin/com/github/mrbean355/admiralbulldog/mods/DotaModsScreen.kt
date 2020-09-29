@@ -1,4 +1,4 @@
-package com.github.mrbean355.admiralbulldog.mod.modular
+package com.github.mrbean355.admiralbulldog.mods
 
 import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
@@ -6,13 +6,13 @@ import com.github.mrbean355.admiralbulldog.common.*
 import javafx.geometry.Pos.CENTER
 import tornadofx.*
 
-class DotaModsScreen : Fragment(getString("title_mod")) {
+class DotaModsScreen : Fragment(getString("title_mods")) {
     private val viewModel by inject<DotaModsViewModel>(Scope())
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
         prefWidth = WINDOW_WIDTH
-        label(getString("label_choose_mod_parts")) {
+        label(getString("label_choose_mods")) {
             addClass(AppStyles.boldFont)
             alignment = CENTER
         }

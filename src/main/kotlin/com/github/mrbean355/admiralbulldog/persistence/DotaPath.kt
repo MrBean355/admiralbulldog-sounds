@@ -5,8 +5,6 @@ import java.io.File
 
 private val DOTA_ROOT_DIR_NAMES = listOf("dota 2", "dota 2 beta")
 private const val GAME_INFO_DIR_PATH = "game/dota/gameinfo.gi"
-private const val MOD_DIR_PATH = "game/admiralbulldog"
-const val VPK_FILE_NAME = "pak01_dir.vpk"
 
 /**
  * Utility for Dota path related things.
@@ -23,17 +21,6 @@ object DotaPath {
     fun getGameInfoFilePath(): String {
         val dotaPath = ConfigPersistence.getDotaPath()
         return dotaPath + GAME_INFO_DIR_PATH.replaceFileSeparators()
-    }
-
-    /** @return absolute path to the mod directory. */
-    fun getModDirectory(): String {
-        val dotaPath = ConfigPersistence.getDotaPath()
-        return dotaPath + MOD_DIR_PATH.replaceFileSeparators()
-    }
-
-    /** @return absolute path to the mod's VPK file. */
-    fun getModFilePath(): String {
-        return getModDirectory() + File.separatorChar + VPK_FILE_NAME
     }
 
     fun getDotaRootDirectory(path: String): String? {

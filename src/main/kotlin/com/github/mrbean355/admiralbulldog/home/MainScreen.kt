@@ -10,25 +10,7 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.geometry.Pos.CENTER
 import javafx.scene.image.ImageView
-import tornadofx.View
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.fitToParentWidth
-import tornadofx.hbox
-import tornadofx.hyperlink
-import tornadofx.insets
-import tornadofx.label
-import tornadofx.managedWhen
-import tornadofx.paddingAll
-import tornadofx.progressbar
-import tornadofx.separator
-import tornadofx.stackpane
-import tornadofx.stackpaneConstraints
-import tornadofx.tooltip
-import tornadofx.vbox
-import tornadofx.visibleWhen
-import tornadofx.whenUndocked
+import tornadofx.*
 
 class MainScreen : View(getString("title_app")) {
     private val viewModel by inject<MainViewModel>()
@@ -52,7 +34,7 @@ class MainScreen : View(getString("title_app")) {
                 button(getString("btn_discord_bot")) {
                     action { viewModel.onDiscordBotClicked() }
                 }
-                button(getString("btn_dota_mod")) {
+                button(getString("btn_dota_mods")) {
                     action { viewModel.onDotaModClicked() }
                 }
             }

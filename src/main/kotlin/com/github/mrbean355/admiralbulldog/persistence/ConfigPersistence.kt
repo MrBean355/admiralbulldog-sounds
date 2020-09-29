@@ -291,37 +291,6 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return whether the user has enabled the mod. */
-    fun isModEnabled(): Boolean {
-        return loadedConfig.modEnabled
-    }
-
-    /** Set whether the user has enabled the mod. */
-    fun setModEnabled(enabled: Boolean) {
-        loadedConfig.modEnabled = enabled
-        save()
-    }
-
-    fun isModTempDisabled(): Boolean {
-        return loadedConfig.modTempDisabled
-    }
-
-    fun setModTempDisabled(disabled: Boolean) {
-        loadedConfig.modTempDisabled = disabled
-        save()
-    }
-
-    /** @return the version of the currently installed mod, or an empty string if there is none. */
-    fun getModVersion(): String {
-        return loadedConfig.modVersion
-    }
-
-    /** Set the version of the currently installed mod. */
-    fun setModVersion(version: String) {
-        loadedConfig.modVersion = version
-        save()
-    }
-
     /** @return `true` if ay least one mod has been enabled. */
     fun hasEnabledMods(): Boolean {
         return loadedConfig.enabledMods.isNotEmpty()
@@ -452,9 +421,6 @@ object ConfigPersistence {
             val soundBoard: MutableList<String> = mutableListOf(),
             val invalidSounds: MutableSet<String> = mutableSetOf(),
             val volumes: MutableMap<String, Int> = mutableMapOf(),
-            var modEnabled: Boolean = false,
-            var modTempDisabled: Boolean = false,
-            var modVersion: String = "",
             val enabledMods: MutableMap<String, String> = mutableMapOf()
     )
 

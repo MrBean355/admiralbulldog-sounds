@@ -1,4 +1,4 @@
-package com.github.mrbean355.admiralbulldog.mod
+package com.github.mrbean355.admiralbulldog.ui
 
 import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_LARGE
