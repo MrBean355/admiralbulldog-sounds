@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
+import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.*
@@ -321,6 +322,36 @@ object ConfigPersistence {
         save()
     }
 
+    /** @return `true` if ay least one mod has been enabled. */
+    fun hasEnabledMods(): Boolean {
+        return loadedConfig.enabledMods.isNotEmpty()
+    }
+
+    /** @return `true` if the given mod has been enabled. */
+    fun isModEnabled(mod: DotaMod): Boolean {
+        return mod.id in loadedConfig.enabledMods
+    }
+
+    /** Enable the given mod. */
+    fun enableMod(mod: DotaMod) {
+        loadedConfig.enabledMods[mod.id] = mod.hash
+        save()
+    }
+
+    /** Disable all mods that aren't in the given collection. */
+    fun disableOtherMods(mods: Collection<DotaMod>) {
+        val current = loadedConfig.enabledMods.keys
+        val remove = current - mods.map { it.id }
+
+        loadedConfig.enabledMods -= remove
+        save()
+    }
+
+    /** @return the hash for the given mod if it is enabled; `null` otherwise. */
+    fun getEnabledModHash(mod: DotaMod): String? {
+        return loadedConfig.enabledMods[mod.id]
+    }
+
     /**
      * Returns a collection of sound names that were selected by the user but don't exist locally.
      * When called, the returned sounds will not be returned by future calls.
@@ -423,7 +454,8 @@ object ConfigPersistence {
             val volumes: MutableMap<String, Int> = mutableMapOf(),
             var modEnabled: Boolean = false,
             var modTempDisabled: Boolean = false,
-            var modVersion: String = ""
+            var modVersion: String = "",
+            val enabledMods: MutableMap<String, String> = mutableMapOf()
     )
 
     private data class Updates(

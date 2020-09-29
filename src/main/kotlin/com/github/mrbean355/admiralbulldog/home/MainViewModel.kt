@@ -2,16 +2,17 @@ package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
 import com.github.mrbean355.admiralbulldog.mod.ChooseModTypeScreen
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.persistence.DotaMod
+import com.github.mrbean355.admiralbulldog.mod.showProgressScreen
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
@@ -21,6 +22,7 @@ import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
+import javafx.scene.control.ButtonType.CANCEL
 import kotlinx.coroutines.launch
 import tornadofx.*
 import tornadofx.error
@@ -32,6 +34,7 @@ private const val ANALYTICS_FREQUENCY_MS = 5 * 60 * 1_000L
 
 class MainViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
+    private val dotaModRepository = DotaModRepository()
     private val updateViewModel by inject<UpdateViewModel>()
     private val hasHeardFromDota = booleanProperty(false)
 
@@ -127,20 +130,34 @@ class MainViewModel : AppViewModel() {
     }
 
     private fun checkForModUpdate() {
-        if (ConfigPersistence.isModEnabled()) {
-            val modUninstalled = !ConfigPersistence.isModTempDisabled() && !DotaMod.isModInGameInfoFile()
-            DotaMod.onModEnabled()
-            if (modUninstalled) {
-                // If the user has enabled the mod, but it isn't in the game info file, warn them.
-                warning(getString("header_mod_uninstalled"), getString("content_mod_missing_from_game_info"))
-            }
-            if (updateViewModel.shouldCheckForModUpdate()) {
-                coroutineScope.launch {
-                    updateViewModel.checkForModUpdate()
+        viewModelScope.launch {
+            val updates = dotaModRepository.checkForUpdates()
+            if (updates.isNotEmpty()) {
+                information(
+                        header = getString("header_mod_update_available2"),
+                        content = getString("content_mod_update_available2", updates.joinToString() { it.name }),
+                        buttons = arrayOf(DOWNLOAD_BUTTON, CANCEL)
+                ) {
+                    if (it === DOWNLOAD_BUTTON) {
+                        downloadModUpdates(updates)
+                    }
                 }
             }
+        }
+    }
+
+    private suspend fun downloadModUpdates(mods: Collection<DotaMod>) {
+        val progressScreen = showProgressScreen()
+        val allSucceeded = dotaModRepository.updateMods(mods)
+        progressScreen.close()
+        if (allSucceeded) {
+            information(getString("header_mod_update_succeeded"), getString("content_mod_update_succeeded"))
         } else {
-            DotaMod.onModDisabled()
+            warning(getString("header_mod_update_failed"), getString("content_mod_update_failed"), RETRY_BUTTON, CANCEL) {
+                if (it === RETRY_BUTTON) {
+                    downloadModUpdates(mods)
+                }
+            }
         }
     }
 

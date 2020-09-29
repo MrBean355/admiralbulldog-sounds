@@ -39,6 +39,10 @@ interface DiscordBotService {
     @GET("/mods/list")
     suspend fun listMods(): Response<List<DotaMod>>
 
+    @GET
+    @Streaming
+    suspend fun downloadFile(@Url url: String): Response<ResponseBody>
+
     companion object {
         val INSTANCE: DiscordBotService = Retrofit.Builder()
                 .baseUrl(hostUrl)

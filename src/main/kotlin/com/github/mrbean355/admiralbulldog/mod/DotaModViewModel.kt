@@ -14,7 +14,6 @@ import com.github.mrbean355.admiralbulldog.persistence.DotaMod
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import javafx.beans.property.BooleanProperty
 import javafx.scene.control.ButtonType
-import javafx.stage.StageStyle.UTILITY
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -89,10 +88,7 @@ class DotaModViewModel : AppViewModel() {
         modDirectory.mkdirs()
         DotaMod.onModEnabled()
 
-        val progressDialog = find<ProgressScreen>()
-        progressDialog.openModal(stageStyle = UTILITY, escapeClosesWindow = false, resizable = false)?.also { stage ->
-            stage.setOnCloseRequest { it.consume() }
-        }
+        val progressDialog = showProgressScreen()
 
         coroutineScope.launch {
             logger.info("Checking for mod update...")
