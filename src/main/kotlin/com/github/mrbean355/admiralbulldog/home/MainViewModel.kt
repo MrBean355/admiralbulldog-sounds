@@ -4,9 +4,10 @@ import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
-import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.common.getDistributionName
+import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.information
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
@@ -22,7 +23,6 @@ import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
 import kotlinx.coroutines.launch
 import tornadofx.*
-import tornadofx.error
 import kotlin.concurrent.timer
 import kotlin.system.exitProcess
 
@@ -31,7 +31,6 @@ private const val ANALYTICS_FREQUENCY_MS = 5 * 60 * 1_000L
 
 class MainViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
-    private val dotaModRepository = DotaModRepository()
     private val updateViewModel by inject<UpdateViewModel>()
     private val hasHeardFromDota = booleanProperty(false)
 
@@ -94,14 +93,6 @@ class MainViewModel : AppViewModel() {
 
     fun onDotaModClicked() {
         find<DotaModsScreen>().openModal(resizable = false)
-    }
-
-    fun onDiscordCommunityClicked() {
-        hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
-    }
-
-    fun onTelegramChannelClicked() {
-        hostServices.showDocument(URL_TELEGRAM_CHANNEL)
     }
 
     private fun checkForNewSounds() {

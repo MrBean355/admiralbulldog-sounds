@@ -1,7 +1,10 @@
 package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
-import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.common.error
+import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.information
+import com.github.mrbean355.admiralbulldog.common.warning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
@@ -76,7 +79,7 @@ class SettingsViewModel : AppViewModel() {
                 onNoUpdate = { information(getString("header_mods_up_to_date"), getString("content_mods_up_to_date")) })
     }
 
-    fun onProjectWebsiteClicked() {
-        hostServices.showDocument(URL_PROJECT_WEBSITE)
+    fun onSocialLinksClicked() {
+        find<SocialLinksScreen>().openModal(resizable = false)
     }
 }

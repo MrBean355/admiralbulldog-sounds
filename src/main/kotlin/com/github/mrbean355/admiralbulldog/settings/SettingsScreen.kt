@@ -66,8 +66,8 @@ class SettingsScreen : Fragment(getString("title_settings")) {
                 }
             }
         }
-        hyperlink(getString("btn_project_website")) {
-            action { viewModel.onProjectWebsiteClicked() }
+        hyperlink(getString("btn_social_links")) {
+            action { viewModel.onSocialLinksClicked() }
         }
     }
 

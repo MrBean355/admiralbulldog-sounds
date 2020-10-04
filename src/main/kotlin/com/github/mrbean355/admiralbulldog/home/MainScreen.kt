@@ -6,7 +6,6 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
-import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.geometry.Pos.CENTER
 import javafx.scene.image.ImageView
@@ -37,18 +36,6 @@ class MainScreen : View(getString("title_app")) {
                 button(getString("btn_dota_mods")) {
                     action { viewModel.onDotaModClicked() }
                 }
-            }
-            hbox(spacing = PADDING_SMALL, alignment = CENTER) {
-                hyperlink(getString("btn_discord_community")) {
-                    action { viewModel.onDiscordCommunityClicked() }
-                }
-                separator(Orientation.VERTICAL)
-                hyperlink(getString("btn_telegram_channel")) {
-                    action { viewModel.onTelegramChannelClicked() }
-                }
-            }
-            label(getString("label_welcome_message")) {
-                addClass(AppStyles.boldFont)
             }
             label(viewModel.version) {
                 addClass(AppStyles.smallFont)
