@@ -7,6 +7,12 @@ import javafx.scene.image.Image
 fun BulldogIcon(): Image = loadImage("bulldog.jpg")
 
 @Suppress("FunctionName")
+fun WeirdChampIcon(): Image = loadImage("weird_champ.png")
+
+@Suppress("FunctionName")
+fun PoggiesIcon(): Image = loadImage("poggies.png")
+
+@Suppress("FunctionName")
 fun PlayIcon(): Image = loadImage("play_arrow_black.png")
 
 @Suppress("FunctionName")

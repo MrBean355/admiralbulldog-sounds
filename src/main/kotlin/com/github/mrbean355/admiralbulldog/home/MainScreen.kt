@@ -17,6 +17,7 @@ class MainScreen : View(getString("title_app")) {
     override val root = stackpane {
         vbox(spacing = PADDING_SMALL, alignment = CENTER) {
             paddingAll = PADDING_MEDIUM
+            imageview(viewModel.image)
             label(viewModel.heading) {
                 addClass(AppStyles.largeFont)
             }

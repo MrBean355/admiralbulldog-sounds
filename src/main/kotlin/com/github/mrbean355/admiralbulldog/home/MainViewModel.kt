@@ -5,9 +5,7 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.getDistributionName
-import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.information
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
@@ -17,12 +15,15 @@ import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
 import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
+import javafx.beans.binding.Binding
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
+import javafx.scene.image.Image
 import kotlinx.coroutines.launch
 import tornadofx.*
+import tornadofx.error
 import kotlin.concurrent.timer
 import kotlin.system.exitProcess
 
@@ -34,6 +35,9 @@ class MainViewModel : AppViewModel() {
     private val updateViewModel by inject<UpdateViewModel>()
     private val hasHeardFromDota = booleanProperty(false)
 
+    val image: Binding<Image?> = hasHeardFromDota.objectBinding {
+        if (it == true) PoggiesIcon() else WeirdChampIcon()
+    }
     val heading: StringBinding = hasHeardFromDota.stringBinding {
         if (it == true) getString("msg_connected") else getString("msg_not_connected")
     }
