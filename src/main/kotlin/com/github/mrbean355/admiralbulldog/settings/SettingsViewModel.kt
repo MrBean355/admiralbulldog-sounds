@@ -71,9 +71,9 @@ class SettingsViewModel : AppViewModel() {
     }
 
     fun onCheckForModUpdateClicked() {
-        updateViewModel.checkForModUpdates(onNoUpdate = {
-            information(getString("header_mods_up_to_date"), getString("content_mods_up_to_date"))
-        })
+        updateViewModel.checkForModUpdates(
+                onError = { error(getString("header_update_check_failed"), getString("content_update_check_failed")) },
+                onNoUpdate = { information(getString("header_mods_up_to_date"), getString("content_mods_up_to_date")) })
     }
 
     fun onProjectWebsiteClicked() {

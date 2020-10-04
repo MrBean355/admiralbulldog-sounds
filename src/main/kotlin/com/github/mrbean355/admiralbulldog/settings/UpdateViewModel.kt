@@ -70,9 +70,17 @@ class UpdateViewModel : AppViewModel() {
         }
     }
 
-    fun checkForModUpdates(onNoUpdate: () -> Unit = {}) {
+    fun checkForModUpdates(onError: () -> Unit = {}, onNoUpdate: () -> Unit = {}) {
         viewModelScope.launch {
-            val updates = dotaModRepository.checkForUpdates()
+            val response = dotaModRepository.checkForUpdates()
+            val updates = response.body
+            if (!response.isSuccessful() || updates == null) {
+                withContext(Main) {
+                    logger.error("Failed to check for mod updates")
+                    onError()
+                }
+                return@launch
+            }
             if (updates.isNotEmpty()) {
                 information(
                         header = getString("header_mod_updates_available"),

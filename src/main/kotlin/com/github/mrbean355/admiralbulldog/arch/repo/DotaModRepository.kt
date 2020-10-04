@@ -32,20 +32,19 @@ class DotaModRepository {
      * Check for a newer version of each mod that has been enabled.
      * @return mods that can be updated.
      */
-    // TODO: Better error handling.
-    suspend fun checkForUpdates(): Collection<DotaMod> = withContext(IO) {
+    suspend fun checkForUpdates(): ServiceResponse<Collection<DotaMod>> = withContext(IO) {
         if (!ConfigPersistence.hasEnabledMods()) {
-            return@withContext emptyList()
+            return@withContext ServiceResponse.Success(emptyList())
         }
         val response = listMods()
         val body = response.body
         if (!response.isSuccessful() || body == null) {
-            return@withContext emptyList()
+            return@withContext ServiceResponse.Error(response.statusCode)
         }
         ConfigPersistence.setModLastUpdateToNow()
-        body.filter {
+        ServiceResponse.Success(body.filter {
             it.hash != ConfigPersistence.getEnabledModHash(it)
-        }
+        })
     }
 
     /**
