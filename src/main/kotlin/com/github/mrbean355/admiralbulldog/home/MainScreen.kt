@@ -39,7 +39,8 @@ class MainScreen : View(getString("title_app")) {
                 }
             }
             label(viewModel.version) {
-                addClass(AppStyles.smallFont)
+                addClass(AppStyles.smallFont, AppStyles.boldFont)
+                paddingTop = PADDING_SMALL
             }
         }
         button(graphic = ImageView(SettingsIcon())) {
