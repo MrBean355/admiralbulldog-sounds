@@ -33,6 +33,9 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
         button(getString("btn_save")) {
             action { viewModel.onSaveClicked() }
         }
+        hyperlink(getString("btn_more_info")) {
+            action { viewModel.onMoreInformationClicked() }
+        }
     }
 
     init {

@@ -49,6 +49,10 @@ class DotaModsViewModel : AppViewModel() {
         }
     }
 
+    fun onMoreInformationClicked() {
+        hostServices.showDocument(URL_MOD_INFO)
+    }
+
     private suspend fun downloadMods(mods: Collection<DotaMod>) {
         val progressScreen = showProgressScreen()
         val allSucceeded = repo.installMods(mods)
