@@ -51,7 +51,7 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
     }
 
     private fun showModInfo(mod: DotaMod) {
-        information(mod.name, """
+        showInformation(mod.name, """
             ${mod.description}
             ${getString("label_mod_download_size", getDownloadSize(mod))}
         """.trimIndent())

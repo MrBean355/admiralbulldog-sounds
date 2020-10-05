@@ -23,7 +23,6 @@ import javafx.scene.control.ButtonType
 import javafx.scene.image.Image
 import kotlinx.coroutines.launch
 import tornadofx.*
-import tornadofx.error
 import kotlin.concurrent.timer
 import kotlin.system.exitProcess
 
@@ -74,7 +73,7 @@ class MainViewModel : AppViewModel() {
         }
         find<InstallationWizard>(scope = Scope()).openModal(block = true, resizable = false)
         if (!DotaPath.hasValidSavedPath()) {
-            error(getString("install_header"), getString("msg_installer_fail"))
+            showError(getString("install_header"), getString("msg_installer_fail"))
             exitProcess(-1)
         }
     }
@@ -83,7 +82,7 @@ class MainViewModel : AppViewModel() {
         val alreadyInstalled = GameStateIntegration.isInstalled()
         GameStateIntegration.install()
         if (!alreadyInstalled) {
-            information(getString("install_header"), getString("msg_installer_success"), ButtonType.FINISH)
+            showInformation(getString("install_header"), getString("msg_installer_success"), ButtonType.FINISH)
         }
     }
 

@@ -46,8 +46,6 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
 }
 
-sourceSets.main.kotlin.srcDirs += 'build/generated'
-
 mainClassName = 'com.github.mrbean355.admiralbulldog.MainKt'
 
 jar {

@@ -3,7 +3,7 @@ package com.github.mrbean355.admiralbulldog.assets
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.warning
+import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -121,7 +121,7 @@ object SoundBites {
     fun checkForInvalidSounds() {
         ConfigPersistence.findInvalidSounds().also {
             if (it.isNotEmpty()) {
-                warning(getString("header_sounds_removed"), getString("msg_sounds_removed", it.joinToString()))
+                showWarning(getString("header_sounds_removed"), getString("msg_sounds_removed", it.joinToString()))
             }
         }
     }

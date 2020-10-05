@@ -3,8 +3,8 @@ package com.github.mrbean355.admiralbulldog.discord
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
-import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
@@ -27,7 +27,7 @@ class SoundBoardViewModel : AppViewModel() {
         viewModelScope.launch {
             val response = discordBotRepository.playSound(soundBite)
             if (!response.isSuccessful()) {
-                error(getString("header_discord_sound_failed"), getString("content_discord_sound_failed"), ButtonType.OK)
+                showError(getString("header_discord_sound_failed"), getString("content_discord_sound_failed"), ButtonType.OK)
             }
         }
     }

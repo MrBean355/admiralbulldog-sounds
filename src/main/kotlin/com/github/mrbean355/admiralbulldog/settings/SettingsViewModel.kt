@@ -1,10 +1,10 @@
 package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
-import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.information
-import com.github.mrbean355.admiralbulldog.common.warning
+import com.github.mrbean355.admiralbulldog.common.showError
+import com.github.mrbean355.admiralbulldog.common.showInformation
+import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
@@ -48,7 +48,7 @@ class SettingsViewModel : AppViewModel() {
             it?.let {
                 ConfigPersistence.setModUpdateFrequency(it)
                 if (it > UpdateFrequency.DAILY) {
-                    warning("Dota mod updates", "You should check regularly (on startup or daily) for mod updates, or you will see strange text in-game.")
+                    showWarning("Dota mod updates", "You should check regularly (on startup or daily) for mod updates, or you will see strange text in-game.")
                 }
             }
         }
@@ -61,8 +61,8 @@ class SettingsViewModel : AppViewModel() {
 
     fun onCheckForAppUpdateClicked() {
         updateViewModel.checkForAppUpdate(
-                onError = { error(getString("header_update_check_failed"), getString("content_update_check_failed")) },
-                onNoUpdate = { information(getString("header_up_to_date"), getString("content_app_up_to_date")) }
+                onError = { showError(getString("header_update_check_failed"), getString("content_update_check_failed")) },
+                onNoUpdate = { showInformation(getString("header_up_to_date"), getString("content_app_up_to_date")) }
         )
     }
 
@@ -72,8 +72,8 @@ class SettingsViewModel : AppViewModel() {
 
     fun onCheckForModUpdateClicked() {
         updateViewModel.checkForModUpdates(
-                onError = { error(getString("header_update_check_failed"), getString("content_update_check_failed")) },
-                onNoUpdate = { information(getString("header_mods_up_to_date"), getString("content_mods_up_to_date")) })
+                onError = { showError(getString("header_update_check_failed"), getString("content_update_check_failed")) },
+                onNoUpdate = { showInformation(getString("header_mods_up_to_date"), getString("content_mods_up_to_date")) })
     }
 
     fun onSocialLinksClicked() {

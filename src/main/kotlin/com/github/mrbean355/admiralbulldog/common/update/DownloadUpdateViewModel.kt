@@ -4,8 +4,8 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
-import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.showError
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
@@ -68,7 +68,7 @@ class DownloadUpdateViewModel : AppViewModel() {
     }
 
     private fun showErrorMessage(message: String) {
-        error(getString("header_update_failed"), message, RETRY_BUTTON, ButtonType.CANCEL) {
+        showError(getString("header_update_failed"), message, RETRY_BUTTON, ButtonType.CANCEL) {
             if (it === RETRY_BUTTON) {
                 download()
             } else {

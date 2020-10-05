@@ -74,7 +74,7 @@ class UpdateViewModel : AppViewModel() {
                 return@launch
             }
             if (updates.isNotEmpty()) {
-                information(
+                showInformation(
                         header = getString("header_mod_updates_available"),
                         content = getString("content_mod_updates_available", updates.joinToString { it.name }),
                         buttons = arrayOf(UPDATE_BUTTON, ButtonType.CANCEL)
@@ -91,7 +91,7 @@ class UpdateViewModel : AppViewModel() {
 
     private fun doesUserWantToUpdate(header: String, releaseInfo: ReleaseInfo): Boolean {
         var action: ButtonType? = null
-        information(
+        showInformation(
                 header = header,
                 content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
                 buttons = arrayOf(WHATS_NEW_BUTTON, UPDATE_BUTTON, ButtonType.CANCEL)
@@ -113,7 +113,7 @@ class UpdateViewModel : AppViewModel() {
 
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
             ConfigPersistence.setAppLastUpdateToNow()
-            information(
+            showInformation(
                     header = getString("header_app_update_downloaded"),
                     content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
                     buttons = arrayOf(ButtonType.FINISH)
@@ -127,9 +127,9 @@ class UpdateViewModel : AppViewModel() {
         val allSucceeded = dotaModRepository.updateMods(mods)
         progressScreen.close()
         if (allSucceeded) {
-            information(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
+            showInformation(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
         } else {
-            warning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
+            showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
                 if (it === RETRY_BUTTON) {
                     downloadModUpdates(mods)
                 }

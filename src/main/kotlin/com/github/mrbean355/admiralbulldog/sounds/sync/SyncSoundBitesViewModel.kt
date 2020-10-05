@@ -49,7 +49,7 @@ class SyncSoundBitesViewModel : AppViewModel() {
     }
 
     private fun showErrorDialog() {
-        error(getString("title_unknown_error"), getString("content_update_check_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
+        showError(getString("title_unknown_error"), getString("content_update_check_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
             if (it === RETRY_BUTTON) {
                 updateSounds()
             } else {

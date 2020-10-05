@@ -3,13 +3,12 @@ package com.github.mrbean355.admiralbulldog.sounds.manager
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.common.Volume
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.information
+import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.binding.Binding
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
-import tornadofx.objectProperty
-import tornadofx.observableListOf
+import tornadofx.*
 
 class VolumeManagerViewModel : AppViewModel() {
     val items: ObservableList<Volume> = observableListOf()
@@ -21,7 +20,7 @@ class VolumeManagerViewModel : AppViewModel() {
     }
 
     fun onHelpClicked() {
-        information(getString("header_about_volume_manager"), getString("content_about_volume_manager"))
+        showInformation(getString("header_about_volume_manager"), getString("content_about_volume_manager"))
     }
 
     fun onRemoveVolumeClicked() {

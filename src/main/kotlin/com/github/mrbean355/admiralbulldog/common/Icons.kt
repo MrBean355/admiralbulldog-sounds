@@ -17,11 +17,17 @@ fun GreyDotIcon(): Image = loadImage("grey_dot.png")
 
 fun HelpIcon(): Image = loadImage("help.png")
 
+fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
+
+fun MonkaSIcon(): Image = loadImage("monka_s.png")
+
 fun PlayIcon(): Image = loadImage("play.png")
 
 fun PoggiesIcon(): Image = loadImage("poggies.png")
 
 fun RedDotIcon(): Image = loadImage("red_dot.png")
+
+fun SadKekIcon(): Image = loadImage("sad_kek.png")
 
 fun SettingsIcon(): Image = loadImage("settings.png")
 

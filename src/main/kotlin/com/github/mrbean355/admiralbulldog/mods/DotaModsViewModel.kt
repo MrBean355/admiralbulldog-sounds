@@ -24,7 +24,7 @@ class DotaModsViewModel : AppViewModel() {
             val response = repo.listMods()
             val body = response.body
             if (!response.isSuccessful() || body == null) {
-                error(getString("title_unknown_error"), getString("msg_mod_list_failure"))
+                showError(getString("title_unknown_error"), getString("msg_mod_list_failure"))
                 fire(CloseEvent())
                 return@launch
             }
@@ -58,9 +58,9 @@ class DotaModsViewModel : AppViewModel() {
         val allSucceeded = repo.installMods(mods)
         progressScreen.close()
         if (allSucceeded) {
-            information(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
+            showInformation(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
         } else {
-            warning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
+            showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
                 if (it === RETRY_BUTTON) {
                     downloadMods(mods)
                 }

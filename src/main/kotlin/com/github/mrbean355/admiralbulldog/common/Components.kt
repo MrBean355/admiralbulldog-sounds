@@ -16,23 +16,6 @@ import javafx.scene.layout.Priority.ALWAYS
 import javafx.util.StringConverter
 import tornadofx.*
 
-val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
-val WHATS_NEW_BUTTON = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
-val UPDATE_BUTTON = ButtonType(getString("btn_update"), ButtonBar.ButtonData.NEXT_FORWARD)
-val DISCORD_BUTTON = ButtonType(getString("btn_join_discord"), ButtonBar.ButtonData.OK_DONE)
-
-inline fun confirmation(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        confirmation(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
-
-inline fun information(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        information(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
-
-inline fun warning(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        warning(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
-
-inline fun error(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        error(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
-
 fun EventTarget.chanceSpinner(property: IntegerProperty, block: Spinner<Number>.() -> Unit): Spinner<Number> {
     return spinner(min = MIN_CHANCE, max = MAX_CHANCE, amountToStepBy = CHANCE_STEP, property = property, editable = true, enableScroll = true) {
         valueFactory.converter = IntStringConverter()

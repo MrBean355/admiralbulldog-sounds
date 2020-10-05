@@ -26,7 +26,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
                 managedWhen(visibleProperty())
                 bountyRuneSpinner(viewModel.bountyRuneTimer)
                 button(graphic = ImageView(HelpIcon())) {
-                    action { information(getString("header_about_bounty_rune_timer"), getString("content_about_bounty_rune_timer")) }
+                    action { showInformation(getString("header_about_bounty_rune_timer"), getString("content_about_bounty_rune_timer")) }
                 }
             }
         }
@@ -38,7 +38,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
                 managedWhen(visibleProperty())
                 checkbox(property = viewModel.useSmartChance)
                 button(graphic = ImageView(HelpIcon())) {
-                    action { information(getString("header_about_smart_chance"), getString("content_about_smart_chance")) }
+                    action { showInformation(getString("header_about_smart_chance"), getString("content_about_smart_chance")) }
                 }
             }
             field(getString("label_chance_to_play")) {
@@ -58,7 +58,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
                 periodSpinner(viewModel.maxPeriod)
                 label(getString("label_periodic_trigger_minutes"))
                 button(graphic = ImageView(HelpIcon())) {
-                    action { information(getString("header_about_periodic_trigger"), getString("content_about_periodic_trigger")) }
+                    action { showInformation(getString("header_about_periodic_trigger"), getString("content_about_periodic_trigger")) }
                 }
             }
         }
@@ -69,7 +69,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
             field(getString("label_max_playback_speed")) {
                 rateSpinner(viewModel.maxRate)
                 button(graphic = ImageView(HelpIcon())) {
-                    action { information(getString("header_about_playback_speed"), getString("content_about_playback_speed")) }
+                    action { showInformation(getString("header_about_playback_speed"), getString("content_about_playback_speed")) }
                 }
             }
             button(getString("btn_test_playback_speed")) {

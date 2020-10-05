@@ -1,0 +1,46 @@
+package com.github.mrbean355.admiralbulldog.common
+
+import javafx.scene.Node
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType.*
+import javafx.scene.control.ButtonBar
+import javafx.scene.control.ButtonType
+import javafx.scene.image.ImageView
+import javafx.stage.Window
+import tornadofx.*
+
+val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
+val WHATS_NEW_BUTTON = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
+val UPDATE_BUTTON = ButtonType(getString("btn_update"), ButtonBar.ButtonData.NEXT_FORWARD)
+val DISCORD_BUTTON = ButtonType(getString("btn_join_discord"), ButtonBar.ButtonData.OK_DONE)
+
+inline fun showInformation(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
+        showAlert(INFORMATION, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(MonkaHmmIcon()), actionFn = actionFn)
+
+inline fun showWarning(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
+        showAlert(WARNING, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(MonkaSIcon()), actionFn = actionFn)
+
+inline fun showError(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
+        showAlert(ERROR, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(SadKekIcon()), actionFn = actionFn)
+
+inline fun showAlert(
+        type: Alert.AlertType,
+        header: String,
+        content: String? = null,
+        vararg buttons: ButtonType,
+        owner: Window? = null,
+        title: String? = null,
+        graphic: Node? = null,
+        actionFn: Alert.(ButtonType) -> Unit = {}
+): Alert {
+    val alert = Alert(type, content ?: "", *buttons)
+    title?.let { alert.title = it }
+    alert.headerText = header
+    owner?.also { alert.initOwner(it) }
+    graphic?.let { alert.graphic = it }
+    val buttonClicked = alert.showAndWait()
+    if (buttonClicked.isPresent) {
+        alert.actionFn(buttonClicked.get())
+    }
+    return alert
+}
