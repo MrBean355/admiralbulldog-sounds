@@ -61,6 +61,13 @@ fun EventTarget.volumeSpinner(property: IntegerProperty, max: Int = MAX_VOLUME, 
     }
 }
 
+fun EventTarget.bountyRuneSpinner(property: IntegerProperty, block: Spinner<Number>.() -> Unit = {}): Spinner<Number> {
+    return spinner(min = MIN_BOUNTY_RUNE_TIMER, max = MAX_BOUNTY_RUNE_TIMER, amountToStepBy = BOUNTY_RUNE_TIMER_STEP, property = property, editable = true, enableScroll = true) {
+        valueFactory.converter = IntStringConverter()
+        block()
+    }
+}
+
 @Suppress("FunctionName")
 private fun IntStringConverter(): StringConverter<Number> {
     return object : StringConverter<Number>() {

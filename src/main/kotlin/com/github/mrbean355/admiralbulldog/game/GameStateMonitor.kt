@@ -5,17 +5,16 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTrigger
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.features.ContentNegotiation
-import io.ktor.gson.gson
+import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.gson.*
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.routing.post
-import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -51,8 +50,14 @@ fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
     }
 }
 
+/** Recreate the sound trigger implementation of the given type. */
+fun recreateTrigger(triggerType: SoundTriggerType): Unit = synchronized(soundTriggers) {
+    soundTriggers.removeAll { it::class == triggerType }
+    soundTriggers += triggerType.createInstance()
+}
+
 /** Play sound bites that want to be played. */
-private fun processGameState(currentState: GameState) {
+private fun processGameState(currentState: GameState) = synchronized(soundTriggers) {
     val previousMatchId = previousState?.map?.matchid
     val currentMatchId = currentState.map?.matchid
 

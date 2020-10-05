@@ -1,33 +1,10 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.AppStyles
-import com.github.mrbean355.admiralbulldog.common.HelpIcon
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
-import com.github.mrbean355.admiralbulldog.common.chanceSpinner
-import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.information
-import com.github.mrbean355.admiralbulldog.common.periodSpinner
-import com.github.mrbean355.admiralbulldog.common.rateSpinner
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.scene.image.ImageView
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.checkbox
-import tornadofx.enableWhen
-import tornadofx.field
-import tornadofx.fieldset
-import tornadofx.form
-import tornadofx.label
-import tornadofx.managedWhen
-import tornadofx.paddingAll
-import tornadofx.paddingBottom
-import tornadofx.visibleWhen
-import tornadofx.whenUndocked
+import tornadofx.*
 
 class ConfigureSoundTriggerScreen : Fragment() {
     private val viewModel by inject<ConfigureSoundTriggerViewModel>(Scope(), params)
@@ -43,6 +20,14 @@ class ConfigureSoundTriggerScreen : Fragment() {
             }
             field(getString("label_enable_sound_trigger")) {
                 checkbox(property = viewModel.enabled)
+            }
+            field(getString("label_bounty_rune_timer")) {
+                visibleWhen(viewModel.showBountyRuneTimer)
+                managedWhen(visibleProperty())
+                bountyRuneSpinner(viewModel.bountyRuneTimer)
+                button(graphic = ImageView(HelpIcon())) {
+                    action { information(getString("header_about_bounty_rune_timer"), getString("content_about_bounty_rune_timer")) }
+                }
             }
         }
         fieldset(getString("header_chance_to_play")) {

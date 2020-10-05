@@ -1,7 +1,9 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.game.recreateTrigger
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.triggers.OnBountyRunesSpawn
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
 import com.github.mrbean355.admiralbulldog.triggers.Periodically
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
@@ -9,10 +11,7 @@ import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.StringProperty
-import tornadofx.booleanProperty
-import tornadofx.intProperty
-import tornadofx.onChange
-import tornadofx.stringProperty
+import tornadofx.*
 
 class ConfigureSoundTriggerViewModel : AppViewModel() {
     private val type: SoundTriggerType by param()
@@ -21,6 +20,8 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
     val title: StringProperty = stringProperty(type.friendlyName)
     val description: StringProperty = stringProperty(type.description)
     val enabled: BooleanProperty = booleanProperty(ConfigPersistence.isSoundTriggerEnabled(type))
+    val bountyRuneTimer: IntegerProperty = intProperty(ConfigPersistence.getBountyRuneTimer())
+    val showBountyRuneTimer: BooleanProperty = booleanProperty(type == OnBountyRunesSpawn::class)
     val soundBiteCount = stringProperty(ConfigPersistence.getSoundsForType(type).size.toString())
 
     /* Chance to play */
@@ -41,6 +42,10 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
 
     init {
         enabled.onChange { ConfigPersistence.toggleSoundTrigger(type, it) }
+        bountyRuneTimer.onChange {
+            ConfigPersistence.setBountyRuneTimer(it)
+            recreateTrigger(OnBountyRunesSpawn::class)
+        }
         useSmartChance.onChange { ConfigPersistence.setIsUsingHealSmartChance(it) }
         chance.onChange { ConfigPersistence.setSoundTriggerChance(type, it) }
         minPeriod.onChange {

@@ -154,6 +154,15 @@ object ConfigPersistence {
         save()
     }
 
+    fun getBountyRuneTimer(): Int {
+        return loadedConfig.special.bountyRuneTimer
+    }
+
+    fun setBountyRuneTimer(timer: Int) {
+        loadedConfig.special.bountyRuneTimer = timer
+        save()
+    }
+
     /** @return the current volume, in the range `[0.0, 100.0]`. */
     fun getVolume(): Int = loadedConfig.volume
 
@@ -435,7 +444,8 @@ object ConfigPersistence {
     private data class SpecialConfig(
             var useHealSmartChance: Boolean = true,
             var minPeriod: Int = DEFAULT_MIN_PERIOD,
-            var maxPeriod: Int = DEFAULT_MAX_PERIOD
+            var maxPeriod: Int = DEFAULT_MAX_PERIOD,
+            var bountyRuneTimer: Int = DEFAULT_BOUNTY_RUNE_TIMER
     )
 
     private data class Toggle(
