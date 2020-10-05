@@ -11,7 +11,6 @@ import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
-import kotlinx.coroutines.launch
 import tornadofx.*
 import java.awt.SystemTray
 
@@ -61,12 +60,10 @@ class SettingsViewModel : AppViewModel() {
     }
 
     fun onCheckForAppUpdateClicked() {
-        coroutineScope.launch {
-            updateViewModel.checkForAppUpdate(
-                    onError = { error(getString("header_update_check_failed"), getString("content_update_check_failed")) },
-                    onNoUpdate = { information(getString("header_up_to_date"), getString("content_app_up_to_date")) }
-            )
-        }
+        updateViewModel.checkForAppUpdate(
+                onError = { error(getString("header_update_check_failed"), getString("content_update_check_failed")) },
+                onNoUpdate = { information(getString("header_up_to_date"), getString("content_app_up_to_date")) }
+        )
     }
 
     fun onUpdateSoundsClicked() {

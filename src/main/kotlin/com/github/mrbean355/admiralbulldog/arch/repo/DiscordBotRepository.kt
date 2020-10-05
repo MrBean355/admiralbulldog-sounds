@@ -9,8 +9,10 @@ import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_INDIVIDUAL_VOLUME
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.io.FileOutputStream
 
@@ -19,7 +21,7 @@ var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
 class DiscordBotRepository {
     private val logger = LoggerFactory.getLogger(DiscordBotRepository::class.java)
 
-    suspend fun sendHeartbeat() {
+    suspend fun sendHeartbeat(): Unit = withContext(IO) {
         try {
             DiscordBotService.INSTANCE.heartbeat(loadUserId())
         } catch (t: Throwable) {
@@ -54,8 +56,8 @@ class DiscordBotRepository {
         }
     }
 
-    suspend fun lookUpToken(token: String): ServiceResponse<String> {
-        return try {
+    suspend fun lookUpToken(token: String): ServiceResponse<String> = withContext(IO) {
+        try {
             DiscordBotService.INSTANCE.lookUpToken(token)
                     .toServiceResponse { it.charStream().readText() }
         } catch (t: Throwable) {
@@ -64,9 +66,9 @@ class DiscordBotRepository {
         }
     }
 
-    suspend fun playSound(soundBite: SoundBite, rate: Int = DEFAULT_RATE): ServiceResponse<Void> {
+    suspend fun playSound(soundBite: SoundBite, rate: Int = DEFAULT_RATE): ServiceResponse<Void> = withContext(IO) {
         val volume = ConfigPersistence.getSoundBiteVolume(soundBite.name) ?: DEFAULT_INDIVIDUAL_VOLUME
-        return try {
+        try {
             DiscordBotService.INSTANCE.playSound(PlaySoundRequest(loadUserId(), ConfigPersistence.getDiscordToken(), soundBite.fileName, volume, rate))
                     .toServiceResponse()
         } catch (t: Throwable) {
@@ -75,8 +77,8 @@ class DiscordBotRepository {
         }
     }
 
-    suspend fun logAnalyticsProperties(properties: Map<String, Any>): ServiceResponse<Void> {
-        return try {
+    suspend fun logAnalyticsProperties(properties: Map<String, Any>): ServiceResponse<Void> = withContext(IO) {
+        try {
             DiscordBotService.INSTANCE.logAnalyticsProperties(AnalyticsRequest(loadUserId(), properties.mapValues { it.value.toString() }))
                     .toServiceResponse()
         } catch (t: Throwable) {

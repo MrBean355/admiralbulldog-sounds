@@ -112,13 +112,11 @@ class MainViewModel : AppViewModel() {
             checkForModUpdate()
             return
         }
-        coroutineScope.launch {
-            updateViewModel.checkForAppUpdate(
-                    onError = { checkForModUpdate() },
-                    onUpdateSkipped = { checkForModUpdate() },
-                    onNoUpdate = { checkForModUpdate() }
-            )
-        }
+        updateViewModel.checkForAppUpdate(
+                onError = { checkForModUpdate() },
+                onUpdateSkipped = { checkForModUpdate() },
+                onNoUpdate = { checkForModUpdate() }
+        )
     }
 
     private fun checkForModUpdate() {
@@ -130,12 +128,12 @@ class MainViewModel : AppViewModel() {
 
     private fun sendHeartbeats() {
         timer(daemon = true, period = HEARTBEAT_FREQUENCY_MS) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 discordBotRepository.sendHeartbeat()
             }
         }
         timer(daemon = true, period = ANALYTICS_FREQUENCY_MS) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 logAnalyticsProperties()
             }
         }

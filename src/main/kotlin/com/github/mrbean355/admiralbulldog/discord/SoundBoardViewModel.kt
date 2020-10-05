@@ -9,11 +9,8 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
 import javafx.scene.control.ButtonType
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import tornadofx.booleanProperty
-import tornadofx.toObservable
+import tornadofx.*
 
 class SoundBoardViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
@@ -27,12 +24,10 @@ class SoundBoardViewModel : AppViewModel() {
     }
 
     fun onSoundClicked(soundBite: SoundBite) {
-        coroutineScope.launch {
+        viewModelScope.launch {
             val response = discordBotRepository.playSound(soundBite)
             if (!response.isSuccessful()) {
-                withContext(Main) {
-                    error(getString("header_discord_sound_failed"), getString("content_discord_sound_failed"), ButtonType.OK)
-                }
+                error(getString("header_discord_sound_failed"), getString("content_discord_sound_failed"), ButtonType.OK)
             }
         }
     }

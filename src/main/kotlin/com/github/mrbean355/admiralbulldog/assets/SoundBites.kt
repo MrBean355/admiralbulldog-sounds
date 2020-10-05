@@ -5,6 +5,7 @@ import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.warning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -38,13 +39,13 @@ object SoundBites {
      *
      * @return [SyncResult] with all the affected sound bites if successful; `null` if unsuccessful.
      */
-    suspend fun synchronise(progress: (Double) -> Unit): SyncResult? {
+    suspend fun synchronise(progress: (Double) -> Unit): SyncResult? = withContext(IO) {
         val response = playSoundsRepository.listSoundBites()
         val remoteFiles = response.body
 
         if (!response.isSuccessful() || remoteFiles == null) {
             logger.error("Failed to list sound bites: $response")
-            return null
+            return@withContext null
         }
 
         val newSounds = CopyOnWriteArrayList<String>()
@@ -91,7 +92,7 @@ object SoundBites {
         ConfigPersistence.removeInvalidSounds(getAll().map { it.name })
 
         allSounds = emptyList()
-        return SyncResult(newSounds, changedSounds, deletedSounds, failedSounds)
+        SyncResult(newSounds, changedSounds, deletedSounds, failedSounds)
     }
 
     /** @return a list of all currently downloaded sounds. */

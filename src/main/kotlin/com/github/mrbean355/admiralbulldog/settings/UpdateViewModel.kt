@@ -13,9 +13,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import com.vdurmont.semver4j.Semver
 import javafx.scene.control.ButtonType
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -41,30 +39,26 @@ class UpdateViewModel : AppViewModel() {
      * @param onUpdateSkipped invoked if the user chooses not to download the update.
      * @param onNoUpdate      called if there's no update available, or the users skips the download.
      */
-    suspend fun checkForAppUpdate(onError: () -> Unit = {}, onUpdateSkipped: () -> Unit = {}, onNoUpdate: () -> Unit = {}) {
-        val resource = gitHubRepository.getLatestAppRelease()
-        val releaseInfo = resource.body
-        if (!resource.isSuccessful() || releaseInfo == null) {
-            withContext(Main) {
+    fun checkForAppUpdate(onError: () -> Unit = {}, onUpdateSkipped: () -> Unit = {}, onNoUpdate: () -> Unit = {}) {
+        viewModelScope.launch {
+            val resource = gitHubRepository.getLatestAppRelease()
+            val releaseInfo = resource.body
+            if (!resource.isSuccessful() || releaseInfo == null) {
                 logger.error("Failed to check for app update")
                 onError()
+                return@launch
             }
-            return
-        }
-        val latestVersion = Semver(releaseInfo.tagName.removeVersionPrefix())
-        if (latestVersion > APP_VERSION) {
-            logger.info("New app version available: $releaseInfo")
-            withContext(Main) {
+            val latestVersion = Semver(releaseInfo.tagName.removeVersionPrefix())
+            if (latestVersion > APP_VERSION) {
+                logger.info("New app version available: $releaseInfo")
                 if (doesUserWantToUpdate(getString("header_app_update_available"), releaseInfo)) {
                     downloadAppUpdate(releaseInfo)
                 } else {
                     onUpdateSkipped()
                 }
-            }
-        } else {
-            logger.info("Already on latest app version")
-            ConfigPersistence.setAppLastUpdateToNow()
-            withContext(Main) {
+            } else {
+                logger.info("Already on latest app version")
+                ConfigPersistence.setAppLastUpdateToNow()
                 onNoUpdate()
             }
         }
@@ -75,10 +69,8 @@ class UpdateViewModel : AppViewModel() {
             val response = dotaModRepository.checkForUpdates()
             val updates = response.body
             if (!response.isSuccessful() || updates == null) {
-                withContext(Main) {
-                    logger.error("Failed to check for mod updates")
-                    onError()
-                }
+                logger.error("Failed to check for mod updates")
+                onError()
                 return@launch
             }
             if (updates.isNotEmpty()) {

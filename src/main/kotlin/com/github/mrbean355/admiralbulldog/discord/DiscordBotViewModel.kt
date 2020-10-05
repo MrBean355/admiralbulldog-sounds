@@ -10,14 +10,8 @@ import javafx.beans.binding.StringBinding
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import tornadofx.booleanProperty
-import tornadofx.objectProperty
-import tornadofx.onChange
-import tornadofx.stringBinding
-import tornadofx.stringProperty
+import tornadofx.*
 
 class DiscordBotViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
@@ -71,19 +65,17 @@ class DiscordBotViewModel : AppViewModel() {
         statusType.set(Status.LOADING)
         lookupResponse.set(getString("msg_bot_loading"))
 
-        coroutineScope.launch {
+        viewModelScope.launch {
             val response = discordBotRepository.lookUpToken(token.get())
-            withContext(Main) {
-                if (response.isSuccessful()) {
-                    statusType.set(Status.GOOD)
-                    lookupResponse.set(getString("msg_bot_active", response.body))
+            if (response.isSuccessful()) {
+                statusType.set(Status.GOOD)
+                lookupResponse.set(getString("msg_bot_active", response.body))
+            } else {
+                statusType.set(Status.BAD)
+                if (response.statusCode == 404) {
+                    lookupResponse.set(getString("msg_bot_not_found"))
                 } else {
-                    statusType.set(Status.BAD)
-                    if (response.statusCode == 404) {
-                        lookupResponse.set(getString("msg_bot_not_found"))
-                    } else {
-                        lookupResponse.set(getString("msg_bot_error"))
-                    }
+                    lookupResponse.set(getString("msg_bot_error"))
                 }
             }
         }
