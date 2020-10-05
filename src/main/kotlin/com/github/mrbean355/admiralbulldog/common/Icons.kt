@@ -1,30 +1,32 @@
+@file:Suppress("FunctionName", "NOTHING_TO_INLINE")
+
 package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.DotaApplication
 import javafx.scene.image.Image
 
-@Suppress("FunctionName")
+fun AddIcon(): Image = loadImage("add.png")
+
 fun BulldogIcon(): Image = loadImage("bulldog.jpg")
 
-@Suppress("FunctionName")
-fun WeirdChampIcon(): Image = loadImage("weird_champ.png")
+fun DeleteIcon(): Image = loadImage("delete.png")
 
-@Suppress("FunctionName")
-fun PoggiesIcon(): Image = loadImage("poggies.png")
+fun GreenDotIcon(): Image = loadImage("green_dot.png")
 
-@Suppress("FunctionName")
-fun PlayIcon(): Image = loadImage("play_arrow_black.png")
+fun GreyDotIcon(): Image = loadImage("grey_dot.png")
 
-@Suppress("FunctionName")
-fun SettingsIcon(): Image = loadImage("settings_black.png")
-
-@Suppress("FunctionName")
 fun HelpIcon(): Image = loadImage("help.png")
 
-@Suppress("FunctionName")
-fun AddIcon(): Image = loadImage("plus.png")
+fun PlayIcon(): Image = loadImage("play.png")
 
-@Suppress("FunctionName")
-fun DeleteIcon(): Image = loadImage("trash.png")
+fun PoggiesIcon(): Image = loadImage("poggies.png")
+
+fun RedDotIcon(): Image = loadImage("red_dot.png")
+
+fun SettingsIcon(): Image = loadImage("settings.png")
+
+fun WeirdChampIcon(): Image = loadImage("weird_champ.png")
+
+fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
 
 private fun loadImage(name: String) = Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))

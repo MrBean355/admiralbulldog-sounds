@@ -73,4 +73,7 @@ task generateBuildConfig() {
             "const val DISTRIBUTION: String = \"$platform\"\n")
 }
 
+task('generateIcons', type: GenerateIconsTask)
+
 compileKotlin.dependsOn(generateBuildConfig)
+compileKotlin.dependsOn(generateIcons)
