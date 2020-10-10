@@ -29,7 +29,7 @@ class DotaModsViewModel : AppViewModel() {
                 return@launch
             }
             showProgress.set(false)
-            items.setAll(body.sortedBy { it.name.toLowerCase() })
+            items.setAll(body.sortedWith(DotaModComparator()))
         }
     }
 
