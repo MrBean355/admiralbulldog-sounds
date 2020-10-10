@@ -39,7 +39,27 @@ class DotaModsViewModel : AppViewModel() {
         }
     }
 
-    fun onSaveClicked() {
+    fun onAboutModClicked(mod: DotaMod) {
+        showInformation(mod.name, """
+            ${mod.description}
+            
+            ${getString("label_mod_download_size", getDownloadSize(mod))}
+        """.trimIndent())
+    }
+
+    fun onSelectAllClicked() {
+        items.forEach {
+            getCheckedProperty(it).set(true)
+        }
+    }
+
+    fun onDeselectAllClicked() {
+        items.forEach {
+            getCheckedProperty(it).set(false)
+        }
+    }
+
+    fun onInstallClicked() {
         val enabledMods = items.filter {
             getCheckedProperty(it).value
         }
@@ -58,13 +78,26 @@ class DotaModsViewModel : AppViewModel() {
         val allSucceeded = repo.installMods(mods)
         progressScreen.close()
         if (allSucceeded) {
-            showInformation(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
+            if (mods.isEmpty()) {
+                showInformation(getString("header_mods_uninstalled_succeeded"), getString("content_mods_uninstalled_succeeded"))
+            } else {
+                showInformation(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
+            }
         } else {
             showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
                 if (it === RETRY_BUTTON) {
                     downloadMods(mods)
                 }
             }
+        }
+    }
+
+    private fun getDownloadSize(mod: DotaMod): String {
+        val kb = mod.size / 1024.0
+        return if (kb >= 1024.0) {
+            "%.1f MB".format(kb / 1024.0)
+        } else {
+            "%.1f KB".format(kb)
         }
     }
 

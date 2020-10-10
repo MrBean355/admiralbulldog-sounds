@@ -1,7 +1,6 @@
 package com.github.mrbean355.admiralbulldog.mods
 
 import com.github.mrbean355.admiralbulldog.AppStyles
-import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.common.*
 import javafx.geometry.Pos.CENTER
 import tornadofx.*
@@ -27,14 +26,27 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
                     buttonTooltip = getString("tooltip_more_info"),
                     getSelectedProperty = viewModel::getCheckedProperty,
                     stringConverter = { it.name },
-                    onButtonClicked = this@DotaModsScreen::showModInfo
+                    onButtonClicked = viewModel::onAboutModClicked
             )
         }
-        button(getString("btn_save")) {
-            action { viewModel.onSaveClicked() }
+        hbox {
+            hyperlink(getString("btn_more_info")) {
+                action { viewModel.onMoreInformationClicked() }
+            }
+            spacer()
+            label(getString("label_select_mods")) {
+                paddingTop = 3
+                paddingRight = 4
+            }
+            hyperlink(getString("btn_select_all")) {
+                action { viewModel.onSelectAllClicked() }
+            }
+            hyperlink(getString("btn_deselect_all")) {
+                action { viewModel.onDeselectAllClicked() }
+            }
         }
-        hyperlink(getString("btn_more_info")) {
-            action { viewModel.onMoreInformationClicked() }
+        button(getString("btn_save")) {
+            action { viewModel.onInstallClicked() }
         }
     }
 
@@ -47,22 +59,6 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
         }
         whenUndocked {
             viewModel.onUndock()
-        }
-    }
-
-    private fun showModInfo(mod: DotaMod) {
-        showInformation(mod.name, """
-            ${mod.description}
-            ${getString("label_mod_download_size", getDownloadSize(mod))}
-        """.trimIndent())
-    }
-
-    private fun getDownloadSize(mod: DotaMod): String {
-        val kb = mod.size / 1024.0
-        return if (kb >= 1024.0) {
-            "%.1f MB".format(kb / 1024.0)
-        } else {
-            "%.1f KB".format(kb)
         }
     }
 }
