@@ -1,34 +1,44 @@
+import com.squareup.kotlinpoet.*
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 private const val ICON_DIRECTORY = "src/main/resources"
-private const val OUTPUT_FILE = "src/main/kotlin/com/github/mrbean355/admiralbulldog/common/Icons.kt"
 
 open class GenerateIconsTask : DefaultTask() {
 
     @TaskAction
     fun run() {
+        val javaxImage = ClassName("javafx.scene.image", "Image")
+        val suppress = ClassName("", "Suppress")
+
         val icons = project.file(ICON_DIRECTORY).list().orEmpty()
                 .filter { it.endsWith(".png") || it.endsWith(".jpg") }
                 .sorted()
 
-        val functions = icons.joinToString(separator = "\n\n            ") {
-            "fun ${transform(it)}(): Image = loadImage(\"$it\")"
+        val functions = icons.map {
+            FunSpec.builder(transform(it))
+                    .returns(javaxImage)
+                    .addStatement("return loadImage(\"$it\")")
+                    .build()
         }
 
-        project.file(OUTPUT_FILE).writeText("""
-            @file:Suppress("FunctionName", "NOTHING_TO_INLINE")
-
-            package com.github.mrbean355.admiralbulldog.common
-            
-            import com.github.mrbean355.admiralbulldog.DotaApplication
-            import javafx.scene.image.Image
-            
-            $functions
-            
-            private fun loadImage(name: String) = Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))
-            
-        """.trimIndent())
+        FileSpec.builder("com.github.mrbean355.admiralbulldog.common", "Icons")
+                .addAnnotation(AnnotationSpec.builder(suppress)
+                        .addMember("\"FunctionName\"")
+                        .build())
+                .addImport("com.github.mrbean355.admiralbulldog", "DotaApplication")
+                .apply {
+                    functions.forEach { addFunction(it) }
+                }
+                .addFunction(FunSpec.builder("loadImage")
+                        .addModifiers(KModifier.PRIVATE)
+                        .addParameter(ParameterSpec("name", STRING))
+                        .returns(javaxImage)
+                        .addStatement("return Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))")
+                        .build())
+                .build()
+                .writeTo(File(project.projectDir, "/src/main/kotlin"))
     }
 
     private fun transform(fileName: String): String = buildString {

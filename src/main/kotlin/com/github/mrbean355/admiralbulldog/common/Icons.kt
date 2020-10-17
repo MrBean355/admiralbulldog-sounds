@@ -1,38 +1,39 @@
-@file:Suppress("FunctionName", "NOTHING_TO_INLINE")
+@file:Suppress("FunctionName")
 
 package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.DotaApplication
 import javafx.scene.image.Image
 
-fun AddIcon(): Image = loadImage("add.png")
+public fun AddIcon(): Image = loadImage("add.png")
 
-fun BulldogIcon(): Image = loadImage("bulldog.jpg")
+public fun BulldogIcon(): Image = loadImage("bulldog.jpg")
 
-fun DeleteIcon(): Image = loadImage("delete.png")
+public fun DeleteIcon(): Image = loadImage("delete.png")
 
-fun GreenDotIcon(): Image = loadImage("green_dot.png")
+public fun GreenDotIcon(): Image = loadImage("green_dot.png")
 
-fun GreyDotIcon(): Image = loadImage("grey_dot.png")
+public fun GreyDotIcon(): Image = loadImage("grey_dot.png")
 
-fun HelpIcon(): Image = loadImage("help.png")
+public fun HelpIcon(): Image = loadImage("help.png")
 
-fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
+public fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
 
-fun MonkaSIcon(): Image = loadImage("monka_s.png")
+public fun MonkaSIcon(): Image = loadImage("monka_s.png")
 
-fun PauseChampIcon(): Image = loadImage("pause_champ.png")
+public fun PauseChampIcon(): Image = loadImage("pause_champ.png")
 
-fun PlayIcon(): Image = loadImage("play.png")
+public fun PlayIcon(): Image = loadImage("play.png")
 
-fun PoggiesIcon(): Image = loadImage("poggies.png")
+public fun PoggiesIcon(): Image = loadImage("poggies.png")
 
-fun RedDotIcon(): Image = loadImage("red_dot.png")
+public fun RedDotIcon(): Image = loadImage("red_dot.png")
 
-fun SadKekIcon(): Image = loadImage("sad_kek.png")
+public fun SadKekIcon(): Image = loadImage("sad_kek.png")
 
-fun SettingsIcon(): Image = loadImage("settings.png")
+public fun SettingsIcon(): Image = loadImage("settings.png")
 
-fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
+public fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
 
-private fun loadImage(name: String) = Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))
+private fun loadImage(name: String): Image =
+        Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))

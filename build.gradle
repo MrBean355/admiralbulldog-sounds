@@ -60,18 +60,12 @@ jar {
     }
 }
 
-task generateBuildConfig() {
-    final file = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/BuildConfig.kt")
-    file.createNewFile()
-    file.write("package com.github.mrbean355.admiralbulldog\n" +
-            "\n" +
-            "import com.vdurmont.semver4j.Semver\n" +
-            "\n" +
-            "val APP_VERSION: Semver = Semver(\"$version\")\n" +
-            "const val DISTRIBUTION: String = \"$platform\"\n")
+task('generateBuildConfig', type: GenerateBuildConfigTask) {
+    it.platform = platform
 }
-
 task('generateIcons', type: GenerateIconsTask)
 
-compileKotlin.dependsOn(generateBuildConfig)
-compileKotlin.dependsOn(generateIcons)
+compileKotlin {
+    dependsOn(generateBuildConfig)
+    dependsOn(generateIcons)
+}
