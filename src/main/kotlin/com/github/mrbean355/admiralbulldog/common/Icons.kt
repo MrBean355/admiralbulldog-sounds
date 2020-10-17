@@ -21,6 +21,8 @@ fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
 
 fun MonkaSIcon(): Image = loadImage("monka_s.png")
 
+fun PauseChampIcon(): Image = loadImage("pause_champ.png")
+
 fun PlayIcon(): Image = loadImage("play.png")
 
 fun PoggiesIcon(): Image = loadImage("poggies.png")
@@ -30,8 +32,6 @@ fun RedDotIcon(): Image = loadImage("red_dot.png")
 fun SadKekIcon(): Image = loadImage("sad_kek.png")
 
 fun SettingsIcon(): Image = loadImage("settings.png")
-
-fun WeirdChampIcon(): Image = loadImage("weird_champ.png")
 
 fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
 

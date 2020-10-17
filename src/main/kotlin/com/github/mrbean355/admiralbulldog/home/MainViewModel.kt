@@ -35,7 +35,7 @@ class MainViewModel : AppViewModel() {
     private val hasHeardFromDota = booleanProperty(false)
 
     val image: Binding<Image?> = hasHeardFromDota.objectBinding {
-        if (it == true) PoggiesIcon() else WeirdChampIcon()
+        if (it == true) PoggiesIcon() else PauseChampIcon()
     }
     val heading: StringBinding = hasHeardFromDota.stringBinding {
         if (it == true) getString("msg_connected") else getString("msg_not_connected")
