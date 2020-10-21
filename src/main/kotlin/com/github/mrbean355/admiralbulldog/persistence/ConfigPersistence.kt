@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 /** Version of the config file that this app supports. */
-const val CONFIG_VERSION = 1
+const val CONFIG_VERSION = 2
 
 private const val FILE_NAME = "config.json"
 private const val DEFAULT_PORT = 12345

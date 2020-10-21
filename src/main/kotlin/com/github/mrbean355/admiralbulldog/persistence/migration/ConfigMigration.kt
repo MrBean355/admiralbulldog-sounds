@@ -64,7 +64,8 @@ class ConfigMigration {
         set(value) = add("version", JsonPrimitive(value))
 
     private val migrations: List<Migration> = listOf(
-            From0To1Migration()
+            From0To1Migration(),
+            From1To2Migration()
     )
 }
 
