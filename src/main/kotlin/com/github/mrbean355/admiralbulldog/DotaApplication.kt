@@ -7,6 +7,7 @@ import com.github.mrbean355.admiralbulldog.mods.OldModMigration
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
 import javafx.scene.paint.Color.RED
+import javafx.scene.text.FontPosture.ITALIC
 import javafx.scene.text.FontWeight.BOLD
 import javafx.stage.Stage
 import tornadofx.*
@@ -35,6 +36,7 @@ class AppStyles : Stylesheet() {
 
     companion object {
         val boldFont by cssclass()
+        val italicFont by cssclass()
         val smallFont by cssclass()
         val mediumFont by cssclass()
         val largeFont by cssclass()
@@ -46,6 +48,9 @@ class AppStyles : Stylesheet() {
     init {
         boldFont {
             fontWeight = BOLD
+        }
+        italicFont {
+            fontStyle = ITALIC
         }
         smallFont {
             fontSize = 10.px

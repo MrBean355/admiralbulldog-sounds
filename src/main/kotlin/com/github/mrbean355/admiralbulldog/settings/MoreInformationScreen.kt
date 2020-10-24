@@ -1,13 +1,15 @@
 package com.github.mrbean355.admiralbulldog.settings
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.*
 import tornadofx.*
 
-class SocialLinksScreen : View(getString("title_social_links")) {
+class MoreInformationScreen : View(getString("title_more_information")) {
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
-        label(getString("label_social_links_info"))
+        prefWidth = WINDOW_WIDTH_LARGE
+        label(getString("label_more_information_project_dev"))
         hyperlink(getString("btn_project_website")) {
             action { hostServices.showDocument(URL_PROJECT_WEBSITE) }
         }
@@ -17,12 +19,18 @@ class SocialLinksScreen : View(getString("title_social_links")) {
         hyperlink(getString("btn_telegram_channel")) {
             action { hostServices.showDocument(URL_TELEGRAM_CHANNEL) }
         }
-        hyperlink(getString("btn_bulldog_twitch")) {
-            action { hostServices.showDocument(URL_BULLDOG_TWITCH) }
+        label(getString("label_more_information_donate")) {
+            isWrapText = true
         }
-        label(getString("label_social_links_donate"))
         hyperlink(getString("btn_paypal")) {
             action { hostServices.showDocument(URL_PAYPAL) }
+        }
+        label(getString("label_not_affiliated")) {
+            addClass(AppStyles.italicFont)
+            isWrapText = true
+        }
+        hyperlink(getString("btn_bulldog_twitch")) {
+            action { hostServices.showDocument(URL_BULLDOG_TWITCH) }
         }
     }
 }

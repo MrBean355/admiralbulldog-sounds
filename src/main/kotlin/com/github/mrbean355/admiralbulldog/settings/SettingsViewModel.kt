@@ -76,7 +76,7 @@ class SettingsViewModel : AppViewModel() {
                 onNoUpdate = { showInformation(getString("header_mods_up_to_date"), getString("content_mods_up_to_date")) })
     }
 
-    fun onSocialLinksClicked() {
-        find<SocialLinksScreen>().openModal(resizable = false)
+    fun onMoreInformationClicked() {
+        find<MoreInformationScreen>().openModal(resizable = false)
     }
 }
