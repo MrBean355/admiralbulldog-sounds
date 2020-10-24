@@ -305,6 +305,10 @@ object ConfigPersistence {
         return loadedConfig.enabledMods.isNotEmpty()
     }
 
+    fun getEnabledMods(): Collection<String> {
+        return loadedConfig.enabledMods.keys
+    }
+
     /** @return `true` if the given mod has been enabled. */
     fun isModEnabled(mod: DotaMod): Boolean {
         return mod.id in loadedConfig.enabledMods
