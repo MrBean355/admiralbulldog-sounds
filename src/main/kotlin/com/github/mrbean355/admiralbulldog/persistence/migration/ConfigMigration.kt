@@ -1,11 +1,13 @@
 package com.github.mrbean355.admiralbulldog.persistence.migration
 
+import com.github.mrbean355.admiralbulldog.checkConfigVersion
 import com.github.mrbean355.admiralbulldog.persistence.CONFIG_VERSION
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser.parseString
 import com.google.gson.JsonPrimitive
 import org.slf4j.LoggerFactory
+import kotlin.system.exitProcess
 
 /**
  * Migrate old `config.json` files to be compatible with this app version.
@@ -25,7 +27,9 @@ class ConfigMigration {
             return config
         }
 
-        check(version < CONFIG_VERSION) { "Unsupported config version: $version. Please run a later version of the app." }
+        if (!checkConfigVersion(version)) {
+            exitProcess(-1)
+        }
 
         // Apply migrations until we reach the version we support.
         while (version < CONFIG_VERSION) {
