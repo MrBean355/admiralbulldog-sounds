@@ -26,7 +26,7 @@ class From1To2Migration : Migration(from = 1, to = 2) {
         // Lower case custom volumes.
         val volumes = config.getAsJsonObject("volumes")
         val newVolumes = JsonObject()
-        volumes.keySet().forEach { sound ->
+        volumes?.keySet()?.forEach { sound ->
             newVolumes[sound.toLowerCase()] = volumes[sound].asInt
         }
         config["volumes"] = newVolumes
