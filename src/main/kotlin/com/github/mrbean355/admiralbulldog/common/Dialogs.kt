@@ -5,6 +5,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType.*
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
+import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.stage.Window
 import tornadofx.*
@@ -15,8 +16,8 @@ val UPDATE_BUTTON = ButtonType(getString("btn_update"), ButtonBar.ButtonData.NEX
 val DISCORD_BUTTON = ButtonType(getString("btn_join_discord"), ButtonBar.ButtonData.OK_DONE)
 val MORE_INFO_BUTTON = ButtonType(getString("btn_more_info"), ButtonBar.ButtonData.HELP_2)
 
-inline fun showInformation(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        showAlert(INFORMATION, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(MonkaHmmIcon()), actionFn = actionFn)
+inline fun showInformation(header: String, content: String? = null, vararg buttons: ButtonType, icon: Image = MonkaHmmIcon(), actionFn: Alert.(ButtonType) -> Unit = {}) =
+        showAlert(INFORMATION, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(icon), actionFn = actionFn)
 
 inline fun showWarning(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
         showAlert(WARNING, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(MonkaSIcon()), actionFn = actionFn)

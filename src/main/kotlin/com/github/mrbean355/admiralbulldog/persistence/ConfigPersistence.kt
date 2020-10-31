@@ -201,6 +201,17 @@ object ConfigPersistence {
         return previous
     }
 
+    /**
+     * Sets whether we have notified about the new Dota mod to `true`.
+     * @return the value prior to setting it to `true`.
+     */
+    fun getAndSetNotifiedAboutNewMod(): Boolean {
+        val previous = loadedConfig.newModNotified
+        loadedConfig.newModNotified = true
+        save()
+        return previous
+    }
+
     fun isMinimizeToTray(): Boolean = loadedConfig.minimizeToTray
 
     fun setMinimizeToTray(minimize: Boolean) {
@@ -425,6 +436,7 @@ object ConfigPersistence {
             var minimizeToTray: Boolean = true,
             var alwaysShowTrayIcon: Boolean = false,
             var trayNotified: Boolean = false,
+            var newModNotified: Boolean = false,
             val sounds: MutableMap<String, Toggle> = mutableMapOf(),
             val soundBoard: MutableList<String> = mutableListOf(),
             val invalidSounds: MutableSet<String> = mutableSetOf(),

@@ -1,10 +1,8 @@
 package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.AppStyles
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.SettingsIcon
-import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
 import javafx.geometry.Pos
 import javafx.geometry.Pos.CENTER
@@ -59,6 +57,11 @@ class MainScreen : View(getString("title_app")) {
         currentStage?.isResizable = false
         whenUndocked {
             viewModel.onUndock()
+        }
+        runLater {
+            if (!ConfigPersistence.getAndSetNotifiedAboutNewMod()) {
+                showInformation(getString("header_new_mod_system"), getString("content_new_mod_system"), icon = PoggiesIcon())
+            }
         }
     }
 }
