@@ -65,6 +65,8 @@ class DotaModsViewModel : AppViewModel() {
     }
 
     fun onInstallClicked() {
+        showInformation(getString("header_close_dota"), getString("content_close_dota"))
+
         val enabledMods = items.filter {
             getCheckedProperty(it).value
         }
