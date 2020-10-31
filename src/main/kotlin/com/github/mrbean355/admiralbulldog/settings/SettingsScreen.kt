@@ -66,7 +66,7 @@ class SettingsScreen : Fragment(getString("title_settings")) {
                 }
             }
         }
-        hyperlink(getString("btn_more_info")) {
+        hyperlink(getString("btn_more_information")) {
             action { viewModel.onMoreInformationClicked() }
         }
     }

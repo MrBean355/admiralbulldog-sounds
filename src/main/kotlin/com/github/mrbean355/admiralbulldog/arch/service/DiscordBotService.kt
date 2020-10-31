@@ -36,7 +36,7 @@ interface DiscordBotService {
     @POST("/analytics/logProperties")
     suspend fun logAnalyticsProperties(@Body request: AnalyticsRequest): Response<Void>
 
-    @GET("/mods/list")
+    @GET("/mods")
     suspend fun listMods(): Response<List<DotaMod>>
 
     @GET

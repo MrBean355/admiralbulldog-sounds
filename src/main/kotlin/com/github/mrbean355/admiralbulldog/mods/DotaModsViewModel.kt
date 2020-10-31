@@ -9,6 +9,7 @@ import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
 import javafx.scene.control.ButtonType
+import javafx.scene.control.ButtonType.CLOSE
 import kotlinx.coroutines.launch
 import tornadofx.*
 
@@ -44,7 +45,11 @@ class DotaModsViewModel : AppViewModel() {
             ${mod.description}
             
             ${getString("label_mod_download_size", getDownloadSize(mod))}
-        """.trimIndent())
+        """.trimIndent(), MORE_INFO_BUTTON, CLOSE) {
+            if (it === MORE_INFO_BUTTON) {
+                hostServices.showDocument(mod.infoUrl)
+            }
+        }
     }
 
     fun onSelectAllClicked() {
@@ -69,7 +74,7 @@ class DotaModsViewModel : AppViewModel() {
         }
     }
 
-    fun onMoreInformationClicked() {
+    fun onAboutModdingClicked() {
         hostServices.showDocument(URL_MOD_INFO)
     }
 
@@ -93,7 +98,7 @@ class DotaModsViewModel : AppViewModel() {
     }
 
     private fun getDownloadSize(mod: DotaMod): String {
-        val kb = mod.size / 1024.0
+        val kb = mod.size.toFloat()
         return if (kb >= 1024.0) {
             "%.1f MB".format(kb / 1024.0)
         } else {

@@ -306,32 +306,27 @@ object ConfigPersistence {
     }
 
     fun getEnabledMods(): Collection<String> {
-        return loadedConfig.enabledMods.keys
+        return loadedConfig.enabledMods
     }
 
     /** @return `true` if the given mod has been enabled. */
     fun isModEnabled(mod: DotaMod): Boolean {
-        return mod.id in loadedConfig.enabledMods
+        return mod.key in loadedConfig.enabledMods
     }
 
     /** Enable the given mod. */
     fun enableMod(mod: DotaMod) {
-        loadedConfig.enabledMods[mod.id] = mod.hash
+        loadedConfig.enabledMods += mod.key
         save()
     }
 
     /** Disable all mods that aren't in the given collection. */
     fun disableOtherMods(mods: Collection<DotaMod>) {
-        val current = loadedConfig.enabledMods.keys
-        val remove = current - mods.map { it.id }
+        val current = loadedConfig.enabledMods
+        val remove = current - mods.map { it.key }
 
         loadedConfig.enabledMods -= remove
         save()
-    }
-
-    /** @return the hash for the given mod if it is enabled; `null` otherwise. */
-    fun getEnabledModHash(mod: DotaMod): String? {
-        return loadedConfig.enabledMods[mod.id]
     }
 
     /**
@@ -434,7 +429,7 @@ object ConfigPersistence {
             val soundBoard: MutableList<String> = mutableListOf(),
             val invalidSounds: MutableSet<String> = mutableSetOf(),
             val volumes: MutableMap<String, Int> = mutableMapOf(),
-            val enabledMods: MutableMap<String, String> = mutableMapOf()
+            val enabledMods: MutableSet<String> = mutableSetOf()
     )
 
     private data class Updates(

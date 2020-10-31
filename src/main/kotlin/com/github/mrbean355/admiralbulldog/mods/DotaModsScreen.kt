@@ -30,8 +30,8 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
             )
         }
         hbox {
-            hyperlink(getString("btn_more_info")) {
-                action { viewModel.onMoreInformationClicked() }
+            hyperlink(getString("btn_about_modding")) {
+                action { viewModel.onAboutModdingClicked() }
             }
             spacer()
             label(getString("label_select_mods")) {

@@ -4,6 +4,7 @@ import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.ServiceResponse
 import com.github.mrbean355.admiralbulldog.arch.service.DiscordBotService
 import com.github.mrbean355.admiralbulldog.arch.toServiceResponse
+import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.Dota2GameInfo
 import kotlinx.coroutines.Dispatchers.IO
@@ -43,7 +44,7 @@ class DotaModRepository {
         }
         ConfigPersistence.setModLastUpdateToNow()
         ServiceResponse.Success(body.filter {
-            it.hash != ConfigPersistence.getEnabledModHash(it)
+            !verifyModHash(it)
         })
     }
 
@@ -56,7 +57,7 @@ class DotaModRepository {
     suspend fun installMods(mods: Collection<DotaMod>): Boolean = withContext(IO) {
         val allSucceeded = updateMods(mods)
         ConfigPersistence.disableOtherMods(mods)
-        Dota2GameInfo.setIncludedModDirectories(mods.map { it.id })
+        Dota2GameInfo.setIncludedModDirectories(mods.map { it.key })
         allSucceeded
     }
 
@@ -67,8 +68,7 @@ class DotaModRepository {
     suspend fun updateMods(mods: Collection<DotaMod>): Boolean = withContext(IO) {
         var allSucceeded = true
         mods.forEach { mod ->
-            val current = ConfigPersistence.getEnabledModHash(mod)
-            if (current != mod.hash) {
+            if (!verifyModHash(mod)) {
                 allSucceeded = allSucceeded && downloadMod(mod).body ?: false
             }
         }
@@ -79,7 +79,7 @@ class DotaModRepository {
         return try {
             val response = DiscordBotService.INSTANCE.downloadFile(mod.downloadUrl).toServiceResponse()
             if (response.isSuccessful()) {
-                val parent = File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY.format(mod.id)).also {
+                val parent = File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY.format(mod.key)).also {
                     it.mkdirs()
                 }
                 val target = File(parent, VPK_FILE)
@@ -95,6 +95,23 @@ class DotaModRepository {
         } catch (t: Throwable) {
             logger.error("Error downloading mod", t)
             ServiceResponse.Exception()
+        }
+    }
+
+    /**
+     * Check whether the hash of the locally download mod's VPK is the same as the hash on the server.
+     * @return `true` if the hashes are equal.
+     */
+    private fun verifyModHash(mod: DotaMod): Boolean {
+        val parent = File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY.format(mod.key))
+        if (!parent.exists()) {
+            return false
+        }
+        val vpk = File(parent, VPK_FILE)
+        return if (vpk.exists()) {
+            vpk.verifyChecksum(mod.hash)
+        } else {
+            false
         }
     }
 }
