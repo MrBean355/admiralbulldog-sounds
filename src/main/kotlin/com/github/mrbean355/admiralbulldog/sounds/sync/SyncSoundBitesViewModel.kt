@@ -2,11 +2,7 @@ package com.github.mrbean355.admiralbulldog.sounds.sync
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
-import com.github.mrbean355.admiralbulldog.common.SoundBiteTreeItem
-import com.github.mrbean355.admiralbulldog.common.SoundBiteTreeModel
-import com.github.mrbean355.admiralbulldog.common.error
-import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
@@ -14,9 +10,7 @@ import javafx.beans.property.ObjectProperty
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ProgressIndicator.INDETERMINATE_PROGRESS
 import javafx.scene.control.TreeItem
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tornadofx.FXEvent
 import tornadofx.booleanProperty
 import tornadofx.doubleProperty
@@ -33,12 +27,10 @@ class SyncSoundBitesViewModel : AppViewModel() {
 
     private fun updateSounds() {
         progress.set(INDETERMINATE_PROGRESS)
-        coroutineScope.launch {
+        viewModelScope.launch {
             val result = SoundBites.synchronise(progress::set)
             if (result == null) {
-                withContext(Main) {
-                    showErrorDialog()
-                }
+                showErrorDialog()
                 return@launch
             }
             val root = TreeItem<SoundBiteTreeModel>().apply {
@@ -47,19 +39,17 @@ class SyncSoundBitesViewModel : AppViewModel() {
                 children += SoundBiteTreeItem(getString("label_deleted_sounds"), result.deletedSounds)
                 children += SoundBiteTreeItem(getString("label_failed_sounds"), result.failedSounds)
             }
-            withContext(Main) {
-                tree.set(root)
-                finished.set(true)
-                if (result.failedSounds.isEmpty()) {
-                    ConfigPersistence.setSoundsLastUpdateToNow()
-                }
-                SoundBites.checkForInvalidSounds()
+            tree.set(root)
+            finished.set(true)
+            if (result.failedSounds.isEmpty()) {
+                ConfigPersistence.setSoundsLastUpdateToNow()
             }
+            SoundBites.checkForInvalidSounds()
         }
     }
 
     private fun showErrorDialog() {
-        error(getString("title_unknown_error"), getString("content_update_check_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
+        showError(getString("title_unknown_error"), getString("content_update_check_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
             if (it === RETRY_BUTTON) {
                 updateSounds()
             } else {

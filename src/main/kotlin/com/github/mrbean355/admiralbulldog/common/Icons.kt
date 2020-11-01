@@ -1,24 +1,39 @@
+@file:Suppress("FunctionName")
+
 package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.DotaApplication
 import javafx.scene.image.Image
 
-@Suppress("FunctionName")
-fun BulldogIcon(): Image = loadImage("bulldog.jpg")
+public fun AddIcon(): Image = loadImage("add.png")
 
-@Suppress("FunctionName")
-fun PlayIcon(): Image = loadImage("play_arrow_black.png")
+public fun BulldogIcon(): Image = loadImage("bulldog.jpg")
 
-@Suppress("FunctionName")
-fun SettingsIcon(): Image = loadImage("settings_black.png")
+public fun DeleteIcon(): Image = loadImage("delete.png")
 
-@Suppress("FunctionName")
-fun HelpIcon(): Image = loadImage("help.png")
+public fun GreenDotIcon(): Image = loadImage("green_dot.png")
 
-@Suppress("FunctionName")
-fun AddIcon(): Image = loadImage("plus.png")
+public fun GreyDotIcon(): Image = loadImage("grey_dot.png")
 
-@Suppress("FunctionName")
-fun DeleteIcon(): Image = loadImage("trash.png")
+public fun HelpIcon(): Image = loadImage("help.png")
 
-private fun loadImage(name: String) = Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))
+public fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
+
+public fun MonkaSIcon(): Image = loadImage("monka_s.png")
+
+public fun PauseChampIcon(): Image = loadImage("pause_champ.png")
+
+public fun PlayIcon(): Image = loadImage("play.png")
+
+public fun PoggiesIcon(): Image = loadImage("poggies.png")
+
+public fun RedDotIcon(): Image = loadImage("red_dot.png")
+
+public fun SadKekIcon(): Image = loadImage("sad_kek.png")
+
+public fun SettingsIcon(): Image = loadImage("settings.png")
+
+public fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
+
+private fun loadImage(name: String): Image =
+        Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))

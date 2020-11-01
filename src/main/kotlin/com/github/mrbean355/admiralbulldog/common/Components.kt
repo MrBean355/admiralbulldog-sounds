@@ -7,55 +7,14 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.event.EventTarget
 import javafx.geometry.Pos.CENTER_LEFT
-import javafx.scene.control.Alert
-import javafx.scene.control.Button
-import javafx.scene.control.ButtonBar
-import javafx.scene.control.ButtonType
-import javafx.scene.control.CheckBox
-import javafx.scene.control.Label
-import javafx.scene.control.ListCell
-import javafx.scene.control.ListView
-import javafx.scene.control.Spinner
-import javafx.scene.control.TableCell
-import javafx.scene.control.TableColumn
-import javafx.scene.control.Tooltip
-import javafx.scene.control.TreeCell
-import javafx.scene.control.TreeItem
-import javafx.scene.control.TreeView
+import javafx.scene.control.*
+import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.layout.Priority.ALWAYS
 import javafx.util.StringConverter
-import tornadofx.FX
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.booleanProperty
-import tornadofx.button
-import tornadofx.hbox
-import tornadofx.hgrow
-import tornadofx.label
-import tornadofx.managedWhen
-import tornadofx.paddingLeft
-import tornadofx.rowItem
-import tornadofx.spinner
-
-val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
-val WHATS_NEW_BUTTON = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
-val DOWNLOAD_BUTTON = ButtonType(getString("btn_download"), ButtonBar.ButtonData.NEXT_FORWARD)
-val DISCORD_BUTTON = ButtonType(getString("btn_join_discord"), ButtonBar.ButtonData.OK_DONE)
-
-inline fun confirmation(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        tornadofx.confirmation(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
-
-inline fun information(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        tornadofx.information(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
-
-inline fun warning(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        tornadofx.warning(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
-
-inline fun error(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-        tornadofx.error(header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), actionFn = actionFn)
+import tornadofx.*
 
 fun EventTarget.chanceSpinner(property: IntegerProperty, block: Spinner<Number>.() -> Unit): Spinner<Number> {
     return spinner(min = MIN_CHANCE, max = MAX_CHANCE, amountToStepBy = CHANCE_STEP, property = property, editable = true, enableScroll = true) {
@@ -85,6 +44,13 @@ fun EventTarget.volumeSpinner(property: IntegerProperty, max: Int = MAX_VOLUME, 
     }
 }
 
+fun EventTarget.bountyRuneSpinner(property: IntegerProperty, block: Spinner<Number>.() -> Unit = {}): Spinner<Number> {
+    return spinner(min = MIN_BOUNTY_RUNE_TIMER, max = MAX_BOUNTY_RUNE_TIMER, amountToStepBy = BOUNTY_RUNE_TIMER_STEP, property = property, editable = true, enableScroll = true) {
+        valueFactory.converter = IntStringConverter()
+        block()
+    }
+}
+
 @Suppress("FunctionName")
 private fun IntStringConverter(): StringConverter<Number> {
     return object : StringConverter<Number>() {
@@ -99,15 +65,15 @@ private fun IntStringConverter(): StringConverter<Number> {
     }
 }
 
-fun <T> ListView<T>.useLabelWithButton(stringConverter: (T) -> String, onButtonClicked: (T) -> Unit) {
+fun <T> ListView<T>.useLabelWithButton(buttonImage: Image, buttonTooltip: String, stringConverter: (T) -> String, onButtonClicked: (T) -> Unit) {
     setCellFactory {
-        CheckBoxWithButtonCell(false, stringConverter, { booleanProperty() }, onButtonClicked)
+        CheckBoxWithButtonCell(false, buttonImage, buttonTooltip, stringConverter, { booleanProperty() }, onButtonClicked)
     }
 }
 
-fun <T> ListView<T>.useCheckBoxWithButton(stringConverter: (T) -> String, getSelectedProperty: (T) -> BooleanProperty, onButtonClicked: (T) -> Unit) {
+fun <T> ListView<T>.useCheckBoxWithButton(buttonImage: Image, buttonTooltip: String, stringConverter: (T) -> String, getSelectedProperty: (T) -> BooleanProperty, onButtonClicked: (T) -> Unit) {
     setCellFactory {
-        CheckBoxWithButtonCell(true, stringConverter, getSelectedProperty, onButtonClicked)
+        CheckBoxWithButtonCell(true, buttonImage, buttonTooltip, stringConverter, getSelectedProperty, onButtonClicked)
     }
 }
 
@@ -119,6 +85,8 @@ fun TableColumn<SoundBite, String>.useLabelWithPlayButton(onButtonClicked: (Soun
 
 private class CheckBoxWithButtonCell<T>(
         private val showCheckBox: Boolean,
+        buttonImage: Image,
+        private val buttonTooltip: String,
         private val stringConverter: (T) -> String,
         private val getSelectedProperty: (T) -> BooleanProperty,
         private val onButtonClicked: (T) -> Unit
@@ -126,7 +94,7 @@ private class CheckBoxWithButtonCell<T>(
     private val container = HBox()
     private val checkBox = CheckBox()
     private val label = Label()
-    private val button = Button("", ImageView(PlayIcon()))
+    private val button = Button("", ImageView(buttonImage))
     private var booleanProperty: BooleanProperty? = null
 
     init {
@@ -158,7 +126,7 @@ private class CheckBoxWithButtonCell<T>(
         graphic = container
         label.text = stringConverter(item)
         button.setOnAction { onButtonClicked(item) }
-        button.tooltip = Tooltip(getString("tooltip_play_locally"))
+        button.tooltip = Tooltip(buttonTooltip)
 
         booleanProperty?.let {
             checkBox.selectedProperty().unbindBidirectional(booleanProperty)

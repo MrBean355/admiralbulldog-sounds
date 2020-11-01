@@ -2,15 +2,16 @@ package com.github.mrbean355.admiralbulldog.triggers
 
 import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.game.MatchState
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlin.math.ceil
 
 /** How often (in seconds) the runes spawn. */
 private const val HOW_OFTEN = 5 * 60L
-/** Play a sound this many seconds before the bounty runes spawn. */
-private const val WARNING_PERIOD = 15L
 
 /** Plays a sound shortly before the bounty runes spawn. */
 class OnBountyRunesSpawn : SoundTrigger {
+    /** Play a sound this many seconds before the bounty runes spawn. */
+    private val warningPeriod = ConfigPersistence.getBountyRuneTimer().toLong()
     private var nextPlayTime = UNINITIALISED
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
@@ -26,7 +27,7 @@ class OnBountyRunesSpawn : SoundTrigger {
         if (currentTime >= nextPlayTime) {
             val diff = currentTime - nextPlayTime
             nextPlayTime = findNextPlayTime(currentTime + 10)
-            if (diff <= WARNING_PERIOD) {
+            if (diff <= warningPeriod) {
                 return true
             }
         }
@@ -34,8 +35,8 @@ class OnBountyRunesSpawn : SoundTrigger {
     }
 
     private fun findNextPlayTime(clockTime: Long): Long {
-        val iteration = ceil((clockTime + WARNING_PERIOD) / HOW_OFTEN.toFloat()).toInt()
-        val nextPlayTime = iteration * HOW_OFTEN - WARNING_PERIOD
-        return nextPlayTime.coerceAtLeast(-WARNING_PERIOD)
+        val iteration = ceil((clockTime + warningPeriod) / HOW_OFTEN.toFloat()).toInt()
+        val nextPlayTime = iteration * HOW_OFTEN - warningPeriod
+        return nextPlayTime.coerceAtLeast(-warningPeriod)
     }
 }

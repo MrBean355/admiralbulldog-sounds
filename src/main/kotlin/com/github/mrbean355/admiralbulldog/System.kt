@@ -4,6 +4,7 @@ import com.github.mrbean355.admiralbulldog.common.URL_JAVA_DOWNLOAD
 import com.github.mrbean355.admiralbulldog.common.URL_LATEST_RELEASE
 import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.persistence.CONFIG_VERSION
 import java.awt.Desktop
 import java.net.URI
 import javax.swing.JOptionPane.*
@@ -40,6 +41,21 @@ fun checkOperatingSystem(): Boolean {
     if (DISTRIBUTION != expected) {
         val choice = showOptionDialog(null, getString("msg_wrong_distribution", getDistributionName(), osName), getString("title_app"), OK_CANCEL_OPTION, ERROR_MESSAGE, null, null, null)
         if (choice == OK_OPTION) {
+            tryBrowseUrl(URL_LATEST_RELEASE)
+        }
+        return false
+    }
+    return true
+}
+
+/**
+ * Check whether the `config.json` file was last saved by a more recent version of the app.
+ * @return `true` if the app can safely open the config file.
+ */
+fun checkConfigVersion(fileVersion: Int): Boolean {
+    if (fileVersion > CONFIG_VERSION) {
+        val choice = showOptionDialog(null, getString("msg_app_unsupported"), getString("title_app"), YES_NO_OPTION, ERROR_MESSAGE, null, null, null)
+        if (choice == YES_OPTION) {
             tryBrowseUrl(URL_LATEST_RELEASE)
         }
         return false

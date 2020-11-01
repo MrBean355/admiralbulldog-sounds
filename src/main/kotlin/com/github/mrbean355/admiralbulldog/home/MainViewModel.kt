@@ -9,21 +9,22 @@ import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
-import com.github.mrbean355.admiralbulldog.mod.DotaModScreen
+import com.github.mrbean355.admiralbulldog.mods.DotaModsScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.persistence.DotaMod
+import com.github.mrbean355.admiralbulldog.persistence.Dota2GameInfo
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
 import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
+import javafx.beans.binding.Binding
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
+import javafx.scene.image.Image
 import kotlinx.coroutines.launch
 import tornadofx.*
-import tornadofx.error
 import kotlin.concurrent.timer
 import kotlin.system.exitProcess
 
@@ -35,6 +36,9 @@ class MainViewModel : AppViewModel() {
     private val updateViewModel by inject<UpdateViewModel>()
     private val hasHeardFromDota = booleanProperty(false)
 
+    val image: Binding<Image?> = hasHeardFromDota.objectBinding {
+        if (it == true) PoggiesIcon() else PauseChampIcon()
+    }
     val heading: StringBinding = hasHeardFromDota.stringBinding {
         if (it == true) getString("msg_connected") else getString("msg_not_connected")
     }
@@ -49,6 +53,7 @@ class MainViewModel : AppViewModel() {
 
         ensureValidDotaPath()
         ensureGsiInstalled()
+        Dota2GameInfo.setIncludedModDirectories(ConfigPersistence.getEnabledMods())
 
         checkForNewSounds()
         checkForAppUpdate()
@@ -71,7 +76,7 @@ class MainViewModel : AppViewModel() {
         }
         find<InstallationWizard>(scope = Scope()).openModal(block = true, resizable = false)
         if (!DotaPath.hasValidSavedPath()) {
-            error(getString("install_header"), getString("msg_installer_fail"))
+            showError(getString("install_header"), getString("msg_installer_fail"))
             exitProcess(-1)
         }
     }
@@ -80,7 +85,7 @@ class MainViewModel : AppViewModel() {
         val alreadyInstalled = GameStateIntegration.isInstalled()
         GameStateIntegration.install()
         if (!alreadyInstalled) {
-            information(getString("install_header"), getString("msg_installer_success"), ButtonType.FINISH)
+            showInformation(getString("install_header"), getString("msg_installer_success"), ButtonType.FINISH)
         }
     }
 
@@ -93,15 +98,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onDotaModClicked() {
-        find<DotaModScreen>().openModal(resizable = false)
-    }
-
-    fun onDiscordCommunityClicked() {
-        hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
-    }
-
-    fun onTelegramChannelClicked() {
-        hostServices.showDocument(URL_TELEGRAM_CHANNEL)
+        find<DotaModsScreen>().openModal(resizable = false)
     }
 
     private fun checkForNewSounds() {
@@ -117,41 +114,28 @@ class MainViewModel : AppViewModel() {
             checkForModUpdate()
             return
         }
-        coroutineScope.launch {
-            updateViewModel.checkForAppUpdate(
-                    onError = { checkForModUpdate() },
-                    onUpdateSkipped = { checkForModUpdate() },
-                    onNoUpdate = { checkForModUpdate() }
-            )
-        }
+        updateViewModel.checkForAppUpdate(
+                onError = { checkForModUpdate() },
+                onUpdateSkipped = { checkForModUpdate() },
+                onNoUpdate = { checkForModUpdate() }
+        )
     }
 
     private fun checkForModUpdate() {
-        if (ConfigPersistence.isModEnabled()) {
-            val modUninstalled = !ConfigPersistence.isModTempDisabled() && !DotaMod.isModInGameInfoFile()
-            DotaMod.onModEnabled()
-            if (modUninstalled) {
-                // If the user has enabled the mod, but it isn't in the game info file, warn them.
-                warning(getString("header_mod_uninstalled"), getString("content_mod_missing_from_game_info"))
-            }
-            if (updateViewModel.shouldCheckForModUpdate()) {
-                coroutineScope.launch {
-                    updateViewModel.checkForModUpdate()
-                }
-            }
-        } else {
-            DotaMod.onModDisabled()
+        if (!updateViewModel.shouldCheckForModUpdate()) {
+            return
         }
+        updateViewModel.checkForModUpdates()
     }
 
     private fun sendHeartbeats() {
         timer(daemon = true, period = HEARTBEAT_FREQUENCY_MS) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 discordBotRepository.sendHeartbeat()
             }
         }
         timer(daemon = true, period = ANALYTICS_FREQUENCY_MS) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 logAnalyticsProperties()
             }
         }

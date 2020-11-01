@@ -3,7 +3,6 @@ package com.github.mrbean355.admiralbulldog.installation
 import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.useBoldFont
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.Fragment
@@ -27,7 +26,7 @@ class ChooserDotaDirectoryStep : Fragment() {
     override val root = vbox(spacing = PADDING_MEDIUM) {
         label(getString("install_path_name"))
         label(displayedPath) {
-            useBoldFont()
+            addClass(AppStyles.boldFont)
             isWrapText = true
             fitToParentWidth()
         }

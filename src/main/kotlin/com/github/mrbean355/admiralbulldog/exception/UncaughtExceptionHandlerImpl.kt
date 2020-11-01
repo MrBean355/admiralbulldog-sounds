@@ -2,11 +2,11 @@ package com.github.mrbean355.admiralbulldog.exception
 
 import com.github.mrbean355.admiralbulldog.common.DISCORD_BUTTON
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
-import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.showError
 import javafx.application.HostServices
 import javafx.scene.control.ButtonType
-import tornadofx.runLater
+import tornadofx.*
 import java.io.File
 import java.net.BindException
 import kotlin.system.exitProcess
@@ -51,7 +51,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices)
 
     private fun showDialog(header: String, message: String, exitAfterwards: Boolean = false) {
         runLater {
-            error(header, message, DISCORD_BUTTON, ButtonType.OK) {
+            showError(header, message, DISCORD_BUTTON, ButtonType.OK) {
                 if (it === DISCORD_BUTTON) {
                     hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
                 }

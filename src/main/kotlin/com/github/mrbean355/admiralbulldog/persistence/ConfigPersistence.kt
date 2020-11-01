@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
+import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.*
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 /** Version of the config file that this app supports. */
-const val CONFIG_VERSION = 1
+const val CONFIG_VERSION = 2
 
 private const val FILE_NAME = "config.json"
 private const val DEFAULT_PORT = 12345
@@ -153,6 +154,15 @@ object ConfigPersistence {
         save()
     }
 
+    fun getBountyRuneTimer(): Int {
+        return loadedConfig.special.bountyRuneTimer
+    }
+
+    fun setBountyRuneTimer(timer: Int) {
+        loadedConfig.special.bountyRuneTimer = timer
+        save()
+    }
+
     /** @return the current volume, in the range `[0.0, 100.0]`. */
     fun getVolume(): Int = loadedConfig.volume
 
@@ -187,6 +197,17 @@ object ConfigPersistence {
     fun getAndSetNotifiedAboutSystemTray(): Boolean {
         val previous = loadedConfig.trayNotified
         loadedConfig.trayNotified = true
+        save()
+        return previous
+    }
+
+    /**
+     * Sets whether we have notified about the new Dota mod to `true`.
+     * @return the value prior to setting it to `true`.
+     */
+    fun getAndSetNotifiedAboutNewMod(): Boolean {
+        val previous = loadedConfig.newModNotified
+        loadedConfig.newModNotified = true
         save()
         return previous
     }
@@ -290,34 +311,32 @@ object ConfigPersistence {
         save()
     }
 
-    /** @return whether the user has enabled the mod. */
-    fun isModEnabled(): Boolean {
-        return loadedConfig.modEnabled
+    /** @return `true` if ay least one mod has been enabled. */
+    fun hasEnabledMods(): Boolean {
+        return loadedConfig.enabledMods.isNotEmpty()
     }
 
-    /** Set whether the user has enabled the mod. */
-    fun setModEnabled(enabled: Boolean) {
-        loadedConfig.modEnabled = enabled
+    fun getEnabledMods(): Collection<String> {
+        return loadedConfig.enabledMods
+    }
+
+    /** @return `true` if the given mod has been enabled. */
+    fun isModEnabled(mod: DotaMod): Boolean {
+        return mod.key in loadedConfig.enabledMods
+    }
+
+    /** Enable the given mod. */
+    fun enableMod(mod: DotaMod) {
+        loadedConfig.enabledMods += mod.key
         save()
     }
 
-    fun isModTempDisabled(): Boolean {
-        return loadedConfig.modTempDisabled
-    }
+    /** Disable all mods that aren't in the given collection. */
+    fun disableOtherMods(mods: Collection<DotaMod>) {
+        val current = loadedConfig.enabledMods
+        val remove = current - mods.map { it.key }
 
-    fun setModTempDisabled(disabled: Boolean) {
-        loadedConfig.modTempDisabled = disabled
-        save()
-    }
-
-    /** @return the version of the currently installed mod, or an empty string if there is none. */
-    fun getModVersion(): String {
-        return loadedConfig.modVersion
-    }
-
-    /** Set the version of the currently installed mod. */
-    fun setModVersion(version: String) {
-        loadedConfig.modVersion = version
+        loadedConfig.enabledMods -= remove
         save()
     }
 
@@ -417,13 +436,12 @@ object ConfigPersistence {
             var minimizeToTray: Boolean = true,
             var alwaysShowTrayIcon: Boolean = false,
             var trayNotified: Boolean = false,
+            var newModNotified: Boolean = false,
             val sounds: MutableMap<String, Toggle> = mutableMapOf(),
             val soundBoard: MutableList<String> = mutableListOf(),
             val invalidSounds: MutableSet<String> = mutableSetOf(),
             val volumes: MutableMap<String, Int> = mutableMapOf(),
-            var modEnabled: Boolean = false,
-            var modTempDisabled: Boolean = false,
-            var modVersion: String = ""
+            val enabledMods: MutableSet<String> = mutableSetOf()
     )
 
     private data class Updates(
@@ -437,7 +455,8 @@ object ConfigPersistence {
     private data class SpecialConfig(
             var useHealSmartChance: Boolean = true,
             var minPeriod: Int = DEFAULT_MIN_PERIOD,
-            var maxPeriod: Int = DEFAULT_MAX_PERIOD
+            var maxPeriod: Int = DEFAULT_MAX_PERIOD,
+            var bountyRuneTimer: Int = DEFAULT_BOUNTY_RUNE_TIMER
     )
 
     private data class Toggle(

@@ -21,8 +21,7 @@ suspend fun logAnalyticsProperties() {
             "tray.enabled" to ConfigPersistence.isMinimizeToTray(),
             "tray.permanent" to ConfigPersistence.isAlwaysShowTrayIcon(),
             "bot.enabled" to ConfigPersistence.isUsingDiscordBot(),
-            "mod.enabled" to ConfigPersistence.isModEnabled(),
-            "mod.version" to ConfigPersistence.getModVersion(),
-            "mod.update" to ConfigPersistence.getModUpdateFrequency()
+            "mod.update" to ConfigPersistence.getModUpdateFrequency(),
+            "mod.selection" to ConfigPersistence.getEnabledMods().joinToString(separator = ",")
     ) + triggers)
 }

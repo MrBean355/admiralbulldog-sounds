@@ -1,16 +1,13 @@
-package com.github.mrbean355.admiralbulldog.mod
+package com.github.mrbean355.admiralbulldog.ui
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_LARGE
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.useLargeFont
 import javafx.geometry.Pos.CENTER
-import tornadofx.Fragment
-import tornadofx.label
-import tornadofx.paddingAll
-import tornadofx.progressindicator
-import tornadofx.vbox
+import javafx.stage.StageStyle.UTILITY
+import tornadofx.*
 
 /** Displays an indeterminate progress bar with label. Cannot be closed by the user. */
 class ProgressScreen : Fragment(getString("title_loading")) {
@@ -20,7 +17,16 @@ class ProgressScreen : Fragment(getString("title_loading")) {
         paddingAll = PADDING_LARGE
         progressindicator()
         label(getString("label_loading")) {
-            useLargeFont()
+            addClass(AppStyles.largeFont)
+        }
+    }
+}
+
+/** Show a progress screen which can't be closed by the user. */
+fun Component.showProgressScreen(): ProgressScreen {
+    return find<ProgressScreen>().apply {
+        openModal(stageStyle = UTILITY, escapeClosesWindow = false, resizable = false)?.also { stage ->
+            stage.setOnCloseRequest { it.consume() }
         }
     }
 }

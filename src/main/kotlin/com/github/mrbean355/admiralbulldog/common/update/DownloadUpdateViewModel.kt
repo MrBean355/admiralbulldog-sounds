@@ -4,12 +4,13 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
-import com.github.mrbean355.admiralbulldog.common.error
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.showError
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ProgressIndicator.INDETERMINATE_PROGRESS
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,21 +37,18 @@ class DownloadUpdateViewModel : AppViewModel() {
     private fun download() {
         header.set(getString("msg_downloading"))
         progress.set(INDETERMINATE_PROGRESS)
-        coroutineScope.launch {
+        viewModelScope.launch {
             val resource = gitHubRepository.downloadAsset(assetInfo)
             val body = resource.body
             if (!resource.isSuccessful() || body == null) {
-                withContext(Main) {
-                    showErrorMessage(getString("msg_update_failed_unknown"))
-                }
+                showErrorMessage(getString("msg_update_failed_unknown"))
                 return@launch
             }
             val totalBytes = body.contentLength().toDouble()
             val totalMegabytes = totalBytes / 1024.0 / 1024
             val formatted = totalMegabytes.format(decimalPlaces = 2)
-            withContext(Main) {
-                header.set(getString("msg_downloading_with_size", "$formatted MB"))
-            }
+            header.set(getString("msg_downloading_with_size", "$formatted MB"))
+
             val directory = File(destination)
             if (!directory.exists()) {
                 directory.mkdirs()
@@ -59,24 +57,18 @@ class DownloadUpdateViewModel : AppViewModel() {
                 val file = File(directory, assetInfo.name)
                 body.byteStream().use {
                     it.streamToFile(file) { currentBytes ->
-                        withContext(Main) {
-                            progress.set(currentBytes / totalBytes)
-                        }
+                        progress.set(currentBytes / totalBytes)
                     }
                 }
-                withContext(Main) {
-                    fire(CloseEvent(success = true))
-                }
+                fire(CloseEvent(success = true))
             } catch (e: FileNotFoundException) {
-                withContext(Main) {
-                    showErrorMessage(getString("msg_update_failed_file_not_found"))
-                }
+                showErrorMessage(getString("msg_update_failed_file_not_found"))
             }
         }
     }
 
     private fun showErrorMessage(message: String) {
-        error(getString("header_update_failed"), message, RETRY_BUTTON, ButtonType.CANCEL) {
+        showError(getString("header_update_failed"), message, RETRY_BUTTON, ButtonType.CANCEL) {
             if (it === RETRY_BUTTON) {
                 download()
             } else {
@@ -92,7 +84,7 @@ class DownloadUpdateViewModel : AppViewModel() {
     /**
      * Stream this [InputStream] into the given [file], calling [onProgress] with the current number of bytes written.
      */
-    private suspend fun InputStream.streamToFile(file: File, onProgress: suspend (Long) -> Unit) {
+    private suspend fun InputStream.streamToFile(file: File, onProgress: (Long) -> Unit) = withContext(IO) {
         file.outputStream().use { output ->
             var bytesCopied = 0L
             val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
@@ -101,7 +93,9 @@ class DownloadUpdateViewModel : AppViewModel() {
                 yield()
                 output.write(buffer, 0, bytes)
                 bytesCopied += bytes
-                onProgress(bytesCopied)
+                withContext(Main) {
+                    onProgress(bytesCopied)
+                }
                 bytes = read(buffer)
             }
         }

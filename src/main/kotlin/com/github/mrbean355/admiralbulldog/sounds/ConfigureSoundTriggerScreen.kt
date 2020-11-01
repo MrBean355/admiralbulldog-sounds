@@ -1,32 +1,10 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.common.HelpIcon
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
-import com.github.mrbean355.admiralbulldog.common.chanceSpinner
-import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.information
-import com.github.mrbean355.admiralbulldog.common.periodSpinner
-import com.github.mrbean355.admiralbulldog.common.rateSpinner
-import com.github.mrbean355.admiralbulldog.common.useHeaderFont
+import com.github.mrbean355.admiralbulldog.AppStyles
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.scene.image.ImageView
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.action
-import tornadofx.button
-import tornadofx.checkbox
-import tornadofx.enableWhen
-import tornadofx.field
-import tornadofx.fieldset
-import tornadofx.form
-import tornadofx.label
-import tornadofx.managedWhen
-import tornadofx.paddingAll
-import tornadofx.paddingBottom
-import tornadofx.visibleWhen
-import tornadofx.whenUndocked
+import tornadofx.*
 
 class ConfigureSoundTriggerScreen : Fragment() {
     private val viewModel by inject<ConfigureSoundTriggerViewModel>(Scope(), params)
@@ -36,12 +14,20 @@ class ConfigureSoundTriggerScreen : Fragment() {
         paddingAll = PADDING_MEDIUM
         fieldset {
             label(viewModel.description) {
+                addClass(AppStyles.mediumFont, AppStyles.boldFont)
                 paddingBottom = PADDING_SMALL
-                useHeaderFont()
                 isWrapText = true
             }
             field(getString("label_enable_sound_trigger")) {
                 checkbox(property = viewModel.enabled)
+            }
+            field(getString("label_bounty_rune_timer")) {
+                visibleWhen(viewModel.showBountyRuneTimer)
+                managedWhen(visibleProperty())
+                bountyRuneSpinner(viewModel.bountyRuneTimer)
+                button(graphic = ImageView(HelpIcon())) {
+                    action { showInformation(getString("header_about_bounty_rune_timer"), getString("content_about_bounty_rune_timer")) }
+                }
             }
         }
         fieldset(getString("header_chance_to_play")) {
@@ -52,7 +38,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
                 managedWhen(visibleProperty())
                 checkbox(property = viewModel.useSmartChance)
                 button(graphic = ImageView(HelpIcon())) {
-                    action { information(getString("header_about_smart_chance"), getString("content_about_smart_chance")) }
+                    action { showInformation(getString("header_about_smart_chance"), getString("content_about_smart_chance")) }
                 }
             }
             field(getString("label_chance_to_play")) {
@@ -72,7 +58,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
                 periodSpinner(viewModel.maxPeriod)
                 label(getString("label_periodic_trigger_minutes"))
                 button(graphic = ImageView(HelpIcon())) {
-                    action { information(getString("header_about_periodic_trigger"), getString("content_about_periodic_trigger")) }
+                    action { showInformation(getString("header_about_periodic_trigger"), getString("content_about_periodic_trigger")) }
                 }
             }
         }
@@ -83,7 +69,7 @@ class ConfigureSoundTriggerScreen : Fragment() {
             field(getString("label_max_playback_speed")) {
                 rateSpinner(viewModel.maxRate)
                 button(graphic = ImageView(HelpIcon())) {
-                    action { information(getString("header_about_playback_speed"), getString("content_about_playback_speed")) }
+                    action { showInformation(getString("header_about_playback_speed"), getString("content_about_playback_speed")) }
                 }
             }
             button(getString("btn_test_playback_speed")) {

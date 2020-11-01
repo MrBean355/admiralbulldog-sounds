@@ -2,15 +2,14 @@ package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
+import com.github.mrbean355.admiralbulldog.common.PlayIcon
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useCheckBoxWithButton
 import javafx.beans.property.BooleanProperty
 import javafx.collections.transformation.SortedList
 import javafx.scene.control.ListView
 import javafx.scene.control.TextField
-import tornadofx.booleanProperty
-import tornadofx.onChange
-import tornadofx.toObservable
+import tornadofx.*
 
 /**
  * Manages a [ListView] of all [SoundBite]s, with the ability to filter items based on the input of a search field.
@@ -41,6 +40,8 @@ class SoundBiteTracker(selection: List<SoundBite>) {
         })
         return ListView(sortedList).apply {
             useCheckBoxWithButton(
+                    buttonImage = PlayIcon(),
+                    buttonTooltip = getString("tooltip_play_locally"),
                     stringConverter = { it.name },
                     getSelectedProperty = { soundToggles.getValue(it) },
                     onButtonClicked = { it.play() }

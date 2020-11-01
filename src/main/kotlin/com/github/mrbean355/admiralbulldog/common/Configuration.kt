@@ -24,3 +24,8 @@ const val PERIOD_STEP = 1
 
 const val DEFAULT_MIN_PERIOD = 5
 const val DEFAULT_MAX_PERIOD = 15
+
+const val MIN_BOUNTY_RUNE_TIMER = 0
+const val MAX_BOUNTY_RUNE_TIMER = 60
+const val BOUNTY_RUNE_TIMER_STEP = 5
+const val DEFAULT_BOUNTY_RUNE_TIMER = 15

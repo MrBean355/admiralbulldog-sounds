@@ -2,22 +2,18 @@ package com.github.mrbean355.admiralbulldog.discord
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
-import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
+import javafx.beans.binding.Binding
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
-import kotlinx.coroutines.Dispatchers.Main
+import javafx.scene.image.Image
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import tornadofx.booleanProperty
-import tornadofx.objectProperty
-import tornadofx.onChange
-import tornadofx.stringBinding
-import tornadofx.stringProperty
+import tornadofx.*
 
 class DiscordBotViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
@@ -27,7 +23,7 @@ class DiscordBotViewModel : AppViewModel() {
 
     val botEnabled: BooleanProperty = booleanProperty(ConfigPersistence.isUsingDiscordBot())
     val token: StringProperty = stringProperty(ConfigPersistence.getDiscordToken())
-    val statusImage: StringBinding = statusType.stringBinding { it?.image }
+    val statusImage: Binding<Image?> = statusType.objectBinding { it?.getImage() }
     val status: StringBinding = botEnabled.stringBinding(lookupResponse) {
         if (it == true) {
             lookupResponse.get()
@@ -71,28 +67,33 @@ class DiscordBotViewModel : AppViewModel() {
         statusType.set(Status.LOADING)
         lookupResponse.set(getString("msg_bot_loading"))
 
-        coroutineScope.launch {
+        viewModelScope.launch {
             val response = discordBotRepository.lookUpToken(token.get())
-            withContext(Main) {
-                if (response.isSuccessful()) {
-                    statusType.set(Status.GOOD)
-                    lookupResponse.set(getString("msg_bot_active", response.body))
+            if (response.isSuccessful()) {
+                statusType.set(Status.GOOD)
+                lookupResponse.set(getString("msg_bot_active", response.body))
+            } else {
+                statusType.set(Status.BAD)
+                if (response.statusCode == 404) {
+                    lookupResponse.set(getString("msg_bot_not_found"))
                 } else {
-                    statusType.set(Status.BAD)
-                    if (response.statusCode == 404) {
-                        lookupResponse.set(getString("msg_bot_not_found"))
-                    } else {
-                        lookupResponse.set(getString("msg_bot_error"))
-                    }
+                    lookupResponse.set(getString("msg_bot_error"))
                 }
             }
         }
     }
 
-    private enum class Status(val image: String) {
-        NEUTRAL("grey_dot.png"),
-        GOOD("green_dot.png"),
-        BAD("red_dot.png"),
-        LOADING("yellow_dot.png")
+    private enum class Status {
+        NEUTRAL,
+        GOOD,
+        BAD,
+        LOADING;
+
+        fun getImage(): Image = when (this) {
+            NEUTRAL -> GreyDotIcon()
+            GOOD -> GreenDotIcon()
+            BAD -> RedDotIcon()
+            LOADING -> YellowDotIcon()
+        }
     }
 }
