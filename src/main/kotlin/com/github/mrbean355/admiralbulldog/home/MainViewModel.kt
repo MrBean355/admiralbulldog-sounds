@@ -10,6 +10,8 @@ import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
 import com.github.mrbean355.admiralbulldog.mods.DotaModsScreen
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.persistence.Dota2GameInfo
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
@@ -51,6 +53,7 @@ class MainViewModel : AppViewModel() {
 
         ensureValidDotaPath()
         ensureGsiInstalled()
+        Dota2GameInfo.setIncludedModDirectories(ConfigPersistence.getEnabledMods())
 
         checkForNewSounds()
         checkForAppUpdate()
