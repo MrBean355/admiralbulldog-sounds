@@ -13,11 +13,12 @@ class MoreInformationScreen : View(getString("title_more_information")) {
         hyperlink(getString("btn_project_website")) {
             action { hostServices.showDocument(URL_PROJECT_WEBSITE) }
         }
-        hyperlink(getString("btn_discord_community")) {
-            action { hostServices.showDocument(URL_DISCORD_SERVER_INVITE) }
-        }
         hyperlink(getString("btn_telegram_channel")) {
             action { hostServices.showDocument(URL_TELEGRAM_CHANNEL) }
+        }
+        label(getString("label_need_help"))
+        hyperlink(getString("btn_discord_community")) {
+            action { hostServices.showDocument(URL_DISCORD_SERVER_INVITE) }
         }
         label(getString("label_more_information_donate")) {
             isWrapText = true
