@@ -68,7 +68,9 @@ class DotaModRepository {
     suspend fun updateMods(mods: Collection<DotaMod>): Boolean = withContext(IO) {
         var allSucceeded = true
         mods.forEach { mod ->
-            if (!verifyModHash(mod)) {
+            if (verifyModHash(mod)) {
+                ConfigPersistence.enableMod(mod)
+            } else {
                 allSucceeded = allSucceeded && downloadMod(mod).body ?: false
             }
         }
