@@ -9,7 +9,7 @@ import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
 import javafx.scene.control.ButtonType
-import javafx.scene.control.ButtonType.CLOSE
+import javafx.scene.control.ButtonType.*
 import kotlinx.coroutines.launch
 import tornadofx.*
 
@@ -65,14 +65,16 @@ class DotaModsViewModel : AppViewModel() {
     }
 
     fun onInstallClicked() {
-        showInformation(getString("header_close_dota"), getString("content_close_dota"))
+        showInformation(getString("header_close_dota"), getString("content_close_dota"), CANCEL, NEXT) { action ->
+            if (action === NEXT) {
+                val enabledMods = items.filter {
+                    getCheckedProperty(it).value
+                }
 
-        val enabledMods = items.filter {
-            getCheckedProperty(it).value
-        }
-
-        viewModelScope.launch {
-            downloadMods(enabledMods)
+                viewModelScope.launch {
+                    downloadMods(enabledMods)
+                }
+            }
         }
     }
 
