@@ -1,13 +1,13 @@
-![Build](https://github.com/MrBean355/admiralbulldog-sounds/workflows/Java%2012%20CI/badge.svg)
+![AdmiralC](https://i.imgur.com/SCVnMQS.jpg)
 
 # AdmiralBulldog Sounds
 
-This is an app that plays various [AdmiralBulldog](https://www.twitch.tv/admiralbulldog) sound bites for things that happen in your Dota 2 matches.
+Welcome! This is a desktop app that plays various [AdmiralBulldog](https://www.twitch.tv/admiralbulldog) sound bites when certain things happen in your Dota 2 matches. It is highly customisable, allowing you to choose which sound bites should play when.
 
 ## Features
-- **Play sounds**: plays various sounds when different things happen in your game. For example, it can play "ROOONS!" just before the bounty runes spawn, or "EEL" when you get healed.
-- **Discord bot**: plays your choice of sounds through your Discord voice channel.
-- **Dota 2 mod**: replaces some in-game sounds, icons and text, similar to Bulldog's game.
+- **Play sounds**: plays your chosen sounds when different things happen in your game. For example, it can play "ROOONS!" just before the bounty runes spawn, or "EEL" when you get healed.
+- **Discord bot**: plays your choice of sounds through a Discord voice channel instead of only on your computer. It also has a customisable sound board which can manually play sounds on Discord to troll your friends.
+- **Dota 2 mods**: replaces various in-game sounds, icons and text, similar to Bulldog's game as seen on his streams.
 
 To download, or for more information, please check the [project's wiki](https://github.com/MrBean355/admiralbulldog-sounds/wiki).
 
