@@ -36,4 +36,4 @@ public fun SettingsIcon(): Image = loadImage("settings.png")
 public fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
 
 private fun loadImage(name: String): Image =
-        Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))
+    Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))
