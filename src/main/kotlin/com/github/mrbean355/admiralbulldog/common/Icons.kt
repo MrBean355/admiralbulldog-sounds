@@ -4,6 +4,7 @@ package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.DotaApplication
 import javafx.scene.image.Image
+import kotlin.String
 
 public fun AddIcon(): Image = loadImage("add.png")
 

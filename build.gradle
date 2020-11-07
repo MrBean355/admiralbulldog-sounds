@@ -17,7 +17,7 @@ final platform = findProperty('platform') ?: "win"
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.3.9") {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.1") {
         // Transitively pulls in Linux dependencies.
         exclude group: 'org.openjfx'
     }
@@ -35,7 +35,7 @@ dependencies {
     implementation "org.openjfx:javafx-graphics:$fxVersion:$platform"
     implementation "org.openjfx:javafx-media:$fxVersion:$platform"
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.1'
 }
 
 compileKotlin {
