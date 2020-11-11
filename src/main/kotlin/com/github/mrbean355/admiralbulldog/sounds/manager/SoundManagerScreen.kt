@@ -5,21 +5,11 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useLabelWithPlayButton
+import com.github.mrbean355.admiralbulldog.sounds.combo.SoundCombosScreen
 import com.github.mrbean355.admiralbulldog.sounds.tableHeader
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import javafx.scene.control.cell.CheckBoxTableCell
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.SmartResize
-import tornadofx.action
-import tornadofx.button
-import tornadofx.column
-import tornadofx.paddingAll
-import tornadofx.readonlyColumn
-import tornadofx.tableview
-import tornadofx.textfield
-import tornadofx.vbox
-import tornadofx.weightedWidth
+import tornadofx.*
 
 class SoundManagerScreen : Fragment(getString("title_sound_bite_manager")) {
     private val viewModel by inject<SoundManagerViewModel>(Scope())
@@ -48,9 +38,16 @@ class SoundManagerScreen : Fragment(getString("title_sound_bite_manager")) {
                 }
             }
         }
-        button(getString("btn_volume_manager")) {
-            action {
-                find<VolumeManagerScreen>().openModal(resizable = false)
+        hbox(spacing = PADDING_SMALL) {
+            button(getString("btn_volume_manager")) {
+                action {
+                    find<VolumeManagerScreen>().openModal(resizable = false)
+                }
+            }
+            button(getString("btn_sound_combos")) {
+                action {
+                    find<SoundCombosScreen>().openModal(resizable = false)
+                }
             }
         }
     }

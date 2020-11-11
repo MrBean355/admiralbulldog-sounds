@@ -65,7 +65,7 @@ private fun IntStringConverter(): StringConverter<Number> {
     }
 }
 
-fun <T> ListView<T>.useLabelWithButton(buttonImage: Image, buttonTooltip: String, stringConverter: (T) -> String, onButtonClicked: (T) -> Unit) {
+fun <T> ListView<T>.useLabelWithButton(buttonImage: Image, buttonTooltip: String, stringConverter: (T) -> String, onButtonClicked: (T, Int) -> Unit) {
     setCellFactory {
         CheckBoxWithButtonCell(false, buttonImage, buttonTooltip, stringConverter, { booleanProperty() }, onButtonClicked)
     }
@@ -73,7 +73,7 @@ fun <T> ListView<T>.useLabelWithButton(buttonImage: Image, buttonTooltip: String
 
 fun <T> ListView<T>.useCheckBoxWithButton(buttonImage: Image, buttonTooltip: String, stringConverter: (T) -> String, getSelectedProperty: (T) -> BooleanProperty, onButtonClicked: (T) -> Unit) {
     setCellFactory {
-        CheckBoxWithButtonCell(true, buttonImage, buttonTooltip, stringConverter, getSelectedProperty, onButtonClicked)
+        CheckBoxWithButtonCell(true, buttonImage, buttonTooltip, stringConverter, getSelectedProperty, { item, _ -> onButtonClicked(item) })
     }
 }
 
@@ -89,7 +89,7 @@ private class CheckBoxWithButtonCell<T>(
         private val buttonTooltip: String,
         private val stringConverter: (T) -> String,
         private val getSelectedProperty: (T) -> BooleanProperty,
-        private val onButtonClicked: (T) -> Unit
+        private val onButtonClicked: (T, Int) -> Unit
 ) : ListCell<T>() {
     private val container = HBox()
     private val checkBox = CheckBox()
@@ -125,7 +125,7 @@ private class CheckBoxWithButtonCell<T>(
         }
         graphic = container
         label.text = stringConverter(item)
-        button.setOnAction { onButtonClicked(item) }
+        button.setOnAction { onButtonClicked(item, index) }
         button.tooltip = Tooltip(buttonTooltip)
 
         booleanProperty?.let {

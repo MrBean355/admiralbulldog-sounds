@@ -22,7 +22,7 @@ class TestPlaybackSpeedScreen : Fragment(getString("title_test_playback")) {
                     buttonImage = PlayIcon(),
                     buttonTooltip = getString("tooltip_play_locally"),
                     stringConverter = { it.name },
-                    onButtonClicked = { it.play(rate = rate.get()) }
+                    onButtonClicked = { item, _ -> item.play(rate = rate.get()) }
             )
         }
     }

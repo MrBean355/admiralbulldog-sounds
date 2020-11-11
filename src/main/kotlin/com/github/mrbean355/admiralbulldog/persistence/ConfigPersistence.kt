@@ -386,6 +386,30 @@ object ConfigPersistence {
         save()
     }
 
+    fun getSoundCombos(): Collection<String> {
+        return loadedConfig.soundCombos.keys
+    }
+
+    fun hasSoundCombo(name: String): Boolean {
+        return loadedConfig.soundCombos.containsKey(name)
+    }
+
+    fun findSoundCombo(name: String): List<SoundBite> {
+        return loadedConfig.soundCombos.getValue(name).mapNotNull {
+            SoundBites.findSound(it)
+        }
+    }
+
+    fun saveSoundCombo(name: String, sounds: List<SoundBite>) {
+        loadedConfig.soundCombos[name] = sounds.map { it.name }
+        save()
+    }
+
+    fun removeSoundCombo(name: String) {
+        loadedConfig.soundCombos.remove(name)
+        save()
+    }
+
     /** Save the current `config` map to file. */
     private fun save() {
         val file = File(FILE_NAME)
@@ -441,7 +465,8 @@ object ConfigPersistence {
             val soundBoard: MutableList<String> = mutableListOf(),
             val invalidSounds: MutableSet<String> = mutableSetOf(),
             val volumes: MutableMap<String, Int> = mutableMapOf(),
-            val enabledMods: MutableSet<String> = mutableSetOf()
+            val enabledMods: MutableSet<String> = mutableSetOf(),
+            val soundCombos: MutableMap<String, List<String>> = mutableMapOf()
     )
 
     private data class Updates(
