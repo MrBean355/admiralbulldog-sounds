@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.persistence
 
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
+import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.*
@@ -405,8 +406,8 @@ object ConfigPersistence {
         save()
     }
 
-    fun removeSoundCombo(name: String) {
-        loadedConfig.soundCombos.remove(name)
+    fun removeSoundCombo(soundBite: ComboSoundBite) {
+        loadedConfig.soundCombos.remove(soundBite.name)
         save()
     }
 

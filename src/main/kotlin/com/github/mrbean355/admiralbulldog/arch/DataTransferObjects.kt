@@ -23,6 +23,18 @@ data class PlaySoundRequest(
         val rate: Int
 )
 
+data class PlaySoundsRequest(
+        val userId: String,
+        val token: String,
+        val sounds: List<SoundToPlay>
+)
+
+data class SoundToPlay(
+        val soundFileName: String,
+        val volume: Int,
+        val rate: Int
+)
+
 data class DotaMod(
         val key: String,
         val name: String,

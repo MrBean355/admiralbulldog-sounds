@@ -14,8 +14,8 @@ class SoundCombosScreen : Fragment(getString("title_sound_combos")) {
             useLabelWithButton(
                     buttonImage = PlayIcon(),
                     buttonTooltip = getString("tooltip_play_locally"),
-                    stringConverter = { it },
-                    onButtonClicked = { name, _ -> viewModel.onPlayClicked(name) }
+                    stringConverter = { it.name },
+                    onButtonClicked = { soundBite, _ -> soundBite.play() }
             )
             onDoubleClick {
                 viewModel.onListDoubleClicked()

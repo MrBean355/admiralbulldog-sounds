@@ -8,11 +8,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.binding.Binding
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
-import tornadofx.intProperty
-import tornadofx.objectProperty
-import tornadofx.onChange
-import tornadofx.runLater
-import tornadofx.stringProperty
+import tornadofx.*
 
 class ChooseVolumeViewModel : AppViewModel() {
     private var lastText = ""
@@ -46,12 +42,12 @@ class ChooseVolumeViewModel : AppViewModel() {
     private fun onQueryChanged(text: String) {
         val isDeleting = text.length < lastText.length
         if (!isDeleting) {
-            val match = SoundBites.getAll().singleOrNull { it.name.startsWith(text, ignoreCase = true) }
+            val match = SoundBites.getSingleSoundBites().singleOrNull { it.name.startsWith(text, ignoreCase = true) }
             if (match != null) {
                 runLater { query.set(match.name) }
             }
         }
-        soundBite.set(SoundBites.getAll().find { it.name == text })
+        soundBite.set(SoundBites.getSingleSoundBites().find { it.name == text })
         lastText = text
     }
 }

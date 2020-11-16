@@ -23,7 +23,8 @@ private const val SOUNDS_PATH = "sounds"
 object SoundBites {
     private val logger = LoggerFactory.getLogger(SoundBites::class.java)
     private val playSoundsRepository = DiscordBotRepository()
-    private var allSounds = emptyList<SoundBite>()
+    private var soundFiles = emptyList<SingleSoundBite>()
+    private var soundCombos = emptyList<ComboSoundBite>()
 
     class SyncResult(
             val newSounds: Collection<String>,
@@ -91,22 +92,42 @@ object SoundBites {
 
         ConfigPersistence.removeInvalidSounds(getAll().map { it.name })
 
-        allSounds = emptyList()
+        soundFiles = emptyList()
         SyncResult(newSounds, changedSounds, deletedSounds, failedSounds)
     }
 
     /** @return a list of all currently downloaded sounds. */
-    fun getAll(): List<SoundBite> {
-        if (allSounds.isEmpty()) {
+    fun getSingleSoundBites(): List<SingleSoundBite> {
+        if (soundFiles.isEmpty()) {
             val root = File(SOUNDS_PATH)
             if (!root.exists() || !root.isDirectory) {
                 logger.error("Couldn't find sounds directory")
                 return emptyList()
             }
-            allSounds = root.list()?.map { SoundBite("$SOUNDS_PATH/$it") }
-                    .orEmpty()
+            soundFiles = root.list()?.map { SingleSoundBite("$SOUNDS_PATH/$it") }.orEmpty()
         }
-        return allSounds
+        return soundFiles
+    }
+
+    /** @return a list of all created sound combos. */
+    fun getComboSoundBites(): List<ComboSoundBite> {
+        return synchronized(this) {
+            if (soundCombos.isEmpty()) {
+                soundCombos = ConfigPersistence.getSoundCombos().map(::ComboSoundBite)
+            }
+            soundCombos
+        }
+    }
+
+    /** @return a list of all currently downloaded sounds and created combos. */
+    fun getAll(): List<SoundBite> {
+        return getSingleSoundBites() + getComboSoundBites()
+    }
+
+    fun refreshCombos() {
+        synchronized(this) {
+            soundCombos = emptyList()
+        }
     }
 
     /**

@@ -7,21 +7,54 @@ import com.github.mrbean355.admiralbulldog.exception.writeExceptionLog
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
+
+sealed class SoundBite {
+    abstract val name: String
+
+    abstract fun play(rate: Int = DEFAULT_RATE, volume: Int = -1, onComplete: () -> Unit = {})
+}
+
+class ComboSoundBite(override val name: String) : SoundBite() {
+
+    override fun play(rate: Int, volume: Int, onComplete: () -> Unit) {
+        GlobalScope.launch {
+            getSoundBites().playAll(rate)
+            onComplete()
+        }
+    }
+
+    fun getSoundBites(): List<SoundBite> {
+        return ConfigPersistence.findSoundCombo(name)
+    }
+}
+
+suspend fun Iterable<SoundBite>.playAll(rate: Int = DEFAULT_RATE) {
+    val mutex = Mutex()
+    forEach {
+        mutex.lock()
+        it.play(rate = rate) {
+            mutex.unlock()
+        }
+    }
+}
 
 /**
  * A downloaded sound bite which the user can choose to be played.
  */
-class SoundBite(
+class SingleSoundBite(
         /** Path to the file. */
         private val filePath: String
-) {
+) : SoundBite() {
     /** Name of the file, excluding directories. */
     val fileName: String = filePath.substringAfterLast('/')
 
     /** Name of the file, excluding directories and the file extension. */
-    val name: String = fileName.substringBeforeLast('.')
+    override val name: String = fileName.substringBeforeLast('.')
 
     /**
      * Play the sound bite using at the given [rate] and [volume].
@@ -32,7 +65,7 @@ class SoundBite(
      * - Plays at the user's chosen individual volume if applicable.
      * - Else plays at [DEFAULT_INDIVIDUAL_VOLUME].
      */
-    fun play(rate: Int = DEFAULT_RATE, volume: Int = -1) {
+    override fun play(rate: Int, volume: Int, onComplete: () -> Unit) {
         try {
             val media = Media(File(filePath).toURI().toString())
             MediaPlayer(media).apply {
@@ -46,6 +79,7 @@ class SoundBite(
                 onEndOfMedia = Runnable {
                     dispose()
                     players.remove(this)
+                    onComplete()
                 }
                 // Keep a strong reference to players until they finish.
                 // Prevents sounds stopping early due to garbage collection.
@@ -54,6 +88,7 @@ class SoundBite(
             }
         } catch (t: Throwable) {
             logError(filePath, t)
+            onComplete()
         }
     }
 

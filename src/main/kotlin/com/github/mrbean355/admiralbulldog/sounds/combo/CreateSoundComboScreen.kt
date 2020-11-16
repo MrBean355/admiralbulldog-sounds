@@ -1,5 +1,6 @@
 package com.github.mrbean355.admiralbulldog.sounds.combo
 
+import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.common.*
 import javafx.scene.image.ImageView
@@ -47,8 +48,8 @@ class CreateSoundComboScreen : Fragment(getString("title_create_sound_combo")) {
     }
 
     companion object {
-        fun params(name: String): Map<String, Any?> {
-            return mapOf("name" to name)
+        fun params(soundBite: ComboSoundBite): Map<String, Any?> {
+            return mapOf("soundBite" to soundBite)
         }
     }
 }

@@ -1,21 +1,24 @@
 package com.github.mrbean355.admiralbulldog.sounds.combo
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
+import com.github.mrbean355.admiralbulldog.assets.playAll
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.binding.Binding
 import javafx.beans.property.ObjectProperty
+import kotlinx.coroutines.launch
 import tornadofx.*
 
 class CreateSoundComboViewModel : AppViewModel() {
     private var lastText = ""
     private val soundBite: ObjectProperty<SoundBite> = objectProperty()
 
-    private val originalName = (params["name"] as? String).orEmpty()
-    val name = stringProperty(originalName)
+    private val originalSound = (params["soundBite"] as? ComboSoundBite)
+    val name = stringProperty(originalSound?.name.orEmpty())
     val query = stringProperty()
     val hasSoundBite: Binding<Boolean> = soundBite.isNotNull
     val items = observableListOf<SoundBite>()
@@ -25,8 +28,8 @@ class CreateSoundComboViewModel : AppViewModel() {
         query.onChange {
             onQueryChanged(it.orEmpty())
         }
-        if (originalName.isNotEmpty()) {
-            items.setAll(ConfigPersistence.findSoundCombo(originalName))
+        if (originalSound != null) {
+            items.setAll(originalSound.getSoundBites())
         }
     }
 
@@ -40,36 +43,39 @@ class CreateSoundComboViewModel : AppViewModel() {
     }
 
     fun onPlayClicked() {
-        // TODO: Play sounds.
+        viewModelScope.launch {
+            items.playAll()
+        }
     }
 
     fun onSaveClicked(): Boolean {
         val newName = name.get()
-        if (originalName.isEmpty()) {
+        if (originalSound == null) {
             if (ConfigPersistence.hasSoundCombo(newName)) {
                 showError(getString("header_sound_combo_exists"), getString("content_sound_combo_exists", newName))
                 return false
             }
         } else {
-            if (newName != originalName && ConfigPersistence.hasSoundCombo(newName)) {
+            if (newName != originalSound.name && ConfigPersistence.hasSoundCombo(newName)) {
                 showError(getString("header_sound_combo_exists"), getString("content_sound_combo_exists", newName))
                 return false
             }
-            ConfigPersistence.removeSoundCombo(originalName)
+            ConfigPersistence.removeSoundCombo(originalSound)
         }
         ConfigPersistence.saveSoundCombo(newName, items)
+        SoundBites.refreshCombos()
         return true
     }
 
     private fun onQueryChanged(text: String) {
         val isDeleting = text.length < lastText.length
         if (!isDeleting) {
-            val match = SoundBites.getAll().singleOrNull { it.name.startsWith(text, ignoreCase = true) }
+            val match = SoundBites.getSingleSoundBites().singleOrNull { it.name.startsWith(text, ignoreCase = true) }
             if (match != null) {
                 runLater { query.set(match.name) }
             }
         }
-        soundBite.set(SoundBites.getAll().find { it.name == text })
+        soundBite.set(SoundBites.getSingleSoundBites().find { it.name == text })
         lastText = text
     }
 }

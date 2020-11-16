@@ -1,9 +1,6 @@
 package com.github.mrbean355.admiralbulldog.arch.service
 
-import com.github.mrbean355.admiralbulldog.arch.AnalyticsRequest
-import com.github.mrbean355.admiralbulldog.arch.CreateIdResponse
-import com.github.mrbean355.admiralbulldog.arch.DotaMod
-import com.github.mrbean355.admiralbulldog.arch.PlaySoundRequest
+import com.github.mrbean355.admiralbulldog.arch.*
 import com.github.mrbean355.admiralbulldog.arch.repo.hostUrl
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -32,6 +29,9 @@ interface DiscordBotService {
 
     @POST("/")
     suspend fun playSound(@Body request: PlaySoundRequest): Response<Void>
+
+    @POST("/playSounds")
+    suspend fun playSounds(@Body request: PlaySoundsRequest): Response<Void>
 
     @POST("/analytics/logProperties")
     suspend fun logAnalyticsProperties(@Body request: AnalyticsRequest): Response<Void>
