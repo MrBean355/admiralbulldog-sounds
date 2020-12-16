@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
 }
 
 group 'com.github.mrbean355'
@@ -16,13 +16,10 @@ final fxVersion = '12.0.2'
 final platform = findProperty('platform') ?: "win"
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.1") {
-        // Transitively pulls in Linux dependencies.
-        exclude group: 'org.openjfx'
-    }
-    implementation "io.ktor:ktor-server-netty:1.4.1"
-    implementation "io.ktor:ktor-gson:1.4.1"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2'
+    implementation 'io.ktor:ktor-server-netty:1.4.3'
+    implementation 'io.ktor:ktor-gson:1.4.3'
     implementation 'org.slf4j:slf4j-simple:1.7.30'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
