@@ -6,13 +6,11 @@ plugins {
 group 'com.github.mrbean355'
 version '1.12.0-SNAPSHOT'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-
 repositories {
     mavenCentral()
 }
 
-final fxVersion = '12.0.2'
+final fxVersion = '15.0.1'
 final platform = findProperty('platform') ?: "win"
 
 dependencies {
@@ -33,6 +31,11 @@ dependencies {
     implementation "org.openjfx:javafx-media:$fxVersion:$platform"
 
     testImplementation 'junit:junit:4.13.1'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 compileKotlin {
