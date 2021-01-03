@@ -7,6 +7,7 @@ import com.github.mrbean355.admiralbulldog.exception.writeExceptionLog
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer
+import javafx.util.Duration
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -47,8 +48,8 @@ suspend fun Iterable<SoundBite>.playAll(rate: Int = DEFAULT_RATE) {
  * A downloaded sound bite which the user can choose to be played.
  */
 class SingleSoundBite(
-        /** Path to the file. */
-        private val filePath: String
+    /** Path to the file. */
+    private val filePath: String
 ) : SoundBite() {
     /** Name of the file, excluding directories. */
     val fileName: String = filePath.substringAfterLast('/')
@@ -76,6 +77,9 @@ class SingleSoundBite(
                 }
                 this.volume = (ConfigPersistence.getVolume() / 100.0) * (individualVolume / 100.0)
                 this.rate = rate / 100.0
+                // Most sounds don't play on Mac without explicitly setting the start time. Strange.
+                this.startTime = Duration.ZERO
+
                 onEndOfMedia = Runnable {
                     dispose()
                     players.remove(this)
