@@ -16,8 +16,8 @@ final platform = findProperty('platform') ?: "win"
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2'
-    implementation 'io.ktor:ktor-server-netty:1.4.3'
-    implementation 'io.ktor:ktor-gson:1.4.3'
+    implementation 'io.ktor:ktor-server-netty:1.5.0'
+    implementation 'io.ktor:ktor-gson:1.5.0'
     implementation 'org.slf4j:slf4j-simple:1.7.30'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
