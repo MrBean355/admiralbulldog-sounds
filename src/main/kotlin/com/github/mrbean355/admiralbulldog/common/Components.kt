@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.AppStyles
@@ -7,14 +23,35 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.event.EventTarget
 import javafx.geometry.Pos.CENTER_LEFT
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.CheckBox
+import javafx.scene.control.Label
+import javafx.scene.control.ListCell
+import javafx.scene.control.ListView
+import javafx.scene.control.Spinner
+import javafx.scene.control.TableCell
+import javafx.scene.control.TableColumn
+import javafx.scene.control.Tooltip
+import javafx.scene.control.TreeCell
+import javafx.scene.control.TreeItem
+import javafx.scene.control.TreeView
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.layout.Priority.ALWAYS
 import javafx.util.StringConverter
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.booleanProperty
+import tornadofx.button
+import tornadofx.hbox
+import tornadofx.hgrow
+import tornadofx.label
+import tornadofx.managedWhen
+import tornadofx.paddingLeft
+import tornadofx.rowItem
+import tornadofx.spinner
 
 fun EventTarget.chanceSpinner(property: IntegerProperty, block: Spinner<Number>.() -> Unit): Spinner<Number> {
     return spinner(min = MIN_CHANCE, max = MAX_CHANCE, amountToStepBy = CHANCE_STEP, property = property, editable = true, enableScroll = true) {

@@ -1,10 +1,33 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.persistence
 
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_BOUNTY_RUNE_TIMER
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_CHANCE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_MAX_PERIOD
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_MIN_PERIOD
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
+import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
+import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.migration.ConfigMigration
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
