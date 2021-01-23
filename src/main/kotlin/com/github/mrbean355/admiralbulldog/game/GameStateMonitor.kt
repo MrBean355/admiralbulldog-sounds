@@ -16,6 +16,7 @@
 
 package com.github.mrbean355.admiralbulldog.game
 
+import com.github.mrbean355.admiralbulldog.arch.logMatchProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
@@ -84,16 +85,19 @@ private fun processGameState(currentState: GameState) = synchronized(soundTrigge
         previousState = null
         soundTriggers.clear()
         soundTriggers.addAll(SOUND_TRIGGER_TYPES.map { it.createInstance() })
+        GlobalScope.launch {
+            logMatchProperties(currentState)
+        }
     }
 
     // Play sound bites that want to be played:
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
         soundTriggers
-                .filter { ConfigPersistence.isSoundTriggerEnabled(it::class) }
-                .filter { it.shouldPlay(localPreviousState, currentState) }
-                .filter { it.doesProc(localPreviousState, currentState) }
-                .forEach { playSoundForType(it) }
+            .filter { ConfigPersistence.isSoundTriggerEnabled(it::class) }
+            .filter { it.shouldPlay(localPreviousState, currentState) }
+            .filter { it.doesProc(localPreviousState, currentState) }
+            .forEach { playSoundForType(it) }
     }
     previousState = currentState
 }
