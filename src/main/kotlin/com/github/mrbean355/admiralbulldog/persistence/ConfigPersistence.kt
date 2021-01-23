@@ -52,8 +52,8 @@ object ConfigPersistence {
     private val logger = LoggerFactory.getLogger(ConfigPersistence::class.java)
     private lateinit var loadedConfig: Config
     private val gson = GsonBuilder()
-            .setPrettyPrinting()
-            .create()
+        .setPrettyPrinting()
+        .create()
 
     /** Load config from file into memory. */
     fun initialise() {
@@ -253,9 +253,9 @@ object ConfigPersistence {
     /** @return sound trigger types that are enabled. */
     fun getEnabledSoundTriggers(): Collection<SoundTriggerType> {
         return loadedConfig.sounds
-                .filterValues { it.enabled }
-                .keys
-                .map { SOUND_TRIGGER_TYPES.first { type -> it == type.simpleName } }
+            .filterValues { it.enabled }
+            .keys
+            .map { SOUND_TRIGGER_TYPES.first { type -> it == type.simpleName } }
     }
 
     /** @return `true` if the sound trigger is enabled; `false` otherwise. */
@@ -335,6 +335,15 @@ object ConfigPersistence {
         save()
     }
 
+    fun getSoundBoardRate(): Int {
+        return loadedConfig.soundBoardRate
+    }
+
+    fun setSoundBoardRate(rate: Int) {
+        loadedConfig.soundBoardRate = rate
+        save()
+    }
+
     /** @return `true` if ay least one mod has been enabled. */
     fun hasEnabledMods(): Boolean {
         return loadedConfig.enabledMods.isNotEmpty()
@@ -371,9 +380,9 @@ object ConfigPersistence {
     fun findInvalidSounds(): Collection<String> {
         val localSounds = SoundBites.getAll().map { it.name }
         val invalidSounds = ((loadedConfig.sounds.flatMap { it.value.sounds }) + loadedConfig.soundBoard)
-                .distinct()
-                .filter { it !in localSounds }
-                .filter { it !in loadedConfig.invalidSounds }
+            .distinct()
+            .filter { it !in localSounds }
+            .filter { it !in loadedConfig.invalidSounds }
 
         loadedConfig.invalidSounds += invalidSounds
         save()
@@ -447,9 +456,9 @@ object ConfigPersistence {
     /** Load the default configs for all sound triggers. */
     private fun loadDefaultConfig(): Config {
         return Config(sounds = SOUND_TRIGGER_TYPES
-                .map { it.key }
-                .associateWith { Toggle() }
-                .toMutableMap()
+            .map { it.key }
+            .associateWith { Toggle() }
+            .toMutableMap()
         )
     }
 
@@ -471,49 +480,50 @@ object ConfigPersistence {
     }
 
     private data class Config(
-            var version: Int = CONFIG_VERSION,
-            var port: Int = DEFAULT_PORT,
-            var id: String = "",
-            var dotaPath: String = "",
-            var updates: Updates = Updates(),
-            var special: SpecialConfig = SpecialConfig(),
-            var lastSync: Long = 0,
-            var volume: Int = DEFAULT_VOLUME,
-            var discordBotEnabled: Boolean = false,
-            var discordToken: String = "",
-            var minimizeToTray: Boolean = true,
-            var alwaysShowTrayIcon: Boolean = false,
-            var trayNotified: Boolean = false,
-            var newModNotified: Boolean = false,
-            val sounds: MutableMap<String, Toggle> = mutableMapOf(),
-            val soundBoard: MutableList<String> = mutableListOf(),
-            val invalidSounds: MutableSet<String> = mutableSetOf(),
-            val volumes: MutableMap<String, Int> = mutableMapOf(),
-            val enabledMods: MutableSet<String> = mutableSetOf(),
-            val soundCombos: MutableMap<String, List<String>> = mutableMapOf()
+        var version: Int = CONFIG_VERSION,
+        var port: Int = DEFAULT_PORT,
+        var id: String = "",
+        var dotaPath: String = "",
+        var updates: Updates = Updates(),
+        var special: SpecialConfig = SpecialConfig(),
+        var lastSync: Long = 0,
+        var volume: Int = DEFAULT_VOLUME,
+        var discordBotEnabled: Boolean = false,
+        var discordToken: String = "",
+        var minimizeToTray: Boolean = true,
+        var alwaysShowTrayIcon: Boolean = false,
+        var trayNotified: Boolean = false,
+        var newModNotified: Boolean = false,
+        val sounds: MutableMap<String, Toggle> = mutableMapOf(),
+        val soundBoard: MutableList<String> = mutableListOf(),
+        var soundBoardRate: Int = DEFAULT_RATE,
+        val invalidSounds: MutableSet<String> = mutableSetOf(),
+        val volumes: MutableMap<String, Int> = mutableMapOf(),
+        val enabledMods: MutableSet<String> = mutableSetOf(),
+        val soundCombos: MutableMap<String, List<String>> = mutableMapOf()
     )
 
     private data class Updates(
-            var appUpdateCheck: Long = 0,
-            var appUpdateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
-            var soundsUpdateFrequency: UpdateFrequency = UpdateFrequency.DAILY,
-            var modUpdateCheck: Long = 0,
-            var modUpdateFrequency: UpdateFrequency = UpdateFrequency.ALWAYS
+        var appUpdateCheck: Long = 0,
+        var appUpdateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
+        var soundsUpdateFrequency: UpdateFrequency = UpdateFrequency.DAILY,
+        var modUpdateCheck: Long = 0,
+        var modUpdateFrequency: UpdateFrequency = UpdateFrequency.ALWAYS
     )
 
     private data class SpecialConfig(
-            var useHealSmartChance: Boolean = true,
-            var minPeriod: Int = DEFAULT_MIN_PERIOD,
-            var maxPeriod: Int = DEFAULT_MAX_PERIOD,
-            var bountyRuneTimer: Int = DEFAULT_BOUNTY_RUNE_TIMER
+        var useHealSmartChance: Boolean = true,
+        var minPeriod: Int = DEFAULT_MIN_PERIOD,
+        var maxPeriod: Int = DEFAULT_MAX_PERIOD,
+        var bountyRuneTimer: Int = DEFAULT_BOUNTY_RUNE_TIMER
     )
 
     private data class Toggle(
-            var enabled: Boolean = false,
-            var chance: Int = DEFAULT_CHANCE,
-            var minRate: Int = DEFAULT_RATE,
-            var maxRate: Int = DEFAULT_RATE,
-            var playThroughDiscord: Boolean = false,
-            val sounds: MutableList<String> = mutableListOf()
+        var enabled: Boolean = false,
+        var chance: Int = DEFAULT_CHANCE,
+        var minRate: Int = DEFAULT_RATE,
+        var maxRate: Int = DEFAULT_RATE,
+        var playThroughDiscord: Boolean = false,
+        val sounds: MutableList<String> = mutableListOf()
     )
 }

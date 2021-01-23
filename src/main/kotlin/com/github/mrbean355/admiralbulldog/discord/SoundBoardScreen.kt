@@ -17,11 +17,14 @@
 package com.github.mrbean355.admiralbulldog.discord
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
+import com.github.mrbean355.admiralbulldog.common.PADDING_LARGE
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.rateSpinner
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
+import javafx.geometry.Pos.CENTER_LEFT
 import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
 import javafx.scene.control.Tooltip
 import javafx.scene.layout.FlowPane
@@ -31,10 +34,13 @@ import tornadofx.action
 import tornadofx.attachTo
 import tornadofx.button
 import tornadofx.buttonbar
+import tornadofx.hbox
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.onChange
 import tornadofx.paddingAll
+import tornadofx.paddingRight
+import tornadofx.paddingVertical
 import tornadofx.spacer
 import tornadofx.vbox
 import tornadofx.visibleWhen
@@ -49,6 +55,13 @@ class SoundBoardScreen : Fragment(getString("title_sound_board")) {
         label(getString("label_sound_board_empty")) {
             visibleWhen(viewModel.isEmpty)
             managedWhen(visibleProperty())
+        }
+        hbox(alignment = CENTER_LEFT) {
+            paddingVertical = PADDING_SMALL
+            label(getString("label_playback_speed")) {
+                paddingRight = PADDING_LARGE
+            }
+            rateSpinner(viewModel.playbackRate)
         }
         soundBoard(viewModel.soundBoard, viewModel::onSoundClicked)
         spacer {

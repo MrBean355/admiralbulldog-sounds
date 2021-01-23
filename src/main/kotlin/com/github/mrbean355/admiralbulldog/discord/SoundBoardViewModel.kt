@@ -23,17 +23,25 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.beans.property.BooleanProperty
+import javafx.beans.property.IntegerProperty
 import javafx.collections.ObservableList
 import javafx.scene.control.ButtonType
 import kotlinx.coroutines.launch
 import tornadofx.booleanProperty
+import tornadofx.intProperty
+import tornadofx.onChange
 import tornadofx.toObservable
 
 class SoundBoardViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
 
+    val playbackRate: IntegerProperty = intProperty(ConfigPersistence.getSoundBoardRate())
     val soundBoard: ObservableList<SoundBite> = ConfigPersistence.getSoundBoard().toObservable()
     val isEmpty: BooleanProperty = booleanProperty()
+
+    init {
+        playbackRate.onChange(ConfigPersistence::setSoundBoardRate)
+    }
 
     fun refresh() {
         soundBoard.setAll(ConfigPersistence.getSoundBoard())
@@ -42,7 +50,7 @@ class SoundBoardViewModel : AppViewModel() {
 
     fun onSoundClicked(soundBite: SoundBite) {
         viewModelScope.launch {
-            val response = discordBotRepository.playSound(soundBite)
+            val response = discordBotRepository.playSound(soundBite, playbackRate.value)
             if (!response.isSuccessful()) {
                 showError(getString("header_discord_sound_failed"), getString("content_discord_sound_failed"), ButtonType.OK)
             }

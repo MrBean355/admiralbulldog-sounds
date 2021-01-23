@@ -27,7 +27,6 @@ import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SingleSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_INDIVIDUAL_VOLUME
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.sync.Mutex
@@ -79,14 +78,14 @@ class DiscordBotRepository {
     suspend fun lookUpToken(token: String): ServiceResponse<String> = withContext(IO) {
         try {
             DiscordBotService.INSTANCE.lookUpToken(token)
-                    .toServiceResponse { it.charStream().readText() }
+                .toServiceResponse { it.charStream().readText() }
         } catch (t: Throwable) {
             logger.error("Failed to look up token", t)
             ServiceResponse.Exception()
         }
     }
 
-    suspend fun playSound(soundBite: SoundBite, rate: Int = DEFAULT_RATE): ServiceResponse<Void> = withContext(IO) {
+    suspend fun playSound(soundBite: SoundBite, rate: Int): ServiceResponse<Void> = withContext(IO) {
         when (soundBite) {
             is SingleSoundBite -> playSingleSound(soundBite, rate)
             is ComboSoundBite -> playMultipleSounds(soundBite, rate)
@@ -96,7 +95,7 @@ class DiscordBotRepository {
     suspend fun logAnalyticsProperties(properties: Map<String, Any>): ServiceResponse<Void> = withContext(IO) {
         try {
             DiscordBotService.INSTANCE.logAnalyticsProperties(AnalyticsRequest(loadUserId(), properties.mapValues { it.value.toString() }))
-                    .toServiceResponse()
+                .toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Failed to log analytics event", t)
             ServiceResponse.Exception()
@@ -107,7 +106,7 @@ class DiscordBotRepository {
         val volume = ConfigPersistence.getSoundBiteVolume(soundBite.name) ?: DEFAULT_INDIVIDUAL_VOLUME
         return try {
             DiscordBotService.INSTANCE.playSound(PlaySoundRequest(loadUserId(), ConfigPersistence.getDiscordToken(), soundBite.fileName, volume, rate))
-                    .toServiceResponse()
+                .toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Failed to play sound through Discord: $soundBite", t)
             ServiceResponse.Exception()
@@ -120,7 +119,7 @@ class DiscordBotRepository {
         }
         return try {
             DiscordBotService.INSTANCE.playSounds(PlaySoundsRequest(loadUserId(), ConfigPersistence.getDiscordToken(), sounds))
-                    .toServiceResponse()
+                .toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Failed to play combo sound through Discord: $soundBite", t)
             ServiceResponse.Exception()
