@@ -21,6 +21,7 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SoundBiteTreeModel
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.common.useSoundBiteCells
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import javafx.scene.control.ButtonBar.ButtonData.OK_DONE
@@ -82,6 +83,10 @@ class SyncSoundBitesScreen : Fragment(getString("sync_sound_bites_title")) {
         }
         viewModel.finished.onChange {
             currentStage?.sizeToScene()
+        }
+        subscribe<SyncSoundBitesViewModel.NoUpdatesEvent> {
+            showInformation(getString("header_latest_sound_bites"), getString("content_latest_sound_bites"))
+            close()
         }
         subscribe<SyncSoundBitesViewModel.CloseEvent> {
             close()

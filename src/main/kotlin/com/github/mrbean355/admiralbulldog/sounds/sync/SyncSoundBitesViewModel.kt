@@ -49,6 +49,11 @@ class SyncSoundBitesViewModel : AppViewModel() {
                 showErrorDialog()
                 return@launch
             }
+            val updateCount = with(result) { newSounds.size + changedSounds.size + deletedSounds.size + failedSounds.size }
+            if (updateCount == 0) {
+                fire(NoUpdatesEvent())
+                return@launch
+            }
             val root = TreeItem<SoundBiteTreeModel>().apply {
                 children += SoundBiteTreeItem(getString("label_new_sounds"), result.newSounds)
                 children += SoundBiteTreeItem(getString("label_changed_sounds"), result.changedSounds)
@@ -74,5 +79,6 @@ class SyncSoundBitesViewModel : AppViewModel() {
         }
     }
 
+    class NoUpdatesEvent : FXEvent()
     class CloseEvent : FXEvent()
 }
