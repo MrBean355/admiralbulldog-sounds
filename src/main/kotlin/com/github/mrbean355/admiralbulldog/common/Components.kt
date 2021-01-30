@@ -21,6 +21,7 @@ import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
+import javafx.beans.property.Property
 import javafx.event.EventTarget
 import javafx.geometry.Pos.CENTER_LEFT
 import javafx.scene.control.Button
@@ -28,6 +29,7 @@ import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
+import javafx.scene.control.Slider
 import javafx.scene.control.Spinner
 import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
@@ -51,6 +53,7 @@ import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.paddingLeft
 import tornadofx.rowItem
+import tornadofx.slider
 import tornadofx.spinner
 
 fun EventTarget.chanceSpinner(property: IntegerProperty, block: Spinner<Number>.() -> Unit): Spinner<Number> {
@@ -88,6 +91,18 @@ fun EventTarget.bountyRuneSpinner(property: IntegerProperty, block: Spinner<Numb
     }
 }
 
+fun EventTarget.ratingSlider(property: Property<Number>, block: Slider.() -> Unit = {}): Slider {
+    return slider(min = 1, max = 5) {
+        valueProperty().bindBidirectional(property)
+        majorTickUnit = 1.0
+        isSnapToTicks = true
+        isShowTickLabels = true
+        isShowTickMarks = true
+        minorTickCount = 0
+        block()
+    }
+}
+
 @Suppress("FunctionName")
 private fun IntStringConverter(): StringConverter<Number> {
     return object : StringConverter<Number>() {
@@ -121,12 +136,12 @@ fun TableColumn<SoundBite, String>.useLabelWithPlayButton(onButtonClicked: (Soun
 }
 
 private class CheckBoxWithButtonCell<T>(
-        private val showCheckBox: Boolean,
-        buttonImage: Image,
-        private val buttonTooltip: String,
-        private val stringConverter: (T) -> String,
-        private val getSelectedProperty: (T) -> BooleanProperty,
-        private val onButtonClicked: (T, Int) -> Unit
+    private val showCheckBox: Boolean,
+    buttonImage: Image,
+    private val buttonTooltip: String,
+    private val stringConverter: (T) -> String,
+    private val getSelectedProperty: (T) -> BooleanProperty,
+    private val onButtonClicked: (T, Int) -> Unit
 ) : ListCell<T>() {
     private val container = HBox()
     private val checkBox = CheckBox()

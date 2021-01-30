@@ -97,6 +97,13 @@ object ConfigPersistence {
         save()
     }
 
+    fun getFeedbackCompleted(): Long = loadedConfig.feedbackCompleted
+
+    fun setFeedbackCompleted() {
+        loadedConfig.feedbackCompleted = System.currentTimeMillis()
+        save()
+    }
+
     fun getAppUpdateFrequency(): UpdateFrequency {
         return loadedConfig.updates.appUpdateFrequency
     }
@@ -473,6 +480,7 @@ object ConfigPersistence {
         var port: Int = DEFAULT_PORT,
         var id: String = "",
         var dotaPath: String = "",
+        var feedbackCompleted: Long = 0,
         var updates: Updates = Updates(),
         var special: SpecialConfig = SpecialConfig(),
         var lastSync: Long = 0,

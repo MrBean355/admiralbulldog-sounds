@@ -17,6 +17,7 @@
 package com.github.mrbean355.admiralbulldog.arch.repo
 
 import com.github.mrbean355.admiralbulldog.arch.AnalyticsRequest
+import com.github.mrbean355.admiralbulldog.arch.FeedbackRequest
 import com.github.mrbean355.admiralbulldog.arch.PlaySoundRequest
 import com.github.mrbean355.admiralbulldog.arch.PlaySoundsRequest
 import com.github.mrbean355.admiralbulldog.arch.ServiceResponse
@@ -95,6 +96,16 @@ class DiscordBotRepository {
     suspend fun logAnalyticsProperties(properties: Map<String, Any>): ServiceResponse<Void> = withContext(IO) {
         try {
             DiscordBotService.INSTANCE.logAnalyticsProperties(AnalyticsRequest(loadUserId(), properties.mapValues { it.value.toString() }))
+                .toServiceResponse()
+        } catch (t: Throwable) {
+            logger.error("Failed to log analytics event", t)
+            ServiceResponse.Exception()
+        }
+    }
+
+    suspend fun sendFeedback(rating: Int, comments: String): ServiceResponse<Void> = withContext(IO) {
+        try {
+            DiscordBotService.INSTANCE.sendFeedback(FeedbackRequest(loadUserId(), rating, comments))
                 .toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Failed to log analytics event", t)

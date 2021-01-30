@@ -21,8 +21,10 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.common.showWarning
+import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
+import com.github.mrbean355.admiralbulldog.ui.openScreen
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
@@ -80,22 +82,26 @@ class SettingsViewModel : AppViewModel() {
 
     fun onCheckForAppUpdateClicked() {
         updateViewModel.checkForAppUpdate(
-                onError = { showError(getString("header_update_check_failed"), getString("content_update_check_failed")) },
-                onNoUpdate = { showInformation(getString("header_up_to_date"), getString("content_app_up_to_date")) }
+            onError = { showError(getString("header_update_check_failed"), getString("content_update_check_failed")) },
+            onNoUpdate = { showInformation(getString("header_up_to_date"), getString("content_app_up_to_date")) }
         )
     }
 
     fun onUpdateSoundsClicked() {
-        find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, resizable = false)
+        openScreen<SyncSoundBitesScreen>(escapeClosesWindow = false)
     }
 
     fun onCheckForModUpdateClicked() {
         updateViewModel.checkForModUpdates(
-                onError = { showError(getString("header_update_check_failed"), getString("content_update_check_failed")) },
-                onNoUpdate = { showInformation(getString("header_mods_up_to_date"), getString("content_mods_up_to_date")) })
+            onError = { showError(getString("header_update_check_failed"), getString("content_update_check_failed")) },
+            onNoUpdate = { showInformation(getString("header_mods_up_to_date"), getString("content_mods_up_to_date")) })
     }
 
     fun onMoreInformationClicked() {
-        find<MoreInformationScreen>().openModal(resizable = false)
+        openScreen<MoreInformationScreen>()
+    }
+
+    fun onSendFeedbackClicked() {
+        openScreen<FeedbackScreen>()
     }
 }

@@ -17,8 +17,10 @@
 package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.volumeSpinner
+import javafx.geometry.Pos.CENTER
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
@@ -29,6 +31,7 @@ import tornadofx.enableWhen
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
+import tornadofx.hbox
 import tornadofx.hyperlink
 import tornadofx.managedWhen
 import tornadofx.paddingAll
@@ -82,8 +85,13 @@ class SettingsScreen : Fragment(getString("title_settings")) {
                 }
             }
         }
-        hyperlink(getString("btn_more_information")) {
-            action { viewModel.onMoreInformationClicked() }
+        hbox(spacing = PADDING_SMALL, alignment = CENTER) {
+            hyperlink(getString("btn_more_information")) {
+                action { viewModel.onMoreInformationClicked() }
+            }
+            hyperlink(getString("btn_send_feedback")) {
+                action { viewModel.onSendFeedbackClicked() }
+            }
         }
     }
 

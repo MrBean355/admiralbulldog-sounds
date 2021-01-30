@@ -19,6 +19,7 @@ package com.github.mrbean355.admiralbulldog.arch.service
 import com.github.mrbean355.admiralbulldog.arch.AnalyticsRequest
 import com.github.mrbean355.admiralbulldog.arch.CreateIdResponse
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
+import com.github.mrbean355.admiralbulldog.arch.FeedbackRequest
 import com.github.mrbean355.admiralbulldog.arch.PlaySoundRequest
 import com.github.mrbean355.admiralbulldog.arch.PlaySoundsRequest
 import com.github.mrbean355.admiralbulldog.arch.repo.hostUrl
@@ -69,11 +70,14 @@ interface DiscordBotService {
     @Streaming
     suspend fun downloadFile(@Url url: String): Response<ResponseBody>
 
+    @POST("/feedback")
+    suspend fun sendFeedback(@Body request: FeedbackRequest): Response<Void>
+
     companion object {
         val INSTANCE: DiscordBotService = Retrofit.Builder()
-                .baseUrl(hostUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create()
+            .baseUrl(hostUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create()
     }
 }

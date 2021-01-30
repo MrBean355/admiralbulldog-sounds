@@ -28,6 +28,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
+import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
 import com.github.mrbean355.admiralbulldog.mods.DotaModsScreen
@@ -38,6 +39,7 @@ import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
 import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
+import com.github.mrbean355.admiralbulldog.ui.openScreen
 import javafx.beans.binding.Binding
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
@@ -84,6 +86,10 @@ class MainViewModel : AppViewModel() {
 
         checkForNewSounds()
         checkForAppUpdate()
+
+        if (FeedbackScreen.shouldPrompt()) {
+            openScreen<FeedbackScreen>()
+        }
 
         monitorGameStateUpdates {
             runLater {
@@ -142,9 +148,9 @@ class MainViewModel : AppViewModel() {
             return
         }
         updateViewModel.checkForAppUpdate(
-                onError = { checkForModUpdate() },
-                onUpdateSkipped = { checkForModUpdate() },
-                onNoUpdate = { checkForModUpdate() }
+            onError = { checkForModUpdate() },
+            onUpdateSkipped = { checkForModUpdate() },
+            onNoUpdate = { checkForModUpdate() }
         )
     }
 
