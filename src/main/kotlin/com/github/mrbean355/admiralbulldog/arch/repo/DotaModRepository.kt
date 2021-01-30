@@ -38,7 +38,7 @@ class DotaModRepository {
     suspend fun listMods(): ServiceResponse<List<DotaMod>> = withContext(IO) {
         try {
             DiscordBotService.INSTANCE.listMods()
-                    .toServiceResponse()
+                .toServiceResponse()
         } catch (t: Throwable) {
             logger.error("Error getting mods list", t)
             ServiceResponse.Exception()
@@ -50,7 +50,8 @@ class DotaModRepository {
      * @return mods that can be updated.
      */
     suspend fun checkForUpdates(): ServiceResponse<Collection<DotaMod>> = withContext(IO) {
-        if (!ConfigPersistence.hasEnabledMods()) {
+        val enabledMods = ConfigPersistence.getEnabledMods()
+        if (enabledMods.isEmpty()) {
             return@withContext ServiceResponse.Success(emptyList())
         }
         val response = listMods()
@@ -59,9 +60,10 @@ class DotaModRepository {
             return@withContext ServiceResponse.Error(response.statusCode)
         }
         ConfigPersistence.setModLastUpdateToNow()
-        ServiceResponse.Success(body.filter {
-            !verifyModHash(it)
-        })
+        ServiceResponse.Success(
+            body.filter { it.key in enabledMods }
+                .filter { !verifyModHash(it) }
+        )
     }
 
     /**
