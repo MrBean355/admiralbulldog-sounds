@@ -1,10 +1,50 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.AppStyles
-import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.common.HelpIcon
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
+import com.github.mrbean355.admiralbulldog.common.bountyRuneSpinner
+import com.github.mrbean355.admiralbulldog.common.chanceSpinner
+import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.periodSpinner
+import com.github.mrbean355.admiralbulldog.common.rateSpinner
+import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.scene.image.ImageView
-import tornadofx.*
+import tornadofx.Fragment
+import tornadofx.Scope
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.button
+import tornadofx.checkbox
+import tornadofx.enableWhen
+import tornadofx.field
+import tornadofx.fieldset
+import tornadofx.form
+import tornadofx.label
+import tornadofx.managedWhen
+import tornadofx.paddingAll
+import tornadofx.paddingBottom
+import tornadofx.visibleWhen
+import tornadofx.whenUndocked
 
 class ConfigureSoundTriggerScreen : Fragment() {
     private val viewModel by inject<ConfigureSoundTriggerViewModel>(Scope(), params)

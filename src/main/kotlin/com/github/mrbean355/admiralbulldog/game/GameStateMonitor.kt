@@ -1,20 +1,39 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.game
 
+import com.github.mrbean355.admiralbulldog.arch.logMatchProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTrigger
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.gson.*
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.ContentNegotiation
+import io.ktor.gson.gson
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.request.receive
+import io.ktor.response.respond
+import io.ktor.routing.post
+import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -66,16 +85,19 @@ private fun processGameState(currentState: GameState) = synchronized(soundTrigge
         previousState = null
         soundTriggers.clear()
         soundTriggers.addAll(SOUND_TRIGGER_TYPES.map { it.createInstance() })
+        GlobalScope.launch {
+            logMatchProperties(currentState)
+        }
     }
 
     // Play sound bites that want to be played:
     val localPreviousState = previousState
     if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
         soundTriggers
-                .filter { ConfigPersistence.isSoundTriggerEnabled(it::class) }
-                .filter { it.shouldPlay(localPreviousState, currentState) }
-                .filter { it.doesProc(localPreviousState, currentState) }
-                .forEach { playSoundForType(it) }
+            .filter { ConfigPersistence.isSoundTriggerEnabled(it::class) }
+            .filter { it.shouldPlay(localPreviousState, currentState) }
+            .filter { it.doesProc(localPreviousState, currentState) }
+            .forEach { playSoundForType(it) }
     }
     previousState = currentState
 }

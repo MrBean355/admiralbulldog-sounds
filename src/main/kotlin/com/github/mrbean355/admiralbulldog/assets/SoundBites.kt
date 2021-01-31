@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.assets
 
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
@@ -23,7 +39,8 @@ private const val SOUNDS_PATH = "sounds"
 object SoundBites {
     private val logger = LoggerFactory.getLogger(SoundBites::class.java)
     private val playSoundsRepository = DiscordBotRepository()
-    private var allSounds = emptyList<SoundBite>()
+    private var soundFiles = emptyList<SingleSoundBite>()
+    private var soundCombos = emptyList<ComboSoundBite>()
 
     class SyncResult(
             val newSounds: Collection<String>,
@@ -91,22 +108,42 @@ object SoundBites {
 
         ConfigPersistence.removeInvalidSounds(getAll().map { it.name })
 
-        allSounds = emptyList()
+        soundFiles = emptyList()
         SyncResult(newSounds, changedSounds, deletedSounds, failedSounds)
     }
 
     /** @return a list of all currently downloaded sounds. */
-    fun getAll(): List<SoundBite> {
-        if (allSounds.isEmpty()) {
+    fun getSingleSoundBites(): List<SingleSoundBite> {
+        if (soundFiles.isEmpty()) {
             val root = File(SOUNDS_PATH)
             if (!root.exists() || !root.isDirectory) {
                 logger.error("Couldn't find sounds directory")
                 return emptyList()
             }
-            allSounds = root.list()?.map { SoundBite("$SOUNDS_PATH/$it") }
-                    .orEmpty()
+            soundFiles = root.list()?.map { SingleSoundBite("$SOUNDS_PATH/$it") }.orEmpty()
         }
-        return allSounds
+        return soundFiles
+    }
+
+    /** @return a list of all created sound combos. */
+    fun getComboSoundBites(): List<ComboSoundBite> {
+        return synchronized(this) {
+            if (soundCombos.isEmpty()) {
+                soundCombos = ConfigPersistence.getSoundCombos().map(::ComboSoundBite)
+            }
+            soundCombos
+        }
+    }
+
+    /** @return a list of all currently downloaded sounds and created combos. */
+    fun getAll(): List<SoundBite> {
+        return getSingleSoundBites() + getComboSoundBites()
+    }
+
+    fun refreshCombos() {
+        synchronized(this) {
+            soundCombos = emptyList()
+        }
     }
 
     /**

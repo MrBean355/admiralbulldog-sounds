@@ -1,9 +1,33 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.persistence
 
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
+import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_BOUNTY_RUNE_TIMER
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_CHANCE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_MAX_PERIOD
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_MIN_PERIOD
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
+import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
+import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.migration.ConfigMigration
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
@@ -28,8 +52,8 @@ object ConfigPersistence {
     private val logger = LoggerFactory.getLogger(ConfigPersistence::class.java)
     private lateinit var loadedConfig: Config
     private val gson = GsonBuilder()
-            .setPrettyPrinting()
-            .create()
+        .setPrettyPrinting()
+        .create()
 
     /** Load config from file into memory. */
     fun initialise() {
@@ -70,6 +94,13 @@ object ConfigPersistence {
     /** Set the Dota installation path. */
     fun setDotaPath(path: String) {
         loadedConfig.dotaPath = path
+        save()
+    }
+
+    fun getFeedbackCompleted(): Long = loadedConfig.feedbackCompleted
+
+    fun setFeedbackCompleted() {
+        loadedConfig.feedbackCompleted = System.currentTimeMillis()
         save()
     }
 
@@ -201,17 +232,6 @@ object ConfigPersistence {
         return previous
     }
 
-    /**
-     * Sets whether we have notified about the new Dota mod to `true`.
-     * @return the value prior to setting it to `true`.
-     */
-    fun getAndSetNotifiedAboutNewMod(): Boolean {
-        val previous = loadedConfig.newModNotified
-        loadedConfig.newModNotified = true
-        save()
-        return previous
-    }
-
     fun isMinimizeToTray(): Boolean = loadedConfig.minimizeToTray
 
     fun setMinimizeToTray(minimize: Boolean) {
@@ -229,9 +249,9 @@ object ConfigPersistence {
     /** @return sound trigger types that are enabled. */
     fun getEnabledSoundTriggers(): Collection<SoundTriggerType> {
         return loadedConfig.sounds
-                .filterValues { it.enabled }
-                .keys
-                .map { SOUND_TRIGGER_TYPES.first { type -> it == type.simpleName } }
+            .filterValues { it.enabled }
+            .keys
+            .map { SOUND_TRIGGER_TYPES.first { type -> it == type.simpleName } }
     }
 
     /** @return `true` if the sound trigger is enabled; `false` otherwise. */
@@ -311,6 +331,15 @@ object ConfigPersistence {
         save()
     }
 
+    fun getSoundBoardRate(): Int {
+        return loadedConfig.soundBoardRate
+    }
+
+    fun setSoundBoardRate(rate: Int) {
+        loadedConfig.soundBoardRate = rate
+        save()
+    }
+
     /** @return `true` if ay least one mod has been enabled. */
     fun hasEnabledMods(): Boolean {
         return loadedConfig.enabledMods.isNotEmpty()
@@ -347,9 +376,9 @@ object ConfigPersistence {
     fun findInvalidSounds(): Collection<String> {
         val localSounds = SoundBites.getAll().map { it.name }
         val invalidSounds = ((loadedConfig.sounds.flatMap { it.value.sounds }) + loadedConfig.soundBoard)
-                .distinct()
-                .filter { it !in localSounds }
-                .filter { it !in loadedConfig.invalidSounds }
+            .distinct()
+            .filter { it !in localSounds }
+            .filter { it !in loadedConfig.invalidSounds }
 
         loadedConfig.invalidSounds += invalidSounds
         save()
@@ -386,6 +415,30 @@ object ConfigPersistence {
         save()
     }
 
+    fun getSoundCombos(): Collection<String> {
+        return loadedConfig.soundCombos.keys
+    }
+
+    fun hasSoundCombo(name: String): Boolean {
+        return loadedConfig.soundCombos.containsKey(name)
+    }
+
+    fun findSoundCombo(name: String): List<SoundBite> {
+        return loadedConfig.soundCombos.getValue(name).mapNotNull {
+            SoundBites.findSound(it)
+        }
+    }
+
+    fun saveSoundCombo(name: String, sounds: List<SoundBite>) {
+        loadedConfig.soundCombos[name] = sounds.map { it.name }
+        save()
+    }
+
+    fun removeSoundCombo(soundBite: ComboSoundBite) {
+        loadedConfig.soundCombos.remove(soundBite.name)
+        save()
+    }
+
     /** Save the current `config` map to file. */
     private fun save() {
         val file = File(FILE_NAME)
@@ -399,9 +452,9 @@ object ConfigPersistence {
     /** Load the default configs for all sound triggers. */
     private fun loadDefaultConfig(): Config {
         return Config(sounds = SOUND_TRIGGER_TYPES
-                .map { it.key }
-                .associateWith { Toggle() }
-                .toMutableMap()
+            .map { it.key }
+            .associateWith { Toggle() }
+            .toMutableMap()
         )
     }
 
@@ -423,48 +476,50 @@ object ConfigPersistence {
     }
 
     private data class Config(
-            var version: Int = CONFIG_VERSION,
-            var port: Int = DEFAULT_PORT,
-            var id: String = "",
-            var dotaPath: String = "",
-            var updates: Updates = Updates(),
-            var special: SpecialConfig = SpecialConfig(),
-            var lastSync: Long = 0,
-            var volume: Int = DEFAULT_VOLUME,
-            var discordBotEnabled: Boolean = false,
-            var discordToken: String = "",
-            var minimizeToTray: Boolean = true,
-            var alwaysShowTrayIcon: Boolean = false,
-            var trayNotified: Boolean = false,
-            var newModNotified: Boolean = false,
-            val sounds: MutableMap<String, Toggle> = mutableMapOf(),
-            val soundBoard: MutableList<String> = mutableListOf(),
-            val invalidSounds: MutableSet<String> = mutableSetOf(),
-            val volumes: MutableMap<String, Int> = mutableMapOf(),
-            val enabledMods: MutableSet<String> = mutableSetOf()
+        var version: Int = CONFIG_VERSION,
+        var port: Int = DEFAULT_PORT,
+        var id: String = "",
+        var dotaPath: String = "",
+        var feedbackCompleted: Long = 0,
+        var updates: Updates = Updates(),
+        var special: SpecialConfig = SpecialConfig(),
+        var lastSync: Long = 0,
+        var volume: Int = DEFAULT_VOLUME,
+        var discordBotEnabled: Boolean = false,
+        var discordToken: String = "",
+        var minimizeToTray: Boolean = true,
+        var alwaysShowTrayIcon: Boolean = false,
+        var trayNotified: Boolean = false,
+        val sounds: MutableMap<String, Toggle> = mutableMapOf(),
+        val soundBoard: MutableList<String> = mutableListOf(),
+        var soundBoardRate: Int = DEFAULT_RATE,
+        val invalidSounds: MutableSet<String> = mutableSetOf(),
+        val volumes: MutableMap<String, Int> = mutableMapOf(),
+        val enabledMods: MutableSet<String> = mutableSetOf(),
+        val soundCombos: MutableMap<String, List<String>> = mutableMapOf()
     )
 
     private data class Updates(
-            var appUpdateCheck: Long = 0,
-            var appUpdateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
-            var soundsUpdateFrequency: UpdateFrequency = UpdateFrequency.DAILY,
-            var modUpdateCheck: Long = 0,
-            var modUpdateFrequency: UpdateFrequency = UpdateFrequency.ALWAYS
+        var appUpdateCheck: Long = 0,
+        var appUpdateFrequency: UpdateFrequency = UpdateFrequency.WEEKLY,
+        var soundsUpdateFrequency: UpdateFrequency = UpdateFrequency.DAILY,
+        var modUpdateCheck: Long = 0,
+        var modUpdateFrequency: UpdateFrequency = UpdateFrequency.ALWAYS
     )
 
     private data class SpecialConfig(
-            var useHealSmartChance: Boolean = true,
-            var minPeriod: Int = DEFAULT_MIN_PERIOD,
-            var maxPeriod: Int = DEFAULT_MAX_PERIOD,
-            var bountyRuneTimer: Int = DEFAULT_BOUNTY_RUNE_TIMER
+        var useHealSmartChance: Boolean = true,
+        var minPeriod: Int = DEFAULT_MIN_PERIOD,
+        var maxPeriod: Int = DEFAULT_MAX_PERIOD,
+        var bountyRuneTimer: Int = DEFAULT_BOUNTY_RUNE_TIMER
     )
 
     private data class Toggle(
-            var enabled: Boolean = false,
-            var chance: Int = DEFAULT_CHANCE,
-            var minRate: Int = DEFAULT_RATE,
-            var maxRate: Int = DEFAULT_RATE,
-            var playThroughDiscord: Boolean = false,
-            val sounds: MutableList<String> = mutableListOf()
+        var enabled: Boolean = false,
+        var chance: Int = DEFAULT_CHANCE,
+        var minRate: Int = DEFAULT_RATE,
+        var maxRate: Int = DEFAULT_RATE,
+        var playThroughDiscord: Boolean = false,
+        val sounds: MutableList<String> = mutableListOf()
     )
 }

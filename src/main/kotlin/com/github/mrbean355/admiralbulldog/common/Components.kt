@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.AppStyles
@@ -5,16 +21,40 @@ import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
+import javafx.beans.property.Property
 import javafx.event.EventTarget
 import javafx.geometry.Pos.CENTER_LEFT
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.CheckBox
+import javafx.scene.control.Label
+import javafx.scene.control.ListCell
+import javafx.scene.control.ListView
+import javafx.scene.control.Slider
+import javafx.scene.control.Spinner
+import javafx.scene.control.TableCell
+import javafx.scene.control.TableColumn
+import javafx.scene.control.Tooltip
+import javafx.scene.control.TreeCell
+import javafx.scene.control.TreeItem
+import javafx.scene.control.TreeView
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.layout.Priority.ALWAYS
 import javafx.util.StringConverter
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.booleanProperty
+import tornadofx.button
+import tornadofx.hbox
+import tornadofx.hgrow
+import tornadofx.label
+import tornadofx.managedWhen
+import tornadofx.paddingLeft
+import tornadofx.rowItem
+import tornadofx.slider
+import tornadofx.spinner
 
 fun EventTarget.chanceSpinner(property: IntegerProperty, block: Spinner<Number>.() -> Unit): Spinner<Number> {
     return spinner(min = MIN_CHANCE, max = MAX_CHANCE, amountToStepBy = CHANCE_STEP, property = property, editable = true, enableScroll = true) {
@@ -51,6 +91,18 @@ fun EventTarget.bountyRuneSpinner(property: IntegerProperty, block: Spinner<Numb
     }
 }
 
+fun EventTarget.ratingSlider(property: Property<Number>, block: Slider.() -> Unit = {}): Slider {
+    return slider(min = 1, max = 5) {
+        valueProperty().bindBidirectional(property)
+        majorTickUnit = 1.0
+        isSnapToTicks = true
+        isShowTickLabels = true
+        isShowTickMarks = true
+        minorTickCount = 0
+        block()
+    }
+}
+
 @Suppress("FunctionName")
 private fun IntStringConverter(): StringConverter<Number> {
     return object : StringConverter<Number>() {
@@ -65,7 +117,7 @@ private fun IntStringConverter(): StringConverter<Number> {
     }
 }
 
-fun <T> ListView<T>.useLabelWithButton(buttonImage: Image, buttonTooltip: String, stringConverter: (T) -> String, onButtonClicked: (T) -> Unit) {
+fun <T> ListView<T>.useLabelWithButton(buttonImage: Image, buttonTooltip: String, stringConverter: (T) -> String, onButtonClicked: (T, Int) -> Unit) {
     setCellFactory {
         CheckBoxWithButtonCell(false, buttonImage, buttonTooltip, stringConverter, { booleanProperty() }, onButtonClicked)
     }
@@ -73,7 +125,7 @@ fun <T> ListView<T>.useLabelWithButton(buttonImage: Image, buttonTooltip: String
 
 fun <T> ListView<T>.useCheckBoxWithButton(buttonImage: Image, buttonTooltip: String, stringConverter: (T) -> String, getSelectedProperty: (T) -> BooleanProperty, onButtonClicked: (T) -> Unit) {
     setCellFactory {
-        CheckBoxWithButtonCell(true, buttonImage, buttonTooltip, stringConverter, getSelectedProperty, onButtonClicked)
+        CheckBoxWithButtonCell(true, buttonImage, buttonTooltip, stringConverter, getSelectedProperty, { item, _ -> onButtonClicked(item) })
     }
 }
 
@@ -84,12 +136,12 @@ fun TableColumn<SoundBite, String>.useLabelWithPlayButton(onButtonClicked: (Soun
 }
 
 private class CheckBoxWithButtonCell<T>(
-        private val showCheckBox: Boolean,
-        buttonImage: Image,
-        private val buttonTooltip: String,
-        private val stringConverter: (T) -> String,
-        private val getSelectedProperty: (T) -> BooleanProperty,
-        private val onButtonClicked: (T) -> Unit
+    private val showCheckBox: Boolean,
+    buttonImage: Image,
+    private val buttonTooltip: String,
+    private val stringConverter: (T) -> String,
+    private val getSelectedProperty: (T) -> BooleanProperty,
+    private val onButtonClicked: (T, Int) -> Unit
 ) : ListCell<T>() {
     private val container = HBox()
     private val checkBox = CheckBox()
@@ -125,7 +177,7 @@ private class CheckBoxWithButtonCell<T>(
         }
         graphic = container
         label.text = stringConverter(item)
-        button.setOnAction { onButtonClicked(item) }
+        button.setOnAction { onButtonClicked(item, index) }
         button.tooltip = Tooltip(buttonTooltip)
 
         booleanProperty?.let {

@@ -1,8 +1,28 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.discord
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
-import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.common.GreenDotIcon
+import com.github.mrbean355.admiralbulldog.common.GreyDotIcon
+import com.github.mrbean355.admiralbulldog.common.RedDotIcon
+import com.github.mrbean355.admiralbulldog.common.YellowDotIcon
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
@@ -13,7 +33,12 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.scene.image.Image
 import kotlinx.coroutines.launch
-import tornadofx.*
+import tornadofx.booleanProperty
+import tornadofx.objectBinding
+import tornadofx.objectProperty
+import tornadofx.onChange
+import tornadofx.stringBinding
+import tornadofx.stringProperty
 
 class DiscordBotViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Michael Johnston
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.mrbean355.admiralbulldog.sounds.sync
 
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
@@ -33,6 +49,11 @@ class SyncSoundBitesViewModel : AppViewModel() {
                 showErrorDialog()
                 return@launch
             }
+            val updateCount = with(result) { newSounds.size + changedSounds.size + deletedSounds.size + failedSounds.size }
+            if (updateCount == 0) {
+                fire(NoUpdatesEvent())
+                return@launch
+            }
             val root = TreeItem<SoundBiteTreeModel>().apply {
                 children += SoundBiteTreeItem(getString("label_new_sounds"), result.newSounds)
                 children += SoundBiteTreeItem(getString("label_changed_sounds"), result.changedSounds)
@@ -58,5 +79,6 @@ class SyncSoundBitesViewModel : AppViewModel() {
         }
     }
 
+    class NoUpdatesEvent : FXEvent()
     class CloseEvent : FXEvent()
 }
