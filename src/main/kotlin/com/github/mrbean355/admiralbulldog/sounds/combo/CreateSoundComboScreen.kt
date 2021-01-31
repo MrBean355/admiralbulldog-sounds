@@ -25,6 +25,8 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useLabelWithButton
 import javafx.scene.image.ImageView
+import javafx.scene.input.KeyCode.ENTER
+import javafx.scene.input.KeyEvent.KEY_PRESSED
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
@@ -53,6 +55,11 @@ class CreateSoundComboScreen : Fragment(getString("title_create_sound_combo")) {
                 textProperty().onChange {
                     // The caret moves to the start when auto-completing.
                     runLater(this::end)
+                }
+                addEventFilter(KEY_PRESSED) {
+                    if (it.code == ENTER && viewModel.hasSoundBite.value) {
+                        viewModel.onAddClicked()
+                    }
                 }
             }
             button(graphic = ImageView(AddIcon())) {
