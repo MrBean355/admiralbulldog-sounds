@@ -85,6 +85,9 @@ private fun processGameState(currentState: GameState) = synchronized(soundTrigge
         previousState = null
         soundTriggers.clear()
         soundTriggers.addAll(SOUND_TRIGGER_TYPES.map { it.createInstance() })
+    }
+
+    if (previousState?.hero?.id != currentState.hero?.id) {
         GlobalScope.launch {
             logMatchProperties(currentState)
         }
