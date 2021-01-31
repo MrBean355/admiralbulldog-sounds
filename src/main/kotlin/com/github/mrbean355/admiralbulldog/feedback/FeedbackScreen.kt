@@ -23,6 +23,7 @@ import com.github.mrbean355.admiralbulldog.common.ratingSlider
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import javafx.scene.control.ButtonBar.ButtonData.FINISH
+import javafx.scene.control.TextFormatter
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
@@ -53,6 +54,9 @@ class FeedbackScreen : Fragment(getString("title_feedback")) {
             field(getString("label_feedback_comments")) {
                 textarea(viewModel.comments) {
                     promptText = getString("prompt_feedback_comments")
+                    textFormatter = TextFormatter<String> {
+                        if (it.controlNewText.length <= 1_000) it else null
+                    }
                 }
             }
             buttonbar {
