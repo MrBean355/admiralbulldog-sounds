@@ -50,8 +50,11 @@ suspend fun logAnalyticsProperties(): Unit = withContext(Dispatchers.IO) {
             "sounds.triggers.periodically.min" to ConfigPersistence.getMinPeriod(),
             "sounds.triggers.periodically.max" to ConfigPersistence.getMaxPeriod(),
             "sounds.triggers.onBountyRunesSpawn.timer" to ConfigPersistence.getBountyRuneTimer(),
+            "sounds.volumes.size" to ConfigPersistence.getSoundBiteVolumes().size,
+            "sounds.combos.size" to ConfigPersistence.getSoundCombos().size,
             "bot.enabled" to ConfigPersistence.isUsingDiscordBot(),
             "bot.triggers.selection" to discordTriggers,
+            "bot.soundBoard.size" to ConfigPersistence.getSoundBoard().size,
             "mod.update" to ConfigPersistence.getModUpdateFrequency(),
             "mod.selection" to ConfigPersistence.getEnabledMods().joinToString(separator = ","),
         )
