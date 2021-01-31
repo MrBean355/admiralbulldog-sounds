@@ -16,7 +16,3 @@ java {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
-
-dependencies {
-    implementation("com.squareup:kotlinpoet:1.7.2")
-}
