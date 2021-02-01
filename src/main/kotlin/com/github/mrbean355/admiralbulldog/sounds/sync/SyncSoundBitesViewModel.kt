@@ -51,6 +51,7 @@ class SyncSoundBitesViewModel : AppViewModel() {
             }
             val updateCount = with(result) { newSounds.size + changedSounds.size + deletedSounds.size + failedSounds.size }
             if (updateCount == 0) {
+                ConfigPersistence.setSoundsLastUpdateToNow()
                 fire(NoUpdatesEvent())
                 return@launch
             }
