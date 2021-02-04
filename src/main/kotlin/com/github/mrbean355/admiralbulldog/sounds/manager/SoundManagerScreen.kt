@@ -21,17 +21,19 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useLabelWithPlayButton
-import com.github.mrbean355.admiralbulldog.sounds.combo.SoundCombosScreen
 import com.github.mrbean355.admiralbulldog.sounds.tableHeader
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
+import javafx.geometry.Pos.CENTER_LEFT
 import javafx.scene.control.cell.CheckBoxTableCell
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.SmartResize
 import tornadofx.action
 import tornadofx.button
+import tornadofx.checkbox
 import tornadofx.column
 import tornadofx.hbox
+import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.readonlyColumn
 import tornadofx.tableview
@@ -44,8 +46,15 @@ class SoundManagerScreen : Fragment(getString("title_sound_bite_manager")) {
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
-        textfield(viewModel.searchQuery) {
-            promptText = getString("prompt_search")
+        hbox(spacing = PADDING_SMALL, alignment = CENTER_LEFT) {
+            textfield(viewModel.searchQuery) {
+                promptText = getString("prompt_search")
+            }
+            label(getString("label_filter_sound_bites"))
+            checkbox(getString("label_filter_play_sounds"), viewModel.showPlaySounds)
+            checkbox(getString("label_filter_sound_combos"), viewModel.showCombos)
+            checkbox(getString("label_filter_used"), viewModel.showUsed)
+            checkbox(getString("label_filter_unused"), viewModel.showUnused)
         }
         tableview(viewModel.items) {
             isEditable = true
@@ -68,14 +77,10 @@ class SoundManagerScreen : Fragment(getString("title_sound_bite_manager")) {
         }
         hbox(spacing = PADDING_SMALL) {
             button(getString("btn_volume_manager")) {
-                action {
-                    find<VolumeManagerScreen>().openModal(resizable = false)
-                }
+                action { viewModel.onManageVolumesClicked() }
             }
             button(getString("btn_sound_combos")) {
-                action {
-                    find<SoundCombosScreen>().openModal(resizable = false)
-                }
+                action { viewModel.onSoundCombosClicked() }
             }
         }
     }
