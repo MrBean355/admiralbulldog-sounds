@@ -41,7 +41,7 @@ class DotaModsViewModel : AppViewModel() {
             val response = repo.listMods()
             val body = response.body
             if (!response.isSuccessful() || body == null) {
-                showError(getString("title_unknown_error"), getString("msg_mod_list_failure"))
+                showError(getString("header_unknown_error"), getString("content_mod_list_failure"))
                 fire(CloseEvent())
                 return@launch
             }

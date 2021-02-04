@@ -20,7 +20,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import tornadofx.Wizard
 
-class InstallationWizard : Wizard(getString("title_app"), getString("install_header")) {
+class InstallationWizard : Wizard(getString("title_app"), getString("header_install_gsi")) {
     private val installationModel by inject<InstallationModel>()
 
     override val canFinish = allPagesComplete

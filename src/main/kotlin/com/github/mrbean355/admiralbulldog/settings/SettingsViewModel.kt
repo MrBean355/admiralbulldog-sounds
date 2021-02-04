@@ -69,7 +69,7 @@ class SettingsViewModel : AppViewModel() {
             it?.let {
                 ConfigPersistence.setModUpdateFrequency(it)
                 if (it > UpdateFrequency.DAILY) {
-                    showWarning("Dota mod updates", "You should check regularly (on startup or daily) for mod updates, or you will see strange text in-game.")
+                    showWarning(getString("header_mod_update_frequency"), getString("content_mod_update_frequency"))
                 }
             }
         }

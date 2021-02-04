@@ -158,7 +158,7 @@ object SoundBites {
     fun checkForInvalidSounds() {
         ConfigPersistence.findInvalidSounds().also {
             if (it.isNotEmpty()) {
-                showWarning(getString("header_sounds_removed"), getString("msg_sounds_removed", it.joinToString()))
+                showWarning(getString("header_sounds_removed"), getString("content_sounds_removed", it.joinToString()))
             }
         }
     }

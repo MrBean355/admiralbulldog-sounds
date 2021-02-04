@@ -109,7 +109,7 @@ class MainViewModel : AppViewModel() {
         }
         find<InstallationWizard>(scope = Scope()).openModal(block = true, resizable = false)
         if (!DotaPath.hasValidSavedPath()) {
-            showError(getString("install_header"), getString("msg_installer_fail"))
+            showError(getString("header_install_gsi"), getString("content_installer_fail"))
             exitProcess(-1)
         }
     }
@@ -118,7 +118,7 @@ class MainViewModel : AppViewModel() {
         val alreadyInstalled = GameStateIntegration.isInstalled()
         GameStateIntegration.install()
         if (!alreadyInstalled) {
-            showInformation(getString("install_header"), getString("msg_installer_success"), ButtonType.FINISH)
+            showInformation(getString("header_install_gsi"), getString("msg_installer_success"), ButtonType.FINISH)
         }
     }
 
