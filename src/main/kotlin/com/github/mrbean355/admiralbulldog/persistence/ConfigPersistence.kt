@@ -20,14 +20,7 @@ import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_BOUNTY_RUNE_TIMER
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_CHANCE
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_MAX_PERIOD
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_MIN_PERIOD
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
-import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
-import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
-import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
+import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.persistence.migration.ConfigMigration
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
@@ -35,9 +28,10 @@ import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import com.google.gson.GsonBuilder
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 /** Version of the config file that this app supports. */
-const val CONFIG_VERSION = 2
+const val CONFIG_VERSION = 3
 
 private const val FILE_NAME = "config.json"
 private const val DEFAULT_PORT = 12345
@@ -68,7 +62,6 @@ object ConfigPersistence {
             loadedConfig.port = DEFAULT_PORT
             logger.info("Defaulting to port $DEFAULT_PORT")
         }
-        cleanUpStaleSoundTriggers()
         save()
     }
 
@@ -97,10 +90,10 @@ object ConfigPersistence {
         save()
     }
 
-    fun getFeedbackCompleted(): Long = loadedConfig.feedbackCompleted
+    fun getNextFeedback(): Long = loadedConfig.nextFeedback
 
-    fun setFeedbackCompleted() {
-        loadedConfig.feedbackCompleted = System.currentTimeMillis()
+    fun setNextFeedback(timeMillis: Long) {
+        loadedConfig.nextFeedback = timeMillis
         save()
     }
 
@@ -451,20 +444,13 @@ object ConfigPersistence {
 
     /** Load the default configs for all sound triggers. */
     private fun loadDefaultConfig(): Config {
-        return Config(sounds = SOUND_TRIGGER_TYPES
-            .map { it.key }
-            .associateWith { Toggle() }
-            .toMutableMap()
+        return Config(
+            nextFeedback = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30),
+            sounds = SOUND_TRIGGER_TYPES
+                .map { it.key }
+                .associateWith { Toggle() }
+                .toMutableMap()
         )
-    }
-
-    private fun cleanUpStaleSoundTriggers() {
-        val validTypes = SOUND_TRIGGER_TYPES.map { it.key }
-        val invalidTypes = loadedConfig.sounds.filterKeys { it !in validTypes }
-        invalidTypes.forEach {
-            loadedConfig.sounds.remove(it.key)
-            logger.info("Removed stale sound trigger: ${it.key}")
-        }
     }
 
     private val SoundTriggerType.key: String
@@ -480,7 +466,7 @@ object ConfigPersistence {
         var port: Int = DEFAULT_PORT,
         var id: String = "",
         var dotaPath: String = "",
-        var feedbackCompleted: Long = 0,
+        var nextFeedback: Long = 0,
         var updates: Updates = Updates(),
         var special: SpecialConfig = SpecialConfig(),
         var lastSync: Long = 0,

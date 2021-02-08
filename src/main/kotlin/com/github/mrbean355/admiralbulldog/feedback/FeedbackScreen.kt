@@ -20,24 +20,10 @@ import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.ratingSlider
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import javafx.scene.control.ButtonBar.ButtonData.FINISH
 import javafx.scene.control.TextFormatter
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.buttonbar
-import tornadofx.field
-import tornadofx.fieldset
-import tornadofx.form
-import tornadofx.label
-import tornadofx.paddingBottom
-import tornadofx.textarea
-import java.util.concurrent.TimeUnit
-import kotlin.random.Random
+import tornadofx.*
 
 class FeedbackScreen : Fragment(getString("title_feedback")) {
     private val viewModel: FeedbackViewModel by inject(Scope())
@@ -78,10 +64,7 @@ class FeedbackScreen : Fragment(getString("title_feedback")) {
 
     companion object {
 
-        fun shouldPrompt(): Boolean {
-            val diff = System.currentTimeMillis() - ConfigPersistence.getFeedbackCompleted()
-            val days = TimeUnit.MILLISECONDS.toDays(diff.coerceAtLeast(0))
-            return days >= 90 && Random.nextDouble() <= 0.15
-        }
+        fun shouldPrompt(): Boolean = FeedbackViewModel.shouldPrompt()
+
     }
 }

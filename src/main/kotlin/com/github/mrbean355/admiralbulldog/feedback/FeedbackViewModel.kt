@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 import tornadofx.FXEvent
 import tornadofx.intProperty
 import tornadofx.stringProperty
+import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class FeedbackViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
@@ -38,7 +40,7 @@ class FeedbackViewModel : AppViewModel() {
     val comments: Property<String> = stringProperty()
 
     override fun onReady() {
-        ConfigPersistence.setFeedbackCompleted()
+        ConfigPersistence.setNextFeedback(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(90))
     }
 
     fun onSubmitClicked() {
@@ -63,4 +65,10 @@ class FeedbackViewModel : AppViewModel() {
 
     class CloseEvent : FXEvent()
 
+    companion object {
+
+        fun shouldPrompt(): Boolean {
+            return ConfigPersistence.getNextFeedback() <= System.currentTimeMillis() && Random.nextDouble() <= 0.15
+        }
+    }
 }
