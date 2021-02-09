@@ -43,10 +43,10 @@ object SoundBites {
     private var soundCombos = emptyList<ComboSoundBite>()
 
     class SyncResult(
-            val newSounds: Collection<String>,
-            val changedSounds: Collection<String>,
-            val deletedSounds: Collection<String>,
-            val failedSounds: Collection<String>
+        val newSounds: Collection<String>,
+        val changedSounds: Collection<String>,
+        val deletedSounds: Collection<String>,
+        val failedSounds: Collection<String>
     )
 
     /**

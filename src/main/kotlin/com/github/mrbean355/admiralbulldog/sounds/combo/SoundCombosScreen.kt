@@ -45,10 +45,10 @@ class SoundCombosScreen : Fragment(getString("title_sound_combos")) {
         listview(viewModel.items) {
             viewModel.selection.bind(selectionModel.selectedItemProperty())
             useLabelWithButton(
-                    buttonImage = PlayIcon(),
-                    buttonTooltip = getString("tooltip_play_locally"),
-                    stringConverter = { it.name },
-                    onButtonClicked = { soundBite, _ -> soundBite.play() }
+                buttonImage = PlayIcon(),
+                buttonTooltip = getString("tooltip_play_locally"),
+                stringConverter = { it.name },
+                onButtonClicked = { soundBite, _ -> soundBite.play() }
             )
             onDoubleClick {
                 viewModel.onListDoubleClicked()

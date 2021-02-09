@@ -41,7 +41,7 @@ class ViewSoundTriggersViewModel : AppViewModel() {
 
     fun onConfigureClicked(type: SoundTriggerType) {
         find<ConfigureSoundTriggerScreen>(params = ConfigureSoundTriggerScreen.params(type))
-                .openModal(block = true, resizable = false)
+            .openModal(block = true, resizable = false)
 
         refresh()
     }

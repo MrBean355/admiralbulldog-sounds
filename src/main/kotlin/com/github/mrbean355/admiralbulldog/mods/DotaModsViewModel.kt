@@ -57,11 +57,14 @@ class DotaModsViewModel : AppViewModel() {
     }
 
     fun onAboutModClicked(mod: DotaMod) {
-        showInformation(mod.name, """
+        showInformation(
+            mod.name,
+            """
             ${mod.description}
             
             ${getString("label_mod_download_size", getDownloadSize(mod))}
-        """.trimIndent(), MORE_INFO_BUTTON, CLOSE) {
+            """.trimIndent(), MORE_INFO_BUTTON, CLOSE
+        ) {
             if (it === MORE_INFO_BUTTON) {
                 hostServices.showDocument(mod.infoUrl)
             }

@@ -62,11 +62,11 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
         }
         listview(viewModel.items) {
             useCheckBoxWithButton(
-                    buttonImage = HelpIcon(),
-                    buttonTooltip = getString("tooltip_more_info"),
-                    getSelectedProperty = viewModel::getCheckedProperty,
-                    stringConverter = { it.name },
-                    onButtonClicked = viewModel::onAboutModClicked
+                buttonImage = HelpIcon(),
+                buttonTooltip = getString("tooltip_more_info"),
+                getSelectedProperty = viewModel::getCheckedProperty,
+                stringConverter = { it.name },
+                onButtonClicked = viewModel::onAboutModClicked
             )
         }
         hbox {

@@ -58,9 +58,9 @@ class ChooserDotaDirectoryStep : Fragment() {
 
     private fun onChooseClicked() {
         selectedDirectory = chooseDirectory(
-                title = getString("install_chooser_title"),
-                initialDirectory = selectedDirectory,
-                owner = currentWindow
+            title = getString("install_chooser_title"),
+            initialDirectory = selectedDirectory,
+            owner = currentWindow
         ) ?: return
 
         val verifiedPath = DotaPath.getDotaRootDirectory(selectedDirectory?.absolutePath.orEmpty())

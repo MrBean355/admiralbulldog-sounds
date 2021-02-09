@@ -95,7 +95,7 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
 
     fun onChooseSoundsClicked() {
         find<ChooseSoundFilesScreen>(ChooseSoundFilesScreen.params(type))
-                .openModal(block = true, resizable = false)
+            .openModal(block = true, resizable = false)
         soundBiteCount.set(ConfigPersistence.getSoundsForType(type).size.toString())
     }
 }

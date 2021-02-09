@@ -50,10 +50,10 @@ class TestPlaybackSpeedScreen : Fragment(getString("title_test_playback")) {
         }
         listview(viewModel.displayItems) {
             useLabelWithButton(
-                    buttonImage = PlayIcon(),
-                    buttonTooltip = getString("tooltip_play_locally"),
-                    stringConverter = { it.name },
-                    onButtonClicked = { item, _ -> item.play(rate = rate.get()) }
+                buttonImage = PlayIcon(),
+                buttonTooltip = getString("tooltip_play_locally"),
+                stringConverter = { it.name },
+                onButtonClicked = { item, _ -> item.play(rate = rate.get()) }
             )
         }
     }

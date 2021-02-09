@@ -23,7 +23,18 @@ import com.github.mrbean355.admiralbulldog.common.ratingSlider
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import javafx.scene.control.ButtonBar.ButtonData.FINISH
 import javafx.scene.control.TextFormatter
-import tornadofx.*
+import tornadofx.Fragment
+import tornadofx.Scope
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.button
+import tornadofx.buttonbar
+import tornadofx.field
+import tornadofx.fieldset
+import tornadofx.form
+import tornadofx.label
+import tornadofx.paddingBottom
+import tornadofx.textarea
 
 class FeedbackScreen : Fragment(getString("title_feedback")) {
     private val viewModel: FeedbackViewModel by inject(Scope())

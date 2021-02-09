@@ -58,11 +58,11 @@ class SoundBiteTracker(selection: List<SoundBite>) {
         })
         return ListView(sortedList).apply {
             useCheckBoxWithButton(
-                    buttonImage = PlayIcon(),
-                    buttonTooltip = getString("tooltip_play_locally"),
-                    stringConverter = { it.name },
-                    getSelectedProperty = { soundToggles.getValue(it) },
-                    onButtonClicked = { it.play() }
+                buttonImage = PlayIcon(),
+                buttonTooltip = getString("tooltip_play_locally"),
+                stringConverter = { it.name },
+                getSelectedProperty = { soundToggles.getValue(it) },
+                onButtonClicked = { it.play() }
             )
         }
     }
