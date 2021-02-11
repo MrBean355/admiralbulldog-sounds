@@ -203,6 +203,13 @@ object ConfigPersistence {
         save()
     }
 
+    fun isDarkMode(): Boolean = loadedConfig.darkMode
+
+    fun setIsDarkMode(darkMode: Boolean) {
+        loadedConfig.darkMode = darkMode
+        save()
+    }
+
     /** @return `true` if the user has enabled the Discord bot. */
     fun isUsingDiscordBot() = loadedConfig.discordBotEnabled
 
@@ -478,6 +485,7 @@ object ConfigPersistence {
         var special: SpecialConfig = SpecialConfig(),
         var lastSync: Long = 0,
         var volume: Int = DEFAULT_VOLUME,
+        var darkMode: Boolean = true,
         var discordBotEnabled: Boolean = false,
         var discordToken: String = "",
         var minimizeToTray: Boolean = true,

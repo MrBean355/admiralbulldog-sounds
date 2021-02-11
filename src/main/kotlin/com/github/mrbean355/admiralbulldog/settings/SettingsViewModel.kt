@@ -16,6 +16,7 @@
 
 package com.github.mrbean355.admiralbulldog.settings
 
+import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
@@ -39,6 +40,7 @@ class SettingsViewModel : AppViewModel() {
     private val updateViewModel by inject<UpdateViewModel>()
 
     val appVolume: IntegerProperty = intProperty(ConfigPersistence.getVolume())
+    val darkMode: BooleanProperty = booleanProperty(ConfigPersistence.isDarkMode())
     val traySupported: BooleanProperty = booleanProperty(SystemTray.isSupported())
     val minimizeToTray: BooleanProperty = booleanProperty(ConfigPersistence.isMinimizeToTray())
     val alwaysShowTrayIcon: BooleanProperty = booleanProperty(ConfigPersistence.isAlwaysShowTrayIcon())
@@ -50,7 +52,11 @@ class SettingsViewModel : AppViewModel() {
     val modUpdateFrequency: ObjectProperty<UpdateFrequency> = objectProperty(ConfigPersistence.getModUpdateFrequency())
 
     init {
-        appVolume.onChange { ConfigPersistence.setVolume(it) }
+        appVolume.onChange(ConfigPersistence::setVolume)
+        darkMode.onChange {
+            ConfigPersistence.setIsDarkMode(it)
+            AppStyles.reload()
+        }
         minimizeToTray.onChange {
             ConfigPersistence.setMinimizeToTray(it)
             refreshSystemTray()

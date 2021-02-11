@@ -42,6 +42,7 @@ suspend fun logAnalyticsProperties(): Unit = withContext(Dispatchers.IO) {
             "app.version" to APP_VERSION,
             "app.distribution" to DISTRIBUTION,
             "app.update" to ConfigPersistence.getAppUpdateFrequency(),
+            "app.darkMode" to ConfigPersistence.isDarkMode(),
             "tray.enabled" to ConfigPersistence.isMinimizeToTray(),
             "tray.permanent" to ConfigPersistence.isAlwaysShowTrayIcon(),
             "sounds.update" to ConfigPersistence.getSoundsUpdateFrequency(),

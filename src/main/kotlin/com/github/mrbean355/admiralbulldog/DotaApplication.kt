@@ -27,18 +27,21 @@ import javafx.scene.text.FontPosture.ITALIC
 import javafx.scene.text.FontWeight.BOLD
 import javafx.stage.Stage
 import tornadofx.App
+import tornadofx.FX
 import tornadofx.Stylesheet
 import tornadofx.box
 import tornadofx.cssclass
+import tornadofx.importStylesheet
 import tornadofx.px
 import kotlin.system.exitProcess
 
-class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(), stylesheet = arrayOf(AppStyles::class)) {
+class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon()) {
 
     override fun init() {
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandlerImpl(hostServices))
         ConfigPersistence.initialise()
         OldModMigration.run()
+        AppStyles.reload()
     }
 
     override fun start(stage: Stage) {
@@ -63,6 +66,14 @@ class AppStyles : Stylesheet() {
         val monospacedFont by cssclass()
         val inlineError by cssclass()
         val iconButton by cssclass()
+
+        fun reload() {
+            FX.stylesheets.clear()
+            if (ConfigPersistence.isDarkMode()) {
+                importStylesheet("https://raw.githubusercontent.com/joffrey-bion/javafx-themes/master/css/modena_dark.css")
+            }
+            importStylesheet(AppStyles::class)
+        }
     }
 
     init {
