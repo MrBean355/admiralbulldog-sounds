@@ -16,13 +16,13 @@
 
 package com.github.mrbean355.admiralbulldog.discord
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import javafx.scene.control.ButtonBar.ButtonData.HELP
 import javafx.scene.control.ButtonBar.ButtonData.HELP_2

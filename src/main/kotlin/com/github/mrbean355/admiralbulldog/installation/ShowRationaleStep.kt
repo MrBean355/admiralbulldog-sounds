@@ -16,12 +16,12 @@
 
 package com.github.mrbean355.admiralbulldog.installation
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.PADDING_TINY
 import com.github.mrbean355.admiralbulldog.common.WIKI_GAME_FILES
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import tornadofx.Fragment
 import tornadofx.action
 import tornadofx.addClass

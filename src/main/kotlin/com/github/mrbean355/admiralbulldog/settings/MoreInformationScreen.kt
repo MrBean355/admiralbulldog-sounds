@@ -16,7 +16,6 @@
 
 package com.github.mrbean355.admiralbulldog.settings
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_BULLDOG_TWITCH
@@ -26,6 +25,7 @@ import com.github.mrbean355.admiralbulldog.common.URL_PROJECT_WEBSITE
 import com.github.mrbean355.admiralbulldog.common.URL_TELEGRAM_CHANNEL
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import tornadofx.View
 import tornadofx.action
 import tornadofx.addClass

@@ -21,27 +21,20 @@ import com.github.mrbean355.admiralbulldog.exception.UncaughtExceptionHandlerImp
 import com.github.mrbean355.admiralbulldog.home.MainScreen
 import com.github.mrbean355.admiralbulldog.mods.OldModMigration
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
+import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
 import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
-import javafx.scene.paint.Color.RED
-import javafx.scene.text.FontPosture.ITALIC
-import javafx.scene.text.FontWeight.BOLD
 import javafx.stage.Stage
 import tornadofx.App
-import tornadofx.FX
-import tornadofx.Stylesheet
-import tornadofx.box
-import tornadofx.cssclass
-import tornadofx.importStylesheet
-import tornadofx.px
 import kotlin.system.exitProcess
 
-class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon()) {
+class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(), stylesheet = arrayOf(AppStyles::class)) {
 
     override fun init() {
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandlerImpl(hostServices))
         ConfigPersistence.initialise()
         OldModMigration.run()
-        AppStyles.reload()
+        reloadAppStyles()
     }
 
     override fun start(stage: Stage) {
@@ -52,55 +45,5 @@ class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(
     override fun stop() {
         super.stop()
         exitProcess(0)
-    }
-}
-
-class AppStyles : Stylesheet() {
-
-    companion object {
-        val boldFont by cssclass()
-        val italicFont by cssclass()
-        val smallFont by cssclass()
-        val mediumFont by cssclass()
-        val largeFont by cssclass()
-        val monospacedFont by cssclass()
-        val inlineError by cssclass()
-        val iconButton by cssclass()
-
-        fun reload() {
-            FX.stylesheets.clear()
-            if (ConfigPersistence.isDarkMode()) {
-                importStylesheet("https://raw.githubusercontent.com/joffrey-bion/javafx-themes/master/css/modena_dark.css")
-            }
-            importStylesheet(AppStyles::class)
-        }
-    }
-
-    init {
-        boldFont {
-            fontWeight = BOLD
-        }
-        italicFont {
-            fontStyle = ITALIC
-        }
-        smallFont {
-            fontSize = 10.px
-        }
-        mediumFont {
-            fontSize = 14.px
-        }
-        largeFont {
-            fontSize = 18.px
-        }
-        monospacedFont {
-            fontFamily = "Lucida Console"
-        }
-        inlineError {
-            textFill = RED
-            fontWeight = BOLD
-        }
-        iconButton {
-            padding = box(vertical = 2.px, horizontal = 4.px)
-        }
     }
 }

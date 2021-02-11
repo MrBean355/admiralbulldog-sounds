@@ -16,10 +16,10 @@
 
 package com.github.mrbean355.admiralbulldog.feedback
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.ratingSlider
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import javafx.scene.control.ButtonBar.ButtonData.FINISH
 import javafx.scene.control.TextFormatter

@@ -16,10 +16,10 @@
 
 package com.github.mrbean355.admiralbulldog.discord
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import tornadofx.Fragment
 import tornadofx.addClass
 import tornadofx.gridpane

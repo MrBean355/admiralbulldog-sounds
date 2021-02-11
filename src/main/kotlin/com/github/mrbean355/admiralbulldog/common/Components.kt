@@ -16,9 +16,9 @@
 
 package com.github.mrbean355.admiralbulldog.common
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.Property

@@ -16,7 +16,6 @@
 
 package com.github.mrbean355.admiralbulldog.settings
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
@@ -25,6 +24,7 @@ import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
+import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
 import com.github.mrbean355.admiralbulldog.ui.openScreen
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
 import javafx.beans.property.BooleanProperty
@@ -55,7 +55,7 @@ class SettingsViewModel : AppViewModel() {
         appVolume.onChange(ConfigPersistence::setVolume)
         darkMode.onChange {
             ConfigPersistence.setIsDarkMode(it)
-            AppStyles.reload()
+            reloadAppStyles()
         }
         minimizeToTray.onChange {
             ConfigPersistence.setMinimizeToTray(it)

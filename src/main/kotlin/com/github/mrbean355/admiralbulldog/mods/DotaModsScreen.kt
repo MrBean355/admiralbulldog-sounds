@@ -16,13 +16,13 @@
 
 package com.github.mrbean355.admiralbulldog.mods
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.HelpIcon
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useCheckBoxWithButton
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.geometry.Pos.CENTER
 import tornadofx.Fragment
 import tornadofx.Scope

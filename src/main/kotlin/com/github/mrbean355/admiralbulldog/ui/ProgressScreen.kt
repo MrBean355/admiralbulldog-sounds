@@ -16,11 +16,11 @@
 
 package com.github.mrbean355.admiralbulldog.ui
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_LARGE
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.geometry.Pos.CENTER
 import javafx.stage.StageStyle.UTILITY
 import tornadofx.Component

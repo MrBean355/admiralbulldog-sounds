@@ -16,7 +16,6 @@
 
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.HelpIcon
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
@@ -27,6 +26,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.periodSpinner
 import com.github.mrbean355.admiralbulldog.common.rateSpinner
 import com.github.mrbean355.admiralbulldog.common.showInformation
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.scene.image.ImageView
 import tornadofx.Fragment

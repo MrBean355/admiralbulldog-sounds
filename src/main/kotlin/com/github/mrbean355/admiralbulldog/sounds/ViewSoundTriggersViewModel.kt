@@ -64,6 +64,14 @@ class ViewSoundTriggersViewModel : AppViewModel() {
     }
 
     private fun colourFor(type: SoundTriggerType): Color {
-        return if (ConfigPersistence.isSoundTriggerEnabled(type)) Color.BLACK else Color.GRAY
+        return if (ConfigPersistence.isSoundTriggerEnabled(type)) {
+            if (ConfigPersistence.isDarkMode()) {
+                Color.WHITE
+            } else {
+                Color.BLACK
+            }
+        } else {
+            Color.GRAY
+        }
     }
 }
