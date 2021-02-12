@@ -20,10 +20,10 @@ import com.github.mrbean355.admiralbulldog.game.GameState
 import kotlin.random.Random
 
 /** Must have healed at least this much percentage. */
-private const val MIN_HP_PERCENTAGE = 5
+private const val MIN_HP_PERCENTAGE = 4
 
 /** Health required for max chance to play the sound. */
-private const val MAX_HEAL = 500
+private const val MAX_HEAL = 400
 
 /**
  * Play a sound when the hero is healed.
