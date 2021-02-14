@@ -40,7 +40,7 @@ dependencies {
     implementation("org.openjfx:javafx-graphics:$fxVersion:$currentPlatform")
     implementation("org.openjfx:javafx-media:$fxVersion:$currentPlatform")
 
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("junit:junit:4.13.2")
 }
 
 tasks.withType<Jar> {
