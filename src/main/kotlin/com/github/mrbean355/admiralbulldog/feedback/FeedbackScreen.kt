@@ -17,8 +17,8 @@
 package com.github.mrbean355.admiralbulldog.feedback
 
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.ratingSlider
 import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE
 import javafx.scene.control.ButtonBar.ButtonData.FINISH
@@ -34,7 +34,10 @@ import tornadofx.fieldset
 import tornadofx.form
 import tornadofx.label
 import tornadofx.paddingBottom
+import tornadofx.paddingLeft
+import tornadofx.radiobutton
 import tornadofx.textarea
+import tornadofx.togglegroup
 
 class FeedbackScreen : Fragment(getString("title_feedback")) {
     private val viewModel: FeedbackViewModel by inject(Scope())
@@ -46,7 +49,21 @@ class FeedbackScreen : Fragment(getString("title_feedback")) {
                 paddingBottom = PADDING_MEDIUM
             }
             field(getString("label_feedback_rating")) {
-                ratingSlider(viewModel.rating)
+                togglegroup(viewModel.rating) {
+                    radiobutton("1")
+                    radiobutton("2") {
+                        paddingLeft = PADDING_SMALL
+                    }
+                    radiobutton("3") {
+                        paddingLeft = PADDING_SMALL
+                    }
+                    radiobutton("4") {
+                        paddingLeft = PADDING_SMALL
+                    }
+                    radiobutton("5") {
+                        paddingLeft = PADDING_SMALL
+                    }
+                }
             }
             field(getString("label_feedback_comments")) {
                 textarea(viewModel.comments) {
