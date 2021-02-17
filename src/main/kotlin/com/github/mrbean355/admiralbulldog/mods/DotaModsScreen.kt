@@ -70,11 +70,7 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
             )
         }
         hbox {
-            hyperlink(getString("btn_about_modding")) {
-                action { viewModel.onAboutModdingClicked() }
-            }
-            spacer()
-            label(getString("label_select_mods")) {
+            label(getString("label_select")) {
                 paddingTop = 3
                 paddingRight = 4
             }
@@ -83,6 +79,10 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
             }
             hyperlink(getString("btn_deselect_all")) {
                 action { viewModel.onDeselectAllClicked() }
+            }
+            spacer()
+            hyperlink(getString("btn_about_modding")) {
+                action { viewModel.onAboutModdingClicked() }
             }
         }
         button(getString("btn_save")) {
