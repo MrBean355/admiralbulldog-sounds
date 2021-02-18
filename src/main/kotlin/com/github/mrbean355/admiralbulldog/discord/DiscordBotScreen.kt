@@ -43,8 +43,8 @@ import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.paddingTop
+import tornadofx.spacer
 import tornadofx.textfield
-import tornadofx.textflow
 import tornadofx.vbox
 import tornadofx.whenUndocked
 
@@ -53,8 +53,9 @@ class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
-        textflow {
+        hbox {
             checkbox(getString("label_enable_discord_bot"), viewModel.botEnabled)
+            spacer()
             hyperlink(getString("label_invite_discord_bot")) {
                 action { onInviteClicked() }
             }
