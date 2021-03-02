@@ -21,6 +21,7 @@ import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.ui.openScreen
 import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
@@ -37,6 +38,13 @@ class DotaModsViewModel : AppViewModel() {
     val items: ObservableList<DotaMod> = observableListOf()
 
     override fun onReady() {
+        if (!ConfigPersistence.isModRiskAccepted()) {
+            openScreen<AcceptModRiskScreen>(block = true)
+            if (!ConfigPersistence.isModRiskAccepted()) {
+                fire(CloseEvent())
+                return
+            }
+        }
         viewModelScope.launch {
             val response = repo.listMods()
             val body = response.body

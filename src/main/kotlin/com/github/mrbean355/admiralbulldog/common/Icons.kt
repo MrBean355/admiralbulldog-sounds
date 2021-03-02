@@ -33,6 +33,8 @@ fun GreyDotIcon(): Image = loadImage("grey_dot.png")
 
 fun HelpIcon(): Image = loadImage("help.png")
 
+fun MonkaGigaIcon(): Image = loadImage("monka_giga.png")
+
 fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
 
 fun MonkaSIcon(): Image = loadImage("monka_s.png")

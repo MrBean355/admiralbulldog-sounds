@@ -347,6 +347,13 @@ object ConfigPersistence {
         save()
     }
 
+    fun isModRiskAccepted(): Boolean = loadedConfig.modRiskAccepted
+
+    fun setModRiskAccepted() {
+        loadedConfig.modRiskAccepted = true
+        save()
+    }
+
     /** @return `true` if ay least one mod has been enabled. */
     fun hasEnabledMods(): Boolean {
         return loadedConfig.enabledMods.isNotEmpty()
@@ -496,6 +503,7 @@ object ConfigPersistence {
         var soundBoardRate: Int = DEFAULT_RATE,
         val invalidSounds: MutableSet<String> = mutableSetOf(),
         val volumes: MutableMap<String, Int> = mutableMapOf(),
+        var modRiskAccepted: Boolean = false,
         val enabledMods: MutableSet<String> = mutableSetOf(),
         val soundCombos: MutableMap<String, List<String>> = mutableMapOf()
     )
