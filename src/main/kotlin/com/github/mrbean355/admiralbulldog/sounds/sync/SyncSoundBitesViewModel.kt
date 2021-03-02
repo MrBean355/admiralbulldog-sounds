@@ -24,8 +24,8 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.scene.control.ButtonType
-import javafx.scene.control.ProgressIndicator.INDETERMINATE_PROGRESS
 import javafx.scene.control.TreeItem
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import tornadofx.FXEvent
 import tornadofx.booleanProperty
@@ -38,13 +38,15 @@ class SyncSoundBitesViewModel : AppViewModel() {
     val tree: ObjectProperty<TreeItem<SoundBiteTreeModel>> = objectProperty()
 
     override fun onReady() {
+        viewModelScope.launch {
+            SoundBites.progress.collect(progress::set)
+        }
         updateSounds()
     }
 
     private fun updateSounds() {
-        progress.set(INDETERMINATE_PROGRESS)
         viewModelScope.launch {
-            val result = SoundBites.synchronise(progress::set)
+            val result = SoundBites.synchronise()
             if (result == null) {
                 showErrorDialog()
                 return@launch

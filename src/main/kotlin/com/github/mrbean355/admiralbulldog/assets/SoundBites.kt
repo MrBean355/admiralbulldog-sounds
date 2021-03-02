@@ -21,9 +21,11 @@ import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import javafx.scene.control.ProgressBar
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
@@ -34,13 +36,16 @@ import java.util.concurrent.CopyOnWriteArrayList
 private const val SOUNDS_PATH = "sounds"
 
 /**
- * Synchronises our local sounds with the PlaySounds page.
+ * Works with the list of sound bite files.
  */
 object SoundBites {
     private val logger = LoggerFactory.getLogger(SoundBites::class.java)
     private val playSoundsRepository = DiscordBotRepository()
     private var soundFiles = emptyList<SingleSoundBite>()
     private var soundCombos = emptyList<ComboSoundBite>()
+
+    private val _progress = MutableStateFlow(0.0)
+    val progress: StateFlow<Double> = _progress
 
     class SyncResult(
         val newSounds: Collection<String>,
@@ -50,13 +55,15 @@ object SoundBites {
     )
 
     /**
-     * Synchronise our local sounds with the PlaySounds page.
-     * Downloads sounds which don't exist locally.
-     * Deletes local sounds which don't exist remotely.
+     * Synchronise our local sound files with the server.
+     * Downloads files which don't exist locally.
+     * Re-downloads files which are different remotely.
+     * Deletes local files which don't exist remotely.
      *
      * @return [SyncResult] with all the affected sound bites if successful; `null` if unsuccessful.
      */
-    suspend fun synchronise(progress: (Double) -> Unit): SyncResult? = withContext(IO) {
+    suspend fun synchronise(): SyncResult? = withContext(IO) {
+        _progress.value = ProgressBar.INDETERMINATE_PROGRESS
         val response = playSoundsRepository.listSoundBites()
         val remoteFiles = response.body
 
@@ -93,9 +100,7 @@ object SoundBites {
                             failedSounds += soundBite
                         }
                     }
-                    withContext(Main) {
-                        progress(++current / total)
-                    }
+                    _progress.value = ++current / total
                 }
             }
         }
