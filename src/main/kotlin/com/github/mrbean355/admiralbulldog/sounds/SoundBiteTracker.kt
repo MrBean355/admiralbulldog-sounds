@@ -18,19 +18,37 @@ package com.github.mrbean355.admiralbulldog.sounds
 
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.PlayIcon
+import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.useCheckBoxWithButton
 import javafx.beans.property.BooleanProperty
 import javafx.collections.transformation.SortedList
+import javafx.event.EventTarget
+import javafx.scene.Parent
+import javafx.scene.control.ButtonBar
 import javafx.scene.control.ListView
-import javafx.scene.control.TextField
+import tornadofx.action
 import tornadofx.booleanProperty
+import tornadofx.button
+import tornadofx.buttonbar
+import tornadofx.hbox
+import tornadofx.hyperlink
+import tornadofx.label
+import tornadofx.listview
 import tornadofx.onChange
+import tornadofx.paddingAll
+import tornadofx.paddingRight
+import tornadofx.paddingTop
+import tornadofx.textfield
 import tornadofx.toObservable
+import tornadofx.vbox
 
 /**
  * Manages a [ListView] of all [SoundBite]s, with the ability to filter items based on the input of a search field.
+ * Provides buttons to select all and select none.
  *
  *  @param selection Items to be initially selected.
  */
@@ -39,35 +57,72 @@ class SoundBiteTracker(selection: List<SoundBite>) {
     private val soundToggles: Map<SoundBite, BooleanProperty> = allItems.associateWith { booleanProperty(it in selection) }
     private val searchResults = allItems.toObservable()
 
-    fun createSearchField(): TextField {
-        return TextField().apply {
-            promptText = getString("prompt_search")
-            textProperty().onChange { filter(it.orEmpty()) }
-        }
-    }
-
-    fun createListView(): ListView<SoundBite> {
-        val sortedList = SortedList(searchResults, Comparator { lhs, rhs ->
-            val lhsSelected = soundToggles[lhs]?.value ?: false
-            val rhsSelected = soundToggles[rhs]?.value ?: false
-            when {
-                lhsSelected == rhsSelected -> 0
-                lhsSelected -> -1
-                else -> 1
+    /**
+     * @param target parent to attach the UI to.
+     * @param onSaveClicked called with the current selection when save is clicked.
+     */
+    fun createUi(
+        target: EventTarget,
+        onSaveClicked: (List<SoundBite>) -> Unit
+    ): Parent = with(target) {
+        vbox(spacing = PADDING_SMALL) {
+            paddingAll = PADDING_MEDIUM
+            prefWidth = WINDOW_WIDTH
+            textfield {
+                promptText = getString("prompt_search")
+                textProperty().onChange { filter(it.orEmpty()) }
             }
-        })
-        return ListView(sortedList).apply {
-            useCheckBoxWithButton(
+            val sortedList = SortedList(searchResults) { lhs, rhs ->
+                val lhsSelected = soundToggles[lhs]?.value ?: false
+                val rhsSelected = soundToggles[rhs]?.value ?: false
+                when {
+                    lhsSelected == rhsSelected -> 0
+                    lhsSelected -> -1
+                    else -> 1
+                }
+            }
+            listview(sortedList).apply {
+                useCheckBoxWithButton(
                     buttonImage = PlayIcon(),
                     buttonTooltip = getString("tooltip_play_locally"),
                     stringConverter = { it.name },
                     getSelectedProperty = { soundToggles.getValue(it) },
                     onButtonClicked = { it.play() }
-            )
+                )
+            }
+            hbox {
+                label(getString("label_select")) {
+                    paddingTop = 3
+                    paddingRight = 4
+                }
+                hyperlink(getString("btn_select_all")) {
+                    action { selectAll() }
+                }
+                hyperlink(getString("btn_deselect_all")) {
+                    action { selectNone() }
+                }
+            }
+            buttonbar {
+                button(getString("btn_save"), ButtonBar.ButtonData.OK_DONE) {
+                    action { onSaveClicked(getSelection()) }
+                }
+            }
         }
     }
 
-    fun getSelection(): List<SoundBite> {
+    private fun selectAll() {
+        soundToggles.keys.forEach {
+            soundToggles.getValue(it).set(true)
+        }
+    }
+
+    private fun selectNone() {
+        soundToggles.keys.forEach {
+            soundToggles.getValue(it).set(false)
+        }
+    }
+
+    private fun getSelection(): List<SoundBite> {
         return soundToggles.filterValues { it.value }.keys.toList()
     }
 

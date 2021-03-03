@@ -30,15 +30,16 @@ val CrashLogFile = LogFile("crash_log.txt")
 val PlaySoundErrorFile = LogFile("play_sound_error.txt")
 
 fun Throwable.writeExceptionLog(
-        file: LogFile,
-        message: String = "",
-        thread: Thread = Thread.currentThread()
+    file: LogFile,
+    message: String = "",
+    thread: Thread = Thread.currentThread()
 ) {
     val stackTrace = StringWriter().let {
         printStackTrace(PrintWriter(it))
         it.toString()
     }
-    File(file.path).writeText("""
+    File(file.path).writeText(
+        """
         |Unhandled exception on ${Date()}: $message
         |app version  = $APP_VERSION [$DISTRIBUTION]
         |os.name      = ${System.getProperty("os.name")}
@@ -48,5 +49,6 @@ fun Throwable.writeExceptionLog(
         |thread info  = $thread
 
         |$stackTrace
-    """.trimMargin())
+        """.trimMargin()
+    )
 }

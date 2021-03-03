@@ -47,8 +47,11 @@ class SettingsScreen : Fragment(getString("title_settings")) {
             field(getString("label_volume")) {
                 volumeSpinner(viewModel.appVolume)
             }
+            field(getString("label_dark_mode")) {
+                checkbox(property = viewModel.darkMode)
+            }
         }
-        fieldset {
+        fieldset(getString("settings_header_system_tray")) {
             visibleWhen(viewModel.traySupported)
             managedWhen(visibleProperty())
             field(getString("label_minimise_to_tray")) {

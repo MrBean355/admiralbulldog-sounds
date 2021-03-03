@@ -19,7 +19,6 @@ package com.github.mrbean355.admiralbulldog.arch
 import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.DISTRIBUTION
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
-import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +41,7 @@ suspend fun logAnalyticsProperties(): Unit = withContext(Dispatchers.IO) {
             "app.version" to APP_VERSION,
             "app.distribution" to DISTRIBUTION,
             "app.update" to ConfigPersistence.getAppUpdateFrequency(),
+            "app.darkMode" to ConfigPersistence.isDarkMode(),
             "tray.enabled" to ConfigPersistence.isMinimizeToTray(),
             "tray.permanent" to ConfigPersistence.isAlwaysShowTrayIcon(),
             "sounds.update" to ConfigPersistence.getSoundsUpdateFrequency(),
@@ -57,15 +57,6 @@ suspend fun logAnalyticsProperties(): Unit = withContext(Dispatchers.IO) {
             "bot.soundBoard.size" to ConfigPersistence.getSoundBoard().size,
             "mod.update" to ConfigPersistence.getModUpdateFrequency(),
             "mod.selection" to ConfigPersistence.getEnabledMods().joinToString(separator = ","),
-        )
-    )
-}
-
-suspend fun logMatchProperties(gameState: GameState): Unit = withContext(Dispatchers.IO) {
-    discordBotRepository.logAnalyticsProperties(
-        mapOf(
-            "dota.matchId" to gameState.map?.matchid.orEmpty(),
-            "dota.heroName" to gameState.hero?.name.orEmpty()
         )
     )
 }

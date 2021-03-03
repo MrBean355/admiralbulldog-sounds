@@ -91,9 +91,9 @@ class UpdateViewModel : AppViewModel() {
             }
             if (updates.isNotEmpty()) {
                 showInformation(
-                        header = getString("header_mod_updates_available"),
-                        content = getString("content_mod_updates_available", updates.joinToString { it.name }),
-                        buttons = arrayOf(UPDATE_BUTTON, ButtonType.CANCEL)
+                    header = getString("header_mod_updates_available"),
+                    content = getString("content_mod_updates_available", updates.joinToString { it.name }),
+                    buttons = arrayOf(UPDATE_BUTTON, ButtonType.CANCEL)
                 ) {
                     if (it === UPDATE_BUTTON) {
                         downloadModUpdates(updates)
@@ -108,9 +108,9 @@ class UpdateViewModel : AppViewModel() {
     private fun doesUserWantToUpdate(header: String, releaseInfo: ReleaseInfo): Boolean {
         var action: ButtonType? = null
         showInformation(
-                header = header,
-                content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
-                buttons = arrayOf(WHATS_NEW_BUTTON, UPDATE_BUTTON, ButtonType.CANCEL)
+            header = header,
+            content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
+            buttons = arrayOf(WHATS_NEW_BUTTON, UPDATE_BUTTON, ButtonType.CANCEL)
         ) {
             action = it
         }
@@ -125,14 +125,14 @@ class UpdateViewModel : AppViewModel() {
         val assetInfo = releaseInfo.getAppAssetInfo() ?: return
 
         find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = "."))
-                .openModal(escapeClosesWindow = false, resizable = false)
+            .openModal(escapeClosesWindow = false, resizable = false)
 
         subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
             ConfigPersistence.setAppLastUpdateToNow()
             showInformation(
-                    header = getString("header_app_update_downloaded"),
-                    content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
-                    buttons = arrayOf(ButtonType.FINISH)
+                header = getString("header_app_update_downloaded"),
+                content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
+                buttons = arrayOf(ButtonType.FINISH)
             )
             exitProcess(0)
         }

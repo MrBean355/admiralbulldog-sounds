@@ -95,6 +95,19 @@ class DotaModRepository {
         allSucceeded
     }
 
+    /**
+     * Make sure that all selected mods are still in the `gameinfo.gi` file.
+     * If the user hasn't accepted the risk of using mods, all of them will be disabled.
+     */
+    fun ensureModsAreInstalled() {
+        if (ConfigPersistence.isModRiskAccepted()) {
+            Dota2GameInfo.setIncludedModDirectories(ConfigPersistence.getEnabledMods())
+        } else {
+            ConfigPersistence.disableOtherMods(emptyList())
+            Dota2GameInfo.setIncludedModDirectories(emptyList())
+        }
+    }
+
     private suspend fun downloadMod(mod: DotaMod): ServiceResponse<Boolean> {
         return try {
             val response = DiscordBotService.INSTANCE.downloadFile(mod.downloadUrl).toServiceResponse()

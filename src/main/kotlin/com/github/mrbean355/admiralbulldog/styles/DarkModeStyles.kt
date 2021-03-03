@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-package com.github.mrbean355.admiralbulldog
+package com.github.mrbean355.admiralbulldog.styles
 
-import com.vdurmont.semver4j.Semver
+import javafx.scene.paint.Color
+import tornadofx.Stylesheet
 
-val APP_VERSION: Semver = Semver("1.13.0")
+class DarkModeStyles : Stylesheet() {
 
-const val DISTRIBUTION: String = "win"
+    companion object {
+        val WIZARD_HEADER: Color = Color.rgb(75, 75, 75)
+    }
+
+    init {
+        hyperlink {
+            textFill = Color.CORNFLOWERBLUE
+        }
+    }
+}

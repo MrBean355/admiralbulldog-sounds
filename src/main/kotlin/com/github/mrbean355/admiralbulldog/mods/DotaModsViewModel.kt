@@ -21,6 +21,7 @@ import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.common.*
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.ui.openScreen
 import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
@@ -37,11 +38,18 @@ class DotaModsViewModel : AppViewModel() {
     val items: ObservableList<DotaMod> = observableListOf()
 
     override fun onReady() {
+        if (!ConfigPersistence.isModRiskAccepted()) {
+            openScreen<AcceptModRiskScreen>(block = true)
+            if (!ConfigPersistence.isModRiskAccepted()) {
+                fire(CloseEvent())
+                return
+            }
+        }
         viewModelScope.launch {
             val response = repo.listMods()
             val body = response.body
             if (!response.isSuccessful() || body == null) {
-                showError(getString("title_unknown_error"), getString("msg_mod_list_failure"))
+                showError(getString("header_unknown_error"), getString("content_mod_list_failure"))
                 fire(CloseEvent())
                 return@launch
             }
@@ -57,11 +65,14 @@ class DotaModsViewModel : AppViewModel() {
     }
 
     fun onAboutModClicked(mod: DotaMod) {
-        showInformation(mod.name, """
+        showInformation(
+            mod.name,
+            """
             ${mod.description}
             
             ${getString("label_mod_download_size", getDownloadSize(mod))}
-        """.trimIndent(), MORE_INFO_BUTTON, CLOSE) {
+            """.trimIndent(), MORE_INFO_BUTTON, CLOSE
+        ) {
             if (it === MORE_INFO_BUTTON) {
                 hostServices.showDocument(mod.infoUrl)
             }

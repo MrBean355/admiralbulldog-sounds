@@ -24,6 +24,7 @@ import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
+import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
 import com.github.mrbean355.admiralbulldog.ui.openScreen
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
 import javafx.beans.property.BooleanProperty
@@ -39,6 +40,7 @@ class SettingsViewModel : AppViewModel() {
     private val updateViewModel by inject<UpdateViewModel>()
 
     val appVolume: IntegerProperty = intProperty(ConfigPersistence.getVolume())
+    val darkMode: BooleanProperty = booleanProperty(ConfigPersistence.isDarkMode())
     val traySupported: BooleanProperty = booleanProperty(SystemTray.isSupported())
     val minimizeToTray: BooleanProperty = booleanProperty(ConfigPersistence.isMinimizeToTray())
     val alwaysShowTrayIcon: BooleanProperty = booleanProperty(ConfigPersistence.isAlwaysShowTrayIcon())
@@ -50,7 +52,11 @@ class SettingsViewModel : AppViewModel() {
     val modUpdateFrequency: ObjectProperty<UpdateFrequency> = objectProperty(ConfigPersistence.getModUpdateFrequency())
 
     init {
-        appVolume.onChange { ConfigPersistence.setVolume(it) }
+        appVolume.onChange(ConfigPersistence::setVolume)
+        darkMode.onChange {
+            ConfigPersistence.setIsDarkMode(it)
+            reloadAppStyles()
+        }
         minimizeToTray.onChange {
             ConfigPersistence.setMinimizeToTray(it)
             refreshSystemTray()
@@ -69,7 +75,7 @@ class SettingsViewModel : AppViewModel() {
             it?.let {
                 ConfigPersistence.setModUpdateFrequency(it)
                 if (it > UpdateFrequency.DAILY) {
-                    showWarning("Dota mod updates", "You should check regularly (on startup or daily) for mod updates, or you will see strange text in-game.")
+                    showWarning(getString("header_mod_update_frequency"), getString("content_mod_update_frequency"))
                 }
             }
         }

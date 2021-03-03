@@ -16,10 +16,10 @@
 
 package com.github.mrbean355.admiralbulldog.installation
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.Fragment
 import tornadofx.action
@@ -58,9 +58,9 @@ class ChooserDotaDirectoryStep : Fragment() {
 
     private fun onChooseClicked() {
         selectedDirectory = chooseDirectory(
-                title = getString("install_chooser_title"),
-                initialDirectory = selectedDirectory,
-                owner = currentWindow
+            title = getString("install_chooser_title"),
+            initialDirectory = selectedDirectory,
+            owner = currentWindow
         ) ?: return
 
         val verifiedPath = DotaPath.getDotaRootDirectory(selectedDirectory?.absolutePath.orEmpty())

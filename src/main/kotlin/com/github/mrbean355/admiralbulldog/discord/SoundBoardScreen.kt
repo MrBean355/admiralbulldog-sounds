@@ -22,26 +22,34 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.rateSpinner
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
 import javafx.geometry.Pos.CENTER_LEFT
 import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
 import javafx.scene.control.Tooltip
 import javafx.scene.layout.FlowPane
+import javafx.scene.paint.Color
 import tornadofx.Fragment
 import tornadofx.Scope
 import tornadofx.action
+import tornadofx.addClass
 import tornadofx.attachTo
 import tornadofx.button
 import tornadofx.buttonbar
 import tornadofx.hbox
 import tornadofx.label
 import tornadofx.managedWhen
+import tornadofx.multi
 import tornadofx.onChange
 import tornadofx.paddingAll
 import tornadofx.paddingRight
 import tornadofx.paddingVertical
+import tornadofx.runLater
+import tornadofx.scrollpane
 import tornadofx.spacer
+import tornadofx.style
+import tornadofx.textfield
 import tornadofx.vbox
 import tornadofx.visibleWhen
 import tornadofx.whenUndocked
@@ -51,19 +59,33 @@ class SoundBoardScreen : Fragment(getString("title_sound_board")) {
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
-        label(getString("label_sound_board_description"))
-        label(getString("label_sound_board_empty")) {
-            visibleWhen(viewModel.isEmpty)
-            managedWhen(visibleProperty())
-        }
+        maxHeight = 300.0
+        label(getString("label_sound_board_description_1"))
+        label(getString("label_sound_board_description_2"))
         hbox(alignment = CENTER_LEFT) {
             paddingVertical = PADDING_SMALL
             label(getString("label_playback_speed")) {
                 paddingRight = PADDING_LARGE
             }
             rateSpinner(viewModel.playbackRate)
+            spacer {
+                prefWidth = PADDING_SMALL
+            }
+            textfield(viewModel.searchQuery) {
+                promptText = getString("prompt_search")
+            }
         }
-        soundBoard(viewModel.soundBoard, viewModel::onSoundClicked)
+        label(viewModel.emptyMessage) {
+            addClass(AppStyles.italicFont)
+            visibleWhen(viewModel.isEmpty)
+            managedWhen(visibleProperty())
+        }
+        scrollpane(fitToWidth = true) {
+            style {
+                backgroundColor = multi(Color.TRANSPARENT)
+            }
+            soundBoard(viewModel.soundBoard, viewModel::onSoundClicked)
+        }
         spacer {
             prefHeight = PADDING_SMALL
         }
@@ -103,5 +125,8 @@ private fun FlowPane.addButtons(items: ObservableList<SoundBite>, onClick: (Soun
             action { onClick(it) }
         }
     }
-    scene?.window?.sizeToScene()
+    runLater {
+        // Run later, otherwise the "customise" button isn't properly positioned in some cases.
+        scene?.window?.sizeToScene()
+    }
 }

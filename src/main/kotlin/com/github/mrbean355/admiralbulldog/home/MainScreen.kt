@@ -16,12 +16,12 @@
 
 package com.github.mrbean355.admiralbulldog.home
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.geometry.Pos
 import javafx.geometry.Pos.CENTER
 import javafx.scene.image.ImageView

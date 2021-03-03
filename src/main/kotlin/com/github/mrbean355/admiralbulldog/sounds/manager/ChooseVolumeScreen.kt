@@ -16,13 +16,13 @@
 
 package com.github.mrbean355.admiralbulldog.sounds.manager
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.MAX_INDIVIDUAL_VOLUME
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.PlayIcon
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.volumeSpinner
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.scene.control.ButtonBar
 import javafx.scene.image.ImageView
 import tornadofx.Fragment

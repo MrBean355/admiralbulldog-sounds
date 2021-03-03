@@ -43,7 +43,8 @@ object GameStateIntegration {
         if (!gsiFile.exists() && !gsiFile.createNewFile()) {
             throw IllegalStateException("Couldn't create GSI file: ${gsiFile.absolutePath}")
         }
-        gsiFile.writeText("""
+        gsiFile.writeText(
+            """
             "AdmiralBulldog Sounds"
             {
                 "uri"           "http://localhost:${ConfigPersistence.getPort()}"
@@ -61,7 +62,8 @@ object GameStateIntegration {
                     "items"         "1"
                 }
             }
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         logger.info("Wrote GSI file contents: ${gsiFile.absolutePath}")
     }

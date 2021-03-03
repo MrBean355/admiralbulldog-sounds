@@ -20,37 +20,38 @@ package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.DotaApplication
 import javafx.scene.image.Image
-import kotlin.String
 
-public fun AddIcon(): Image = loadImage("add.png")
+fun AddIcon(): Image = loadImage("add.png")
 
-public fun BulldogIcon(): Image = loadImage("bulldog.jpg")
+fun BulldogIcon(): Image = loadImage("bulldog.jpg")
 
-public fun DeleteIcon(): Image = loadImage("delete.png")
+fun DeleteIcon(): Image = loadImage("delete.png")
 
-public fun GreenDotIcon(): Image = loadImage("green_dot.png")
+fun GreenDotIcon(): Image = loadImage("green_dot.png")
 
-public fun GreyDotIcon(): Image = loadImage("grey_dot.png")
+fun GreyDotIcon(): Image = loadImage("grey_dot.png")
 
-public fun HelpIcon(): Image = loadImage("help.png")
+fun HelpIcon(): Image = loadImage("help.png")
 
-public fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
+fun MonkaGigaIcon(): Image = loadImage("monka_giga.png")
 
-public fun MonkaSIcon(): Image = loadImage("monka_s.png")
+fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
 
-public fun PauseChampIcon(): Image = loadImage("pause_champ.png")
+fun MonkaSIcon(): Image = loadImage("monka_s.png")
 
-public fun PlayIcon(): Image = loadImage("play.png")
+fun PauseChampIcon(): Image = loadImage("pause_champ.png")
 
-public fun PoggiesIcon(): Image = loadImage("poggies.png")
+fun PlayIcon(): Image = loadImage("play.png")
 
-public fun RedDotIcon(): Image = loadImage("red_dot.png")
+fun PoggiesIcon(): Image = loadImage("poggies.png")
 
-public fun SadKekIcon(): Image = loadImage("sad_kek.png")
+fun RedDotIcon(): Image = loadImage("red_dot.png")
 
-public fun SettingsIcon(): Image = loadImage("settings.png")
+fun SadKekIcon(): Image = loadImage("sad_kek.png")
 
-public fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
+fun SettingsIcon(): Image = loadImage("settings.png")
+
+fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
 
 private fun loadImage(name: String): Image =
     Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))

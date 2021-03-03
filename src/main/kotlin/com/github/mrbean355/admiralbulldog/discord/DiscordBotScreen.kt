@@ -16,13 +16,13 @@
 
 package com.github.mrbean355.admiralbulldog.discord
 
-import com.github.mrbean355.admiralbulldog.AppStyles
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import javafx.scene.control.ButtonBar.ButtonData.HELP
 import javafx.scene.control.ButtonBar.ButtonData.HELP_2
@@ -43,8 +43,8 @@ import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.paddingTop
+import tornadofx.spacer
 import tornadofx.textfield
-import tornadofx.textflow
 import tornadofx.vbox
 import tornadofx.whenUndocked
 
@@ -53,8 +53,9 @@ class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
 
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
-        textflow {
+        hbox {
             checkbox(getString("label_enable_discord_bot"), viewModel.botEnabled)
+            spacer()
             hyperlink(getString("label_invite_discord_bot")) {
                 action { onInviteClicked() }
             }
