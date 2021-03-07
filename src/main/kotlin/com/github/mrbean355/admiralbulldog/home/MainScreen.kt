@@ -31,12 +31,13 @@ import tornadofx.addClass
 import tornadofx.button
 import tornadofx.fitToParentWidth
 import tornadofx.hbox
+import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.insets
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.paddingAll
-import tornadofx.paddingTop
+import tornadofx.paddingBottom
 import tornadofx.progressbar
 import tornadofx.stackpane
 import tornadofx.stackpaneConstraints
@@ -62,6 +63,7 @@ class MainScreen : View(getString("title_app")) {
             }
             label(viewModel.infoMessage)
             hbox(spacing = PADDING_SMALL, alignment = CENTER) {
+                paddingBottom = PADDING_SMALL
                 button(getString("btn_change_sounds")) {
                     action { viewModel.onChangeSoundsClicked() }
                 }
@@ -72,9 +74,9 @@ class MainScreen : View(getString("title_app")) {
                     action { viewModel.onDotaModClicked() }
                 }
             }
-            label(viewModel.version) {
+            hyperlink(viewModel.version) {
                 addClass(AppStyles.smallFont, AppStyles.boldFont)
-                paddingTop = PADDING_SMALL
+                action { viewModel.onVersionClicked() }
             }
         }
         button(graphic = ImageView(SettingsIcon())) {
