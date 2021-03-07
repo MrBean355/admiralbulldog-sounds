@@ -24,6 +24,7 @@ import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.PauseChampIcon
 import com.github.mrbean355.admiralbulldog.common.PoggiesIcon
+import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
 import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
@@ -123,20 +124,24 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onChangeSoundsClicked() {
-        find<ViewSoundTriggersScreen>().openModal(resizable = false)
+        openScreen<ViewSoundTriggersScreen>()
     }
 
     fun onDiscordBotClicked() {
-        find<DiscordBotScreen>().openModal(resizable = false)
+        openScreen<DiscordBotScreen>()
     }
 
     fun onDotaModClicked() {
-        find<DotaModsScreen>().openModal(resizable = false)
+        openScreen<DotaModsScreen>()
+    }
+
+    fun onVersionClicked() {
+        hostServices.showDocument(URL_SPECIFIC_RELEASE.format(APP_VERSION.value))
     }
 
     private fun checkForNewSounds() {
         if (updateViewModel.shouldCheckForNewSounds()) {
-            find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, block = true, resizable = false)
+            openScreen<SyncSoundBitesScreen>(escapeClosesWindow = false, block = true)
         } else {
             SoundBites.checkForInvalidSounds()
         }
