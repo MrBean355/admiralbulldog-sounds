@@ -22,7 +22,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import kotlin.math.ceil
 
 /** How often (in seconds) the runes spawn. */
-private const val HOW_OFTEN = 5 * 60L
+private const val HOW_OFTEN = 3 * 60L
 
 /** Plays a sound shortly before the bounty runes spawn. */
 class OnBountyRunesSpawn : SoundTrigger {
