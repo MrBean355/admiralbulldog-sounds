@@ -1,0 +1,38 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "03:00"
+  open-pull-requests-limit: 10
+  target-branch: develop
+  reviewers:
+  - MrBean355
+  assignees:
+  - MrBean355
+  ignore:
+  - dependency-name: org.jetbrains.kotlinx:kotlinx-coroutines-javafx
+    versions:
+    - "> 1.4.3, < 1.5"
+  - dependency-name: jvm
+    versions:
+    - 1.4.32
+  - dependency-name: org.jetbrains.kotlinx:kotlinx-coroutines-javafx
+    versions:
+    - 1.4.2-native-mt
+- package-ecosystem: gradle
+  directory: "/buildSrc"
+  schedule:
+    interval: daily
+    time: "03:00"
+  open-pull-requests-limit: 10
+  target-branch: develop
+  reviewers:
+  - MrBean355
+  assignees:
+  - MrBean355
+  ignore:
+  - dependency-name: jvm
+    versions:
+    - 1.4.32
