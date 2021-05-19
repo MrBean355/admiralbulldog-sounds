@@ -25,7 +25,8 @@ val fxVersion = "15.0.1"
 val currentPlatform = (findProperty("platform") as? String) ?: "win"
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.3")
+    implementation(kotlin("reflect"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.5.0")
     implementation("io.ktor:ktor-server-netty:1.5.4")
     implementation("io.ktor:ktor-gson:1.5.4")
     implementation("org.slf4j:slf4j-simple:1.7.30")

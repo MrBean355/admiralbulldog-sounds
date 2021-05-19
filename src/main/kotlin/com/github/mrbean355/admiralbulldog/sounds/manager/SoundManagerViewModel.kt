@@ -83,7 +83,7 @@ class SoundManagerViewModel : ViewModel() {
         items.setAll(
             newItems
                 .filter { it.name.contains(query, ignoreCase = true) }
-                .sortedBy { it.name.toLowerCase() }
+                .sortedBy { it.name.lowercase() }
         )
     }
 

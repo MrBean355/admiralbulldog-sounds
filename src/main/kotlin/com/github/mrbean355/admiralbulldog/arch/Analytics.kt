@@ -30,11 +30,11 @@ suspend fun logAnalyticsProperties(): Unit = withContext(Dispatchers.IO) {
     val enabled = ConfigPersistence.getEnabledSoundTriggers()
 
     val triggers = SOUND_TRIGGER_TYPES.filter { it in enabled }
-        .joinToString(",") { it.simpleName.orEmpty().decapitalize() }
+        .joinToString(",") { it.simpleName.orEmpty().replaceFirstChar { ch -> ch.lowercase() } }
 
     val discordTriggers = SOUND_TRIGGER_TYPES.filter { it in enabled }
         .filter { ConfigPersistence.isPlayedThroughDiscord(it) }
-        .joinToString(",") { it.simpleName.orEmpty().decapitalize() }
+        .joinToString(",") { it.simpleName.orEmpty().replaceFirstChar { ch -> ch.lowercase() } }
 
     discordBotRepository.logAnalyticsProperties(
         mapOf(

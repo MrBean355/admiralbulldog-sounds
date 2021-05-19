@@ -23,8 +23,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.Date
 
-@Suppress("EXPERIMENTAL_FEATURE_WARNING")
-inline class LogFile(val path: String)
+@JvmInline
+value class LogFile(val path: String)
 
 val CrashLogFile = LogFile("crash_log.txt")
 val PlaySoundErrorFile = LogFile("play_sound_error.txt")

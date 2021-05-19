@@ -38,6 +38,6 @@ class From1To2MigrationTest {
     }
 
     private fun String.isLowerCase(): Boolean {
-        return this == toLowerCase()
+        return this == lowercase()
     }
 }
