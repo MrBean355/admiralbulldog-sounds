@@ -23,6 +23,7 @@ import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_PAYPAL
 import com.github.mrbean355.admiralbulldog.common.URL_PROJECT_WEBSITE
 import com.github.mrbean355.admiralbulldog.common.URL_TELEGRAM_CHANNEL
+import com.github.mrbean355.admiralbulldog.common.URL_TWITCH_CHANNEL
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.styles.AppStyles
@@ -45,6 +46,9 @@ class MoreInformationScreen : View(getString("title_more_information")) {
         }
         hyperlink(getString("btn_telegram_channel")) {
             action { hostServices.showDocument(URL_TELEGRAM_CHANNEL) }
+        }
+        hyperlink(getString("btn_twitch_channel")) {
+            action { hostServices.showDocument(URL_TWITCH_CHANNEL) }
         }
         label(getString("label_need_help"))
         hyperlink(getString("btn_discord_community")) {

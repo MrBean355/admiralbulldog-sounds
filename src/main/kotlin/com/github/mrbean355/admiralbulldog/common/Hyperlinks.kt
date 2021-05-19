@@ -19,6 +19,7 @@ package com.github.mrbean355.admiralbulldog.common
 const val URL_JAVA_DOWNLOAD = "https://www.java.com/en/download"
 const val URL_DISCORD_SERVER_INVITE = "https://discordapp.com/invite/pEV4mW5"
 const val URL_TELEGRAM_CHANNEL = "http://t.me/bulldog_sounds"
+const val URL_TWITCH_CHANNEL = "https://www.twitch.tv/mr_bean355"
 const val URL_BULLDOG_TWITCH = "https://www.twitch.tv/admiralbulldog"
 const val URL_PROJECT_WEBSITE = "https://github.com/MrBean355/admiralbulldog-sounds/wiki"
 const val URL_LATEST_RELEASE = "https://github.com/MrBean355/admiralbulldog-sounds/releases/latest"
