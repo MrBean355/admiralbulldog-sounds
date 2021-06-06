@@ -43,52 +43,58 @@ class DiscordBotCommandsScreen : Fragment(getString("title_discord_bot_commands"
             }
         }
         row {
-            label("!help") {
+            label("/feedback") {
                 addClass(AppStyles.monospacedFont)
             }
-            label(getString("command_description_help"))
+            label(getString("command_description_feedback"))
         }
         row {
-            label("!roons") {
-                addClass(AppStyles.monospacedFont)
-            }
-            label(getString("command_description_roons"))
-        }
-        row {
-            label("!seeya") {
-                addClass(AppStyles.monospacedFont)
-            }
-            label(getString("command_description_seeya"))
-        }
-        row {
-            label("!magic") {
-                addClass(AppStyles.monospacedFont)
-            }
-            label(getString("command_description_magic"))
-        }
-        row {
-            label("!follow") {
+            label("/follow") {
                 addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_follow"))
         }
         row {
-            label("!unfollow") {
+            label("/help") {
+                addClass(AppStyles.monospacedFont)
+            }
+            label(getString("command_description_help"))
+        }
+        row {
+            label("/join") {
+                addClass(AppStyles.monospacedFont)
+            }
+            label(getString("command_description_join"))
+        }
+        row {
+            label("/leave") {
+                addClass(AppStyles.monospacedFont)
+            }
+            label(getString("command_description_leave"))
+        }
+        row {
+            label("/magicnumber") {
+                addClass(AppStyles.monospacedFont)
+            }
+            label(getString("command_description_magic"))
+        }
+        row {
+            label("/ping") {
+                addClass(AppStyles.monospacedFont)
+            }
+            label(getString("command_description_ping"))
+        }
+        row {
+            label("/unfollow") {
                 addClass(AppStyles.monospacedFont)
             }
             label(getString("command_description_unfollow"))
         }
         row {
-            label("!volume") {
+            label("/volume") {
                 addClass(AppStyles.monospacedFont)
             }
-            label(getString("command_description_get_volume"))
-        }
-        row {
-            label("!volume x") {
-                addClass(AppStyles.monospacedFont)
-            }
-            label(getString("command_description_set_volume"))
+            label(getString("command_description_volume"))
         }
     }
 }
