@@ -46,6 +46,7 @@ dependencies {
 
 tasks.withType<Jar> {
     archiveBaseName.set("admiralbulldog-sounds-$currentPlatform")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from(
         configurations.runtimeClasspath.get().map {
             if (it.isDirectory) it else zipTree(it)
