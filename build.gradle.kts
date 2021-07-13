@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.5.21"
 }
 
 group = "com.github.mrbean355"
@@ -26,9 +26,9 @@ val currentPlatform = (findProperty("platform") as? String) ?: "win"
 
 dependencies {
     implementation(kotlin("reflect"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.5.0")
-    implementation("io.ktor:ktor-server-netty:1.5.4")
-    implementation("io.ktor:ktor-gson:1.5.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.5.1")
+    implementation("io.ktor:ktor-server-netty:1.6.1")
+    implementation("io.ktor:ktor-gson:1.6.1")
     implementation("org.slf4j:slf4j-simple:1.7.30")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
