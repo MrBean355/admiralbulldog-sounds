@@ -1,22 +1,33 @@
 version: 2
 updates:
-- package-ecosystem: gradle
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "03:00"
-  open-pull-requests-limit: 10
-  target-branch: develop
-  reviewers:
-  - MrBean355
-  assignees:
-  - MrBean355
-- package-ecosystem: gradle
-  directory: "/buildSrc"
-  schedule:
-    interval: daily
-    time: "03:00"
-  open-pull-requests-limit: 10
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "03:00"
+    open-pull-requests-limit: 10
+    target-branch: develop
+    reviewers:
+      - MrBean355
+    assignees:
+      - MrBean355
+  - package-ecosystem: gradle
+    directory: "/compose"
+    schedule:
+      interval: daily
+      time: "03:00"
+    open-pull-requests-limit: 10
+    target-branch: develop
+    reviewers:
+      - MrBean355
+    assignees:
+      - MrBean355
+  - package-ecosystem: gradle
+    directory: "/buildSrc"
+    schedule:
+      interval: daily
+      time: "03:00"
+    open-pull-requests-limit: 10
   target-branch: develop
   reviewers:
   - MrBean355
