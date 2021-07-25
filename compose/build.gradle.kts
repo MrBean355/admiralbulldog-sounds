@@ -27,8 +27,12 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation("org.http4k:http4k-client-apache:4.10.1.0")
-    implementation("org.http4k:http4k-format-kotlinx-serialization:4.10.1.0")
+    implementation(kotlin("reflect"))
+    implementation(platform("org.http4k:http4k-bom:4.10.1.0"))
+    implementation("org.http4k:http4k-server-netty")
+    implementation("org.http4k:http4k-client-apache")
+    implementation("org.http4k:http4k-format-kotlinx-serialization")
+    implementation("org.slf4j:slf4j-simple:1.7.32")
 }
 
 compose.desktop {

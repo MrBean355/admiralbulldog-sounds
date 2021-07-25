@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.github.mrbean355.admiralbulldog.gsi.GameStateIntegrationServer
 
 private val Tabs = mutableListOf(
     stringResource("tab_home"),
@@ -65,6 +66,8 @@ fun main() = Window(
             }
         }
     }
+
+    GameStateIntegrationServer.start()
 }
 
 @Composable
