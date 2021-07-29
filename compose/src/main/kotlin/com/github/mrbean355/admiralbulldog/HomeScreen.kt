@@ -28,7 +28,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.imageFromResource
+import androidx.compose.ui.res.loadImageBitmap
+import androidx.compose.ui.res.useResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -38,7 +39,7 @@ fun HomeScreen() = Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
 ) {
-    Image(imageFromResource("images/pause_champ.png"), stringResource("cd_icon"), modifier = Modifier.size(64.dp))
+    Image(useResource("images/pause_champ.png") { loadImageBitmap(it) }, stringResource("cd_icon"), modifier = Modifier.size(64.dp))
     Text(stringResource("header_waiting_for_dota"), fontSize = 20.sp)
     LinearProgressIndicator(Modifier.fillMaxWidth())
     Text(stringResource("description_waiting_for_dota"))

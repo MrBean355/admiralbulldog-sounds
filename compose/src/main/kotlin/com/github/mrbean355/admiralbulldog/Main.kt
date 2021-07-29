@@ -16,7 +16,6 @@
 
 package com.github.mrbean355.admiralbulldog
 
-import androidx.compose.desktop.Window
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -30,9 +29,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.WindowSize
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import com.github.mrbean355.admiralbulldog.gsi.GameStateIntegrationServer
 
 private val Tabs = mutableListOf(
@@ -43,32 +47,39 @@ private val Tabs = mutableListOf(
     stringResource("tab_settings")
 )
 
-fun main() = Window(
-    title = stringResource("title_application"),
-    size = IntSize(600, 400),
-    resizable = false
-) {
-    MaterialTheme(darkColors()) {
-        Column(Modifier.fillMaxSize()) {
-            var selected by remember { mutableStateOf(0) }
+fun main() = application {
+    Window(
+        state = AppWindowState(),
+        onCloseRequest = ::exitApplication
+    ) {
+        MaterialTheme(darkColors()) {
+            Column(Modifier.fillMaxSize()) {
+                var selected by remember { mutableStateOf(0) }
 
-            TabRow(selected, modifier = Modifier.height(48.dp)) {
-                Tabs.forEachIndexed { index, title ->
-                    Tab(index == selected, onClick = { selected = index }) {
-                        Text(title)
+                TabRow(selected, modifier = Modifier.height(48.dp)) {
+                    Tabs.forEachIndexed { index, title ->
+                        Tab(index == selected, onClick = { selected = index }) {
+                            Text(title)
+                        }
                     }
                 }
-            }
 
-            when (selected) {
-                0 -> HomeScreen()
-                else -> PlaceholderScreen()
+                when (selected) {
+                    0 -> HomeScreen()
+                    else -> PlaceholderScreen()
+                }
             }
         }
-    }
 
-    GameStateIntegrationServer.start()
+        GameStateIntegrationServer.start()
+    }
 }
+
+@Composable
+private fun AppWindowState() = rememberWindowState(
+    position = WindowPosition(Center),
+    size = WindowSize(600.dp, 400.dp)
+)
 
 @Composable
 fun PlaceholderScreen() {
