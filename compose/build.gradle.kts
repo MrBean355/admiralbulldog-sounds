@@ -17,11 +17,12 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "1.5.21"
-    id("org.jetbrains.compose") version "0.5.0-build270"
+    id("org.jetbrains.compose") version "1.0.0-alpha1-rc1"
 }
 
 repositories {
     mavenCentral()
+    google()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
