@@ -38,6 +38,10 @@ object Periodically : SoundTrigger {
         return false
     }
 
+    override fun reset() {
+        nextPlayClockTime = NO_VALUE
+    }
+
     private fun randomiseDelay(): Int {
         // Cast to double so we can randomise a non-whole amount of minutes.
         val minQuietTime = 10.0 // TODO: ConfigPersistence.getMinPeriod().toDouble()

@@ -24,4 +24,7 @@ interface SoundTrigger {
     /** Examine the states and decide if a sound should be played. */
     fun shouldPlay(previous: GameState, current: GameState): Boolean
 
+    /** Clear any internal state. */
+    fun reset() = Unit
+
 }

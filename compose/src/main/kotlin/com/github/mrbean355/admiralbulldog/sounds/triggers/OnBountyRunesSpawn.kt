@@ -54,6 +54,10 @@ object OnBountyRunesSpawn : SoundTrigger {
         return false
     }
 
+    override fun reset() {
+        nextPlayTime = NO_VALUE
+    }
+
     private fun findNextPlayTime(clockTime: Long): Long {
         val iteration = ceil((clockTime + warningPeriod) / HOW_OFTEN.toFloat()).toInt()
         val nextPlayTime = iteration * HOW_OFTEN - warningPeriod

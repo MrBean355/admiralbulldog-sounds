@@ -35,4 +35,8 @@ object OnMatchStart : SoundTrigger {
         }
         return false
     }
+
+    override fun reset() {
+        played = false
+    }
 }
