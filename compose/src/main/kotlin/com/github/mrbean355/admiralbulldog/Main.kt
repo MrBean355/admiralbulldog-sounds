@@ -38,6 +38,8 @@ import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.github.mrbean355.admiralbulldog.gsi.GameStateIntegrationServer
+import com.github.mrbean355.admiralbulldog.sounds.SoundsScreen
+import kotlin.system.exitProcess
 
 private val Tabs = mutableListOf(
     stringResource("tab_home"),
@@ -50,7 +52,7 @@ private val Tabs = mutableListOf(
 fun main() = application {
     Window(
         state = AppWindowState(),
-        onCloseRequest = ::exitApplication
+        onCloseRequest = { exitProcess(0) }
     ) {
         MaterialTheme(darkColors()) {
             Column(Modifier.fillMaxSize()) {
@@ -66,6 +68,7 @@ fun main() = application {
 
                 when (selected) {
                     0 -> HomeScreen()
+                    1 -> SoundsScreen()
                     else -> PlaceholderScreen()
                 }
             }
