@@ -19,7 +19,7 @@ import org.sonarqube.gradle.SonarQubeTask
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "1.5.21"
-    id("org.jetbrains.compose") version "1.0.0-alpha1-rc5"
+    id("org.jetbrains.compose") version "1.0.0-alpha2"
     id("org.sonarqube") version "3.3"
     jacoco
 }
