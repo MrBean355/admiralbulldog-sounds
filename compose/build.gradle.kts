@@ -64,9 +64,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
     implementation(platform("org.http4k:http4k-bom:4.10.1.0"))
     implementation("org.http4k:http4k-server-netty")
-    implementation("org.http4k:http4k-client-apache")
     implementation("org.http4k:http4k-format-kotlinx-serialization")
     implementation("org.slf4j:slf4j-simple:1.7.32")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 
     testImplementation(platform("org.junit:junit-bom:5.7.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")

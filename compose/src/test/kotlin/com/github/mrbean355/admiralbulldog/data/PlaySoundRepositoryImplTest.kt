@@ -27,20 +27,31 @@ import com.github.mrbean355.admiralbulldog.sounds.triggers.OnRespawn
 import com.github.mrbean355.admiralbulldog.sounds.triggers.OnSmoked
 import com.github.mrbean355.admiralbulldog.sounds.triggers.OnVictory
 import com.github.mrbean355.admiralbulldog.sounds.triggers.Periodically
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runBlockingTest
+import okhttp3.ResponseBody
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
 class PlaySoundRepositoryImplTest {
+    @MockK
+    private lateinit var service: PlaySoundService
     private lateinit var repository: PlaySoundRepositoryImpl
 
     @BeforeEach
     internal fun setUp() {
-        repository = PlaySoundRepositoryImpl()
+        MockKAnnotations.init(this)
+        repository = PlaySoundRepositoryImpl(service, Dispatchers.Unconfined)
     }
 
     @Test
@@ -48,6 +59,46 @@ class PlaySoundRepositoryImplTest {
         val actual = repository.listSoundTriggers().single()
 
         assertEquals(expectedTriggers, actual)
+    }
+
+    @Test
+    internal fun testListSounds_Success_ReturnsServiceResponse() = runBlockingTest {
+        val sounds = mapOf("a" to "b")
+        coEvery { service.listSoundBites() } returns sounds
+
+        val actual = repository.listSounds()
+
+        assertTrue(actual.isSuccess)
+        assertSame(sounds, actual.getOrThrow())
+    }
+
+    @Test
+    internal fun testListSounds_Exception_ReturnsFailureResult() = runBlockingTest {
+        coEvery { service.listSoundBites() } throws RuntimeException()
+
+        val actual = repository.listSounds()
+
+        assertTrue(actual.isFailure)
+    }
+
+    @Test
+    internal fun testDownloadSound_Success_ReturnsServiceResponse() = runBlockingTest {
+        val responseBody = mockk<ResponseBody>()
+        coEvery { service.downloadSoundBite("roons.mp3") } returns responseBody
+
+        val actual = repository.downloadSound("roons.mp3")
+
+        assertTrue(actual.isSuccess)
+        assertSame(responseBody, actual.getOrThrow())
+    }
+
+    @Test
+    internal fun testDownloadSound_Exception_ReturnsFailureResult() = runBlockingTest {
+        coEvery { service.downloadSoundBite("roons.mp3") } throws RuntimeException()
+
+        val actual = repository.downloadSound("roons.mp3")
+
+        assertTrue(actual.isFailure)
     }
 
     private val expectedTriggers = listOf(

@@ -28,18 +28,30 @@ import com.github.mrbean355.admiralbulldog.sounds.triggers.OnSmoked
 import com.github.mrbean355.admiralbulldog.sounds.triggers.OnVictory
 import com.github.mrbean355.admiralbulldog.sounds.triggers.Periodically
 import com.github.mrbean355.admiralbulldog.sounds.triggers.SoundTrigger
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 
 interface PlaySoundRepository {
 
     fun listSoundTriggers(): Flow<List<SoundTrigger>>
 
+    suspend fun listSounds(): Result<Map<String, String>>
+
+    suspend fun downloadSound(name: String): Result<ResponseBody>
+
 }
 
-fun PlaySoundRepository(): PlaySoundRepository = PlaySoundRepositoryImpl()
+fun PlaySoundRepository(): PlaySoundRepository =
+    PlaySoundRepositoryImpl(PlaySoundService.Instance, Dispatchers.IO)
 
-class PlaySoundRepositoryImpl : PlaySoundRepository {
+class PlaySoundRepositoryImpl(
+    private val service: PlaySoundService,
+    private val dispatcher: CoroutineDispatcher
+) : PlaySoundRepository {
 
     override fun listSoundTriggers() = flowOf(
         listOf(
@@ -56,4 +68,12 @@ class PlaySoundRepositoryImpl : PlaySoundRepository {
             Periodically
         )
     )
+
+    override suspend fun listSounds() = withContext(dispatcher) {
+        runCatching { service.listSoundBites() }
+    }
+
+    override suspend fun downloadSound(name: String) = withContext(dispatcher) {
+        runCatching { service.downloadSoundBite(name) }
+    }
 }
