@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
@@ -51,6 +52,8 @@ private val Tabs = mutableListOf(
 
 fun main() = application {
     Window(
+        icon = painterResource("images/bulldog.jpg"),
+        title = stringResource("title_application"),
         state = AppWindowState(),
         onCloseRequest = { exitProcess(0) }
     ) {
