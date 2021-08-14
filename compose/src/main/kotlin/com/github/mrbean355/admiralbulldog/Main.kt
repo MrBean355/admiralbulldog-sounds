@@ -40,7 +40,12 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.github.mrbean355.admiralbulldog.gsi.GameStateIntegrationServer
 import com.github.mrbean355.admiralbulldog.sounds.SoundsScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlin.system.exitProcess
+
+val AppScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
 private val Tabs = mutableListOf(
     stringResource("tab_home"),

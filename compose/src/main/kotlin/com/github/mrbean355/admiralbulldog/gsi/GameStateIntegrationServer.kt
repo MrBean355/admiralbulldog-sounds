@@ -16,31 +16,46 @@
 
 package com.github.mrbean355.admiralbulldog.gsi
 
+import com.github.mrbean355.admiralbulldog.AppScope
 import com.github.mrbean355.admiralbulldog.log.Log
-import org.http4k.core.Body
-import org.http4k.core.Request
-import org.http4k.core.Response
-import org.http4k.core.Status
-import org.http4k.format.KotlinxSerialization.auto
-import org.http4k.lens.BiDiBodyLens
-import org.http4k.server.Netty
-import org.http4k.server.asServer
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.ContentNegotiation
+import io.ktor.http.HttpStatusCode
+import io.ktor.request.receive
+import io.ktor.response.respond
+import io.ktor.routing.post
+import io.ktor.routing.routing
+import io.ktor.serialization.json
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
-private val gameStateLens: BiDiBodyLens<GameState> = Body.auto<GameState>().toLens()
+private val JsonConfig = Json { ignoreUnknownKeys = true }
 
 object GameStateIntegrationServer {
     private var previous: GameState? = null
 
     fun start() {
-        val app = { request: Request ->
-            try {
-                handle(gameStateLens(request))
-            } catch (t: Throwable) {
-                Log.error("Error receiving GSI request", t)
-            }
-            Response(Status.OK)
+        AppScope.launch(Dispatchers.IO) {
+            embeddedServer(Netty, 12345 /* TODO */) {
+                install(ContentNegotiation) {
+                    json(JsonConfig)
+                }
+                routing {
+                    post {
+                        try {
+                            handle(call.receive<GameState>())
+                        } catch (t: Throwable) {
+                            Log.error("Exception during game state update", t)
+                        }
+                        call.respond(HttpStatusCode.OK)
+                    }
+                }
+            }.start()
         }
-        app.asServer(Netty(12345)).start()
     }
 
     private fun handle(current: GameState) {

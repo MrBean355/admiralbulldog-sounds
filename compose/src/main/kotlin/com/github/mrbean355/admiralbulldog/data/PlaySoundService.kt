@@ -16,9 +16,11 @@
 
 package com.github.mrbean355.admiralbulldog.data
 
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -36,7 +38,7 @@ interface PlaySoundService {
     companion object {
         val Instance: PlaySoundService = Retrofit.Builder()
             .baseUrl("http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(Json.asConverterFactory(MediaType.get("application/json")))
             .build()
             .create()
     }
