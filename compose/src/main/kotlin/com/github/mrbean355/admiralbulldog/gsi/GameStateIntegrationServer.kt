@@ -16,7 +16,6 @@
 
 package com.github.mrbean355.admiralbulldog.gsi
 
-import com.github.mrbean355.admiralbulldog.AppScope
 import com.github.mrbean355.admiralbulldog.log.Log
 import io.ktor.application.call
 import io.ktor.application.install
@@ -32,7 +31,7 @@ import io.ktor.server.netty.Netty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 private val JsonConfig = Json { ignoreUnknownKeys = true }
@@ -41,24 +40,22 @@ object GameStateIntegrationServer {
     private val connected = MutableSharedFlow<Boolean>(replay = 1)
     private var previous: GameState? = null
 
-    fun start() {
-        AppScope.launch(Dispatchers.IO) {
-            embeddedServer(Netty, 12345 /* TODO */) {
-                install(ContentNegotiation) {
-                    json(JsonConfig)
-                }
-                routing {
-                    post {
-                        try {
-                            handle(call.receive<GameState>())
-                        } catch (t: Throwable) {
-                            Log.error("Exception during game state update", t)
-                        }
-                        call.respond(HttpStatusCode.OK)
+    suspend fun start() = withContext(Dispatchers.IO) {
+        embeddedServer(Netty, 12345 /* TODO */) {
+            install(ContentNegotiation) {
+                json(JsonConfig)
+            }
+            routing {
+                post {
+                    try {
+                        handle(call.receive<GameState>())
+                    } catch (t: Throwable) {
+                        Log.error("Exception during game state update", t)
                     }
+                    call.respond(HttpStatusCode.OK)
                 }
-            }.start()
-        }
+            }
+        }.start()
     }
 
     fun isConnected(): Flow<Boolean> = connected
