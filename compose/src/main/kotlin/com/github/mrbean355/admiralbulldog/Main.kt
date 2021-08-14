@@ -16,10 +16,10 @@
 
 package com.github.mrbean355.admiralbulldog
 
+import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
@@ -62,7 +62,7 @@ fun main() = application {
         state = AppWindowState(),
         onCloseRequest = { exitProcess(0) }
     ) {
-        MaterialTheme(darkColors()) {
+        DesktopMaterialTheme(darkColors()) {
             Column(Modifier.fillMaxSize()) {
                 var selected by remember { mutableStateOf(0) }
 
