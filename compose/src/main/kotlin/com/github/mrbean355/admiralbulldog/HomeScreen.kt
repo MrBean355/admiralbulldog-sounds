@@ -26,21 +26,42 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.res.useResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.mrbean355.admiralbulldog.gsi.GameStateIntegrationServer
 
 @Composable
-fun HomeScreen() = Column(
-    Modifier.fillMaxSize().padding(16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
-) {
-    Image(useResource("images/pause_champ.png") { loadImageBitmap(it) }, stringResource("cd_icon"), modifier = Modifier.size(64.dp))
-    Text(stringResource("header_waiting_for_dota"), fontSize = 20.sp)
+fun HomeScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+    ) {
+        val connected by GameStateIntegrationServer.isConnected().collectAsState(false)
+        if (connected) {
+            ConnectedScreen()
+        } else {
+            WaitingScreen()
+        }
+    }
+}
+
+@Composable
+private fun ConnectedScreen() {
+    Image(painterResource("images/poggies.png"), stringResource("cd_icon"), modifier = Modifier.size(64.dp))
+    Text(stringResource("header_connected_to_dota"), fontSize = 22.sp)
+    Text(stringResource("description_connected_to_dota"), fontSize = 18.sp)
+}
+
+@Composable
+private fun WaitingScreen() {
+    Image(painterResource("images/pause_champ.png"), stringResource("cd_icon"), modifier = Modifier.size(64.dp))
+    Text(stringResource("header_waiting_for_dota"), fontSize = 22.sp)
     LinearProgressIndicator(Modifier.fillMaxWidth())
-    Text(stringResource("description_waiting_for_dota"))
+    Text(stringResource("description_waiting_for_dota"), fontSize = 18.sp)
 }

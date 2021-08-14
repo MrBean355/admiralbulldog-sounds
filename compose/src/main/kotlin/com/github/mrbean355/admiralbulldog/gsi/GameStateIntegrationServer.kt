@@ -30,12 +30,15 @@ import io.ktor.serialization.json
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 private val JsonConfig = Json { ignoreUnknownKeys = true }
 
 object GameStateIntegrationServer {
+    private val connected = MutableSharedFlow<Boolean>(replay = 1)
     private var previous: GameState? = null
 
     fun start() {
@@ -58,10 +61,14 @@ object GameStateIntegrationServer {
         }
     }
 
-    private fun handle(current: GameState) {
+    fun isConnected(): Flow<Boolean> = connected
+
+    private suspend fun handle(current: GameState) {
         val previous = previous
         if (previous != null) {
             // TODO: Check triggers.
+        } else {
+            connected.emit(true)
         }
         this.previous = current
     }
