@@ -29,15 +29,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.application
-import androidx.compose.ui.window.rememberWindowState
+import com.github.mrbean355.admiralbulldog.core.AppWindow
 import com.github.mrbean355.admiralbulldog.gsi.GameStateIntegrationServer
 import com.github.mrbean355.admiralbulldog.sounds.SoundsScreen
 import kotlinx.coroutines.CoroutineScope
@@ -56,11 +51,9 @@ private val Tabs = mutableListOf(
 )
 
 fun main() = application {
-    Window(
-        icon = painterResource("images/bulldog.jpg"),
+    AppWindow(
         title = stringResource("title_application"),
-        resizable = false,
-        state = AppWindowState(),
+        escapeClosesWindow = false,
         onCloseRequest = { exitProcess(0) }
     ) {
         DesktopMaterialTheme(darkColors()) {
@@ -86,12 +79,6 @@ fun main() = application {
         GameStateIntegrationServer.start()
     }
 }
-
-@Composable
-private fun AppWindowState() = rememberWindowState(
-    position = WindowPosition(Center),
-    size = WindowSize(600.dp, 400.dp)
-)
 
 @Composable
 fun PlaceholderScreen() {
