@@ -59,6 +59,7 @@ fun main() = application {
     Window(
         icon = painterResource("images/bulldog.jpg"),
         title = stringResource("title_application"),
+        resizable = false,
         state = AppWindowState(),
         onCloseRequest = { exitProcess(0) }
     ) {
