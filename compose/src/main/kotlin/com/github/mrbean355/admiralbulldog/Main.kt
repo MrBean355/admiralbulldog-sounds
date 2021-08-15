@@ -16,15 +16,12 @@
 
 package com.github.mrbean355.admiralbulldog
 
-import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
-import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,25 +50,21 @@ fun main() = application {
         escapeClosesWindow = false,
         onCloseRequest = { exitProcess(0) }
     ) {
-        DesktopMaterialTheme(darkColors()) {
-            Surface {
-                Column(Modifier.fillMaxSize()) {
-                    var selected by remember { mutableStateOf(0) }
+        Column(Modifier.fillMaxSize()) {
+            var selected by remember { mutableStateOf(0) }
 
-                    TabRow(selected, modifier = Modifier.height(48.dp)) {
-                        Tabs.forEachIndexed { index, title ->
-                            Tab(index == selected, onClick = { selected = index }) {
-                                Text(title)
-                            }
-                        }
-                    }
-
-                    when (selected) {
-                        0 -> HomeScreen()
-                        1 -> SoundsScreen()
-                        else -> PlaceholderScreen()
+            TabRow(selected, modifier = Modifier.height(48.dp)) {
+                Tabs.forEachIndexed { index, title ->
+                    Tab(index == selected, onClick = { selected = index }) {
+                        Text(title)
                     }
                 }
+            }
+
+            when (selected) {
+                0 -> HomeScreen()
+                1 -> SoundsScreen()
+                else -> PlaceholderScreen()
             }
         }
     }

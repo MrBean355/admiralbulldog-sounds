@@ -16,6 +16,9 @@
 
 package com.github.mrbean355.admiralbulldog.core
 
+import androidx.compose.desktop.DesktopMaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -58,7 +61,12 @@ fun AppWindow(
             } else {
                 false
             }
-        },
-        content = content
-    )
+        }
+    ) {
+        DesktopMaterialTheme(darkColors()) {
+            Surface {
+                content()
+            }
+        }
+    }
 }
