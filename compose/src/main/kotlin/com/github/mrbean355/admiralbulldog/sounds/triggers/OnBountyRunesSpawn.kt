@@ -33,6 +33,7 @@ object OnBountyRunesSpawn : SoundTrigger {
     private var nextPlayTime = NO_VALUE
 
     override val name get() = stringResource("trigger_name_bounty_runes")
+    override val description get() = stringResource("trigger_desc_bounty_runes")
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         val gameState = current.map!!.game_state

@@ -20,6 +20,7 @@ import com.github.mrbean355.admiralbulldog.gsi.GameState
 
 interface SoundTrigger {
     val name: String
+    val description: String
 
     /** Examine the states and decide if a sound should be played. */
     fun shouldPlay(previous: GameState, current: GameState): Boolean

@@ -27,6 +27,7 @@ import com.github.mrbean355.admiralbulldog.stringResource
 object OnMidasReady : SoundTrigger {
 
     override val name get() = stringResource("trigger_name_midas_ready")
+    override val description get() = stringResource("trigger_desc_midas_ready")
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         return previous.items.isMidasOnCooldown() && current.items.isMidasOffCooldown()

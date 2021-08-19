@@ -25,6 +25,7 @@ import com.github.mrbean355.admiralbulldog.stringResource
 object OnVictory : SoundTrigger {
 
     override val name get() = stringResource("trigger_name_victory")
+    override val description get() = stringResource("trigger_desc_victory")
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         return current.map!!.win_team != TEAM_NONE && previous.map!!.win_team == TEAM_NONE

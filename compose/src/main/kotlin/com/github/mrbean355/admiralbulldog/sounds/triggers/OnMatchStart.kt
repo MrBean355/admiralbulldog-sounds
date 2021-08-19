@@ -27,6 +27,7 @@ object OnMatchStart : SoundTrigger {
     private var played = false
 
     override val name get() = stringResource("trigger_name_match_start")
+    override val description get() = stringResource("trigger_desc_match_start")
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (!played && current.map!!.game_state == MatchState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS && current.map.clock_time < 5) {

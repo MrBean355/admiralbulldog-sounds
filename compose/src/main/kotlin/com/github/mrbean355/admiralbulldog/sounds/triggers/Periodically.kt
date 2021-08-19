@@ -27,6 +27,7 @@ object Periodically : SoundTrigger {
     private var nextPlayClockTime = NO_VALUE
 
     override val name get() = stringResource("trigger_name_periodically")
+    override val description get() = stringResource("trigger_desc_periodically")
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (nextPlayClockTime == NO_VALUE) {

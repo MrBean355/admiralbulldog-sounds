@@ -36,6 +36,7 @@ private const val MAX_HEAL = 400
 object OnHeal : SoundTrigger {
 
     override val name get() = stringResource("trigger_name_heal")
+    override val description get() = stringResource("trigger_desc_heal")
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (previous.hero!!.health <= 0F) {

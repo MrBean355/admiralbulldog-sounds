@@ -25,6 +25,7 @@ import com.github.mrbean355.admiralbulldog.stringResource
 object OnSmoked : SoundTrigger {
 
     override val name get() = stringResource("trigger_name_smoked")
+    override val description get() = stringResource("trigger_desc_smoked")
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         return !previous.hero!!.smoked && current.hero!!.smoked

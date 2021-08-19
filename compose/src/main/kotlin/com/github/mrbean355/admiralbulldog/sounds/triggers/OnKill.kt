@@ -25,6 +25,7 @@ import com.github.mrbean355.admiralbulldog.stringResource
 object OnKill : SoundTrigger {
 
     override val name get() = stringResource("trigger_name_kill")
+    override val description get() = stringResource("trigger_desc_kill")
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         return current.player!!.kills > previous.player!!.kills
