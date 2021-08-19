@@ -17,6 +17,7 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -42,18 +43,26 @@ fun SoundsScreen() {
 
     LazyColumn {
         items(triggers) {
-            SoundTriggerItem(it.name, viewModel.description(it))
+            var editing by remember { mutableStateOf(false) }
+            SoundTriggerItem(
+                name = it.name,
+                description = viewModel.description(it),
+                onClick = { editing = true }
+            )
+            if (editing) {
+                EditSoundTriggerScreen(trigger = it, onClose = { editing = false })
+            }
         }
     }
 }
 
 @Composable
-fun SoundTriggerItem(name: String, description: String) {
+private fun SoundTriggerItem(name: String, description: String, onClick: () -> Unit) {
     var highlighted by remember { mutableStateOf(false) }
     Column(
         Modifier.fillMaxWidth()
-            .background(if (highlighted) MaterialTheme.colors.secondary else Color.Transparent)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable(onClick = onClick)
+            .background(if (highlighted) MaterialTheme.colors.primary.copy(alpha = 0.25f) else Color.Transparent)
             .pointerMoveFilter(
                 onEnter = {
                     highlighted = true
@@ -64,6 +73,7 @@ fun SoundTriggerItem(name: String, description: String) {
                     false
                 }
             )
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(name, style = MaterialTheme.typography.body1)
         Text(description, style = MaterialTheme.typography.body2)
