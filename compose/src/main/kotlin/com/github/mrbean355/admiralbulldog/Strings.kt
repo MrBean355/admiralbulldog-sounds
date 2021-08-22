@@ -28,3 +28,12 @@ fun stringResource(key: String): String {
         key
     }
 }
+
+fun stringResource(key: String, vararg formatArgs: Any?): String {
+    return stringResource(key).format(*formatArgs)
+}
+
+/** Format a float (e.g. 0.2) to a percentage string (e.g. 20%). */
+fun Float.formatPercent(decimals: Int): String {
+    return "%.${decimals}f%%".format(this * 100)
+}

@@ -35,6 +35,7 @@ import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.rememberWindowState
 
 val DefaultWindowSize: WindowSize = WindowSize(600.dp, 400.dp)
+val SmallWindowSize: WindowSize = WindowSize(450.dp, 200.dp)
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
