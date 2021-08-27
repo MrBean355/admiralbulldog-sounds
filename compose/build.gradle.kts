@@ -19,7 +19,7 @@ import org.sonarqube.gradle.SonarQubeTask
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "1.5.21"
-    id("org.jetbrains.compose") version "1.0.0-alpha3"
+    id("org.jetbrains.compose") version "1.0.0-alpha4-build321"
     id("org.sonarqube") version "3.3"
     jacoco
 }
@@ -62,8 +62,8 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
-    implementation("io.ktor:ktor-server-netty:1.6.2")
-    implementation("io.ktor:ktor-serialization:1.6.2")
+    implementation("io.ktor:ktor-server-netty:1.6.3")
+    implementation("io.ktor:ktor-serialization:1.6.3")
     implementation("org.slf4j:slf4j-simple:1.7.32")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
