@@ -16,7 +16,7 @@
 
 package com.github.mrbean355.admiralbulldog.core
 
-import androidx.compose.desktop.DesktopMaterialTheme
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
@@ -27,21 +27,21 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.rememberWindowState
 
-val DefaultWindowSize: WindowSize = WindowSize(600.dp, 400.dp)
-val SmallWindowSize: WindowSize = WindowSize(450.dp, 200.dp)
+val DefaultWindowSize: DpSize = DpSize(600.dp, 400.dp)
+val SmallWindowSize: DpSize = DpSize(450.dp, 200.dp)
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
 fun AppWindow(
     title: String,
-    size: WindowSize = DefaultWindowSize,
+    size: DpSize = DefaultWindowSize,
     escapeClosesWindow: Boolean = true,
     onCloseRequest: () -> Unit,
     content: @Composable FrameWindowScope.() -> Unit
@@ -64,7 +64,7 @@ fun AppWindow(
             }
         }
     ) {
-        DesktopMaterialTheme(darkColors()) {
+        MaterialTheme(darkColors()) {
             Surface {
                 content()
             }

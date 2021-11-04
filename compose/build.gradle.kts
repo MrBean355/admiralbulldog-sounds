@@ -18,8 +18,8 @@ import org.sonarqube.gradle.SonarQubeTask
 
 plugins {
     kotlin("jvm")
-    kotlin("plugin.serialization") version "1.5.21"
-    id("org.jetbrains.compose") version "1.0.0-alpha4-build321"
+    kotlin("plugin.serialization") version "1.5.31"
+    id("org.jetbrains.compose") version "1.0.0-beta5"
     id("org.sonarqube") version "3.3"
     jacoco
 }
@@ -61,18 +61,18 @@ sonarqube {
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation(kotlin("reflect"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
-    implementation("io.ktor:ktor-server-netty:1.6.3")
-    implementation("io.ktor:ktor-serialization:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("io.ktor:ktor-server-netty:1.6.5")
+    implementation("io.ktor:ktor-serialization:1.6.5")
     implementation("org.slf4j:slf4j-simple:1.7.32")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 
-    testImplementation(platform("org.junit:junit-bom:5.7.2"))
+    testImplementation(platform("org.junit:junit-bom:5.8.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("io.mockk:mockk:1.12.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
 }
 
 compose.desktop {
