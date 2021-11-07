@@ -16,85 +16,81 @@
 
 package com.github.mrbean355.admiralbulldog.home
 
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.SettingsIcon
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
-import com.github.mrbean355.admiralbulldog.styles.AppStyles
-import javafx.geometry.Pos
-import javafx.geometry.Pos.CENTER
-import javafx.scene.image.ImageView
-import tornadofx.View
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.fitToParentWidth
-import tornadofx.hbox
-import tornadofx.hyperlink
-import tornadofx.imageview
-import tornadofx.insets
-import tornadofx.label
-import tornadofx.managedWhen
-import tornadofx.paddingAll
-import tornadofx.paddingBottom
-import tornadofx.progressbar
-import tornadofx.stackpane
-import tornadofx.stackpaneConstraints
-import tornadofx.tooltip
-import tornadofx.vbox
-import tornadofx.visibleWhen
-import tornadofx.whenUndocked
+import com.github.mrbean355.admiralbulldog.ui.Hyperlink
 
-class MainScreen : View(getString("title_app")) {
-    private val viewModel by inject<MainViewModel>()
+@Composable
+fun MainScreen() {
+    val scope = rememberCoroutineScope()
+    val viewModel = remember { MainViewModel(scope) }
 
-    override val root = stackpane {
-        vbox(spacing = PADDING_SMALL, alignment = CENTER) {
-            paddingAll = PADDING_MEDIUM
-            imageview(viewModel.image)
-            label(viewModel.heading) {
-                addClass(AppStyles.largeFont)
+    val heading by viewModel.heading.collectAsState("")
+    val isLoading by viewModel.progressBarVisible.collectAsState(true)
+    val infoMessage by viewModel.infoMessage.collectAsState("")
+
+    Box {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(16.dp).align(Alignment.Center)
+        ) {
+            Text(
+                text = heading,
+                fontSize = 22.sp
+            )
+            if (isLoading) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
-            progressbar {
-                fitToParentWidth()
-                visibleWhen(viewModel.progressBarVisible)
-                managedWhen(visibleProperty())
-            }
-            label(viewModel.infoMessage)
-            hbox(spacing = PADDING_SMALL, alignment = CENTER) {
-                paddingBottom = PADDING_SMALL
-                button(getString("btn_change_sounds")) {
-                    action { viewModel.onChangeSoundsClicked() }
+            Text(
+                text = infoMessage,
+                fontSize = 14.sp,
+                fontStyle = FontStyle.Italic
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(onClick = { viewModel.onChangeSoundsClicked() }) {
+                    Text(text = getString("btn_change_sounds"))
                 }
-                button(getString("btn_discord_bot")) {
-                    action { viewModel.onDiscordBotClicked() }
+                Button(onClick = { viewModel.onDiscordBotClicked() }) {
+                    Text(text = getString("btn_discord_bot"))
                 }
-                button(getString("btn_dota_mods")) {
-                    action { viewModel.onDotaModClicked() }
+                Button(onClick = { viewModel.onDotaModClicked() }) {
+                    Text(text = getString("btn_dota_mods"))
                 }
             }
-            hyperlink(viewModel.version) {
-                addClass(AppStyles.smallFont, AppStyles.boldFont)
-                action { viewModel.onVersionClicked() }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Hyperlink(
+                    text = viewModel.version,
+                    onClick = { viewModel.onVersionClicked() }
+                )
+                Text(text = "|")
+                Hyperlink(
+                    text = getString("lbl_app_settings"),
+                    onClick = { viewModel.onSettingsClicked() }
+                )
             }
-        }
-        button(graphic = ImageView(SettingsIcon())) {
-            tooltip(getString("tooltip_settings"))
-            action {
-                find<SettingsScreen>().openModal(resizable = false)
-            }
-            stackpaneConstraints {
-                alignment = Pos.BOTTOM_RIGHT
-                margin = insets(PADDING_SMALL)
-            }
-        }
-    }
-
-    init {
-        currentStage?.isResizable = false
-        whenUndocked {
-            viewModel.onUndock()
         }
     }
 }

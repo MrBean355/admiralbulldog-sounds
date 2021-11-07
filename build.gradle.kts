@@ -1,15 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    application
     kotlin("jvm") version "1.5.31"
+    id("org.jetbrains.compose") version "1.0.0-beta5"
 }
 
 group = "com.github.mrbean355"
-version = "1.14.0-SNAPSHOT"
+version = "2.0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    google()
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 java {
@@ -19,6 +21,7 @@ java {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
 }
 
 val fxVersion = "15.0.1"
@@ -41,7 +44,15 @@ dependencies {
     implementation("org.openjfx:javafx-graphics:$fxVersion:$currentPlatform")
     implementation("org.openjfx:javafx-media:$fxVersion:$currentPlatform")
 
+    implementation(compose.desktop.currentOs)
+
     testImplementation("junit:junit:4.13.2")
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.github.mrbean355.admiralbulldog.MainKt"
+    }
 }
 
 tasks.withType<Jar> {

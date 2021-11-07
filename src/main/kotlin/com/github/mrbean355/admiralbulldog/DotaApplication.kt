@@ -18,7 +18,6 @@ package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.common.BulldogIcon
 import com.github.mrbean355.admiralbulldog.exception.UncaughtExceptionHandlerImpl
-import com.github.mrbean355.admiralbulldog.home.MainScreen
 import com.github.mrbean355.admiralbulldog.mods.OldModMigration
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.styles.AppStyles
@@ -28,7 +27,7 @@ import javafx.stage.Stage
 import tornadofx.App
 import kotlin.system.exitProcess
 
-class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(), stylesheet = arrayOf(AppStyles::class)) {
+class DotaApplication : App(icon = BulldogIcon(), stylesheet = arrayOf(AppStyles::class)) {
 
     override fun init() {
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandlerImpl(hostServices))

@@ -17,68 +17,42 @@
 package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
-import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.PauseChampIcon
-import com.github.mrbean355.admiralbulldog.common.PoggiesIcon
 import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
 import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.showError
-import com.github.mrbean355.admiralbulldog.common.showInformation
-import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
-import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
-import com.github.mrbean355.admiralbulldog.mods.DotaModsScreen
-import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
-import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
-import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
-import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
-import com.github.mrbean355.admiralbulldog.ui.openScreen
-import javafx.beans.binding.Binding
-import javafx.beans.binding.BooleanBinding
-import javafx.beans.binding.StringBinding
-import javafx.beans.property.StringProperty
-import javafx.scene.control.ButtonType
-import javafx.scene.image.Image
+import com.github.mrbean355.admiralbulldog.tryBrowseUrl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import tornadofx.Scope
-import tornadofx.booleanProperty
-import tornadofx.find
-import tornadofx.objectBinding
-import tornadofx.runLater
-import tornadofx.stringBinding
-import tornadofx.stringProperty
 import kotlin.concurrent.timer
-import kotlin.system.exitProcess
 
 private const val HEARTBEAT_FREQUENCY_MS = 30 * 1_000L
-private const val ANALYTICS_FREQUENCY_MS = 5 * 60 * 1_000L
 
-class MainViewModel : AppViewModel() {
+class MainViewModel(
+    private val viewModelScope: CoroutineScope
+) {
     private val discordBotRepository = DiscordBotRepository()
     private val dotaModRepository = DotaModRepository()
-    private val updateViewModel by inject<UpdateViewModel>()
-    private val hasHeardFromDota = booleanProperty(false)
+    private val hasHeardFromDota = MutableStateFlow(false)
 
-    val image: Binding<Image?> = hasHeardFromDota.objectBinding {
-        if (it == true) PoggiesIcon() else PauseChampIcon()
+    val heading: Flow<String> = hasHeardFromDota.map {
+        if (it) getString("msg_connected") else getString("msg_not_connected")
     }
-    val heading: StringBinding = hasHeardFromDota.stringBinding {
-        if (it == true) getString("msg_connected") else getString("msg_not_connected")
+    val progressBarVisible: Flow<Boolean> = hasHeardFromDota.map { !it }
+    val infoMessage: Flow<String> = hasHeardFromDota.map {
+        if (it) getString("dsc_connected") else getString("dsc_not_connected")
     }
-    val progressBarVisible: BooleanBinding = hasHeardFromDota.not()
-    val infoMessage: StringBinding = hasHeardFromDota.stringBinding {
-        if (it == true) getString("dsc_connected") else getString("dsc_not_connected")
-    }
-    val version: StringProperty = stringProperty(getString("lbl_app_version", APP_VERSION.value, getDistributionName()))
+    val version: String get() = getString("lbl_app_version", APP_VERSION.value, getDistributionName())
 
-    override fun onReady() {
+    init {
         sendHeartbeats()
 
         ensureValidDotaPath()
@@ -89,81 +63,83 @@ class MainViewModel : AppViewModel() {
         checkForAppUpdate()
 
         if (FeedbackScreen.shouldPrompt()) {
-            openScreen<FeedbackScreen>()
+            // TODO: openScreen<FeedbackScreen>()
         }
 
         monitorGameStateUpdates {
-            runLater {
-                hasHeardFromDota.set(true)
-            }
+            hasHeardFromDota.value = true
         }
     }
 
-    override fun onUndock() {
-        updateViewModel.onUndock()
-        super.onUndock()
-    }
-
+    // TODO
     private fun ensureValidDotaPath() {
-        if (DotaPath.hasValidSavedPath()) {
-            return
-        }
-        find<InstallationWizard>(scope = Scope()).openModal(block = true, resizable = false)
-        if (!DotaPath.hasValidSavedPath()) {
-            showError(getString("header_install_gsi"), getString("content_installer_fail"))
-            exitProcess(-1)
-        }
+//        if (DotaPath.hasValidSavedPath()) {
+//            return
+//        }
+//        find<InstallationWizard>(scope = Scope()).openModal(block = true, resizable = false)
+//        if (!DotaPath.hasValidSavedPath()) {
+//            showError(getString("header_install_gsi"), getString("content_installer_fail"))
+//            exitProcess(-1)
+//        }
     }
 
     private fun ensureGsiInstalled() {
         val alreadyInstalled = GameStateIntegration.isInstalled()
         GameStateIntegration.install()
         if (!alreadyInstalled) {
-            showInformation(getString("header_install_gsi"), getString("msg_installer_success"), ButtonType.FINISH)
+            // TODO
+            // showInformation(getString("header_install_gsi"), getString("msg_installer_success"), ButtonType.FINISH)
         }
     }
 
     fun onChangeSoundsClicked() {
-        openScreen<ViewSoundTriggersScreen>()
+        // TODO: openScreen<ViewSoundTriggersScreen>()
     }
 
     fun onDiscordBotClicked() {
-        openScreen<DiscordBotScreen>()
+        // TODO: openScreen<DiscordBotScreen>()
     }
 
     fun onDotaModClicked() {
-        openScreen<DotaModsScreen>()
+        // TODO: openScreen<DotaModsScreen>()
     }
 
     fun onVersionClicked() {
-        hostServices.showDocument(URL_SPECIFIC_RELEASE.format(APP_VERSION.value))
+        tryBrowseUrl(URL_SPECIFIC_RELEASE.format(APP_VERSION))
+    }
+
+    fun onSettingsClicked() {
+        // TODO: open settings
     }
 
     private fun checkForNewSounds() {
-        if (updateViewModel.shouldCheckForNewSounds()) {
+        // TODO
+        /*if (updateViewModel.shouldCheckForNewSounds()) {
             openScreen<SyncSoundBitesScreen>(escapeClosesWindow = false, block = true)
         } else {
             SoundBites.checkForInvalidSounds()
-        }
+        }*/
     }
 
     private fun checkForAppUpdate() {
-        if (!updateViewModel.shouldCheckForAppUpdate()) {
-            checkForModUpdate()
-            return
-        }
-        updateViewModel.checkForAppUpdate(
-            onError = { checkForModUpdate() },
-            onUpdateSkipped = { checkForModUpdate() },
-            onNoUpdate = { checkForModUpdate() }
-        )
+        // TODO
+        /*if (!updateViewModel.shouldCheckForAppUpdate()) {
+                   checkForModUpdate()
+                   return
+               }
+               updateViewModel.checkForAppUpdate(
+                   onError = { checkForModUpdate() },
+                   onUpdateSkipped = { checkForModUpdate() },
+                   onNoUpdate = { checkForModUpdate() }
+               )*/
     }
 
     private fun checkForModUpdate() {
-        if (!updateViewModel.shouldCheckForModUpdate()) {
-            return
-        }
-        updateViewModel.checkForModUpdates()
+        // TODO
+        /*if (!updateViewModel.shouldCheckForModUpdate()) {
+                  return
+              }
+              updateViewModel.checkForModUpdates()*/
     }
 
     private fun sendHeartbeats() {
@@ -172,10 +148,8 @@ class MainViewModel : AppViewModel() {
                 discordBotRepository.sendHeartbeat()
             }
         }
-        timer(daemon = true, period = ANALYTICS_FREQUENCY_MS) {
-            viewModelScope.launch {
-                logAnalyticsProperties()
-            }
+        viewModelScope.launch {
+            logAnalyticsProperties()
         }
     }
 }

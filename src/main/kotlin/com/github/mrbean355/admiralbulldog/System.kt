@@ -95,7 +95,7 @@ private fun getJavaMajorVersion(): Int {
     }
 }
 
-private fun tryBrowseUrl(url: String) {
+fun tryBrowseUrl(url: String) {
     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
         Desktop.getDesktop().browse(URI(url))
     } else {
