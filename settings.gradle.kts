@@ -6,5 +6,3 @@ pluginManagement {
 }
 
 rootProject.name = "admiralbulldog-sounds"
-
-include(":compose")
