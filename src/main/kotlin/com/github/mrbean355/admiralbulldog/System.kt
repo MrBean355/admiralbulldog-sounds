@@ -32,7 +32,7 @@ import javax.swing.JOptionPane.showMessageDialog
 import javax.swing.JOptionPane.showOptionDialog
 
 /** Minimum Java major version supported by the app. */
-private const val MIN_JAVA_VERSION = 8
+private const val MIN_JAVA_VERSION = 11
 
 /**
  * Check whether the Java runtime is at least [MIN_JAVA_VERSION].
