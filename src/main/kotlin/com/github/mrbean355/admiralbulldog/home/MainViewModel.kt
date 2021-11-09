@@ -20,13 +20,11 @@ import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
-import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
 import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
-import com.github.mrbean355.admiralbulldog.tryBrowseUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -90,26 +88,6 @@ class MainViewModel(
             // TODO
             // showInformation(getString("header_install_gsi"), getString("msg_installer_success"), ButtonType.FINISH)
         }
-    }
-
-    fun onChangeSoundsClicked() {
-        // TODO: openScreen<ViewSoundTriggersScreen>()
-    }
-
-    fun onDiscordBotClicked() {
-        // TODO: openScreen<DiscordBotScreen>()
-    }
-
-    fun onDotaModClicked() {
-        // TODO: openScreen<DotaModsScreen>()
-    }
-
-    fun onVersionClicked() {
-        tryBrowseUrl(URL_SPECIFIC_RELEASE.format(APP_VERSION))
-    }
-
-    fun onSettingsClicked() {
-        // TODO: open settings
     }
 
     private fun checkForNewSounds() {

@@ -16,67 +16,79 @@
 
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.common.HelpIcon
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
-import javafx.geometry.Pos.CENTER_LEFT
-import javafx.scene.image.ImageView
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.action
-import tornadofx.button
-import tornadofx.fitToParentWidth
-import tornadofx.hbox
-import tornadofx.label
-import tornadofx.paddingAll
-import tornadofx.paddingHorizontal
-import tornadofx.paddingTop
-import tornadofx.paddingVertical
-import tornadofx.spacer
-import tornadofx.vbox
-import tornadofx.whenUndocked
+import com.github.mrbean355.admiralbulldog.ui.AppWindow
 
-class ViewSoundTriggersScreen : Fragment(getString("title_toggle_sound_triggers")) {
-    private val viewModel by inject<ViewSoundTriggersViewModel>(Scope())
+@Composable
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
+    getString("title_toggle_sound_triggers"),
+    size = DpSize(350.dp, 550.dp),
+    onCloseRequest = onCloseRequest
+) {
+    val viewModel = remember { ViewSoundTriggersViewModel() }
+    val enabledTextColour = MaterialTheme.colors.onSurface
+    val disabledTextColour = enabledTextColour.copy(alpha = 0.5f)
 
-    override val root = vbox {
-        paddingTop = PADDING_SMALL
-        prefWidth = WINDOW_WIDTH
-        SOUND_TRIGGER_TYPES.forEach { type ->
-            label(viewModel.textProperty(type)) {
-                paddingVertical = PADDING_SMALL * 2
-                paddingHorizontal = PADDING_MEDIUM * 2
-                fitToParentWidth()
-                textFillProperty().bind(viewModel.textColourProperty(type))
-                setOnMouseEntered {
-                    background = viewModel.highlightedBackground
-                }
-                setOnMouseExited {
-                    background = viewModel.normalBackground
-                }
-                setOnMouseClicked {
-                    viewModel.onConfigureClicked(type)
-                }
+    Column {
+        SOUND_TRIGGER_TYPES.forEach { triggerType ->
+            val textColour = if (viewModel.isEnabled(triggerType)) enabledTextColour else disabledTextColour
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { /* TODO */ }
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+            ) {
+                Text(
+                    text = triggerType.friendlyName,
+                    color = textColour,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                )
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = getString("content_chevron"),
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
             }
         }
-        hbox(alignment = CENTER_LEFT) {
-            paddingAll = PADDING_MEDIUM
-            button(getString("btn_manage_sounds")) {
-                action { viewModel.onManageSoundsClicked() }
+        Spacer(modifier = Modifier.weight(1f))
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp)
+        ) {
+            Button(
+                onClick = { /* TODO */ }
+            ) {
+                Text(text = getString("btn_manage_sounds"))
             }
-            spacer()
-            button(graphic = ImageView(HelpIcon())) {
-                action { viewModel.onHelpClicked() }
+            OutlinedButton(
+                onClick = { /* TODO */ },
+                modifier = Modifier.align(Alignment.CenterEnd)
+            ) {
+                Text(text = getString("btn_help"))
             }
-        }
-    }
-
-    init {
-        whenUndocked {
-            viewModel.onUndock()
         }
     }
 }

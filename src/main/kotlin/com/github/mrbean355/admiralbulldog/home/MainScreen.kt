@@ -28,14 +28,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.mrbean355.admiralbulldog.APP_VERSION
+import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
+import com.github.mrbean355.admiralbulldog.tryBrowseUrl
 import com.github.mrbean355.admiralbulldog.ui.Hyperlink
 
 @Composable
@@ -46,6 +52,8 @@ fun MainScreen() {
     val heading by viewModel.heading.collectAsState("")
     val isLoading by viewModel.progressBarVisible.collectAsState(true)
     val infoMessage by viewModel.infoMessage.collectAsState("")
+
+    var openScreen by remember { mutableStateOf<Screen?>(null) }
 
     Box {
         Column(
@@ -68,13 +76,13 @@ fun MainScreen() {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Button(onClick = { viewModel.onChangeSoundsClicked() }) {
+                Button(onClick = { openScreen = Screen.ChangeSounds }) {
                     Text(text = getString("btn_change_sounds"))
                 }
-                Button(onClick = { viewModel.onDiscordBotClicked() }) {
+                Button(onClick = { openScreen = Screen.DiscordBot }) {
                     Text(text = getString("btn_discord_bot"))
                 }
-                Button(onClick = { viewModel.onDotaModClicked() }) {
+                Button(onClick = { openScreen = Screen.DotaMods }) {
                     Text(text = getString("btn_dota_mods"))
                 }
             }
@@ -83,14 +91,29 @@ fun MainScreen() {
             ) {
                 Hyperlink(
                     text = viewModel.version,
-                    onClick = { viewModel.onVersionClicked() }
+                    onClick = { openScreen = Screen.AppVersion }
                 )
                 Text(text = "|")
                 Hyperlink(
                     text = getString("lbl_app_settings"),
-                    onClick = { viewModel.onSettingsClicked() }
+                    onClick = { openScreen = Screen.AppSettings }
                 )
             }
         }
     }
+    when (openScreen) {
+        Screen.ChangeSounds -> ViewSoundTriggersScreen(onCloseRequest = { openScreen = null })
+        Screen.DiscordBot -> TODO()
+        Screen.DotaMods -> TODO()
+        Screen.AppVersion -> tryBrowseUrl(URL_SPECIFIC_RELEASE.format(APP_VERSION))
+        Screen.AppSettings -> TODO()
+    }
+}
+
+private enum class Screen {
+    ChangeSounds,
+    DiscordBot,
+    DotaMods,
+    AppVersion,
+    AppSettings
 }
