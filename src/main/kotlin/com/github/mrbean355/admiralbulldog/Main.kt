@@ -40,7 +40,7 @@ fun main(args: Array<String>) {
         application {
             AppWindow(
                 title = getString("title_app"),
-                size = DpSize(450.dp, Dp.Unspecified),
+                size = DpSize(500.dp, Dp.Unspecified),
                 escapeClosesWindow = false,
                 onCloseRequest = { exitProcess(0) }
             ) {

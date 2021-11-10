@@ -59,7 +59,8 @@ fun MainScreen() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(16.dp).align(Alignment.Center)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp)
+                .align(Alignment.Center)
         ) {
             Text(
                 text = heading,
