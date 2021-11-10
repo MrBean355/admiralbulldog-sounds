@@ -19,7 +19,6 @@ package com.github.mrbean355.admiralbulldog.sounds
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -35,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
@@ -44,8 +44,8 @@ import com.github.mrbean355.admiralbulldog.ui.AppWindow
 @Composable
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
-    getString("title_toggle_sound_triggers"),
-    size = DpSize(350.dp, 550.dp),
+    title = getString("title_toggle_sound_triggers"),
+    size = DpSize(350.dp, Dp.Unspecified),
     onCloseRequest = onCloseRequest
 ) {
     val viewModel = remember { ViewSoundTriggersViewModel() }
@@ -74,7 +74,6 @@ fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
                 )
             }
         }
-        Spacer(modifier = Modifier.weight(1f))
         Box(
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp)
         ) {

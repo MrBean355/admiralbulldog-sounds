@@ -16,7 +16,7 @@
 
 package com.github.mrbean355.admiralbulldog.ui
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.darkColors
@@ -66,7 +66,7 @@ fun AppWindow(
         }
     ) {
         MaterialTheme(darkColors()) {
-            Surface(modifier = Modifier.fillMaxSize()) {
+            Surface(modifier = Modifier.size(size)) {
                 content()
             }
         }

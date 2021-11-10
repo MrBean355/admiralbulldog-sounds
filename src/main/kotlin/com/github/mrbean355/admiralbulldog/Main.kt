@@ -16,6 +16,7 @@
 
 package com.github.mrbean355.admiralbulldog
 
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.application
@@ -39,7 +40,7 @@ fun main(args: Array<String>) {
         application {
             AppWindow(
                 title = getString("title_app"),
-                size = DpSize(450.dp, 275.dp),
+                size = DpSize(450.dp, Dp.Unspecified),
                 escapeClosesWindow = false,
                 onCloseRequest = { exitProcess(0) }
             ) {
