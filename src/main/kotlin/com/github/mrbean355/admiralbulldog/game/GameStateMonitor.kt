@@ -21,7 +21,6 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTrigger
-import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -66,12 +65,6 @@ fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
             }
         }.start(wait = true)
     }
-}
-
-/** Recreate the sound trigger implementation of the given type. */
-fun recreateTrigger(triggerType: SoundTriggerType): Unit = synchronized(soundTriggers) {
-    soundTriggers.removeAll { it::class == triggerType }
-    soundTriggers += triggerType.createInstance()
 }
 
 /** Play sound bites that want to be played. */

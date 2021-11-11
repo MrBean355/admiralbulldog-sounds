@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
+import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.ui.AppDialog
 import com.github.mrbean355.admiralbulldog.ui.AppWindow
 
@@ -56,6 +57,7 @@ fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
     val enabledTextColour = MaterialTheme.colors.onSurface
     val disabledTextColour = enabledTextColour.copy(alpha = 0.5f)
 
+    var clicked by remember { mutableStateOf<SoundTriggerType?>(null) }
     var showHelp by remember { mutableStateOf(false) }
 
     Column {
@@ -65,7 +67,7 @@ fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { /* TODO */ }
+                    .clickable { clicked = triggerType }
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 Text(
@@ -97,6 +99,9 @@ fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
         }
     }
 
+    clicked?.let {
+        ConfigureSoundTriggerScreen(it, onCloseRequest = { clicked = null })
+    }
     if (showHelp) {
         AppDialog(
             title = getString("header_about_sound_triggers"),

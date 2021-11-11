@@ -27,7 +27,7 @@ private const val HOW_OFTEN = 3 * 60L
 /** Plays a sound shortly before the bounty runes spawn. */
 class OnBountyRunesSpawn : SoundTrigger {
     /** Play a sound this many seconds before the bounty runes spawn. */
-    private val warningPeriod = ConfigPersistence.getBountyRuneTimer().toLong()
+    private val warningPeriod get() = ConfigPersistence.getBountyRuneTimer().toLong()
     private var nextPlayTime = UNINITIALISED
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {

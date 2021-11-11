@@ -16,86 +16,60 @@
 
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
-import com.github.mrbean355.admiralbulldog.game.recreateTrigger
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnBountyRunesSpawn
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
 import com.github.mrbean355.admiralbulldog.triggers.Periodically
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
-import javafx.beans.binding.BooleanBinding
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.IntegerProperty
-import javafx.beans.property.StringProperty
-import tornadofx.booleanProperty
-import tornadofx.intProperty
-import tornadofx.onChange
-import tornadofx.stringProperty
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 
-class ConfigureSoundTriggerViewModel : AppViewModel() {
-    private val type: SoundTriggerType by param()
+class ConfigureSoundTriggerViewModel(
+    private val triggerType: SoundTriggerType
+) {
+    val enabled = MutableStateFlow(ConfigPersistence.isSoundTriggerEnabled(triggerType))
+    val chance = MutableStateFlow(ConfigPersistence.getSoundTriggerChance(triggerType))
+    val smartChanceEnabled = MutableStateFlow(ConfigPersistence.isUsingHealSmartChance())
+    val showChanceSlider = smartChanceEnabled.map { !it or !showSmartChance }
+    val runeTimer = MutableStateFlow(ConfigPersistence.getBountyRuneTimer())
+    val period = MutableStateFlow(ConfigPersistence.getMinPeriod()..ConfigPersistence.getMaxPeriod())
+    val rate = MutableStateFlow(ConfigPersistence.getSoundTriggerMinRate(triggerType)..ConfigPersistence.getSoundTriggerMaxRate(triggerType))
+    val soundBites = MutableStateFlow(ConfigPersistence.getSoundsForType(triggerType))
 
-    /* Basic */
-    val title: StringProperty = stringProperty(type.friendlyName)
-    val description: StringProperty = stringProperty(type.description)
-    val enabled: BooleanProperty = booleanProperty(ConfigPersistence.isSoundTriggerEnabled(type))
-    val bountyRuneTimer: IntegerProperty = intProperty(ConfigPersistence.getBountyRuneTimer())
-    val showBountyRuneTimer: BooleanProperty = booleanProperty(type == OnBountyRunesSpawn::class)
-    val soundBiteCount = stringProperty(ConfigPersistence.getSoundsForType(type).size.toString())
+    val showChance: Boolean get() = triggerType != Periodically::class
+    val showSmartChance: Boolean get() = triggerType == OnHeal::class
+    val showRuneTimer: Boolean get() = triggerType == OnBountyRunesSpawn::class
+    val showPeriod: Boolean get() = triggerType == Periodically::class
 
-    /* Chance to play */
-    val showChance: BooleanProperty = booleanProperty(type != Periodically::class)
-    val showSmartChance: BooleanProperty = booleanProperty(type == OnHeal::class)
-    val useSmartChance: BooleanProperty = booleanProperty(ConfigPersistence.isUsingHealSmartChance())
-    val enableChanceSpinner: BooleanBinding = showSmartChance.not().or(useSmartChance.not())
-    val chance: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerChance(type))
-
-    /* Periodic */
-    val showPeriod: BooleanBinding = showChance.not()
-    val minPeriod: IntegerProperty = intProperty(ConfigPersistence.getMinPeriod())
-    val maxPeriod: IntegerProperty = intProperty(ConfigPersistence.getMaxPeriod())
-
-    /* Playback rate */
-    val minRate: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerMinRate(type))
-    val maxRate: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerMaxRate(type))
-
-    init {
-        enabled.onChange { ConfigPersistence.toggleSoundTrigger(type, it) }
-        bountyRuneTimer.onChange {
-            ConfigPersistence.setBountyRuneTimer(it)
-            recreateTrigger(OnBountyRunesSpawn::class)
-        }
-        useSmartChance.onChange { ConfigPersistence.setIsUsingHealSmartChance(it) }
-        chance.onChange { ConfigPersistence.setSoundTriggerChance(type, it) }
-        minPeriod.onChange {
-            ConfigPersistence.setMinPeriod(it)
-            if (it > maxPeriod.get()) {
-                maxPeriod.set(it)
-            }
-        }
-        maxPeriod.onChange {
-            ConfigPersistence.setMaxPeriod(it)
-            if (it < minPeriod.get()) {
-                minPeriod.set(it)
-            }
-        }
-        minRate.onChange {
-            ConfigPersistence.setSoundTriggerMinRate(type, it)
-            if (it > maxRate.get()) {
-                maxRate.set(it)
-            }
-        }
-        maxRate.onChange {
-            ConfigPersistence.setSoundTriggerMaxRate(type, it)
-            if (it < minRate.get()) {
-                minRate.set(it)
-            }
-        }
+    fun onEnabledChanged(newValue: Boolean) {
+        ConfigPersistence.toggleSoundTrigger(triggerType, newValue)
+        enabled.value = newValue
     }
 
-    fun onChooseSoundsClicked() {
-        find<ChooseSoundFilesScreen>(ChooseSoundFilesScreen.params(type))
-            .openModal(block = true, resizable = false)
-        soundBiteCount.set(ConfigPersistence.getSoundsForType(type).size.toString())
+    fun onChanceChanged(newValue: Int) {
+        ConfigPersistence.setSoundTriggerChance(triggerType, newValue)
+        chance.value = newValue
+    }
+
+    fun onSmartChanceChanged(newValue: Boolean) {
+        ConfigPersistence.setIsUsingHealSmartChance(newValue)
+        smartChanceEnabled.value = newValue
+    }
+
+    fun onRuneTimerChanged(newValue: Int) {
+        ConfigPersistence.setBountyRuneTimer(newValue)
+        runeTimer.value = newValue
+    }
+
+    fun onPeriodChanged(newValues: IntRange) {
+        ConfigPersistence.setMinPeriod(newValues.first)
+        ConfigPersistence.setMaxPeriod(newValues.last)
+        period.value = newValues
+    }
+
+    fun onRateChanged(newValues: IntRange) {
+        ConfigPersistence.setSoundTriggerMinRate(triggerType, newValues.first)
+        ConfigPersistence.setSoundTriggerMaxRate(triggerType, newValues.last)
+        rate.value = newValues
     }
 }
