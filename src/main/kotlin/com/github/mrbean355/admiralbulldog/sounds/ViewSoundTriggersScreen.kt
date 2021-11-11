@@ -30,7 +30,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -39,6 +42,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
+import com.github.mrbean355.admiralbulldog.ui.AppDialog
 import com.github.mrbean355.admiralbulldog.ui.AppWindow
 
 @Composable
@@ -51,6 +55,8 @@ fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
     val viewModel = remember { ViewSoundTriggersViewModel() }
     val enabledTextColour = MaterialTheme.colors.onSurface
     val disabledTextColour = enabledTextColour.copy(alpha = 0.5f)
+
+    var showHelp by remember { mutableStateOf(false) }
 
     Column {
         SOUND_TRIGGER_TYPES.forEach { triggerType ->
@@ -83,11 +89,19 @@ fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
                 Text(text = getString("btn_manage_sounds"))
             }
             OutlinedButton(
-                onClick = { /* TODO */ },
+                onClick = { showHelp = true },
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Text(text = getString("btn_help"))
             }
         }
+    }
+
+    if (showHelp) {
+        AppDialog(
+            title = getString("header_about_sound_triggers"),
+            message = getString("content_about_sound_triggers"),
+            onCloseRequest = { showHelp = false }
+        )
     }
 }
