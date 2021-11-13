@@ -19,16 +19,26 @@ package com.github.mrbean355.admiralbulldog.mods
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
-import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.common.MORE_INFO_BUTTON
+import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
+import com.github.mrbean355.admiralbulldog.common.URL_MOD_INFO
+import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.showError
+import com.github.mrbean355.admiralbulldog.common.showInformation
+import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.openScreen
 import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
 import javafx.scene.control.ButtonType
-import javafx.scene.control.ButtonType.*
+import javafx.scene.control.ButtonType.CANCEL
+import javafx.scene.control.ButtonType.CLOSE
+import javafx.scene.control.ButtonType.NEXT
 import kotlinx.coroutines.launch
-import tornadofx.*
+import tornadofx.FXEvent
+import tornadofx.booleanProperty
+import tornadofx.observableListOf
 
 class DotaModsViewModel : AppViewModel() {
     private val repo = DotaModRepository()

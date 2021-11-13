@@ -23,7 +23,14 @@ import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
-import com.github.mrbean355.admiralbulldog.common.*
+import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
+import com.github.mrbean355.admiralbulldog.common.UPDATE_BUTTON
+import com.github.mrbean355.admiralbulldog.common.WHATS_NEW_BUTTON
+import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.logger
+import com.github.mrbean355.admiralbulldog.common.removeVersionPrefix
+import com.github.mrbean355.admiralbulldog.common.showInformation
+import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.common.update.DownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
