@@ -79,7 +79,7 @@ fun ConfigureSoundTriggerScreen(triggerType: SoundTriggerType, onCloseRequest: (
         BountyRuneTimer(viewModel)
         Period(viewModel)
         PlaybackRate(viewModel)
-        SoundBites(viewModel)
+        SoundBites(viewModel, triggerType)
     }
 }
 
@@ -214,9 +214,10 @@ private fun PlaybackRate(viewModel: ConfigureSoundTriggerViewModel) {
 }
 
 @Composable
-private fun SoundBites(viewModel: ConfigureSoundTriggerViewModel) {
+private fun SoundBites(viewModel: ConfigureSoundTriggerViewModel, triggerType: SoundTriggerType) {
     val soundBites by viewModel.soundBites.collectAsState()
     var showInfo by remember { mutableStateOf(false) }
+    var chooseSounds by remember { mutableStateOf(false) }
 
     HeaderWithInfoButton(
         text = getString("header_sound_bite_selection"),
@@ -228,7 +229,7 @@ private fun SoundBites(viewModel: ConfigureSoundTriggerViewModel) {
         else -> getString("label_sound_bite_selection_many", soundBites.size)
     }
     Text(text = description, maxLines = 2, overflow = TextOverflow.Ellipsis)
-    OutlinedButton(onClick = { /* TODO */ }) {
+    OutlinedButton(onClick = { chooseSounds = true }) {
         Text(text = getString("btn_choose_sound_bites"))
     }
     if (showInfo) {
@@ -237,5 +238,8 @@ private fun SoundBites(viewModel: ConfigureSoundTriggerViewModel) {
             message = getString("content_about_sound_bites"),
             onCloseRequest = { showInfo = false }
         )
+    }
+    if (chooseSounds) {
+        ChooseSoundFilesScreen(triggerType, onCloseRequest = { chooseSounds = false })
     }
 }

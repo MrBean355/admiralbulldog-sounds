@@ -16,30 +16,82 @@
 
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.assets.SoundBite
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
-import tornadofx.Fragment
+import com.github.mrbean355.admiralbulldog.ui.AppWindow
 
-class ChooseSoundFilesScreen : Fragment() {
-    private val type by param<SoundTriggerType>()
-    private val tracker = SoundBiteTracker(ConfigPersistence.getSoundsForType(type))
+@Composable
+fun ChooseSoundFilesScreen(triggerType: SoundTriggerType, onCloseRequest: () -> Unit) = AppWindow(
+    title = triggerType.friendlyName,
+    size = DpSize(400.dp, 800.dp),
+    onCloseRequest = onCloseRequest
+) {
+    val viewModel = remember { ChooseSoundFilesViewModel(triggerType) }
+    val items by viewModel.items.collectAsState(emptyList())
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val lazyListState = rememberLazyListState()
 
-    override val root = tracker.createUi(this, ::onSaveClicked)
-
-    init {
-        title = type.friendlyName
-    }
-
-    private fun onSaveClicked(selection: List<SoundBite>) {
-        ConfigPersistence.saveSoundsForType(type, selection)
-        close()
-    }
-
-    companion object {
-
-        fun params(type: SoundTriggerType): Map<String, Any?> {
-            return mapOf("type" to type)
+    Column {
+        OutlinedTextField(
+            value = searchQuery,
+            label = { Text(text = getString("prompt_search")) },
+            onValueChange = viewModel::onSearch,
+            modifier = Modifier.padding(16.dp).fillMaxWidth()
+        )
+        Box {
+            LazyColumn(
+                state = lazyListState
+            ) {
+                items(items) { item ->
+                    val isSelected by viewModel.isSelected(item).collectAsState(false)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = isSelected,
+                            onCheckedChange = { viewModel.onSelectionChanged(item, it) }
+                        )
+                        Text(text = item.name)
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(onClick = { item.play() }) {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = getString("content_desc_play_button")
+                            )
+                        }
+                    }
+                }
+            }
+            VerticalScrollbar(
+                adapter = rememberScrollbarAdapter(lazyListState),
+                modifier = Modifier.align(Alignment.CenterEnd)
+            )
         }
     }
 }
