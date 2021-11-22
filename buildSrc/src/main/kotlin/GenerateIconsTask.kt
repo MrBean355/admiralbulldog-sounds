@@ -15,17 +15,24 @@
  */
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-
-private const val ICON_DIRECTORY = "src/main/resources"
+import java.io.File
 
 open class GenerateIconsTask : DefaultTask() {
 
+    @get:InputDirectory
+    val input: File
+        get() = project.file("src/main/resources")
+
+    @get:OutputFile
+    val output: File
+        get() = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/common/Icons.kt")
+
     @TaskAction
     fun run() {
-        val output = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/common/Icons.kt")
-
-        val icons = project.file(ICON_DIRECTORY).list().orEmpty()
+        val icons = input.list().orEmpty()
             .filter { it.endsWith(".png") || it.endsWith(".jpg") }
             .sorted()
 
