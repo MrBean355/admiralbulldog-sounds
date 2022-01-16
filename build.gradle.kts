@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.4.31"
+    kotlin("jvm") version "1.6.10"
 }
 
 group = "com.github.mrbean355"
@@ -25,10 +25,10 @@ val fxVersion = "15.0.1"
 val currentPlatform = (findProperty("platform") as? String) ?: "win"
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.3")
-    implementation("io.ktor:ktor-server-netty:1.5.2")
-    implementation("io.ktor:ktor-gson:1.5.2")
-    implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.0")
+    implementation("io.ktor:ktor-server-netty:1.6.7")
+    implementation("io.ktor:ktor-gson:1.6.7")
+    implementation("org.slf4j:slf4j-simple:1.7.33")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
@@ -53,6 +53,7 @@ tasks.withType<Jar> {
     manifest {
         attributes("Main-Class" to "com.github.mrbean355.admiralbulldog.MainKt")
     }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 val buildConfigTask = tasks.register<GenerateBuildConfigTask>("generateBuildConfig") {
