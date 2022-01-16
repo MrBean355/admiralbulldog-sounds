@@ -374,12 +374,9 @@ object ConfigPersistence {
         save()
     }
 
-    /** Disable all mods that aren't in the given collection. */
-    fun disableOtherMods(mods: Collection<DotaMod>) {
-        val current = loadedConfig.enabledMods
-        val remove = current - mods.map { it.key }
-
-        loadedConfig.enabledMods -= remove
+    /** Set the list of all enabled mods. */
+    fun setEnabledMods(mods: Collection<DotaMod>) {
+        loadedConfig.enabledMods.setAll(mods.map { it.key })
         save()
     }
 

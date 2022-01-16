@@ -71,7 +71,7 @@ class DotaModRepository {
      */
     suspend fun installMods(mods: Collection<DotaMod>): Boolean = withContext(IO) {
         val allSucceeded = updateMods(mods)
-        ConfigPersistence.disableOtherMods(mods)
+        ConfigPersistence.setEnabledMods(mods)
         val lastSequence = mods.size
 
         File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY).listFiles()?.forEach { file ->
@@ -85,9 +85,17 @@ class DotaModRepository {
         allSucceeded
     }
 
-    /**
-     * Download the latest version of each given [DotaMod].
-     */
+    /** Clear all chosen mods and delete them from disk. */
+    fun uninstallAllMods() {
+        ConfigPersistence.setEnabledMods(emptyList())
+        try {
+            File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY).deleteRecursively()
+        } catch (t: Throwable) {
+            logger.warn("Failed to delete mod directory", t)
+        }
+    }
+
+    /** Download the latest version of each given [DotaMod]. */
     suspend fun updateMods(mods: Collection<DotaMod>): Boolean = withContext(IO) {
         val mapping = mods.sortedBy { it.key }.withIndex()
         var allSucceeded = true

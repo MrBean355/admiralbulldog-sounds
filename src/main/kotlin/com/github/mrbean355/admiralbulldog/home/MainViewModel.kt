@@ -20,6 +20,7 @@ import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
+import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.PauseChampIcon
 import com.github.mrbean355.admiralbulldog.common.PoggiesIcon
@@ -34,6 +35,7 @@ import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
 import com.github.mrbean355.admiralbulldog.mods.DotaModsScreen
 import com.github.mrbean355.admiralbulldog.mods.OldModMigration
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
@@ -62,6 +64,7 @@ private const val ANALYTICS_FREQUENCY_MS = 5 * 60 * 1_000L
 
 class MainViewModel : AppViewModel() {
     private val discordBotRepository = DiscordBotRepository()
+    private val modRepository = DotaModRepository()
     private val updateViewModel by inject<UpdateViewModel>()
     private val hasHeardFromDota = booleanProperty(false)
 
@@ -82,6 +85,9 @@ class MainViewModel : AppViewModel() {
 
         ensureValidDotaPath()
         OldModMigration.run()
+        if (!ConfigPersistence.isModRiskAccepted()) {
+            modRepository.uninstallAllMods()
+        }
         ensureGsiInstalled()
 
         checkForNewSounds()
