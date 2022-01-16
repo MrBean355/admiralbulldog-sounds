@@ -22,15 +22,14 @@ import com.github.mrbean355.admiralbulldog.arch.service.DiscordBotService
 import com.github.mrbean355.admiralbulldog.arch.toServiceResponse
 import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.persistence.Dota2GameInfo
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.io.File
 
-/** Directory within the Dota root to place mods. */
-private const val MOD_DIRECTORY = "game/%s"
-private const val VPK_FILE = "pak01_dir.vpk"
+private const val MOD_DIRECTORY = "game/dota_bulldog"
+private const val VPK_FILE = "pak%02d_dir.vpk"
+private val VpkFilePattern = """pak(\d+)_dir\.vpk""".toRegex()
 
 class DotaModRepository {
     private val logger = LoggerFactory.getLogger(DotaModRepository::class.java)
@@ -50,7 +49,7 @@ class DotaModRepository {
      * @return mods that can be updated.
      */
     suspend fun checkForUpdates(): ServiceResponse<Collection<DotaMod>> = withContext(IO) {
-        val enabledMods = ConfigPersistence.getEnabledMods()
+        val enabledMods = ConfigPersistence.getEnabledMods().sorted()
         if (enabledMods.isEmpty()) {
             return@withContext ServiceResponse.Success(emptyList())
         }
@@ -62,60 +61,54 @@ class DotaModRepository {
         ConfigPersistence.setModLastUpdateToNow()
         ServiceResponse.Success(
             body.filter { it.key in enabledMods }
-                .filter { !verifyModHash(it) }
+                .filter { !verifyModHash(it, enabledMods.indexOf(it.key) + 1) }
         )
     }
 
     /**
      * Download the latest version of each given [DotaMod].
-     * Once complete, update the mod's hash in the config file.
      * Remove mods from the config file that aren't in the list.
-     * Update the game info file to include only these mods.
      */
     suspend fun installMods(mods: Collection<DotaMod>): Boolean = withContext(IO) {
         val allSucceeded = updateMods(mods)
         ConfigPersistence.disableOtherMods(mods)
-        Dota2GameInfo.setIncludedModDirectories(mods.map { it.key })
-        allSucceeded
-    }
+        val lastSequence = mods.size
 
-    /**
-     * Download the latest version of each given [DotaMod].
-     * Once complete, update the mod's hash in the config file.
-     */
-    suspend fun updateMods(mods: Collection<DotaMod>): Boolean = withContext(IO) {
-        var allSucceeded = true
-        mods.forEach { mod ->
-            if (verifyModHash(mod)) {
-                ConfigPersistence.enableMod(mod)
-            } else {
-                allSucceeded = allSucceeded && downloadMod(mod).body ?: false
+        File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY).listFiles()?.forEach { file ->
+            VpkFilePattern.matchEntire(file.name)?.let { result ->
+                val sequence = result.groupValues[1].toInt()
+                if (sequence > lastSequence) {
+                    file.delete()
+                }
             }
         }
         allSucceeded
     }
 
     /**
-     * Make sure that all selected mods are still in the `gameinfo.gi` file.
-     * If the user hasn't accepted the risk of using mods, all of them will be disabled.
+     * Download the latest version of each given [DotaMod].
      */
-    fun ensureModsAreInstalled() {
-        if (ConfigPersistence.isModRiskAccepted()) {
-            Dota2GameInfo.setIncludedModDirectories(ConfigPersistence.getEnabledMods())
-        } else {
-            ConfigPersistence.disableOtherMods(emptyList())
-            Dota2GameInfo.setIncludedModDirectories(emptyList())
+    suspend fun updateMods(mods: Collection<DotaMod>): Boolean = withContext(IO) {
+        val mapping = mods.sortedBy { it.key }.withIndex()
+        var allSucceeded = true
+        mapping.forEach { (index, mod) ->
+            if (verifyModHash(mod, index + 1)) {
+                ConfigPersistence.enableMod(mod)
+            } else {
+                allSucceeded = allSucceeded && downloadMod(mod, index + 1).body ?: false
+            }
         }
+        allSucceeded
     }
 
-    private suspend fun downloadMod(mod: DotaMod): ServiceResponse<Boolean> {
+    private suspend fun downloadMod(mod: DotaMod, sequence: Int): ServiceResponse<Boolean> {
         return try {
             val response = DiscordBotService.INSTANCE.downloadFile(mod.downloadUrl).toServiceResponse()
             if (response.isSuccessful()) {
-                val parent = File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY.format(mod.key)).also {
+                val parent = File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY).also {
                     it.mkdirs()
                 }
-                val target = File(parent, VPK_FILE)
+                val target = File(parent, VPK_FILE.format(sequence))
                 target.outputStream().use { output ->
                     response.body?.byteStream()?.use { input ->
                         input.copyTo(output)
@@ -132,15 +125,15 @@ class DotaModRepository {
     }
 
     /**
-     * Check whether the hash of the locally download mod's VPK is the same as the hash on the server.
+     * Check whether the hash of the locally downloaded mod's VPK is the same as the hash on the server.
      * @return `true` if the hashes are equal.
      */
-    private fun verifyModHash(mod: DotaMod): Boolean {
-        val parent = File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY.format(mod.key))
+    private fun verifyModHash(mod: DotaMod, sequence: Int): Boolean {
+        val parent = File(ConfigPersistence.getDotaPath(), MOD_DIRECTORY)
         if (!parent.exists()) {
             return false
         }
-        val vpk = File(parent, VPK_FILE)
+        val vpk = File(parent, VPK_FILE.format(sequence))
         return if (vpk.exists()) {
             vpk.verifyChecksum(mod.hash)
         } else {

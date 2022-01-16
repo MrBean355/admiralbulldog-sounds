@@ -33,12 +33,6 @@ object DotaPath {
         return saved == getDotaRootDirectory(saved)
     }
 
-    /** @return absolute path to the gameinfo.gi file. */
-    fun getGameInfoFilePath(): String {
-        val dotaPath = ConfigPersistence.getDotaPath()
-        return dotaPath + GAME_INFO_DIR_PATH.replaceFileSeparators()
-    }
-
     fun getDotaRootDirectory(path: String): String? {
         val parts = path.replaceFileSeparators().split(File.separatorChar)
         val dotaRoot = parts.firstOrNull { it in DOTA_ROOT_DIR_NAMES } ?: return null
