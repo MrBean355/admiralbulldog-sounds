@@ -51,6 +51,13 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
     override val root = vbox(spacing = PADDING_SMALL) {
         paddingAll = PADDING_MEDIUM
         prefWidth = WINDOW_WIDTH
+        hbox(alignment = CENTER) {
+            label(getString("label_enable_mods_manually"))
+            spacer()
+            button(getString("btn_enable")) {
+                action { viewModel.onEnableClicked() }
+            }
+        }
         label(getString("label_choose_mods")) {
             addClass(AppStyles.boldFont)
             alignment = CENTER
@@ -85,7 +92,7 @@ class DotaModsScreen : Fragment(getString("title_mods")) {
                 action { viewModel.onAboutModdingClicked() }
             }
         }
-        button(getString("btn_save")) {
+        button(getString("btn_download")) {
             action { viewModel.onInstallClicked() }
         }
     }
