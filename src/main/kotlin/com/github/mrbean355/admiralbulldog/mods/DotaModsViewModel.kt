@@ -22,6 +22,7 @@ import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.common.MORE_INFO_BUTTON
 import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
 import com.github.mrbean355.admiralbulldog.common.URL_MOD_INFO
+import com.github.mrbean355.admiralbulldog.common.URL_MOD_LAUNCH_OPTION
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
@@ -31,7 +32,6 @@ import com.github.mrbean355.admiralbulldog.ui.openScreen
 import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import javafx.beans.property.BooleanProperty
 import javafx.collections.ObservableList
-import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonType.CANCEL
 import javafx.scene.control.ButtonType.CLOSE
 import javafx.scene.control.ButtonType.NEXT
@@ -115,6 +115,14 @@ class DotaModsViewModel : AppViewModel() {
         }
     }
 
+    fun onEnableClicked() {
+        showInformation(getString("header_mod_launch_option"), getString("content_mod_launch_option"), MORE_INFO_BUTTON, CLOSE) {
+            if (it === MORE_INFO_BUTTON) {
+                hostServices.showDocument(URL_MOD_LAUNCH_OPTION)
+            }
+        }
+    }
+
     fun onAboutModdingClicked() {
         hostServices.showDocument(URL_MOD_INFO)
     }
@@ -125,12 +133,12 @@ class DotaModsViewModel : AppViewModel() {
         progressScreen.close()
         if (allSucceeded) {
             if (mods.isEmpty()) {
-                showInformation(getString("header_mods_uninstalled_succeeded"), getString("content_mods_uninstalled_succeeded"))
+                showInformation(getString("header_mods_remove_succeeded"), getString("content_mods_remove_succeeded"))
             } else {
                 showInformation(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
             }
         } else {
-            showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
+            showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, CANCEL) {
                 if (it === RETRY_BUTTON) {
                     downloadMods(mods)
                 }

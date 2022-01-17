@@ -23,7 +23,6 @@ import androidx.compose.ui.window.application
 import com.github.mrbean355.admiralbulldog.arch.repo.hostUrl
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.home.MainScreen
-import com.github.mrbean355.admiralbulldog.mods.OldModMigration
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.AppWindow
 import kotlin.system.exitProcess
@@ -35,7 +34,6 @@ fun main(args: Array<String>) {
     if (checkJavaVersion() && checkOperatingSystem()) {
         setCustomHostUrl(args)
         ConfigPersistence.initialise()
-        OldModMigration.run()
 
         application {
             AppWindow(

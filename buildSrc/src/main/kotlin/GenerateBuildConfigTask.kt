@@ -16,15 +16,24 @@
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 open class GenerateBuildConfigTask : DefaultTask() {
     @get:Input
     var platform: String = ""
 
+    @get:Input
+    val version: Any
+        get() = project.version
+
+    @get:OutputFile
+    val output: File
+        get() = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/BuildConfig.kt")
+
     @TaskAction
     fun run() {
-        val output = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/BuildConfig.kt")
         output.writeText(
             """
             /*
@@ -47,7 +56,7 @@ open class GenerateBuildConfigTask : DefaultTask() {
             
             import com.vdurmont.semver4j.Semver
             
-            val APP_VERSION: Semver = Semver("${project.version}")
+            val APP_VERSION: Semver = Semver("$version")
             
             const val DISTRIBUTION: String = "$platform"
             

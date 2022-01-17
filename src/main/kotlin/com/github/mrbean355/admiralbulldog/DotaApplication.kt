@@ -18,7 +18,6 @@ package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.common.BulldogIcon
 import com.github.mrbean355.admiralbulldog.exception.UncaughtExceptionHandlerImpl
-import com.github.mrbean355.admiralbulldog.mods.OldModMigration
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
@@ -32,7 +31,6 @@ class DotaApplication : App(icon = BulldogIcon(), stylesheet = arrayOf(AppStyles
     override fun init() {
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandlerImpl(hostServices))
         ConfigPersistence.initialise()
-        OldModMigration.run()
         reloadAppStyles()
     }
 

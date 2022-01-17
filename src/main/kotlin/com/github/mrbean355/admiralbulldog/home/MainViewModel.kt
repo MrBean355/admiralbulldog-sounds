@@ -24,6 +24,8 @@ import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
+import com.github.mrbean355.admiralbulldog.mods.OldModMigration
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -54,8 +56,11 @@ class MainViewModel(
         sendHeartbeats()
 
         ensureValidDotaPath()
+        OldModMigration.run()
+        if (!ConfigPersistence.isModRiskAccepted()) {
+            dotaModRepository.uninstallAllMods()
+        }
         ensureGsiInstalled()
-        dotaModRepository.ensureModsAreInstalled()
 
         checkForNewSounds()
         checkForAppUpdate()
