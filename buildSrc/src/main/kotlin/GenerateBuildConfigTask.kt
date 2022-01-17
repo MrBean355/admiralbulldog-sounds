@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Michael Johnston
+ * Copyright 2022 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ open class GenerateBuildConfigTask : DefaultTask() {
         output.writeText(
             """
             /*
-             * Copyright 2021 Michael Johnston
+             * Copyright 2022 Michael Johnston
              *
              * Licensed under the Apache License, Version 2.0 (the "License");
              * you may not use this file except in compliance with the License.
