@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -35,7 +34,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -47,7 +45,6 @@ import com.github.mrbean355.admiralbulldog.ui.AppDialog
 import com.github.mrbean355.admiralbulldog.ui.AppWindow
 
 @Composable
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun ViewSoundTriggersScreen(onCloseRequest: () -> Unit) = AppWindow(
     title = getString("title_toggle_sound_triggers"),
     size = DpSize(350.dp, Dp.Unspecified),

@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -53,7 +52,6 @@ import com.github.mrbean355.admiralbulldog.ui.HeaderWithInfoButton
 import com.github.mrbean355.admiralbulldog.ui.IntRangeSlider
 import com.github.mrbean355.admiralbulldog.ui.IntSlider
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ConfigureSoundTriggerScreen(triggerType: SoundTriggerType, onCloseRequest: () -> Unit) = AppWindow(
     title = triggerType.friendlyName,
@@ -154,7 +152,6 @@ private fun BountyRuneTimer(viewModel: ConfigureSoundTriggerViewModel) {
 }
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
 private fun Period(viewModel: ConfigureSoundTriggerViewModel) {
     if (viewModel.showPeriod) {
         val values by viewModel.period.collectAsState()
@@ -185,7 +182,6 @@ private fun Period(viewModel: ConfigureSoundTriggerViewModel) {
 }
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
 private fun PlaybackRate(viewModel: ConfigureSoundTriggerViewModel) {
     val values by viewModel.rate.collectAsState()
     var showInfo by remember { mutableStateOf(false) }
