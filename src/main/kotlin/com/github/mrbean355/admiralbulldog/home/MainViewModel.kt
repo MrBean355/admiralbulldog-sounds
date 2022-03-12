@@ -100,6 +100,7 @@ class MainViewModel : AppViewModel() {
         monitorGameStateUpdates {
             runLater {
                 hasHeardFromDota.set(true)
+                primaryStage.sizeToScene()
             }
         }
     }
