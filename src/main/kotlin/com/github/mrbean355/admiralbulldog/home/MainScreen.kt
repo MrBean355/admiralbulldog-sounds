@@ -16,14 +16,18 @@
 
 package com.github.mrbean355.admiralbulldog.home
 
+import com.github.mrbean355.admiralbulldog.common.MORE_INFO_BUTTON
 import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.SettingsIcon
+import com.github.mrbean355.admiralbulldog.common.URL_APP_INSTALLATION
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
 import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.geometry.Pos
 import javafx.geometry.Pos.CENTER
+import javafx.scene.control.ButtonType.CLOSE
 import javafx.scene.image.ImageView
 import tornadofx.View
 import tornadofx.action
@@ -50,6 +54,7 @@ class MainScreen : View(getString("title_app")) {
     private val viewModel by inject<MainViewModel>()
 
     override val root = stackpane {
+        prefWidth = 380.0
         vbox(spacing = PADDING_SMALL, alignment = CENTER) {
             paddingAll = PADDING_MEDIUM
             imageview(viewModel.image)
@@ -62,6 +67,17 @@ class MainScreen : View(getString("title_app")) {
                 managedWhen(visibleProperty())
             }
             label(viewModel.infoMessage)
+            hyperlink(getString("btn_not_working")) {
+                visibleWhen(viewModel.progressBarVisible)
+                managedWhen(visibleProperty())
+                action {
+                    showInformation(getString("header_gsi_launch_option"), getString("content_gsi_launch_option"), MORE_INFO_BUTTON, CLOSE) {
+                        if (it === MORE_INFO_BUTTON) {
+                            hostServices.showDocument(URL_APP_INSTALLATION)
+                        }
+                    }
+                }
+            }
             hbox(spacing = PADDING_SMALL, alignment = CENTER) {
                 paddingBottom = PADDING_SMALL
                 button(getString("btn_change_sounds")) {

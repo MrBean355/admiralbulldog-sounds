@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.mrbean355"
-version = "1.13.3"
+version = "1.13.4"
 
 repositories {
     mavenCentral()
@@ -28,7 +28,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.0")
     implementation("io.ktor:ktor-server-netty:1.6.7")
     implementation("io.ktor:ktor-gson:1.6.7")
-    implementation("org.slf4j:slf4j-simple:1.7.33")
+    implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
