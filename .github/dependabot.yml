@@ -12,7 +12,7 @@ updates:
     assignees:
       - MrBean355
   - package-ecosystem: gradle
-    directory: "/compose"
+    directory: "/buildSrc"
     schedule:
       interval: daily
       time: "03:00"
@@ -22,14 +22,3 @@ updates:
       - MrBean355
     assignees:
       - MrBean355
-  - package-ecosystem: gradle
-    directory: "/buildSrc"
-    schedule:
-      interval: daily
-      time: "03:00"
-    open-pull-requests-limit: 10
-  target-branch: develop
-  reviewers:
-  - MrBean355
-  assignees:
-  - MrBean355
