@@ -11,16 +11,6 @@ updates:
   - MrBean355
   assignees:
   - MrBean355
-  ignore:
-  - dependency-name: org.jetbrains.kotlinx:kotlinx-coroutines-javafx
-    versions:
-    - "> 1.4.3, < 1.5"
-  - dependency-name: jvm
-    versions:
-    - 1.4.32
-  - dependency-name: org.jetbrains.kotlinx:kotlinx-coroutines-javafx
-    versions:
-    - 1.4.2-native-mt
 - package-ecosystem: gradle
   directory: "/buildSrc"
   schedule:
@@ -32,7 +22,3 @@ updates:
   - MrBean355
   assignees:
   - MrBean355
-  ignore:
-  - dependency-name: jvm
-    versions:
-    - 1.4.32
