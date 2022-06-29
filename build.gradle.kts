@@ -31,7 +31,7 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.3")
     implementation("io.ktor:ktor-server-netty:2.0.2")
-    implementation("io.ktor:ktor-server-content-negotiation:2.0.2")
+    implementation("io.ktor:ktor-server-content-negotiation:2.0.3")
     implementation("io.ktor:ktor-serialization-gson:2.0.2")
     implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
