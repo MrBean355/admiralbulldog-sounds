@@ -108,6 +108,7 @@ fun MainScreen() {
         Screen.DotaMods -> TODO()
         Screen.AppVersion -> tryBrowseUrl(URL_SPECIFIC_RELEASE.format(APP_VERSION))
         Screen.AppSettings -> TODO()
+        null -> Unit
     }
 }
 
