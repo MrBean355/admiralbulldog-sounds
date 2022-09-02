@@ -29,7 +29,7 @@ const val URL_SPECIFIC_RELEASE = "$GITHUB/releases/v%s"
 const val URL_APP_INSTALLATION = "$GITHUB/wiki/Installation#first-time-run"
 const val URL_MOD_INFO = "$GITHUB/wiki/Dota-Mod"
 const val URL_MOD_LAUNCH_OPTION = "$GITHUB/wiki/Dota-Mod:-Launch-Option"
-const val URL_DISCORD_BOT_INVITE = "https://discordapp.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot&permissions=1"
+const val URL_DISCORD_BOT_INVITE = "https://discord.com/api/oauth2/authorize?client_id=602822492695953491&scope=bot%20applications.commands"
 const val URL_DISCORD_WIKI = "$GITHUB/wiki/Discord-Bot"
 const val URL_PAYPAL = "https://paypal.me/mrbean355"
 
