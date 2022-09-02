@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Michael Johnston
+ * Copyright 2022 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
 import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
+import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI_COMMANDS
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
 import com.github.mrbean355.admiralbulldog.styles.AppStyles
@@ -115,7 +116,7 @@ class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
     }
 
     private fun onBotCommandsClicked() {
-        find<DiscordBotCommandsScreen>().openModal(resizable = false)
+        hostServices.showDocument(URL_DISCORD_WIKI_COMMANDS)
     }
 
     private fun onHelpClicked() {

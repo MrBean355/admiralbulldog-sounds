@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Michael Johnston
+ * Copyright 2022 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,17 +49,20 @@ object GameStateIntegration {
             {
                 "uri"           "http://localhost:${ConfigPersistence.getPort()}"
                 "timeout"       "5.0"
-                "buffer"        "0.1"
-                "throttle"      "0.1"
+                "buffer"        "0.5"
+                "throttle"      "0.5"
                 "heartbeat"     "30.0"
                 "data"
                 {
-                    "provider"      "1"
+                    "provider"      "0"
                     "map"           "1"
                     "player"        "1"
                     "hero"          "1"
-                    "abilities"     "1"
+                    "abilities"     "0"
                     "items"         "1"
+                    "buildings"     "0"
+                    "draft"         "0"
+                    "wearables"     "0"
                 }
             }
             """.trimIndent()

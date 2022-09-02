@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.7.10"
 }
 
 group = "com.github.mrbean355"
-version = "1.13.4"
+version = "1.13.5"
 
 repositories {
     mavenCentral()
@@ -25,9 +25,10 @@ val fxVersion = "15.0.1"
 val currentPlatform = (findProperty("platform") as? String) ?: "win"
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.0")
-    implementation("io.ktor:ktor-server-netty:1.6.7")
-    implementation("io.ktor:ktor-gson:1.6.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
+    implementation("io.ktor:ktor-server-netty:2.1.0")
+    implementation("io.ktor:ktor-server-content-negotiation:2.1.0")
+    implementation("io.ktor:ktor-serialization-gson:2.1.0")
     implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
