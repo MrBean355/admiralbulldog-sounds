@@ -16,16 +16,8 @@
 
 package com.github.mrbean355.admiralbulldog
 
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.application
 import com.github.mrbean355.admiralbulldog.arch.repo.hostUrl
-import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.home.MainScreen
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.ui.AppWindow
-import kotlin.system.exitProcess
+import tornadofx.launch
 
 /** Program argument to point to a custom host. Points to prod if omitted. */
 private const val ARG_HOST_URL = "--host-url"
@@ -33,18 +25,7 @@ private const val ARG_HOST_URL = "--host-url"
 fun main(args: Array<String>) {
     if (checkJavaVersion() && checkOperatingSystem()) {
         setCustomHostUrl(args)
-        ConfigPersistence.initialise()
-
-        application {
-            AppWindow(
-                title = getString("title_app"),
-                size = DpSize(500.dp, Dp.Unspecified),
-                escapeClosesWindow = false,
-                onCloseRequest = { exitProcess(0) }
-            ) {
-                MainScreen()
-            }
-        }
+        launch<DotaApplication>()
     }
 }
 

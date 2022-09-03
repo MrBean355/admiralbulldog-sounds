@@ -32,7 +32,7 @@ import javax.swing.JOptionPane.showMessageDialog
 import javax.swing.JOptionPane.showOptionDialog
 
 /** Minimum Java major version supported by the app. */
-private const val MIN_JAVA_VERSION = 11
+private const val MIN_JAVA_VERSION = 8
 
 /**
  * Check whether the Java runtime is at least [MIN_JAVA_VERSION].
@@ -95,7 +95,7 @@ private fun getJavaMajorVersion(): Int {
     }
 }
 
-fun tryBrowseUrl(url: String) {
+private fun tryBrowseUrl(url: String) {
     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
         Desktop.getDesktop().browse(URI(url))
     } else {

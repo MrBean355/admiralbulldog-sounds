@@ -19,6 +19,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.util.Calendar
 
 open class GenerateBuildConfigTask : DefaultTask() {
     @get:Input
@@ -37,7 +38,7 @@ open class GenerateBuildConfigTask : DefaultTask() {
         output.writeText(
             """
             /*
-             * Copyright 2022 Michael Johnston
+             * Copyright ${Calendar.getInstance().get(Calendar.YEAR)} Michael Johnston
              *
              * Licensed under the Apache License, Version 2.0 (the "License");
              * you may not use this file except in compliance with the License.

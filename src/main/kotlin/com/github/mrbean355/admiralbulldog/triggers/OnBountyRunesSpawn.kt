@@ -26,8 +26,6 @@ private const val HOW_OFTEN = 3 * 60L
 
 /** Plays a sound shortly before the bounty runes spawn. */
 class OnBountyRunesSpawn : SoundTrigger {
-    /** Play a sound this many seconds before the bounty runes spawn. */
-    private val warningPeriod get() = ConfigPersistence.getBountyRuneTimer().toLong()
     private var nextPlayTime = UNINITIALISED
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
@@ -37,12 +35,13 @@ class OnBountyRunesSpawn : SoundTrigger {
             return false
         }
         val currentTime = current.map.clock_time
+        val warningPeriod = ConfigPersistence.getBountyRuneTimer().toLong()
         if (nextPlayTime == UNINITIALISED) {
-            nextPlayTime = findNextPlayTime(currentTime)
+            nextPlayTime = findNextPlayTime(currentTime, warningPeriod)
         }
         if (currentTime >= nextPlayTime) {
             val diff = currentTime - nextPlayTime
-            nextPlayTime = findNextPlayTime(currentTime + 10)
+            nextPlayTime = findNextPlayTime(currentTime + 10, warningPeriod)
             if (diff <= warningPeriod) {
                 return true
             }
@@ -50,7 +49,7 @@ class OnBountyRunesSpawn : SoundTrigger {
         return false
     }
 
-    private fun findNextPlayTime(clockTime: Long): Long {
+    private fun findNextPlayTime(clockTime: Long, warningPeriod: Long): Long {
         val iteration = ceil((clockTime + warningPeriod) / HOW_OFTEN.toFloat()).toInt()
         val nextPlayTime = iteration * HOW_OFTEN - warningPeriod
         return nextPlayTime.coerceAtLeast(-warningPeriod)

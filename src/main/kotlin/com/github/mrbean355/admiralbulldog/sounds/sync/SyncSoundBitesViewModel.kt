@@ -29,7 +29,6 @@ import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.scene.control.ButtonType
 import javafx.scene.control.TreeItem
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import tornadofx.FXEvent
 import tornadofx.booleanProperty

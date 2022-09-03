@@ -50,7 +50,7 @@ fun String.removeVersionPrefix(): String {
 }
 
 fun getDistributionName(): String {
-    return DISTRIBUTION.replaceFirstChar { it.uppercaseChar() }.let {
+    return DISTRIBUTION.replaceFirstChar(Char::uppercaseChar).let {
         if (it == "Win") "Windows" else it
     }
 }

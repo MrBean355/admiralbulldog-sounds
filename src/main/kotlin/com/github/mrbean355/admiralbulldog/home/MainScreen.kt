@@ -16,106 +16,101 @@
 
 package com.github.mrbean355.admiralbulldog.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
+import com.github.mrbean355.admiralbulldog.common.MORE_INFO_BUTTON
+import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
+import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import com.github.mrbean355.admiralbulldog.common.SettingsIcon
+import com.github.mrbean355.admiralbulldog.common.URL_APP_INSTALLATION
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
-import com.github.mrbean355.admiralbulldog.tryBrowseUrl
-import com.github.mrbean355.admiralbulldog.ui.Hyperlink
+import com.github.mrbean355.admiralbulldog.common.showInformation
+import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
+import com.github.mrbean355.admiralbulldog.styles.AppStyles
+import javafx.geometry.Pos
+import javafx.geometry.Pos.CENTER
+import javafx.scene.control.ButtonType.CLOSE
+import javafx.scene.image.ImageView
+import tornadofx.View
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.button
+import tornadofx.fitToParentWidth
+import tornadofx.hbox
+import tornadofx.hyperlink
+import tornadofx.imageview
+import tornadofx.insets
+import tornadofx.label
+import tornadofx.managedWhen
+import tornadofx.paddingAll
+import tornadofx.paddingBottom
+import tornadofx.progressbar
+import tornadofx.stackpane
+import tornadofx.stackpaneConstraints
+import tornadofx.tooltip
+import tornadofx.vbox
+import tornadofx.visibleWhen
+import tornadofx.whenUndocked
 
-@Composable
-fun MainScreen() {
-    val scope = rememberCoroutineScope()
-    val viewModel = remember { MainViewModel(scope) }
+class MainScreen : View(getString("title_app")) {
+    private val viewModel by inject<MainViewModel>()
 
-    val heading by viewModel.heading.collectAsState("")
-    val isLoading by viewModel.progressBarVisible.collectAsState(true)
-    val infoMessage by viewModel.infoMessage.collectAsState("")
-
-    var openScreen by remember { mutableStateOf<Screen?>(null) }
-
-    Box {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp)
-                .align(Alignment.Center)
-        ) {
-            Text(
-                text = heading,
-                fontSize = 22.sp
-            )
-            if (isLoading) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    override val root = stackpane {
+        prefWidth = 380.0
+        vbox(spacing = PADDING_SMALL, alignment = CENTER) {
+            paddingAll = PADDING_MEDIUM
+            imageview(viewModel.image)
+            label(viewModel.heading) {
+                addClass(AppStyles.largeFont)
             }
-            Text(
-                text = infoMessage,
-                fontSize = 14.sp,
-                fontStyle = FontStyle.Italic
-            )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Button(onClick = { openScreen = Screen.ChangeSounds }) {
-                    Text(text = getString("btn_change_sounds"))
-                }
-                Button(onClick = { openScreen = Screen.DiscordBot }) {
-                    Text(text = getString("btn_discord_bot"))
-                }
-                Button(onClick = { openScreen = Screen.DotaMods }) {
-                    Text(text = getString("btn_dota_mods"))
+            progressbar {
+                fitToParentWidth()
+                visibleWhen(viewModel.progressBarVisible)
+                managedWhen(visibleProperty())
+            }
+            label(viewModel.infoMessage)
+            hyperlink(getString("btn_not_working")) {
+                visibleWhen(viewModel.progressBarVisible)
+                managedWhen(visibleProperty())
+                action {
+                    showInformation(getString("header_gsi_launch_option"), getString("content_gsi_launch_option"), MORE_INFO_BUTTON, CLOSE) {
+                        if (it === MORE_INFO_BUTTON) {
+                            hostServices.showDocument(URL_APP_INSTALLATION)
+                        }
+                    }
                 }
             }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Hyperlink(
-                    text = viewModel.version,
-                    onClick = { openScreen = Screen.AppVersion }
-                )
-                Text(text = "|")
-                Hyperlink(
-                    text = getString("lbl_app_settings"),
-                    onClick = { openScreen = Screen.AppSettings }
-                )
+            hbox(spacing = PADDING_SMALL, alignment = CENTER) {
+                paddingBottom = PADDING_SMALL
+                button(getString("btn_change_sounds")) {
+                    action { viewModel.onChangeSoundsClicked() }
+                }
+                button(getString("btn_discord_bot")) {
+                    action { viewModel.onDiscordBotClicked() }
+                }
+                button(getString("btn_dota_mods")) {
+                    action { viewModel.onDotaModClicked() }
+                }
+            }
+            hyperlink(viewModel.version) {
+                addClass(AppStyles.smallFont, AppStyles.boldFont)
+                action { viewModel.onVersionClicked() }
+            }
+        }
+        button(graphic = ImageView(SettingsIcon())) {
+            tooltip(getString("tooltip_settings"))
+            action {
+                find<SettingsScreen>().openModal(resizable = false)
+            }
+            stackpaneConstraints {
+                alignment = Pos.BOTTOM_RIGHT
+                margin = insets(PADDING_SMALL)
             }
         }
     }
-    when (openScreen) {
-        Screen.ChangeSounds -> ViewSoundTriggersScreen(onCloseRequest = { openScreen = null })
-        Screen.DiscordBot -> TODO()
-        Screen.DotaMods -> TODO()
-        Screen.AppVersion -> tryBrowseUrl(URL_SPECIFIC_RELEASE.format(APP_VERSION))
-        Screen.AppSettings -> TODO()
-        null -> Unit
-    }
-}
 
-private enum class Screen {
-    ChangeSounds,
-    DiscordBot,
-    DotaMods,
-    AppVersion,
-    AppSettings
+    init {
+        currentStage?.isResizable = false
+        whenUndocked {
+            viewModel.onUndock()
+        }
+    }
 }

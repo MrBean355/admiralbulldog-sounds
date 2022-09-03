@@ -54,6 +54,6 @@ class From1To2MigrationTest {
     }
 
     private fun String.isLowerCase(): Boolean {
-        return this == lowercase()
+        return none(Char::isUpperCase)
     }
 }

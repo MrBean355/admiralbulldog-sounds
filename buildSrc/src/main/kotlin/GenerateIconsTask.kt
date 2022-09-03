@@ -19,6 +19,7 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.util.Calendar
 
 open class GenerateIconsTask : DefaultTask() {
 
@@ -43,7 +44,7 @@ open class GenerateIconsTask : DefaultTask() {
         output.writeText(
             """
             /*
-             * Copyright 2022 Michael Johnston
+             * Copyright ${Calendar.getInstance().get(Calendar.YEAR)} Michael Johnston
              *
              * Licensed under the Apache License, Version 2.0 (the "License");
              * you may not use this file except in compliance with the License.
@@ -75,13 +76,13 @@ open class GenerateIconsTask : DefaultTask() {
     }
 
     private fun transform(fileName: String): String = buildString {
-        val name = fileName.substringBefore('.').capitalize() + "Icon"
+        val name = fileName.substringBefore('.').replaceFirstChar(Char::uppercase) + "Icon"
         var i = 0
         var upper = false
         while (i < name.length) {
             if (upper) {
                 upper = false
-                append(name[i].toUpperCase())
+                append(name[i].uppercase())
             } else if (name[i] == '_') {
                 upper = true
             } else {

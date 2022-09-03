@@ -1,34 +1,30 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    application
     kotlin("jvm") version "1.7.10"
-    id("org.jetbrains.compose") version "1.2.0-alpha01-dev774"
 }
 
 group = "com.github.mrbean355"
-version = "2.0.0-SNAPSHOT"
+version = "1.14.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    google()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_15
-    targetCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 val fxVersion = "15.0.1"
 val currentPlatform = (findProperty("platform") as? String) ?: "win"
 
 dependencies {
-    implementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
     implementation("io.ktor:ktor-server-netty:2.1.0")
     implementation("io.ktor:ktor-server-content-negotiation:2.1.0")
@@ -45,15 +41,7 @@ dependencies {
     implementation("org.openjfx:javafx-graphics:$fxVersion:$currentPlatform")
     implementation("org.openjfx:javafx-media:$fxVersion:$currentPlatform")
 
-    implementation(compose.desktop.currentOs)
-
     testImplementation("junit:junit:4.13.2")
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.github.mrbean355.admiralbulldog.MainKt"
-    }
 }
 
 tasks.withType<Jar> {
