@@ -28,7 +28,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
     implementation("io.ktor:ktor-server-netty:2.1.1")
     implementation("io.ktor:ktor-server-content-negotiation:2.1.2")
-    implementation("io.ktor:ktor-serialization-gson:2.1.1")
+    implementation("io.ktor:ktor-serialization-gson:2.1.2")
     implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
