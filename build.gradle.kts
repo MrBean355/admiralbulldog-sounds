@@ -29,7 +29,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:2.2.4")
     implementation("io.ktor:ktor-server-content-negotiation:2.2.4")
     implementation("io.ktor:ktor-serialization-gson:2.2.4")
-    implementation("org.slf4j:slf4j-simple:1.7.36")
+    implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
