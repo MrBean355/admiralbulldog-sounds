@@ -33,7 +33,7 @@ object GameStateIntegration {
     fun isInstalled(): Boolean = getGsiFile().exists()
 
     /**
-     * Creates the Game State Integration file if it doesn't exists.
+     * Creates the Game State Integration file if it doesn't exist.
      * If it exists, updates its content.
      *
      * @throws IllegalStateException if the GSI file couldn't be created.
@@ -49,7 +49,7 @@ object GameStateIntegration {
             {
                 "uri"           "http://localhost:${ConfigPersistence.getPort()}"
                 "timeout"       "5.0"
-                "buffer"        "0.5"
+                "buffer"        "0.0"
                 "throttle"      "0.5"
                 "heartbeat"     "30.0"
                 "data"
