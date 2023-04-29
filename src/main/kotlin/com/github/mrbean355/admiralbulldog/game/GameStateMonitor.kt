@@ -41,14 +41,16 @@ fun monitorGameStateUpdates(onNewGameState: () -> Unit) {
         }
         .setPlayingListener { state ->
             val map = state.map
-            if (map != null) {
-                processGameState(GameState(map, state.player, state.hero, state.items))
+            val events = state.events
+            if (map != null && events != null) {
+                processGameState(GameState(map, state.player, state.hero, state.items, events))
             }
         }
         .setSpectatingListener { state ->
             val map = state.map
-            if (map != null) {
-                processGameState(GameState(map, null, null, null))
+            val events = state.events
+            if (map != null && events != null) {
+                processGameState(GameState(map, null, null, null, events))
             }
         }
         .setErrorHandler { t, _ ->
@@ -67,11 +69,12 @@ private fun processGameState(currentState: GameState) = synchronized(soundTrigge
         previousState = null
         soundTriggers.clear()
         soundTriggers.addAll(SOUND_TRIGGER_TYPES.map { it.createInstance() })
+        Roshan.reset()
     }
 
     // Play sound bites that want to be played:
     val localPreviousState = previousState
-    if (localPreviousState != null && !currentState.map.isPaused) {
+    if (localPreviousState != null && (!localPreviousState.map.isPaused || !currentState.map.isPaused)) {
         soundTriggers
             .filter { ConfigPersistence.isSoundTriggerEnabled(it::class) }
             .filter { it.shouldPlay(localPreviousState, currentState) }

@@ -16,42 +16,11 @@
 
 package com.github.mrbean355.admiralbulldog.triggers
 
-import com.github.mrbean355.admiralbulldog.game.GameState
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.dota2.map.MatchState
-import kotlin.math.ceil
-
-/** How often (in seconds) the runes spawn. */
-private const val HOW_OFTEN = 3 * 60
 
 /** Plays a sound shortly before the bounty runes spawn. */
-class OnBountyRunesSpawn : SoundTrigger {
-    private var nextPlayTime = UNINITIALISED
-
-    override fun shouldPlay(previous: GameState, current: GameState): Boolean {
-        val gameState = current.map.matchState
-        if (gameState != MatchState.PreGame && gameState != MatchState.GameInProgress) {
-            // Don't play during the picking phase.
-            return false
-        }
-        val currentTime = current.map.clockTime
-        val warningPeriod = ConfigPersistence.getBountyRuneTimer()
-        if (nextPlayTime == UNINITIALISED) {
-            nextPlayTime = findNextPlayTime(currentTime, warningPeriod)
-        }
-        if (currentTime >= nextPlayTime) {
-            val diff = currentTime - nextPlayTime
-            nextPlayTime = findNextPlayTime(currentTime + 10, warningPeriod)
-            if (diff <= warningPeriod) {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun findNextPlayTime(clockTime: Int, warningPeriod: Int): Int {
-        val iteration = ceil((clockTime + warningPeriod) / HOW_OFTEN.toFloat()).toInt()
-        val nextPlayTime = iteration * HOW_OFTEN - warningPeriod
-        return nextPlayTime.coerceAtLeast(-warningPeriod)
-    }
-}
+class OnBountyRunesSpawn : RunesSpawnTrigger(
+    frequencyMinutes = 3,
+    spawnsAtStart = true,
+    provideWarningPeriod = { ConfigPersistence.getBountyRuneTimer() },
+)

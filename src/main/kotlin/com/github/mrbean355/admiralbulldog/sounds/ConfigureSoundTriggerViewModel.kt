@@ -20,6 +20,7 @@ import com.github.mrbean355.admiralbulldog.arch.AppViewModel
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnBountyRunesSpawn
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
+import com.github.mrbean355.admiralbulldog.triggers.OnWisdomRunesSpawn
 import com.github.mrbean355.admiralbulldog.triggers.Periodically
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import javafx.beans.binding.BooleanBinding
@@ -40,6 +41,8 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
     val enabled: BooleanProperty = booleanProperty(ConfigPersistence.isSoundTriggerEnabled(type))
     val bountyRuneTimer: IntegerProperty = intProperty(ConfigPersistence.getBountyRuneTimer())
     val showBountyRuneTimer: BooleanProperty = booleanProperty(type == OnBountyRunesSpawn::class)
+    val wisdomRuneTimer: IntegerProperty = intProperty(ConfigPersistence.getWisdomRuneTimer())
+    val showWisdomRuneTimer: BooleanProperty = booleanProperty(type == OnWisdomRunesSpawn::class)
     val soundBiteCount = stringProperty(ConfigPersistence.getSoundsForType(type).size.toString())
 
     /* Chance to play */
@@ -61,6 +64,7 @@ class ConfigureSoundTriggerViewModel : AppViewModel() {
     init {
         enabled.onChange { ConfigPersistence.toggleSoundTrigger(type, it) }
         bountyRuneTimer.onChange { ConfigPersistence.setBountyRuneTimer(it) }
+        wisdomRuneTimer.onChange { ConfigPersistence.setWisdomRuneTimer(it) }
         useSmartChance.onChange { ConfigPersistence.setIsUsingHealSmartChance(it) }
         chance.onChange { ConfigPersistence.setSoundTriggerChance(type, it) }
         minPeriod.onChange {

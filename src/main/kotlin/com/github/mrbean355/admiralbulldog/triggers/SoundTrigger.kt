@@ -21,6 +21,7 @@ import kotlin.reflect.KClass
 
 val SOUND_TRIGGER_TYPES: Set<SoundTriggerType> = setOf(
     OnBountyRunesSpawn::class,
+    OnWisdomRunesSpawn::class,
     OnKill::class,
     OnDeath::class,
     OnRespawn::class,
@@ -28,14 +29,18 @@ val SOUND_TRIGGER_TYPES: Set<SoundTriggerType> = setOf(
     OnSmoked::class,
     OnMidasReady::class,
     OnMatchStart::class,
+    OnPause::class,
     OnVictory::class,
     OnDefeat::class,
-    Periodically::class
+    Periodically::class,
+    RoshanTimer::class,
 )
 
 typealias SoundTriggerType = KClass<out SoundTrigger>
 
 interface SoundTrigger {
-    /** Examine the states and decide if a should should be played. */
+
+    /** Examine the states and decide if a sound should be played. */
     fun shouldPlay(previous: GameState, current: GameState): Boolean
+
 }

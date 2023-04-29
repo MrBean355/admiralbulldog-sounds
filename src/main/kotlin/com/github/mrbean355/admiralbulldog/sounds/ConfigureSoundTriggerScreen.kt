@@ -61,12 +61,20 @@ class ConfigureSoundTriggerScreen : Fragment() {
             field(getString("label_enable_sound_trigger")) {
                 checkbox(property = viewModel.enabled)
             }
-            field(getString("label_bounty_rune_timer")) {
+            field(getString("label_rune_timer")) {
                 visibleWhen(viewModel.showBountyRuneTimer)
                 managedWhen(visibleProperty())
                 bountyRuneSpinner(viewModel.bountyRuneTimer)
                 button(graphic = ImageView(HelpIcon())) {
-                    action { showInformation(getString("header_about_bounty_rune_timer"), getString("content_about_bounty_rune_timer")) }
+                    action { showInformation(getString("header_about_rune_timer"), getString("content_about_rune_timer")) }
+                }
+            }
+            field(getString("label_rune_timer")) {
+                visibleWhen(viewModel.showWisdomRuneTimer)
+                managedWhen(visibleProperty())
+                bountyRuneSpinner(viewModel.wisdomRuneTimer)
+                button(graphic = ImageView(HelpIcon())) {
+                    action { showInformation(getString("header_about_rune_timer"), getString("content_about_rune_timer")) }
                 }
             }
         }

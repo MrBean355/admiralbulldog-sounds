@@ -63,6 +63,7 @@ object GameStateIntegration {
                     "buildings"     "0"
                     "draft"         "0"
                     "wearables"     "0"
+                    "events"        "1"
                 }
             }
             """.trimIndent()

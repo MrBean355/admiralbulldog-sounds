@@ -87,6 +87,7 @@ class ConfigMigration {
         From0To1Migration(),
         From1To2Migration(),
         From2To3Migration(),
+        From3To4Migration(),
     )
 }
 

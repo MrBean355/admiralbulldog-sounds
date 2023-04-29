@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package com.github.mrbean355.admiralbulldog.game
+package com.github.mrbean355.admiralbulldog.triggers
 
-import com.github.mrbean355.dota2.event.DotaEvent
-import com.github.mrbean355.dota2.hero.Hero
-import com.github.mrbean355.dota2.item.Items
-import com.github.mrbean355.dota2.map.DotaMap
-import com.github.mrbean355.dota2.player.Player
+import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 
-class GameState(
-    val map: DotaMap,
-    val player: Player?,
-    val hero: Hero?,
-    val items: Items?,
-    val events: List<DotaEvent>,
+/** Plays a sound shortly before the wisdom runes spawn. */
+class OnWisdomRunesSpawn : RunesSpawnTrigger(
+    frequencyMinutes = 7,
+    spawnsAtStart = false,
+    provideWarningPeriod = { ConfigPersistence.getWisdomRuneTimer() },
 )
