@@ -54,7 +54,7 @@ class MainScreen : View(getString("title_app")) {
     private val viewModel by inject<MainViewModel>()
 
     override val root = stackpane {
-        prefWidth = 380.0
+        prefWidth = 400.0
         vbox(spacing = PADDING_SMALL, alignment = CENTER) {
             paddingAll = PADDING_MEDIUM
             imageview(viewModel.image)
@@ -88,6 +88,9 @@ class MainScreen : View(getString("title_app")) {
                 }
                 button(getString("btn_dota_mods")) {
                     action { viewModel.onDotaModClicked() }
+                }
+                button(getString("btn_roshan_timer")) {
+                    action { viewModel.onRoshanTimerClicked() }
                 }
             }
             hyperlink(viewModel.version) {
