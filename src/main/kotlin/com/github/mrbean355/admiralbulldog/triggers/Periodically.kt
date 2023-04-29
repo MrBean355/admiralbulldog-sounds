@@ -25,8 +25,8 @@ class Periodically : SoundTrigger {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (nextPlayClockTime == UNINITIALISED) {
-            nextPlayClockTime = current.map!!.clock_time + randomiseDelay()
-        } else if (current.map!!.clock_time >= nextPlayClockTime) {
+            nextPlayClockTime = current.map.clockTime + randomiseDelay()
+        } else if (current.map.clockTime >= nextPlayClockTime) {
             nextPlayClockTime += randomiseDelay()
             return true
         }
@@ -34,7 +34,7 @@ class Periodically : SoundTrigger {
     }
 
     private fun randomiseDelay(): Int {
-        // Cast to double so we can randomise a non-whole amount of minutes.
+        // Cast to double so that we can randomise a non-whole amount of minutes.
         val minQuietTime = ConfigPersistence.getMinPeriod().toDouble()
         val maxQuietTime = ConfigPersistence.getMaxPeriod().toDouble()
         return if (minQuietTime != maxQuietTime) {

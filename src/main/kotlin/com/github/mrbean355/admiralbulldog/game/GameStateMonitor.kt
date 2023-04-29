@@ -21,21 +21,10 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTrigger
-import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.serialization.gson.gson
-import io.ktor.server.application.call
-import io.ktor.server.application.install
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.request.receive
-import io.ktor.server.response.respond
-import io.ktor.server.routing.post
-import io.ktor.server.routing.routing
+import com.github.mrbean355.dota2.server.GameStateServer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import kotlin.concurrent.thread
 import kotlin.random.Random
 import kotlin.reflect.full.createInstance
 
@@ -45,32 +34,33 @@ private val soundTriggers = mutableListOf<SoundTrigger>()
 private var previousState: GameState? = null
 
 /** Receives game state updates from Dota 2. */
-fun monitorGameStateUpdates(onNewGameState: (GameState) -> Unit) {
-    thread(isDaemon = true) {
-        embeddedServer(Netty, ConfigPersistence.getPort()) {
-            install(ContentNegotiation) {
-                gson()
+fun monitorGameStateUpdates(onNewGameState: () -> Unit) {
+    GameStateServer(ConfigPersistence.getPort())
+        .setGenericListener {
+            onNewGameState()
+        }
+        .setPlayingListener { state ->
+            val map = state.map
+            if (map != null) {
+                processGameState(GameState(map, state.player, state.hero, state.items))
             }
-            routing {
-                post {
-                    try {
-                        val gameState = call.receive<GameState>()
-                        processGameState(gameState)
-                        onNewGameState(gameState)
-                    } catch (t: Throwable) {
-                        logger.error("Exception during game state update", t)
-                    }
-                    call.respond(OK)
-                }
+        }
+        .setSpectatingListener { state ->
+            val map = state.map
+            if (map != null) {
+                processGameState(GameState(map, null, null, null))
             }
-        }.start(wait = true)
-    }
+        }
+        .setErrorHandler { t, _ ->
+            logger.error("Exception during game state update", t)
+        }
+        .startAsync()
 }
 
 /** Play sound bites that want to be played. */
 private fun processGameState(currentState: GameState) = synchronized(soundTriggers) {
-    val previousMatchId = previousState?.map?.matchid
-    val currentMatchId = currentState.map?.matchid
+    val previousMatchId = previousState?.map?.matchId
+    val currentMatchId = currentState.map.matchId
 
     // Recreate sound bites when a new match is entered:
     if (currentMatchId != previousMatchId) {
@@ -81,7 +71,7 @@ private fun processGameState(currentState: GameState) = synchronized(soundTrigge
 
     // Play sound bites that want to be played:
     val localPreviousState = previousState
-    if (localPreviousState != null && localPreviousState.hasValidProperties() && currentState.hasValidProperties() && currentState.map?.paused == false) {
+    if (localPreviousState != null && !currentState.map.isPaused) {
         soundTriggers
             .filter { ConfigPersistence.isSoundTriggerEnabled(it::class) }
             .filter { it.shouldPlay(localPreviousState, currentState) }

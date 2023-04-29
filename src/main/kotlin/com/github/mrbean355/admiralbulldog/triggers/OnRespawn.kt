@@ -21,6 +21,9 @@ import com.github.mrbean355.admiralbulldog.game.GameState
 class OnRespawn : SoundTrigger {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
-        return previous.hero!!.respawn_seconds > 0 && current.hero!!.respawn_seconds == 0
+        previous.hero ?: return false
+        current.hero ?: return false
+
+        return !previous.hero.isAlive && current.hero.isAlive
     }
 }

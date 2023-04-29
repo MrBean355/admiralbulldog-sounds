@@ -35,22 +35,31 @@ private const val MAX_HEAL = 400
 class OnHeal : SoundTrigger {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
-        if (previous.hero!!.health <= 0F) {
+        previous.hero ?: return false
+        current.hero ?: return false
+
+        if (!previous.hero.isAlive && current.hero.isAlive) {
             // We get healed on respawn; ignore.
             return false
         }
-        if (current.hero!!.max_health != previous.hero.max_health) {
+
+        if (current.hero.maxHealth != previous.hero.maxHealth) {
             // Ignore heals caused by increasing max HP.
             return false
         }
-        if (current.hero.health_percent - previous.hero.health_percent < MIN_HP_PERCENTAGE) {
+
+        if (current.hero.healthPercent - previous.hero.healthPercent < MIN_HP_PERCENTAGE) {
             // Small heal; ignore.
             return false
         }
+
         return true
     }
 
     fun doesSmartChanceProc(previous: GameState, current: GameState): Boolean {
-        return Random.nextFloat() <= (current.hero!!.health - previous.hero!!.health) / MAX_HEAL
+        previous.hero ?: return false
+        current.hero ?: return false
+
+        return Random.nextFloat() <= (current.hero.health - previous.hero.health) / MAX_HEAL.toFloat()
     }
 }
