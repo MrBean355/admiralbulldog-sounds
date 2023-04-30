@@ -41,16 +41,27 @@ class RoshanTimerScreen : Fragment(getString("header_roshan_timer")) {
         prefWidth = WINDOW_WIDTH
         paddingAll = PADDING_MEDIUM
 
-        label(viewModel.deathTime)
-        label(viewModel.aegisExpiryTime)
-        label(viewModel.respawnTime)
+        label(viewModel.deathTime) {
+            addClass(AppStyles.mediumFont)
+        }
+        label(viewModel.aegisExpiryTime) {
+            addClass(AppStyles.mediumFont)
+        }
+        label(viewModel.respawnTime) {
+            addClass(AppStyles.mediumFont)
+        }
 
         label(getString("label_roshan_timer_turbo")) {
             paddingTop = PADDING_SMALL
+            addClass(AppStyles.mediumFont)
             addClass(AppStyles.boldFont)
         }
-        label(viewModel.aegisExpiryTimeTurbo)
-        label(viewModel.respawnTimeTurbo)
+        label(viewModel.aegisExpiryTimeTurbo) {
+            addClass(AppStyles.mediumFont)
+        }
+        label(viewModel.respawnTimeTurbo) {
+            addClass(AppStyles.mediumFont)
+        }
 
         buttonbar {
             button(getString("btn_help"), type = HELP) {
