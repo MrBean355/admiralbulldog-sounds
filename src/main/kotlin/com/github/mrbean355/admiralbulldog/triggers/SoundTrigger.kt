@@ -28,12 +28,12 @@ val SOUND_TRIGGER_TYPES: Set<SoundTriggerType> = setOf(
     OnHeal::class,
     OnSmoked::class,
     OnMidasReady::class,
-    OnMatchStart::class,
+    RoshanTimer::class,
     OnPause::class,
+    OnMatchStart::class,
     OnVictory::class,
     OnDefeat::class,
     Periodically::class,
-    RoshanTimer::class,
 )
 
 typealias SoundTriggerType = KClass<out SoundTrigger>
