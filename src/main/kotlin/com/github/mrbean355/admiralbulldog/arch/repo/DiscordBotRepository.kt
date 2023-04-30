@@ -108,7 +108,7 @@ class DiscordBotRepository {
             DiscordBotService.INSTANCE.sendFeedback(FeedbackRequest(loadUserId(), rating, comments))
                 .toServiceResponse()
         } catch (t: Throwable) {
-            logger.error("Failed to log analytics event", t)
+            logger.error("Failed to send feedback", t)
             ServiceResponse.Exception()
         }
     }
