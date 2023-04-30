@@ -22,6 +22,7 @@ import com.github.mrbean355.admiralbulldog.common.showInformation
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import tornadofx.stringProperty
+import kotlin.math.absoluteValue
 
 class RoshanTimerViewModel : AppViewModel() {
 
@@ -51,11 +52,16 @@ class RoshanTimerViewModel : AppViewModel() {
         this ?: return "?"
 
         val time = plus(offset)
-        val minutes = time / 60
-        val seconds = time - minutes * 60
+        val minutes = time.absoluteValue / 60
+        val seconds = time.absoluteValue - minutes * 60
 
         return buildString {
-            append(minutes).append(':').append(seconds.toString().padStart(2, '0'))
+            if (time < 0) {
+                append('-')
+            }
+            append(minutes)
+                .append(':')
+                .append(seconds.toString().padStart(2, '0'))
         }
     }
 }
