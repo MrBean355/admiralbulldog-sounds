@@ -41,7 +41,7 @@ import tornadofx.insets
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.paddingAll
-import tornadofx.paddingBottom
+import tornadofx.paddingVertical
 import tornadofx.progressbar
 import tornadofx.stackpane
 import tornadofx.stackpaneConstraints
@@ -79,7 +79,7 @@ class MainScreen : View(getString("title_app")) {
                 }
             }
             hbox(spacing = PADDING_SMALL, alignment = CENTER) {
-                paddingBottom = PADDING_SMALL
+                paddingVertical = PADDING_MEDIUM
                 button(getString("btn_change_sounds")) {
                     action { viewModel.onChangeSoundsClicked() }
                 }
