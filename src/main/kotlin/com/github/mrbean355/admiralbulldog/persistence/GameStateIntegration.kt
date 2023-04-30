@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Michael Johnston
+ * Copyright 2023 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@ object GameStateIntegration {
     fun isInstalled(): Boolean = getGsiFile().exists()
 
     /**
-     * Creates the Game State Integration file if it doesn't exists.
+     * Creates the Game State Integration file if it doesn't exist.
      * If it exists, updates its content.
      *
      * @throws IllegalStateException if the GSI file couldn't be created.
@@ -49,7 +49,7 @@ object GameStateIntegration {
             {
                 "uri"           "http://localhost:${ConfigPersistence.getPort()}"
                 "timeout"       "5.0"
-                "buffer"        "0.5"
+                "buffer"        "0.0"
                 "throttle"      "0.5"
                 "heartbeat"     "30.0"
                 "data"
@@ -63,6 +63,7 @@ object GameStateIntegration {
                     "buildings"     "0"
                     "draft"         "0"
                     "wearables"     "0"
+                    "events"        "1"
                 }
             }
             """.trimIndent()

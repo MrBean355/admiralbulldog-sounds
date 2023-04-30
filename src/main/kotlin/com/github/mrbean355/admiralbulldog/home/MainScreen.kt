@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Michael Johnston
+ * Copyright 2023 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,7 +41,7 @@ import tornadofx.insets
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.paddingAll
-import tornadofx.paddingBottom
+import tornadofx.paddingVertical
 import tornadofx.progressbar
 import tornadofx.stackpane
 import tornadofx.stackpaneConstraints
@@ -54,7 +54,7 @@ class MainScreen : View(getString("title_app")) {
     private val viewModel by inject<MainViewModel>()
 
     override val root = stackpane {
-        prefWidth = 380.0
+        prefWidth = 400.0
         vbox(spacing = PADDING_SMALL, alignment = CENTER) {
             paddingAll = PADDING_MEDIUM
             imageview(viewModel.image)
@@ -79,7 +79,7 @@ class MainScreen : View(getString("title_app")) {
                 }
             }
             hbox(spacing = PADDING_SMALL, alignment = CENTER) {
-                paddingBottom = PADDING_SMALL
+                paddingVertical = PADDING_MEDIUM
                 button(getString("btn_change_sounds")) {
                     action { viewModel.onChangeSoundsClicked() }
                 }
@@ -88,6 +88,9 @@ class MainScreen : View(getString("title_app")) {
                 }
                 button(getString("btn_dota_mods")) {
                     action { viewModel.onDotaModClicked() }
+                }
+                button(getString("btn_roshan_timer")) {
+                    action { viewModel.onRoshanTimerClicked() }
                 }
             }
             hyperlink(viewModel.version) {

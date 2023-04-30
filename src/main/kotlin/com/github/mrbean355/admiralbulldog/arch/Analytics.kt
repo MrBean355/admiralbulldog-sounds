@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Michael Johnston
+ * Copyright 2023 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,11 +30,11 @@ suspend fun logAnalyticsProperties(): Unit = withContext(Dispatchers.IO) {
     val enabled = ConfigPersistence.getEnabledSoundTriggers()
 
     val triggers = SOUND_TRIGGER_TYPES.filter { it in enabled }
-        .joinToString(",") { it.simpleName.orEmpty().decapitalize() }
+        .joinToString(",") { it.simpleName.orEmpty().replaceFirstChar(Char::lowercase) }
 
     val discordTriggers = SOUND_TRIGGER_TYPES.filter { it in enabled }
         .filter { ConfigPersistence.isPlayedThroughDiscord(it) }
-        .joinToString(",") { it.simpleName.orEmpty().decapitalize() }
+        .joinToString(",") { it.simpleName.orEmpty().replaceFirstChar(Char::lowercase) }
 
     discordBotRepository.logAnalyticsProperties(
         mapOf(

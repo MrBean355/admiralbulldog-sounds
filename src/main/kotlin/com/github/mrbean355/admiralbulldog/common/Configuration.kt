@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Michael Johnston
+ * Copyright 2023 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,3 +45,4 @@ const val MIN_BOUNTY_RUNE_TIMER = 0
 const val MAX_BOUNTY_RUNE_TIMER = 60
 const val BOUNTY_RUNE_TIMER_STEP = 5
 const val DEFAULT_BOUNTY_RUNE_TIMER = 15
+const val DEFAULT_WISDOM_RUNE_TIMER = 45

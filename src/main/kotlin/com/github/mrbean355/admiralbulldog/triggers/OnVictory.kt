@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Michael Johnston
+ * Copyright 2023 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,14 @@
 package com.github.mrbean355.admiralbulldog.triggers
 
 import com.github.mrbean355.admiralbulldog.game.GameState
+import com.github.mrbean355.dota2.map.Team
 
 class OnVictory : SoundTrigger {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
-        return current.map!!.win_team != TEAM_NONE && previous.map!!.win_team == TEAM_NONE
-                && current.player!!.team_name == current.map.win_team
+        current.player ?: return false
+
+        return current.map.winningTeam != Team.None && previous.map.winningTeam == Team.None
+                && current.player.team == current.map.winningTeam
     }
 }

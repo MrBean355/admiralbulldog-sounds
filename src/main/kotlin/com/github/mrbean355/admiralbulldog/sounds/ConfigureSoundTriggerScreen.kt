@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Michael Johnston
+ * Copyright 2023 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,12 +61,20 @@ class ConfigureSoundTriggerScreen : Fragment() {
             field(getString("label_enable_sound_trigger")) {
                 checkbox(property = viewModel.enabled)
             }
-            field(getString("label_bounty_rune_timer")) {
+            field(getString("label_rune_timer")) {
                 visibleWhen(viewModel.showBountyRuneTimer)
                 managedWhen(visibleProperty())
                 bountyRuneSpinner(viewModel.bountyRuneTimer)
                 button(graphic = ImageView(HelpIcon())) {
-                    action { showInformation(getString("header_about_bounty_rune_timer"), getString("content_about_bounty_rune_timer")) }
+                    action { showInformation(getString("header_about_rune_timer"), getString("content_about_rune_timer")) }
+                }
+            }
+            field(getString("label_rune_timer")) {
+                visibleWhen(viewModel.showWisdomRuneTimer)
+                managedWhen(visibleProperty())
+                bountyRuneSpinner(viewModel.wisdomRuneTimer)
+                button(graphic = ImageView(HelpIcon())) {
+                    action { showInformation(getString("header_about_rune_timer"), getString("content_about_rune_timer")) }
                 }
             }
         }

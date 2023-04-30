@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Michael Johnston
+ * Copyright 2023 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,8 +25,8 @@ class Periodically : SoundTrigger {
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         if (nextPlayClockTime == UNINITIALISED) {
-            nextPlayClockTime = current.map!!.clock_time + randomiseDelay()
-        } else if (current.map!!.clock_time >= nextPlayClockTime) {
+            nextPlayClockTime = current.map.clockTime + randomiseDelay()
+        } else if (current.map.clockTime >= nextPlayClockTime) {
             nextPlayClockTime += randomiseDelay()
             return true
         }
@@ -34,7 +34,7 @@ class Periodically : SoundTrigger {
     }
 
     private fun randomiseDelay(): Int {
-        // Cast to double so we can randomise a non-whole amount of minutes.
+        // Cast to double so that we can randomise a non-whole amount of minutes.
         val minQuietTime = ConfigPersistence.getMinPeriod().toDouble()
         val maxQuietTime = ConfigPersistence.getMaxPeriod().toDouble()
         return if (minQuietTime != maxQuietTime) {

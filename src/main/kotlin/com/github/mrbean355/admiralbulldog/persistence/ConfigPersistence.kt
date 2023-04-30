@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Michael Johnston
+ * Copyright 2023 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +26,7 @@ import com.github.mrbean355.admiralbulldog.common.DEFAULT_MAX_PERIOD
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_MIN_PERIOD
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_VOLUME
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_WISDOM_RUNE_TIMER
 import com.github.mrbean355.admiralbulldog.common.MAX_VOLUME
 import com.github.mrbean355.admiralbulldog.common.MIN_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.migration.ConfigMigration
@@ -38,7 +39,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 /** Version of the config file that this app supports. */
-const val CONFIG_VERSION = 3
+const val CONFIG_VERSION = 4
 
 private const val FILE_NAME = "config.json"
 private const val DEFAULT_PORT = 12345
@@ -191,6 +192,15 @@ object ConfigPersistence {
 
     fun setBountyRuneTimer(timer: Int) {
         loadedConfig.special.bountyRuneTimer = timer
+        save()
+    }
+
+    fun getWisdomRuneTimer(): Int {
+        return loadedConfig.special.wisdomRuneTimer
+    }
+
+    fun setWisdomRuneTimer(timer: Int) {
+        loadedConfig.special.wisdomRuneTimer = timer
         save()
     }
 
@@ -517,7 +527,8 @@ object ConfigPersistence {
         var useHealSmartChance: Boolean = true,
         var minPeriod: Int = DEFAULT_MIN_PERIOD,
         var maxPeriod: Int = DEFAULT_MAX_PERIOD,
-        var bountyRuneTimer: Int = DEFAULT_BOUNTY_RUNE_TIMER
+        var bountyRuneTimer: Int = DEFAULT_BOUNTY_RUNE_TIMER,
+        var wisdomRuneTimer: Int = DEFAULT_WISDOM_RUNE_TIMER,
     )
 
     private data class Toggle(
