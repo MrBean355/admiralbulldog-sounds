@@ -33,7 +33,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.vdurmont:semver4j:3.1.0")
     implementation("no.tornado:tornadofx:1.7.20")
-    implementation("com.github.mrbean355:dota2-gsi:2.3.0")
+    implementation("com.github.mrbean355:dota2-gsi:2.4.0")
 
     implementation("org.openjfx:javafx-base:$fxVersion:$currentPlatform")
     implementation("org.openjfx:javafx-controls:$fxVersion:$currentPlatform")
