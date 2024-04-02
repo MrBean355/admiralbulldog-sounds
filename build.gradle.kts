@@ -29,7 +29,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.slf4j:slf4j-simple:2.0.12")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.vdurmont:semver4j:3.1.0")
     implementation("no.tornado:tornadofx:1.7.20")
