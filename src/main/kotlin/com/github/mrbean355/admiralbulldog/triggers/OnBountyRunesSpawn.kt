@@ -20,7 +20,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 
 /** Plays a sound shortly before the bounty runes spawn. */
 class OnBountyRunesSpawn : RunesSpawnTrigger(
-    frequencyMinutes = 3,
+    frequencyMinutes = 4,
     spawnsAtStart = true,
     provideWarningPeriod = { ConfigPersistence.getBountyRuneTimer() },
 )
