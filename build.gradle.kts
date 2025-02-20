@@ -1,8 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "2.1.0"
+    kotlin("jvm") version "2.1.10"
 }
 
 group = "com.github.mrbean355"
@@ -17,16 +18,16 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+kotlin {
+    compilerOptions.jvmTarget = JvmTarget.JVM_1_8
 }
 
 val fxVersion = "15.0.1"
 val currentPlatform = (findProperty("platform") as? String) ?: "win"
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.9.0")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.10.1")
+    implementation("com.google.code.gson:gson:2.12.1")
     implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
