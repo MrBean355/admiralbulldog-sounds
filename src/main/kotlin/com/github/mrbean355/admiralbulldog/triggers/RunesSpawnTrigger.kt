@@ -23,12 +23,12 @@ import kotlin.math.ceil
 abstract class RunesSpawnTrigger(
     frequencyMinutes: Int,
     spawnsAtStart: Boolean,
-    private val provideWarningPeriod: () -> Int
+    private val provideWarningPeriod: () -> Int,
 ) : SoundTrigger {
 
     private val frequencySeconds = frequencyMinutes * 60
     private val firstSpawnTime = if (spawnsAtStart) 0 else frequencySeconds
-    private var nextPlayTime = UNINITIALISED
+    private var nextSpawnTime = UNINITIALISED
 
     override fun shouldPlay(previous: GameState, current: GameState): Boolean {
         val gameState = current.map.matchState
@@ -37,14 +37,16 @@ abstract class RunesSpawnTrigger(
             return false
         }
         val currentTime = current.map.clockTime
-        val warningPeriod = provideWarningPeriod()
-        if (nextPlayTime == UNINITIALISED) {
-            nextPlayTime = findNextPlayTime(currentTime, warningPeriod)
+        if (nextSpawnTime == UNINITIALISED) {
+            nextSpawnTime = findNextSpawnTime(currentTime)
         }
+
+        val warningPeriod = provideWarningPeriod()
+        val nextPlayTime = nextSpawnTime - warningPeriod
 
         if (currentTime >= nextPlayTime) {
             val diff = currentTime - nextPlayTime
-            nextPlayTime = findNextPlayTime(currentTime + 10, warningPeriod)
+            nextSpawnTime += frequencySeconds
             if (diff <= warningPeriod) {
                 return true
             }
@@ -52,9 +54,9 @@ abstract class RunesSpawnTrigger(
         return false
     }
 
-    private fun findNextPlayTime(clockTime: Int, warningPeriod: Int): Int {
-        val iteration = ceil((clockTime + warningPeriod) / frequencySeconds.toFloat()).toInt()
-        val nextPlayTime = iteration * frequencySeconds - warningPeriod
-        return nextPlayTime.coerceAtLeast(firstSpawnTime - warningPeriod)
+    private fun findNextSpawnTime(clockTime: Int): Int {
+        val iteration = ceil(clockTime / frequencySeconds.toFloat()).toInt()
+        val nextPlayTime = iteration * frequencySeconds
+        return nextPlayTime.coerceAtLeast(firstSpawnTime)
     }
 }
