@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Michael Johnston
+ * Copyright 2024 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 
 /** Plays a sound shortly before the bounty runes spawn. */
 class OnBountyRunesSpawn : RunesSpawnTrigger(
-    frequencyMinutes = 3,
+    frequencyMinutes = 4, // Update the 'trigger_desc_bounty_runes' string as well
     spawnsAtStart = true,
     provideWarningPeriod = { ConfigPersistence.getBountyRuneTimer() },
 )

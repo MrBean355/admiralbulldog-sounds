@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Michael Johnston
+ * Copyright 2025 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,6 @@ package com.github.mrbean355.admiralbulldog
 
 import com.vdurmont.semver4j.Semver
 
-val APP_VERSION: Semver = Semver("1.14.0")
+val APP_VERSION: Semver = Semver("1.15.0")
 
 const val DISTRIBUTION: String = "win"

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Michael Johnston
+ * Copyright 2024 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 
 /** Plays a sound shortly before the wisdom runes spawn. */
 class OnWisdomRunesSpawn : RunesSpawnTrigger(
-    frequencyMinutes = 7,
+    frequencyMinutes = 7, // Update the 'trigger_desc_wisdom_runes' string as well
     spawnsAtStart = false,
     provideWarningPeriod = { ConfigPersistence.getWisdomRuneTimer() },
 )

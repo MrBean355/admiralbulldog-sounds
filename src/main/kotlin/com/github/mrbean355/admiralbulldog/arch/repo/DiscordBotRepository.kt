@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Michael Johnston
+ * Copyright 2024 Michael Johnston
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ class DiscordBotRepository {
             DiscordBotService.INSTANCE.sendFeedback(FeedbackRequest(loadUserId(), rating, comments))
                 .toServiceResponse()
         } catch (t: Throwable) {
-            logger.error("Failed to log analytics event", t)
+            logger.error("Failed to send feedback", t)
             ServiceResponse.Exception()
         }
     }
