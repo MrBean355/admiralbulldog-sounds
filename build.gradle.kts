@@ -31,7 +31,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
+    implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
     implementation("com.vdurmont:semver4j:3.1.0")
     implementation("no.tornado:tornadofx:1.7.20")
     implementation("com.github.mrbean355:dota2-gsi:2.5.0")
