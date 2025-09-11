@@ -27,7 +27,7 @@ val currentPlatform = (findProperty("platform") as? String) ?: "win"
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.10.2")
-    implementation("com.google.code.gson:gson:2.13.1")
+    implementation("com.google.code.gson:gson:2.13.2")
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
