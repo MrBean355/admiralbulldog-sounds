@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "2.2.0"
+    kotlin("jvm") version "2.2.21"
 }
 
 group = "com.github.mrbean355"
