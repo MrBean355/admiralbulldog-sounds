@@ -17,12 +17,16 @@ import androidx.compose.ui.unit.dp
 fun LabeledCheckbox(
     label: String,
     checked: Boolean,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
-        Text(label, modifier = Modifier.weight(1f))
-        Checkbox(checked = checked, onCheckedChange = onCheckedChange)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.padding(vertical = 4.dp)
+    ) {
+        Checkbox(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled)
+        Text(label, modifier = Modifier.padding(start = 8.dp))
     }
 }
 

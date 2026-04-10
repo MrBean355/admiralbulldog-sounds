@@ -13,7 +13,7 @@ import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
-import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
+import com.github.mrbean355.admiralbulldog.discord.openDiscordBotScreen
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
@@ -120,7 +120,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onDiscordBotClicked() {
-        openScreen<DiscordBotScreen>()
+        openDiscordBotScreen()
     }
 
     fun onDotaModClicked() {

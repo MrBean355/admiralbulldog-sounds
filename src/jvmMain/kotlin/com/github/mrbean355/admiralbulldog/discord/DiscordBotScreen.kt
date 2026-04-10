@@ -1,113 +1,170 @@
 package com.github.mrbean355.admiralbulldog.discord
 
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
+import com.github.mrbean355.admiralbulldog.common.GreenDotIconPainter
+import com.github.mrbean355.admiralbulldog.common.GreyDotIconPainter
+import com.github.mrbean355.admiralbulldog.common.RedDotIconPainter
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI_COMMANDS
+import com.github.mrbean355.admiralbulldog.common.YellowDotIconPainter
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
-import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
-import javafx.scene.control.ButtonBar.ButtonData.HELP
-import javafx.scene.control.ButtonBar.ButtonData.HELP_2
-import javafx.scene.control.ButtonBar.ButtonData.NEXT_FORWARD
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.buttonbar
-import tornadofx.checkbox
-import tornadofx.enableWhen
-import tornadofx.gridpane
-import tornadofx.gridpaneConstraints
-import tornadofx.hbox
-import tornadofx.hyperlink
-import tornadofx.imageview
-import tornadofx.label
-import tornadofx.paddingAll
-import tornadofx.paddingTop
-import tornadofx.spacer
-import tornadofx.textfield
-import tornadofx.vbox
-import tornadofx.whenUndocked
+import com.github.mrbean355.admiralbulldog.ui.components.LabeledCheckbox
+import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import java.awt.Desktop
+import java.net.URI
 
-class DiscordBotScreen : Fragment(getString("title_discord_bot")) {
-    private val viewModel by inject<DiscordBotViewModel>(Scope())
+@Composable
+fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
+    val botEnabled by viewModel.botEnabled.collectAsState()
+    val token by viewModel.token.collectAsState()
+    val status by viewModel.status.collectAsState()
+    val statusType by viewModel.statusType.collectAsState()
 
-    override val root = vbox(spacing = PADDING_SMALL) {
-        paddingAll = PADDING_MEDIUM
-        hbox {
-            checkbox(getString("label_enable_discord_bot"), viewModel.botEnabled)
-            spacer()
-            hyperlink(getString("label_invite_discord_bot")) {
-                action { onInviteClicked() }
+    Column(
+        modifier = Modifier.padding(24.dp).width(600.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LabeledCheckbox(
+                label = getString("label_enable_discord_bot"),
+                checked = botEnabled,
+            ) { viewModel.botEnabled.value = it }
+
+            Text(
+                text = getString("label_invite_discord_bot"),
+                color = MaterialTheme.colorScheme.primary,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable { openUrl(URL_DISCORD_BOT_INVITE) }
+            )
+        }
+
+        OutlinedTextField(
+            value = token,
+            onValueChange = { viewModel.token.value = it },
+            label = { Text(getString("prompt_magic_number")) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = botEnabled,
+            singleLine = true
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            val painter = when (statusType) {
+                DiscordBotViewModel.Status.NEUTRAL -> GreyDotIconPainter()
+                DiscordBotViewModel.Status.GOOD -> GreenDotIconPainter()
+                DiscordBotViewModel.Status.BAD -> RedDotIconPainter()
+                DiscordBotViewModel.Status.LOADING -> YellowDotIconPainter()
             }
+            Image(
+                painter = painter,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp)
+            )
+            Text(status, style = MaterialTheme.typography.bodyMedium)
         }
-        textfield(viewModel.token) {
-            promptText = getString("prompt_magic_number")
-            enableWhen(viewModel.botEnabled)
-        }
-        hbox(spacing = PADDING_SMALL) {
-            imageview(viewModel.statusImage)
-            label(viewModel.status)
-        }
-        label(getString("label_play_through_discord")) {
-            paddingTop = PADDING_SMALL
-            addClass(AppStyles.boldFont)
-        }
-        gridpane {
-            hgap = PADDING_SMALL
-            vgap = PADDING_SMALL
-            var row = 0
-            var col = 0
-            SOUND_TRIGGER_TYPES.forEach { type ->
-                checkbox(type.friendlyName, viewModel.throughDiscordProperty(type)) {
-                    enableWhen(viewModel.botEnabled)
-                    gridpaneConstraints {
-                        columnRowIndex(col++, row)
+
+        Text(
+            text = getString("label_play_through_discord"),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+
+        // Trigger Grid (3 columns)
+        val types = SOUND_TRIGGER_TYPES.toList()
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            for (i in types.indices step 3) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    for (j in 0 until 3) {
+                        val index = i + j
+                        if (index < types.size) {
+                            val type = types[index]
+                            val checked by viewModel.getTriggerToggle(type).collectAsState()
+                            LabeledCheckbox(
+                                label = type.friendlyName,
+                                checked = checked,
+                                enabled = botEnabled,
+                                modifier = Modifier.weight(1f)
+                            ) { viewModel.getTriggerToggle(type).value = it }
+                        } else {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
                     }
                 }
-                if (col == 3) {
-                    col = 0
-                    ++row
-                }
             }
         }
-        buttonbar {
-            button(getString("btn_discord_bot_commands"), HELP_2) {
-                action { onBotCommandsClicked() }
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
+        ) {
+            Button(onClick = { openUrl(URL_DISCORD_WIKI_COMMANDS) }) {
+                Text(getString("btn_discord_bot_commands"))
             }
-            button(getString("action_sound_board"), NEXT_FORWARD) {
-                enableWhen(viewModel.botEnabled)
-                action { onSoundBoardClicked() }
+            Button(
+                onClick = { /* onSoundBoardClicked - To be implemented when SoundBoard is migrated */ },
+                enabled = botEnabled
+            ) {
+                Text(getString("action_sound_board"))
             }
-            button(getString("btn_help"), HELP) {
-                action { onHelpClicked() }
+            Button(onClick = { openUrl(URL_DISCORD_WIKI) }) {
+                Text(getString("btn_help"))
             }
         }
     }
+}
 
-    init {
-        whenUndocked {
-            viewModel.onUndock()
+private fun openUrl(url: String) {
+    Desktop.getDesktop().browse(URI(url))
+}
+
+@Preview
+@Composable
+private fun DiscordBotScreenPreview() {
+    MaterialTheme {
+        Surface {
+            DiscordBotScreen(DiscordBotViewModel())
         }
     }
+}
 
-    private fun onInviteClicked() {
-        hostServices.showDocument(URL_DISCORD_BOT_INVITE)
-    }
-
-    private fun onBotCommandsClicked() {
-        hostServices.showDocument(URL_DISCORD_WIKI_COMMANDS)
-    }
-
-    private fun onHelpClicked() {
-        hostServices.showDocument(URL_DISCORD_WIKI)
-    }
-
-    private fun onSoundBoardClicked() {
-        find<SoundBoardScreen>().openModal(resizable = false)
+fun openDiscordBotScreen() {
+    openComposeScreen(
+        title = getString("title_discord_bot"),
+        viewModelFactory = { DiscordBotViewModel() }
+    ) { viewModel ->
+        DiscordBotScreen(viewModel)
     }
 }

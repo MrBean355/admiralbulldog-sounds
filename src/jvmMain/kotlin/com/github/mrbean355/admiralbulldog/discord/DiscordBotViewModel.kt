@@ -1,108 +1,101 @@
 package com.github.mrbean355.admiralbulldog.discord
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
-import com.github.mrbean355.admiralbulldog.common.GreenDotIcon
-import com.github.mrbean355.admiralbulldog.common.GreyDotIcon
-import com.github.mrbean355.admiralbulldog.common.RedDotIcon
-import com.github.mrbean355.admiralbulldog.common.YellowDotIcon
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
-import javafx.beans.binding.Binding
-import javafx.beans.binding.StringBinding
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.ObjectProperty
-import javafx.beans.property.StringProperty
-import javafx.scene.image.Image
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import tornadofx.booleanProperty
-import tornadofx.objectBinding
-import tornadofx.objectProperty
-import tornadofx.onChange
-import tornadofx.stringBinding
-import tornadofx.stringProperty
 
-class DiscordBotViewModel : AppViewModel() {
+class DiscordBotViewModel : ComposeViewModel() {
     private val discordBotRepository = DiscordBotRepository()
-    private val toggles: Map<SoundTriggerType, BooleanProperty>
-    private val lookupResponse = stringProperty()
-    private val statusType: ObjectProperty<Status> = objectProperty()
+    private val triggerToggles: Map<SoundTriggerType, MutableStateFlow<Boolean>>
+    private val lookupResponse = MutableStateFlow("")
+    private val _statusType = MutableStateFlow(Status.NEUTRAL)
 
-    val botEnabled: BooleanProperty = booleanProperty(ConfigPersistence.isUsingDiscordBot())
-    val token: StringProperty = stringProperty(ConfigPersistence.getDiscordToken())
-    val statusImage: Binding<Image?> = statusType.objectBinding { it?.getImage() }
-    val status: StringBinding = botEnabled.stringBinding(lookupResponse) {
-        if (it == true) {
-            lookupResponse.get()
+    val botEnabled = MutableStateFlow(ConfigPersistence.isUsingDiscordBot())
+    val token = MutableStateFlow(ConfigPersistence.getDiscordToken())
+    val statusType: StateFlow<Status> = _statusType
+
+    val status: StateFlow<String> = combine(botEnabled, lookupResponse) { enabled, response ->
+        if (enabled) {
+            response
         } else {
-            statusType.set(Status.NEUTRAL)
+            _statusType.value = Status.NEUTRAL
             getString("msg_bot_disabled")
         }
-    }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     init {
-        toggles = SOUND_TRIGGER_TYPES.associateWith { type ->
-            booleanProperty(ConfigPersistence.isPlayedThroughDiscord(type)).apply {
-                onChange { ConfigPersistence.setPlayedThroughDiscord(type, it) }
+        triggerToggles = SOUND_TRIGGER_TYPES.associateWith { type ->
+            MutableStateFlow(ConfigPersistence.isPlayedThroughDiscord(type))
+        }
+
+        viewModelScope.launch {
+            botEnabled.collect {
+                ConfigPersistence.setUsingDiscordBot(it)
+                if (it) {
+                    lookupDiscordGuild()
+                }
             }
         }
-        botEnabled.onChange {
-            ConfigPersistence.setUsingDiscordBot(it)
-            if (it) {
-                lookupDiscordGuild()
+
+        viewModelScope.launch {
+            token.collect {
+                ConfigPersistence.setDiscordToken(it)
+                if (botEnabled.value) {
+                    lookupDiscordGuild()
+                }
             }
         }
-        token.onChange {
-            ConfigPersistence.setDiscordToken(it.orEmpty())
+
+        triggerToggles.forEach { (type, flow) ->
+            viewModelScope.launch {
+                flow.collect {
+                    ConfigPersistence.setPlayedThroughDiscord(type, it)
+                }
+            }
+        }
+
+        if (botEnabled.value) {
             lookupDiscordGuild()
         }
     }
 
-    override fun onReady() {
-        if (botEnabled.get()) {
-            lookupDiscordGuild()
-        } else {
-            statusType.set(Status.NEUTRAL)
-        }
-    }
-
-    fun throughDiscordProperty(type: SoundTriggerType): BooleanProperty {
-        return toggles.getValue(type)
+    fun getTriggerToggle(type: SoundTriggerType): MutableStateFlow<Boolean> {
+        return triggerToggles.getValue(type)
     }
 
     private fun lookupDiscordGuild() {
-        statusType.set(Status.LOADING)
-        lookupResponse.set(getString("msg_bot_loading"))
+        _statusType.value = Status.LOADING
+        lookupResponse.value = getString("msg_bot_loading")
 
         viewModelScope.launch {
-            val response = discordBotRepository.lookUpToken(token.get())
+            val response = discordBotRepository.lookUpToken(token.value)
             if (response.isSuccessful()) {
-                statusType.set(Status.GOOD)
-                lookupResponse.set(getString("msg_bot_active", response.body))
+                _statusType.value = Status.GOOD
+                lookupResponse.value = getString("msg_bot_active", response.body)
             } else {
-                statusType.set(Status.BAD)
+                _statusType.value = Status.BAD
                 if (response.statusCode == 404) {
-                    lookupResponse.set(getString("msg_bot_not_found"))
+                    lookupResponse.value = getString("msg_bot_not_found")
                 } else {
-                    lookupResponse.set(getString("msg_bot_error"))
+                    lookupResponse.value = getString("msg_bot_error")
                 }
             }
         }
     }
 
-    private enum class Status {
+    enum class Status {
         NEUTRAL,
         GOOD,
         BAD,
-        LOADING;
-
-        fun getImage(): Image = when (this) {
-            NEUTRAL -> GreyDotIcon()
-            GOOD -> GreenDotIcon()
-            BAD -> RedDotIcon()
-            LOADING -> YellowDotIcon()
-        }
+        LOADING
     }
 }
