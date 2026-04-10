@@ -108,7 +108,7 @@ object FeedbackScreen {
 
 @Preview
 @Composable
-fun FeedbackScreenPreview() {
+private fun FeedbackScreenPreview() {
     MaterialTheme {
         Surface(color = Color.White) {
             FeedbackScreen(FeedbackViewModel())

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.ui.components.LabeledCheckbox
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 
 @Composable
@@ -105,14 +105,6 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 }
 
 @Composable
-fun LabeledCheckbox(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, modifier = Modifier.weight(1f))
-        Checkbox(checked = checked, onCheckedChange = onCheckedChange)
-    }
-}
-
-@Composable
 fun UpdateRow(
     label: String,
     currentFreq: UpdateFrequency,
@@ -150,7 +142,7 @@ fun UpdateRow(
 
 @Preview
 @Composable
-fun SettingsComposeScreenPreview() {
+private fun SettingsScreenPreview() {
     // Initialise persistence so the ViewModel constructor doesn't crash during preview rendering
     try {
         ConfigPersistence.initialise()
