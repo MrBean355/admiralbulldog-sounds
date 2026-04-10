@@ -1,29 +1,39 @@
 package com.github.mrbean355.admiralbulldog.game
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import tornadofx.stringProperty
 import kotlin.math.absoluteValue
 
-class RoshanTimerViewModel : AppViewModel() {
+class RoshanTimerViewModel : ComposeViewModel() {
 
-    val deathTime = stringProperty()
-    val aegisExpiryTime = stringProperty()
-    val respawnTime = stringProperty()
-    val aegisExpiryTimeTurbo = stringProperty()
-    val respawnTimeTurbo = stringProperty()
+    private val _deathTime = MutableStateFlow("")
+    val deathTime = _deathTime.asStateFlow()
 
-    override fun onReady() {
+    private val _aegisExpiryTime = MutableStateFlow("")
+    val aegisExpiryTime = _aegisExpiryTime.asStateFlow()
+
+    private val _respawnTime = MutableStateFlow("")
+    val respawnTime = _respawnTime.asStateFlow()
+
+    private val _aegisExpiryTimeTurbo = MutableStateFlow("")
+    val aegisExpiryTimeTurbo = _aegisExpiryTimeTurbo.asStateFlow()
+
+    private val _respawnTimeTurbo = MutableStateFlow("")
+    val respawnTimeTurbo = _respawnTimeTurbo.asStateFlow()
+
+    init {
         viewModelScope.launch {
             Roshan.deathTime.collectLatest {
-                deathTime.value = getString("label_roshan_timer_death", it.formatTime(offset = 0))
-                aegisExpiryTime.value = getString("label_roshan_timer_aegis", it.formatTime(offset = Roshan.AEGIS_DURATION))
-                respawnTime.value = getString("label_roshan_timer_respawn", it.formatTime(offset = Roshan.MIN_RESPAWN_TIME), it.formatTime(offset = Roshan.MAX_RESPAWN_TIME))
-                aegisExpiryTimeTurbo.value = getString("label_roshan_timer_aegis", it.formatTime(offset = Roshan.AEGIS_DURATION_TURBO))
-                respawnTimeTurbo.value = getString("label_roshan_timer_respawn", it.formatTime(offset = Roshan.MIN_RESPAWN_TIME_TURBO), it.formatTime(offset = Roshan.MAX_RESPAWN_TIME_TURBO))
+                _deathTime.value = getString("label_roshan_timer_death", it.formatTime(offset = 0))
+                _aegisExpiryTime.value = getString("label_roshan_timer_aegis", it.formatTime(offset = Roshan.AEGIS_DURATION))
+                _respawnTime.value = getString("label_roshan_timer_respawn", it.formatTime(offset = Roshan.MIN_RESPAWN_TIME), it.formatTime(offset = Roshan.MAX_RESPAWN_TIME))
+                _aegisExpiryTimeTurbo.value = getString("label_roshan_timer_aegis", it.formatTime(offset = Roshan.AEGIS_DURATION_TURBO))
+                _respawnTimeTurbo.value = getString("label_roshan_timer_respawn", it.formatTime(offset = Roshan.MIN_RESPAWN_TIME_TURBO), it.formatTime(offset = Roshan.MAX_RESPAWN_TIME_TURBO))
             }
         }
     }

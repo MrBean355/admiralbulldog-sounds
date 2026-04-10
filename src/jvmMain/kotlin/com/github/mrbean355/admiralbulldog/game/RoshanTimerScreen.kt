@@ -1,64 +1,75 @@
 package com.github.mrbean355.admiralbulldog.game
 
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.styles.AppStyles
-import javafx.scene.control.ButtonBar.ButtonData.HELP
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.buttonbar
-import tornadofx.label
-import tornadofx.paddingAll
-import tornadofx.paddingTop
-import tornadofx.vbox
-import tornadofx.whenUndocked
+import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 
-class RoshanTimerScreen : Fragment(getString("header_roshan_timer")) {
-    private val viewModel: RoshanTimerViewModel by inject(Scope())
+@Composable
+fun RoshanTimerScreen(viewModel: RoshanTimerViewModel) {
+    val deathTime by viewModel.deathTime.collectAsState()
+    val aegisExpiryTime by viewModel.aegisExpiryTime.collectAsState()
+    val respawnTime by viewModel.respawnTime.collectAsState()
+    val aegisExpiryTimeTurbo by viewModel.aegisExpiryTimeTurbo.collectAsState()
+    val respawnTimeTurbo by viewModel.respawnTimeTurbo.collectAsState()
 
-    override val root = vbox(spacing = PADDING_SMALL) {
-        prefWidth = WINDOW_WIDTH
-        paddingAll = PADDING_MEDIUM
+    Column(
+        modifier = Modifier.padding(24.dp).width(450.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(deathTime, style = MaterialTheme.typography.bodyLarge)
+        Text(aegisExpiryTime, style = MaterialTheme.typography.bodyLarge)
+        Text(respawnTime, style = MaterialTheme.typography.bodyLarge)
 
-        label(viewModel.deathTime) {
-            addClass(AppStyles.mediumFont)
-        }
-        label(viewModel.aegisExpiryTime) {
-            addClass(AppStyles.mediumFont)
-        }
-        label(viewModel.respawnTime) {
-            addClass(AppStyles.mediumFont)
-        }
+        Text(
+            text = getString("label_roshan_timer_turbo"),
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(aegisExpiryTimeTurbo, style = MaterialTheme.typography.bodyLarge)
+        Text(respawnTimeTurbo, style = MaterialTheme.typography.bodyLarge)
 
-        label(getString("label_roshan_timer_turbo")) {
-            paddingTop = PADDING_SMALL
-            addClass(AppStyles.mediumFont)
-            addClass(AppStyles.boldFont)
-        }
-        label(viewModel.aegisExpiryTimeTurbo) {
-            addClass(AppStyles.mediumFont)
-        }
-        label(viewModel.respawnTimeTurbo) {
-            addClass(AppStyles.mediumFont)
-        }
-
-        buttonbar {
-            button(getString("btn_help"), type = HELP) {
-                action {
-                    viewModel.onHelpClicked()
-                }
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            TextButton(onClick = { viewModel.onHelpClicked() }) {
+                Text(getString("btn_help"))
             }
         }
     }
+}
 
-    init {
-        whenUndocked {
-            viewModel.onUndock()
+@Preview
+@Composable
+private fun RoshanTimerScreenPreview() {
+    MaterialTheme {
+        Surface {
+            RoshanTimerScreen(RoshanTimerViewModel())
         }
+    }
+}
+
+fun openRoshanTimerScreen() {
+    openComposeScreen(
+        title = getString("header_roshan_timer"),
+        viewModelFactory = { RoshanTimerViewModel() }
+    ) { viewModel ->
+        RoshanTimerScreen(viewModel)
     }
 }

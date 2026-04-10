@@ -87,7 +87,9 @@ class UpdateViewModel : AppViewModel() {
                     buttons = arrayOf(UPDATE_BUTTON, ButtonType.CANCEL)
                 ) {
                     if (it === UPDATE_BUTTON) {
-                        downloadModUpdates(updates)
+                        viewModelScope.launch {
+                            downloadModUpdates(updates)
+                        }
                     }
                 }
             } else {
@@ -138,7 +140,9 @@ class UpdateViewModel : AppViewModel() {
         } else {
             showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
                 if (it === RETRY_BUTTON) {
-                    downloadModUpdates(mods)
+                    viewModelScope.launch {
+                        downloadModUpdates(mods)
+                    }
                 }
             }
         }

@@ -16,8 +16,8 @@ import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
-import com.github.mrbean355.admiralbulldog.game.RoshanTimerScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
+import com.github.mrbean355.admiralbulldog.game.openRoshanTimerScreen
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
 import com.github.mrbean355.admiralbulldog.mods.DotaModsScreen
 import com.github.mrbean355.admiralbulldog.mods.OldModMigration
@@ -128,7 +128,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onRoshanTimerClicked() {
-        openScreen<RoshanTimerScreen>()
+        openRoshanTimerScreen()
     }
 
     fun onVersionClicked() {

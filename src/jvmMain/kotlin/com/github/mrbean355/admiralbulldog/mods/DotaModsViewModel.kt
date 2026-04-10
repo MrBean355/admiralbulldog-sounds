@@ -124,7 +124,9 @@ class DotaModsViewModel : AppViewModel() {
         } else {
             showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, CANCEL) {
                 if (it === RETRY_BUTTON) {
-                    downloadMods(mods)
+                    viewModelScope.launch {
+                        downloadMods(mods)
+                    }
                 }
             }
         }

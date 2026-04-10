@@ -35,6 +35,8 @@ Sounds application, the AI must strictly adhere to the following established rul
   script with the explicit rendering components. Keep the `@Composable` screen definitions and the `openScreen()`
   invocation hooks squashed within the **exact same file** (e.g., `FeedbackScreen.kt`). *Do not* split Compose modules
   into standalone `.kt` scripts alongside legacy `.kt` files.
+- **Window Openers**: Logic for launching the screen (e.g., `openSettingsScreen()`) should always be placed at the
+  absolute bottom of the file, after all `@Composable` functions and previews.
 - **Progress Dialogs**: Do not rely on legacy TornadoFX progress window overlays that block the entire OS instance.
   Natively route loading states directly to the underlying Compose Screen UI using tools like
   `CircularProgressIndicator` disabled triggers instead.

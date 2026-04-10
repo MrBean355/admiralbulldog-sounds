@@ -1,5 +1,7 @@
 package com.github.mrbean355.admiralbulldog.common
 
+import com.github.mrbean355.admiralbulldog.ui.components.showComposeAlert
+import javafx.application.Platform
 import javafx.scene.Node
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType.ERROR
@@ -10,6 +12,7 @@ import javafx.scene.control.ButtonType
 import javafx.scene.image.ImageView
 import javafx.stage.Window
 import tornadofx.FX
+import javax.swing.SwingUtilities
 
 val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
 val WHATS_NEW_BUTTON = ButtonType(getString("btn_whats_new"), ButtonBar.ButtonData.HELP_2)
@@ -17,16 +20,16 @@ val UPDATE_BUTTON = ButtonType(getString("btn_update"), ButtonBar.ButtonData.NEX
 val DISCORD_BUTTON = ButtonType(getString("btn_join_discord"), ButtonBar.ButtonData.OK_DONE)
 val MORE_INFO_BUTTON = ButtonType(getString("btn_more_info"), ButtonBar.ButtonData.HELP_2)
 
-inline fun showInformation(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-    showAlert(INFORMATION, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(MonkaHmmIcon()), actionFn = actionFn)
+fun showInformation(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: (ButtonType) -> Unit = {}) =
+    showAlert(INFORMATION, header, content, *buttons, title = getString("title_app"), actionFn = actionFn)
 
-inline fun showWarning(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-    showAlert(WARNING, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(MonkaSIcon()), actionFn = actionFn)
+fun showWarning(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: (ButtonType) -> Unit = {}) =
+    showAlert(WARNING, header, content, *buttons, title = getString("title_app"), actionFn = actionFn)
 
-inline fun showError(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: Alert.(ButtonType) -> Unit = {}) =
-    showAlert(ERROR, header, content, *buttons, owner = FX.primaryStage, title = getString("title_app"), graphic = ImageView(SadKekIcon()), actionFn = actionFn)
+fun showError(header: String, content: String? = null, vararg buttons: ButtonType, actionFn: (ButtonType) -> Unit = {}) =
+    showAlert(ERROR, header, content, *buttons, title = getString("title_app"), actionFn = actionFn)
 
-inline fun showAlert(
+fun showAlert(
     type: Alert.AlertType,
     header: String,
     content: String? = null,
@@ -34,16 +37,59 @@ inline fun showAlert(
     owner: Window? = null,
     title: String? = null,
     graphic: Node? = null,
-    actionFn: Alert.(ButtonType) -> Unit = {}
-): Alert {
-    val alert = Alert(type, content ?: "", *buttons)
-    title?.let { alert.title = it }
-    alert.headerText = header
-    owner?.also { alert.initOwner(it) }
-    graphic?.let { alert.graphic = it }
-    val buttonClicked = alert.showAndWait()
-    if (buttonClicked.isPresent) {
-        alert.actionFn(buttonClicked.get())
+    actionFn: (ButtonType) -> Unit = {}
+) {
+    if (SwingUtilities.isEventDispatchThread()) {
+        showComposeAlert(
+            owner = null, // owner lookup logic could be added later
+            title = title ?: getString("title_app"),
+            header = header,
+            content = content,
+            buttons = if (buttons.isEmpty()) listOf(ButtonType.OK) else buttons.toList(),
+            icon = when (type) {
+                INFORMATION -> {
+                    { MonkaHmmIconPainter() }
+                }
+
+                WARNING -> {
+                    { MonkaSIconPainter() }
+                }
+
+                ERROR -> {
+                    { SadKekIconPainter() }
+                }
+
+                else -> {
+                    { MonkaHmmIconPainter() }
+                }
+            },
+            actionFn = actionFn
+        )
+    } else {
+        val showAndBlock = {
+            val alert = Alert(type, content ?: "", *buttons)
+            title?.let { alert.title = it }
+            alert.headerText = header
+            (owner ?: FX.primaryStage)?.also { alert.initOwner(it) }
+            graphic?.let { alert.graphic = it } ?: run {
+                alert.graphic = ImageView(
+                    when (type) {
+                        INFORMATION -> MonkaHmmIcon()
+                        WARNING -> MonkaSIcon()
+                        ERROR -> SadKekIcon()
+                        else -> MonkaHmmIcon()
+                    }
+                )
+            }
+            val buttonClicked = alert.showAndWait()
+            if (buttonClicked.isPresent) {
+                actionFn(buttonClicked.get())
+            }
+        }
+        if (Platform.isFxApplicationThread()) {
+            showAndBlock()
+        } else {
+            Platform.runLater(showAndBlock)
+        }
     }
-    return alert
 }
