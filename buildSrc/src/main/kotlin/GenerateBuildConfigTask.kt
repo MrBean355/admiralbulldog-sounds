@@ -15,7 +15,7 @@ open class GenerateBuildConfigTask : DefaultTask() {
 
     @get:OutputFile
     val output: File
-        get() = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/BuildConfig.kt")
+        get() = project.file("src/jvmMain/kotlin/com/github/mrbean355/admiralbulldog/BuildConfig.kt")
 
     @TaskAction
     fun run() {

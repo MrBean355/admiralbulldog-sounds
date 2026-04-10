@@ -9,11 +9,11 @@ open class GenerateIconsTask : DefaultTask() {
 
     @get:InputDirectory
     val input: File
-        get() = project.file("src/main/resources")
+        get() = project.file("src/jvmMain/resources")
 
     @get:OutputFile
     val output: File
-        get() = project.file("src/main/kotlin/com/github/mrbean355/admiralbulldog/common/Icons.kt")
+        get() = project.file("src/jvmMain/kotlin/com/github/mrbean355/admiralbulldog/common/Icons.kt")
 
     @TaskAction
     fun run() {

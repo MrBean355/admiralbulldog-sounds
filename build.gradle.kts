@@ -26,8 +26,6 @@ kotlin {
     
     sourceSets {
         val jvmMain by getting {
-            kotlin.srcDir("src/main/kotlin")
-            resources.srcDir("src/main/resources")
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(compose.material3)
@@ -49,8 +47,6 @@ kotlin {
             }
         }
         val jvmTest by getting {
-            kotlin.srcDir("src/test/kotlin")
-            resources.srcDir("src/test/resources")
             dependencies {
                 implementation("junit:junit:4.13.2")
             }
