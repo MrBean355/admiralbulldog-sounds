@@ -1,55 +1,82 @@
 package com.github.mrbean355.admiralbulldog.settings
 
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.URL_BULLDOG_TWITCH
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_PAYPAL
 import com.github.mrbean355.admiralbulldog.common.URL_PROJECT_WEBSITE
 import com.github.mrbean355.admiralbulldog.common.URL_TELEGRAM_CHANNEL
 import com.github.mrbean355.admiralbulldog.common.URL_TWITCH_CHANNEL
-import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_LARGE
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.styles.AppStyles
-import tornadofx.View
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.hyperlink
-import tornadofx.label
-import tornadofx.paddingAll
-import tornadofx.vbox
+import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 
-class MoreInformationScreen : View(getString("title_more_information")) {
+@Composable
+fun MoreInformationScreen(viewModel: MoreInformationViewModel) {
+    Column(
+        modifier = Modifier.padding(24.dp).width(450.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(getString("label_more_information_project_dev"), style = MaterialTheme.typography.titleMedium)
 
-    override val root = vbox(spacing = PADDING_SMALL) {
-        paddingAll = PADDING_MEDIUM
-        prefWidth = WINDOW_WIDTH_LARGE
-        label(getString("label_more_information_project_dev"))
-        hyperlink(getString("btn_project_website")) {
-            action { hostServices.showDocument(URL_PROJECT_WEBSITE) }
+        TextButton(onClick = { viewModel.openUrl(URL_PROJECT_WEBSITE) }) {
+            Text(getString("btn_project_website"))
         }
-        hyperlink(getString("btn_telegram_channel")) {
-            action { hostServices.showDocument(URL_TELEGRAM_CHANNEL) }
+        TextButton(onClick = { viewModel.openUrl(URL_TELEGRAM_CHANNEL) }) {
+            Text(getString("btn_telegram_channel"))
         }
-        hyperlink(getString("btn_twitch_channel")) {
-            action { hostServices.showDocument(URL_TWITCH_CHANNEL) }
+        TextButton(onClick = { viewModel.openUrl(URL_TWITCH_CHANNEL) }) {
+            Text(getString("btn_twitch_channel"))
         }
-        label(getString("label_need_help"))
-        hyperlink(getString("btn_discord_community")) {
-            action { hostServices.showDocument(URL_DISCORD_SERVER_INVITE) }
+
+        Text(getString("label_need_help"), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
+        TextButton(onClick = { viewModel.openUrl(URL_DISCORD_SERVER_INVITE) }) {
+            Text(getString("btn_discord_community"))
         }
-        label(getString("label_more_information_donate")) {
-            isWrapText = true
+
+        Text(getString("label_more_information_donate"), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
+        TextButton(onClick = { viewModel.openUrl(URL_PAYPAL) }) {
+            Text(getString("btn_paypal"))
         }
-        hyperlink(getString("btn_paypal")) {
-            action { hostServices.showDocument(URL_PAYPAL) }
+
+        Text(
+            text = getString("label_not_affiliated"),
+            style = MaterialTheme.typography.bodyMedium,
+            fontStyle = FontStyle.Italic,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        TextButton(onClick = { viewModel.openUrl(URL_BULLDOG_TWITCH) }) {
+            Text(getString("btn_bulldog_twitch"))
         }
-        label(getString("label_not_affiliated")) {
-            addClass(AppStyles.italicFont)
-            isWrapText = true
+    }
+}
+
+@Preview
+@Composable
+private fun MoreInformationScreenPreview() {
+    MaterialTheme {
+        Surface {
+            MoreInformationScreen(MoreInformationViewModel())
         }
-        hyperlink(getString("btn_bulldog_twitch")) {
-            action { hostServices.showDocument(URL_BULLDOG_TWITCH) }
-        }
+    }
+}
+
+fun openMoreInformationScreen() {
+    openComposeScreen(
+        title = getString("title_more_information"),
+        viewModelFactory = { MoreInformationViewModel() }
+    ) { viewModel ->
+        MoreInformationScreen(viewModel)
     }
 }

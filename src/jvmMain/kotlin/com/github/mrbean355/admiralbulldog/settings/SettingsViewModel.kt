@@ -111,7 +111,7 @@ class SettingsViewModel : ComposeViewModel() {
     }
 
     fun onMoreInformationClicked() {
-        tornadofx.find<MoreInformationScreen>().openModal(resizable = false)
+        openMoreInformationScreen()
     }
 
     fun onSendFeedbackClicked() {
