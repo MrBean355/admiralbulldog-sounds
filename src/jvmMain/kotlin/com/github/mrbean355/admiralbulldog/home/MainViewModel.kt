@@ -15,6 +15,7 @@ import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.discord.DiscordBotScreen
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
+import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
 import com.github.mrbean355.admiralbulldog.game.RoshanTimerScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
@@ -79,7 +80,7 @@ class MainViewModel : AppViewModel() {
         checkForAppUpdate()
 
         if (FeedbackScreen.shouldPrompt()) {
-            openScreen<FeedbackScreen>()
+            openFeedbackScreen()
         }
 
         monitorGameStateUpdates {

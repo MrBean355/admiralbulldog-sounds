@@ -5,6 +5,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.awt.ComposePanel
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
+import com.github.mrbean355.admiralbulldog.arch.JavaFxDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.JFrame
@@ -57,6 +60,12 @@ fun <VM : ComposeViewModel> openComposeScreen(
             })
 
             defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
+        }
+
+        CoroutineScope(JavaFxDispatcher).launch {
+            viewModel.requestWindowClose.collect {
+                frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
+            }
         }
 
         openFrames[viewModelClass] = frame

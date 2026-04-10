@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog.feedback
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
 import com.github.mrbean355.admiralbulldog.common.getString
@@ -8,55 +8,63 @@ import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
-import javafx.beans.property.Property
-import javafx.scene.control.ButtonType
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import tornadofx.FXEvent
-import tornadofx.objectProperty
-import tornadofx.stringProperty
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class FeedbackViewModel : AppViewModel() {
+class FeedbackViewModel : ComposeViewModel() {
     private val discordBotRepository = DiscordBotRepository()
 
-    val rating: Property<Any> = objectProperty()
-    val comments: Property<String> = stringProperty()
+    private val _rating = MutableStateFlow<Int?>(null)
+    val rating = _rating.asStateFlow()
 
-    override fun onReady() {
+    private val _comments = MutableStateFlow("")
+    val comments = _comments.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    init {
         ConfigPersistence.setNextFeedback(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(90))
     }
 
+    fun setRating(value: Int) {
+        _rating.value = value
+    }
+
+    fun setComments(value: String) {
+        _comments.value = value
+    }
+
     fun onSubmitClicked() {
-        val rating = rating.value?.toString()?.toIntOrNull()
-        if (rating == null) {
+        val currentRating = rating.value
+        if (currentRating == null) {
             showWarning(getString("title_feedback"), getString("content_feedback_rating_not_selected"))
             return
         }
-        val progressScreen = showProgressScreen()
+
+        _isLoading.value = true
         viewModelScope.launch {
-            val response = discordBotRepository.sendFeedback(rating, comments.value.orEmpty())
-            progressScreen.close()
+            val response = discordBotRepository.sendFeedback(currentRating, comments.value)
+            _isLoading.value = false
             if (response.isSuccessful()) {
                 showInformation(getString("header_feedback_submit_success"), getString("content_feedback_submit_success"))
-                fire(CloseEvent())
+                requestWindowClose()
             } else {
-                showError(getString("header_feedback_submit_error"), getString("content_feedback_submit_error"), ButtonType.CANCEL, RETRY_BUTTON) {
+                showError(getString("header_feedback_submit_error"), getString("content_feedback_submit_error"), javafx.scene.control.ButtonType.CANCEL, RETRY_BUTTON) {
                     if (it === RETRY_BUTTON) {
                         onSubmitClicked()
                     } else {
-                        fire(CloseEvent())
+                        requestWindowClose()
                     }
                 }
             }
         }
     }
 
-    class CloseEvent : FXEvent()
-
     companion object {
-
         fun shouldPrompt(): Boolean {
             return ConfigPersistence.getNextFeedback() <= System.currentTimeMillis() && Random.nextDouble() <= 0.15
         }

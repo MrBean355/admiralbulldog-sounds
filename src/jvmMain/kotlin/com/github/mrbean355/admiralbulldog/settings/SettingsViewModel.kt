@@ -5,7 +5,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.common.showWarning
-import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
+import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
@@ -115,6 +115,6 @@ class SettingsViewModel : ComposeViewModel() {
     }
 
     fun onSendFeedbackClicked() {
-        tornadofx.find<FeedbackScreen>().openModal(resizable = false)
+        openFeedbackScreen()
     }
 }
