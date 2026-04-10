@@ -38,10 +38,10 @@ fun checkJavaVersion(): Boolean {
  * Shows a dialog with a link to download the latest app release if this is not the case.
  */
 fun checkOperatingSystem(): Boolean {
-    val osName = System.getProperty("os.name")
+    val osName = System.getProperty("os.name").lowercase()
     val expected = when {
-        osName.startsWith("Windows") -> "win"
-        osName.startsWith("Mac") -> "mac"
+        osName.contains("win") -> "win"
+        osName.contains("mac") -> if (System.getProperty("os.arch") == "aarch64") "mac-aarch64" else "mac"
         else -> "linux"
     }
     if (DISTRIBUTION != expected) {

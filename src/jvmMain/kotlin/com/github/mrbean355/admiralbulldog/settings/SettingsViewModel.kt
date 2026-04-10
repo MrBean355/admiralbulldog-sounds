@@ -1,6 +1,6 @@
 package com.github.mrbean355.admiralbulldog.settings
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
@@ -9,65 +9,88 @@ import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
-import com.github.mrbean355.admiralbulldog.ui.openScreen
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.IntegerProperty
-import javafx.beans.property.ObjectProperty
-import tornadofx.booleanProperty
-import tornadofx.intProperty
-import tornadofx.objectProperty
-import tornadofx.onChange
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import tornadofx.FX
 import java.awt.SystemTray
 
-class SettingsViewModel : AppViewModel() {
-    private val updateViewModel by inject<UpdateViewModel>()
-
-    val appVolume: IntegerProperty = intProperty(ConfigPersistence.getVolume())
-    val darkMode: BooleanProperty = booleanProperty(ConfigPersistence.isDarkMode())
-    val traySupported: BooleanProperty = booleanProperty(SystemTray.isSupported())
-    val minimizeToTray: BooleanProperty = booleanProperty(ConfigPersistence.isMinimizeToTray())
-    val alwaysShowTrayIcon: BooleanProperty = booleanProperty(ConfigPersistence.isAlwaysShowTrayIcon())
-
-    val updateFrequencies: List<UpdateFrequency> = UpdateFrequency.values().toList()
-    val appUpdateFrequency: ObjectProperty<UpdateFrequency> = objectProperty(ConfigPersistence.getAppUpdateFrequency())
-    val soundsUpdateFrequency: ObjectProperty<UpdateFrequency> = objectProperty(ConfigPersistence.getSoundsUpdateFrequency())
-    val modEnabled: BooleanProperty = booleanProperty(ConfigPersistence.hasEnabledMods())
-    val modUpdateFrequency: ObjectProperty<UpdateFrequency> = objectProperty(ConfigPersistence.getModUpdateFrequency())
-
-    init {
-        appVolume.onChange(ConfigPersistence::setVolume)
-        darkMode.onChange {
-            ConfigPersistence.setIsDarkMode(it)
-            reloadAppStyles()
-        }
-        minimizeToTray.onChange {
-            ConfigPersistence.setMinimizeToTray(it)
-            refreshSystemTray()
-        }
-        alwaysShowTrayIcon.onChange {
-            ConfigPersistence.setAlwaysShowTrayIcon(it)
-            refreshSystemTray()
-        }
-        appUpdateFrequency.onChange {
-            it?.let { ConfigPersistence.setAppUpdateFrequency(it) }
-        }
-        soundsUpdateFrequency.onChange {
-            it?.let { ConfigPersistence.setSoundsUpdateFrequency(it) }
-        }
-        modUpdateFrequency.onChange {
-            it?.let {
-                ConfigPersistence.setModUpdateFrequency(it)
-                if (it > UpdateFrequency.DAILY) {
-                    showWarning(getString("header_mod_update_frequency"), getString("content_mod_update_frequency"))
-                }
-            }
-        }
+class SettingsViewModel : ComposeViewModel() {
+    private val updateViewModel: UpdateViewModel by lazy {
+        FX.find(UpdateViewModel::class.java)
     }
 
-    override fun onUndock() {
+    private val _appVolume = MutableStateFlow(ConfigPersistence.getVolume())
+    val appVolume = _appVolume.asStateFlow()
+
+    private val _darkMode = MutableStateFlow(ConfigPersistence.isDarkMode())
+    val darkMode = _darkMode.asStateFlow()
+
+    val traySupported = SystemTray.isSupported()
+
+    private val _minimizeToTray = MutableStateFlow(ConfigPersistence.isMinimizeToTray())
+    val minimizeToTray = _minimizeToTray.asStateFlow()
+
+    private val _alwaysShowTrayIcon = MutableStateFlow(ConfigPersistence.isAlwaysShowTrayIcon())
+    val alwaysShowTrayIcon = _alwaysShowTrayIcon.asStateFlow()
+
+    val updateFrequencies = UpdateFrequency.values().toList()
+
+    private val _appUpdateFrequency = MutableStateFlow(ConfigPersistence.getAppUpdateFrequency())
+    val appUpdateFrequency = _appUpdateFrequency.asStateFlow()
+
+    private val _soundsUpdateFrequency = MutableStateFlow(ConfigPersistence.getSoundsUpdateFrequency())
+    val soundsUpdateFrequency = _soundsUpdateFrequency.asStateFlow()
+
+    val modEnabled = ConfigPersistence.hasEnabledMods()
+
+    private val _modUpdateFrequency = MutableStateFlow(ConfigPersistence.getModUpdateFrequency())
+    val modUpdateFrequency = _modUpdateFrequency.asStateFlow()
+
+    override fun onCleared() {
         updateViewModel.onUndock()
-        super.onUndock()
+        super.onCleared()
+    }
+
+    fun setAppVolume(volume: Int) {
+        _appVolume.value = volume
+        ConfigPersistence.setVolume(volume)
+    }
+
+    fun setDarkMode(enabled: Boolean) {
+        _darkMode.value = enabled
+        ConfigPersistence.setIsDarkMode(enabled)
+        reloadAppStyles()
+    }
+
+    fun setMinimizeToTray(minimize: Boolean) {
+        _minimizeToTray.value = minimize
+        ConfigPersistence.setMinimizeToTray(minimize)
+        refreshSystemTray()
+    }
+
+    fun setAlwaysShowTrayIcon(show: Boolean) {
+        _alwaysShowTrayIcon.value = show
+        ConfigPersistence.setAlwaysShowTrayIcon(show)
+        refreshSystemTray()
+    }
+
+    fun setAppUpdateFrequency(frequency: UpdateFrequency) {
+        _appUpdateFrequency.value = frequency
+        ConfigPersistence.setAppUpdateFrequency(frequency)
+    }
+
+    fun setSoundsUpdateFrequency(frequency: UpdateFrequency) {
+        _soundsUpdateFrequency.value = frequency
+        ConfigPersistence.setSoundsUpdateFrequency(frequency)
+    }
+
+    fun setModUpdateFrequency(frequency: UpdateFrequency) {
+        _modUpdateFrequency.value = frequency
+        ConfigPersistence.setModUpdateFrequency(frequency)
+        if (frequency > UpdateFrequency.DAILY) {
+            showWarning(getString("header_mod_update_frequency"), getString("content_mod_update_frequency"))
+        }
     }
 
     fun onCheckForAppUpdateClicked() {
@@ -78,7 +101,7 @@ class SettingsViewModel : AppViewModel() {
     }
 
     fun onUpdateSoundsClicked() {
-        openScreen<SyncSoundBitesScreen>(escapeClosesWindow = false)
+        tornadofx.find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, resizable = false)
     }
 
     fun onCheckForModUpdateClicked() {
@@ -88,10 +111,10 @@ class SettingsViewModel : AppViewModel() {
     }
 
     fun onMoreInformationClicked() {
-        openScreen<MoreInformationScreen>()
+        tornadofx.find<MoreInformationScreen>().openModal(resizable = false)
     }
 
     fun onSendFeedbackClicked() {
-        openScreen<FeedbackScreen>()
+        tornadofx.find<FeedbackScreen>().openModal(resizable = false)
     }
 }

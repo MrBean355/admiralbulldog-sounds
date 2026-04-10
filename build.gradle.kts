@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform") version "2.3.20"
@@ -16,8 +15,14 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
-val fxVersion = "15.0.1"
-val currentPlatform = (findProperty("platform") as? String) ?: "win"
+val fxVersion = "17.0.9"
+val currentPlatform = (findProperty("platform") as? String) ?: System.getProperty("os.name").lowercase().let { os ->
+    when {
+        os.contains("win") -> "win"
+        os.contains("mac") -> if (System.getProperty("os.arch") == "aarch64") "mac-aarch64" else "mac"
+        else -> "linux"
+    }
+}
 
 kotlin {
     jvm {
@@ -30,7 +35,6 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation(compose.material3)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.10.2")
                 implementation("com.google.code.gson:gson:2.13.2")
                 implementation("org.slf4j:slf4j-simple:2.0.17")
                 implementation("com.squareup.retrofit2:retrofit:3.0.0")
@@ -44,6 +48,7 @@ kotlin {
                 implementation("org.openjfx:javafx-controls:$fxVersion:$currentPlatform")
                 implementation("org.openjfx:javafx-graphics:$fxVersion:$currentPlatform")
                 implementation("org.openjfx:javafx-media:$fxVersion:$currentPlatform")
+                implementation("org.openjfx:javafx-swing:$fxVersion:$currentPlatform")
             }
         }
         val jvmTest by getting {

@@ -7,7 +7,7 @@ import com.github.mrbean355.admiralbulldog.common.SettingsIcon
 import com.github.mrbean355.admiralbulldog.common.URL_APP_INSTALLATION
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
-import com.github.mrbean355.admiralbulldog.settings.SettingsScreen
+import com.github.mrbean355.admiralbulldog.settings.openSettingsScreen
 import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import javafx.geometry.Pos
 import javafx.geometry.Pos.CENTER
@@ -85,7 +85,7 @@ class MainScreen : View(getString("title_app")) {
         button(graphic = ImageView(SettingsIcon())) {
             tooltip(getString("tooltip_settings"))
             action {
-                find<SettingsScreen>().openModal(resizable = false)
+                openSettingsScreen()
             }
             stackpaneConstraints {
                 alignment = Pos.BOTTOM_RIGHT
