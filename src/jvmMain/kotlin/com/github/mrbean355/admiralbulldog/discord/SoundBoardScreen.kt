@@ -113,8 +113,11 @@ fun SoundBoardScreen(viewModel: SoundBoardViewModel) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { /* TODO: onChooseSoundsClicked (migrate ConfigureSoundBoardScreen) */ },
-                enabled = false // Disabled per user instructions until migrated
+                onClick = {
+                    openConfigureSoundBoardScreen {
+                        viewModel.refresh()
+                    }
+                }
             ) {
                 Text(getString("btn_customise"))
             }
