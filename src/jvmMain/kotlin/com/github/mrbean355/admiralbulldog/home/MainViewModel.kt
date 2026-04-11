@@ -19,8 +19,8 @@ import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.game.openRoshanTimerScreen
 import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
-import com.github.mrbean355.admiralbulldog.mods.DotaModsScreen
 import com.github.mrbean355.admiralbulldog.mods.OldModMigration
+import com.github.mrbean355.admiralbulldog.mods.openDotaModsScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
@@ -124,7 +124,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onDotaModClicked() {
-        openScreen<DotaModsScreen>()
+        openDotaModsScreen()
     }
 
     fun onRoshanTimerClicked() {

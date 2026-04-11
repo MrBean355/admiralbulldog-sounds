@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.mods
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.DotaApplication
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.common.MORE_INFO_BUTTON
@@ -12,49 +13,62 @@ import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.ui.openScreen
-import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
-import javafx.beans.property.BooleanProperty
-import javafx.collections.ObservableList
 import javafx.scene.control.ButtonType.CANCEL
 import javafx.scene.control.ButtonType.CLOSE
 import javafx.scene.control.ButtonType.NEXT
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import tornadofx.FXEvent
-import tornadofx.booleanProperty
-import tornadofx.observableListOf
 
-class DotaModsViewModel : AppViewModel() {
+class DotaModsViewModel : ComposeViewModel() {
     private val repo = DotaModRepository()
-    private val checkedProperties = mutableMapOf<String, BooleanProperty>()
+    private val checkedProperties = mutableMapOf<String, MutableStateFlow<Boolean>>()
 
-    val showProgress: BooleanProperty = booleanProperty(true)
-    val items: ObservableList<DotaMod> = observableListOf()
+    private val _showProgress = MutableStateFlow(true)
+    val showProgress = _showProgress.asStateFlow()
 
-    override fun onReady() {
-        if (!ConfigPersistence.isModRiskAccepted()) {
-            openScreen<AcceptModRiskScreen>(block = true)
-            if (!ConfigPersistence.isModRiskAccepted()) {
-                fire(CloseEvent())
-                return
-            }
+    private val _items = MutableStateFlow<List<DotaMod>>(emptyList())
+    val items = _items.asStateFlow()
+
+    private val _isUpdating = MutableStateFlow(false)
+    val isUpdating = _isUpdating.asStateFlow()
+
+    private val _showRiskDisclaimer = MutableStateFlow(!ConfigPersistence.isModRiskAccepted())
+    val showRiskDisclaimer = _showRiskDisclaimer.asStateFlow()
+
+    init {
+        if (ConfigPersistence.isModRiskAccepted()) {
+            loadMods()
         }
+    }
+
+    fun onRiskAccepted() {
+        ConfigPersistence.setModRiskAccepted()
+        _showRiskDisclaimer.value = false
+        loadMods()
+    }
+
+    fun onRiskRejected() {
+        requestWindowClose()
+    }
+
+    private fun loadMods() {
         viewModelScope.launch {
             val response = repo.listMods()
             val body = response.body
             if (!response.isSuccessful() || body == null) {
                 showError(getString("header_unknown_error"), getString("content_mod_list_failure"))
-                fire(CloseEvent())
+                requestWindowClose()
                 return@launch
             }
-            showProgress.set(false)
-            items.setAll(body.sortedWith(DotaModComparator()))
+            _showProgress.value = false
+            _items.value = body.sortedWith(DotaModComparator())
         }
     }
 
-    fun getCheckedProperty(dotaMod: DotaMod): BooleanProperty {
+    fun getCheckedState(dotaMod: DotaMod): MutableStateFlow<Boolean> {
         return checkedProperties.getOrPut(dotaMod.name) {
-            booleanProperty(ConfigPersistence.isModEnabled(dotaMod))
+            MutableStateFlow(ConfigPersistence.isModEnabled(dotaMod))
         }
     }
 
@@ -68,28 +82,28 @@ class DotaModsViewModel : AppViewModel() {
             """.trimIndent(), MORE_INFO_BUTTON, CLOSE
         ) {
             if (it === MORE_INFO_BUTTON) {
-                hostServices.showDocument(mod.infoUrl)
+                DotaApplication.hostServices.showDocument(mod.infoUrl)
             }
         }
     }
 
     fun onSelectAllClicked() {
-        items.forEach {
-            getCheckedProperty(it).set(true)
+        items.value.forEach {
+            getCheckedState(it).value = true
         }
     }
 
     fun onDeselectAllClicked() {
-        items.forEach {
-            getCheckedProperty(it).set(false)
+        items.value.forEach {
+            getCheckedState(it).value = false
         }
     }
 
     fun onInstallClicked() {
         showInformation(getString("header_close_dota"), getString("content_close_dota"), CANCEL, NEXT) { action ->
             if (action === NEXT) {
-                val enabledMods = items.filter {
-                    getCheckedProperty(it).value
+                val enabledMods = items.value.filter {
+                    getCheckedState(it).value
                 }
 
                 viewModelScope.launch {
@@ -102,19 +116,19 @@ class DotaModsViewModel : AppViewModel() {
     fun onEnableClicked() {
         showInformation(getString("header_mod_launch_option"), getString("content_mod_launch_option"), MORE_INFO_BUTTON, CLOSE) {
             if (it === MORE_INFO_BUTTON) {
-                hostServices.showDocument(URL_MOD_LAUNCH_OPTION)
+                DotaApplication.hostServices.showDocument(URL_MOD_LAUNCH_OPTION)
             }
         }
     }
 
     fun onAboutModdingClicked() {
-        hostServices.showDocument(URL_MOD_INFO)
+        DotaApplication.hostServices.showDocument(URL_MOD_INFO)
     }
 
     private suspend fun downloadMods(mods: Collection<DotaMod>) {
-        val progressScreen = showProgressScreen()
+        _isUpdating.value = true
         val allSucceeded = repo.installMods(mods)
-        progressScreen.close()
+        _isUpdating.value = false
         if (allSucceeded) {
             if (mods.isEmpty()) {
                 showInformation(getString("header_mods_remove_succeeded"), getString("content_mods_remove_succeeded"))
@@ -140,6 +154,4 @@ class DotaModsViewModel : AppViewModel() {
             "%.1f KB".format(kb)
         }
     }
-
-    class CloseEvent : FXEvent()
 }

@@ -12,8 +12,12 @@ import tornadofx.App
 import kotlin.system.exitProcess
 
 class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(), stylesheet = arrayOf(AppStyles::class)) {
+    companion object {
+        lateinit var hostServices: javafx.application.HostServices
+    }
 
     override fun init() {
+        DotaApplication.hostServices = hostServices
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandlerImpl(hostServices))
         ConfigPersistence.initialise()
         reloadAppStyles()
