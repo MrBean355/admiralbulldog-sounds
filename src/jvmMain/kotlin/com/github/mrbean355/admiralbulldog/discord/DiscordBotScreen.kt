@@ -134,7 +134,7 @@ fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
                 Text(getString("btn_discord_bot_commands"))
             }
             Button(
-                onClick = { /* onSoundBoardClicked - To be implemented when SoundBoard is migrated */ },
+                onClick = { openSoundBoardScreen() },
                 enabled = botEnabled
             ) {
                 Text(getString("action_sound_board"))
