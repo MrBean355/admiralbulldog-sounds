@@ -1,11 +1,11 @@
 package com.github.mrbean355.admiralbulldog.exception
 
-import com.github.mrbean355.admiralbulldog.common.DISCORD_BUTTON
+import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import javafx.application.HostServices
-import javafx.scene.control.ButtonType
+import java.awt.EventQueue
 import java.io.File
 import java.net.BindException
 import kotlin.system.exitProcess
@@ -34,9 +34,9 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices) : Thr
     }
 
     private fun showDialog(header: String, content: String, exitAfterwards: Boolean = false) {
-        javafx.application.Platform.runLater {
-            showError(header, content, DISCORD_BUTTON, ButtonType.OK) {
-                if (it === DISCORD_BUTTON) {
+        EventQueue.invokeLater {
+            showError(header, content, AlertButton.DISCORD, AlertButton.OK) { action ->
+                if (action == AlertButton.DISCORD) {
                     hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
                 }
                 if (exitAfterwards) {

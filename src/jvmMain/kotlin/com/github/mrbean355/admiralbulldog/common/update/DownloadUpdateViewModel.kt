@@ -3,10 +3,9 @@ package com.github.mrbean355.admiralbulldog.common.update
 import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
-import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
+import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
-import javafx.scene.control.ButtonType
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -71,8 +70,8 @@ class DownloadUpdateViewModel(
     }
 
     private fun showErrorMessage(message: String) {
-        showError(getString("header_update_failed"), message, RETRY_BUTTON, ButtonType.CANCEL) {
-            if (it === RETRY_BUTTON) {
+        showError(getString("header_update_failed"), message, AlertButton.RETRY, AlertButton.CANCEL) { action ->
+            if (action == AlertButton.RETRY) {
                 download()
             } else {
                 onCancel()
@@ -94,11 +93,6 @@ class DownloadUpdateViewModel(
                 yield()
                 output.write(buffer, 0, bytes)
                 bytesCopied += bytes
-                _progress.value = (bytesCopied.toDouble() / 1.0 /* total bytes info needed or use shared state */).let {
-                    // Update: onProgress is called with bytesCopied. 
-                    // The actual percentage calculation happens in the collector.
-                    null // logic handled by onProgress call below
-                }
                 onProgress(bytesCopied)
                 bytes = read(buffer)
             }

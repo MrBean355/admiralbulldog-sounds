@@ -4,8 +4,7 @@ import com.github.mrbean355.admiralbulldog.DotaApplication
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
-import com.github.mrbean355.admiralbulldog.common.MORE_INFO_BUTTON
-import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
+import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.URL_MOD_INFO
 import com.github.mrbean355.admiralbulldog.common.URL_MOD_LAUNCH_OPTION
 import com.github.mrbean355.admiralbulldog.common.getString
@@ -13,9 +12,6 @@ import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import javafx.scene.control.ButtonType.CANCEL
-import javafx.scene.control.ButtonType.CLOSE
-import javafx.scene.control.ButtonType.NEXT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -79,9 +75,9 @@ class DotaModsViewModel : ComposeViewModel() {
             ${mod.description}
             
             ${getString("label_mod_download_size", getDownloadSize(mod))}
-            """.trimIndent(), MORE_INFO_BUTTON, CLOSE
+            """.trimIndent(), AlertButton.MORE_INFO, AlertButton.OK
         ) {
-            if (it === MORE_INFO_BUTTON) {
+            if (it == AlertButton.MORE_INFO) {
                 DotaApplication.hostServices.showDocument(mod.infoUrl)
             }
         }
@@ -100,8 +96,8 @@ class DotaModsViewModel : ComposeViewModel() {
     }
 
     fun onInstallClicked() {
-        showInformation(getString("header_close_dota"), getString("content_close_dota"), CANCEL, NEXT) { action ->
-            if (action === NEXT) {
+        showInformation(getString("header_close_dota"), getString("content_close_dota"), AlertButton.CANCEL, AlertButton.NEXT) { action ->
+            if (action == AlertButton.NEXT) {
                 val enabledMods = items.value.filter {
                     getCheckedState(it).value
                 }
@@ -114,8 +110,8 @@ class DotaModsViewModel : ComposeViewModel() {
     }
 
     fun onEnableClicked() {
-        showInformation(getString("header_mod_launch_option"), getString("content_mod_launch_option"), MORE_INFO_BUTTON, CLOSE) {
-            if (it === MORE_INFO_BUTTON) {
+        showInformation(getString("header_mod_launch_option"), getString("content_mod_launch_option"), AlertButton.MORE_INFO, AlertButton.OK) {
+            if (it == AlertButton.MORE_INFO) {
                 DotaApplication.hostServices.showDocument(URL_MOD_LAUNCH_OPTION)
             }
         }
@@ -136,8 +132,8 @@ class DotaModsViewModel : ComposeViewModel() {
                 showInformation(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
             }
         } else {
-            showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, CANCEL) {
-                if (it === RETRY_BUTTON) {
+            showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), AlertButton.RETRY, AlertButton.CANCEL) {
+                if (it == AlertButton.RETRY) {
                     viewModelScope.launch {
                         downloadMods(mods)
                     }

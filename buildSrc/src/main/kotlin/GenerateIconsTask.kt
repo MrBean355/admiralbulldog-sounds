@@ -3,7 +3,6 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
-import java.util.Calendar
 
 open class GenerateIconsTask : DefaultTask() {
 
@@ -21,25 +20,25 @@ open class GenerateIconsTask : DefaultTask() {
             .filter { it.endsWith(".png") || it.endsWith(".jpg") }
             .sorted()
 
-        val functions = icons.joinToString(separator = "\n\n            ") {
-            "fun ${transform(it)}(): Image = loadImage(\"$it\")"
+        val functions = icons.joinToString(separator = "\n\n") {
+            """
+            @Composable
+            fun ${transform(it)}Painter(): Painter = painterResource("$it")
+            """.trimIndent()
         }
 
         output.writeText(
             """
-            @file:Suppress("FunctionName")
-            
-            package com.github.mrbean355.admiralbulldog.common
-            
-            import com.github.mrbean355.admiralbulldog.DotaApplication
-            import javafx.scene.image.Image
-            
-            $functions
-            
-            private fun loadImage(name: String): Image =
-                Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))
-            
-            """.trimIndent()
+            |@file:Suppress("FunctionName")
+            |
+            |package com.github.mrbean355.admiralbulldog.common
+            |
+            |import androidx.compose.runtime.Composable
+            |import androidx.compose.ui.graphics.painter.Painter
+            |import androidx.compose.ui.res.painterResource
+            |
+            |$functions
+            |""".trimMargin()
         )
     }
 

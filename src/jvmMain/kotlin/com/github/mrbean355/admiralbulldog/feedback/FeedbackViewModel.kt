@@ -2,7 +2,7 @@ package com.github.mrbean355.admiralbulldog.feedback
 
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
-import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
+import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
@@ -53,8 +53,8 @@ class FeedbackViewModel : ComposeViewModel() {
                 showInformation(getString("header_feedback_submit_success"), getString("content_feedback_submit_success"))
                 requestWindowClose()
             } else {
-                showError(getString("header_feedback_submit_error"), getString("content_feedback_submit_error"), javafx.scene.control.ButtonType.CANCEL, RETRY_BUTTON) {
-                    if (it === RETRY_BUTTON) {
+                showError(getString("header_feedback_submit_error"), getString("content_feedback_submit_error"), AlertButton.CANCEL, AlertButton.RETRY) { action ->
+                    if (action == AlertButton.RETRY) {
                         onSubmitClicked()
                     } else {
                         requestWindowClose()

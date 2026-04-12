@@ -2,40 +2,54 @@
 
 package com.github.mrbean355.admiralbulldog.common
 
-import com.github.mrbean355.admiralbulldog.DotaApplication
-import javafx.scene.image.Image
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 
-fun AddIcon(): Image = loadImage("add.png")
+@Composable
+fun AddIconPainter(): Painter = painterResource("add.png")
 
-fun BulldogIcon(): Image = loadImage("bulldog.jpg")
+@Composable
+fun BulldogIconPainter(): Painter = painterResource("bulldog.jpg")
 
-fun DeleteIcon(): Image = loadImage("delete.png")
+@Composable
+fun DeleteIconPainter(): Painter = painterResource("delete.png")
 
-fun GreenDotIcon(): Image = loadImage("green_dot.png")
+@Composable
+fun GreenDotIconPainter(): Painter = painterResource("green_dot.png")
 
-fun GreyDotIcon(): Image = loadImage("grey_dot.png")
+@Composable
+fun GreyDotIconPainter(): Painter = painterResource("grey_dot.png")
 
-fun HelpIcon(): Image = loadImage("help.png")
+@Composable
+fun HelpIconPainter(): Painter = painterResource("help.png")
 
-fun MonkaGigaIcon(): Image = loadImage("monka_giga.png")
+@Composable
+fun MonkaGigaIconPainter(): Painter = painterResource("monka_giga.png")
 
-fun MonkaHmmIcon(): Image = loadImage("monka_hmm.png")
+@Composable
+fun MonkaHmmIconPainter(): Painter = painterResource("monka_hmm.png")
 
-fun MonkaSIcon(): Image = loadImage("monka_s.png")
+@Composable
+fun MonkaSIconPainter(): Painter = painterResource("monka_s.png")
 
-fun PauseChampIcon(): Image = loadImage("pause_champ.png")
+@Composable
+fun PauseChampIconPainter(): Painter = painterResource("pause_champ.png")
 
-fun PlayIcon(): Image = loadImage("play.png")
+@Composable
+fun PlayIconPainter(): Painter = painterResource("play.png")
 
-fun PoggiesIcon(): Image = loadImage("poggies.png")
+@Composable
+fun PoggiesIconPainter(): Painter = painterResource("poggies.png")
 
-fun RedDotIcon(): Image = loadImage("red_dot.png")
+@Composable
+fun RedDotIconPainter(): Painter = painterResource("red_dot.png")
 
-fun SadKekIcon(): Image = loadImage("sad_kek.png")
+@Composable
+fun SadKekIconPainter(): Painter = painterResource("sad_kek.png")
 
-fun SettingsIcon(): Image = loadImage("settings.png")
+@Composable
+fun SettingsIconPainter(): Painter = painterResource("settings.png")
 
-fun YellowDotIcon(): Image = loadImage("yellow_dot.png")
-
-private fun loadImage(name: String): Image =
-    Image(DotaApplication::class.java.classLoader.getResourceAsStream(name))
+@Composable
+fun YellowDotIconPainter(): Painter = painterResource("yellow_dot.png")

@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.common.MORE_INFO_BUTTON
+import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.PauseChampIconPainter
 import com.github.mrbean355.admiralbulldog.common.PoggiesIconPainter
 import com.github.mrbean355.admiralbulldog.common.URL_APP_INSTALLATION
@@ -82,10 +82,10 @@ fun MainScreen(viewModel: MainViewModel) {
                         showInformation(
                             getString("header_gsi_launch_option"),
                             getString("content_gsi_launch_option"),
-                            MORE_INFO_BUTTON,
-                            javafx.scene.control.ButtonType.OK
-                        ) {
-                            if (it === MORE_INFO_BUTTON) {
+                            AlertButton.MORE_INFO,
+                            AlertButton.OK
+                        ) { action ->
+                            if (action == AlertButton.MORE_INFO) {
                                 if (Desktop.isDesktopSupported()) {
                                     Desktop.getDesktop().browse(URI(URL_APP_INSTALLATION))
                                 }

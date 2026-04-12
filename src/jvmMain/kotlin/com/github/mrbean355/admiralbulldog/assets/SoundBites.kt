@@ -5,7 +5,6 @@ import com.github.mrbean355.admiralbulldog.arch.verifyChecksum
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import javafx.scene.control.ProgressBar
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +46,7 @@ object SoundBites {
      * @return [SyncResult] with all the affected sound bites if successful; `null` if unsuccessful.
      */
     suspend fun synchronise(): SyncResult? = withContext(IO) {
-        _progress.value = ProgressBar.INDETERMINATE_PROGRESS
+        _progress.value = -1.0
         val response = playSoundsRepository.listSoundBites()
         val remoteFiles = response.body
 

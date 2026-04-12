@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
-import javafx.scene.control.ButtonType
+import com.github.mrbean355.admiralbulldog.common.AlertButton
 import java.awt.KeyboardFocusManager
 import java.awt.Window
 import java.awt.event.KeyEvent
@@ -29,7 +29,6 @@ import javax.swing.SwingUtilities
 
 /**
  * A modal JDialog that displays Compose content.
- * Bridges JavaFX [ButtonType] to Compose actions.
  */
 class CommonDialog(
     owner: Window?,
@@ -37,8 +36,8 @@ class CommonDialog(
     private val header: String,
     private val content: String?,
     private val icon: @Composable () -> Painter,
-    private val buttons: List<ButtonType>,
-    private val onButtonClicked: (ButtonType) -> Unit
+    private val buttons: List<AlertButton>,
+    private val onButtonClicked: (AlertButton) -> Unit
 ) : JDialog(owner, title, ModalityType.APPLICATION_MODAL) {
 
     init {
@@ -57,7 +56,7 @@ class CommonDialog(
 
         addWindowListener(object : WindowAdapter() {
             override fun windowClosing(e: WindowEvent?) {
-                onButtonClicked(ButtonType.CANCEL)
+                onButtonClicked(AlertButton.CANCEL)
             }
         })
 
@@ -100,12 +99,12 @@ class CommonDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.End)
             ) {
-                buttons.forEach { buttonType ->
+                buttons.forEach { alertButton ->
                     Button(onClick = {
-                        onButtonClicked(buttonType)
+                        onButtonClicked(alertButton)
                         dispose()
                     }) {
-                        Text(buttonType.text)
+                        Text(alertButton.text)
                     }
                 }
             }
@@ -119,8 +118,8 @@ fun showComposeAlert(
     header: String,
     content: String?,
     icon: @Composable () -> Painter,
-    buttons: List<ButtonType>,
-    actionFn: (ButtonType) -> Unit
+    buttons: List<AlertButton>,
+    actionFn: (AlertButton) -> Unit
 ) {
     SwingUtilities.invokeLater {
         val dialog = CommonDialog(owner, title, header, content, icon, buttons, actionFn)

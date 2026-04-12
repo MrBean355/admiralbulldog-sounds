@@ -8,9 +8,7 @@ import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
-import com.github.mrbean355.admiralbulldog.common.RETRY_BUTTON
-import com.github.mrbean355.admiralbulldog.common.UPDATE_BUTTON
-import com.github.mrbean355.admiralbulldog.common.WHATS_NEW_BUTTON
+import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.logger
 import com.github.mrbean355.admiralbulldog.common.removeVersionPrefix
@@ -20,7 +18,6 @@ import com.github.mrbean355.admiralbulldog.common.update.openDownloadUpdateScree
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import com.vdurmont.semver4j.Semver
-import javafx.scene.control.ButtonType
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.system.exitProcess
@@ -53,11 +50,7 @@ class UpdateViewModel : ComposeViewModel() {
             val latestVersion = Semver(releaseInfo.tagName.removeVersionPrefix())
             if (latestVersion > APP_VERSION) {
                 logger.info("New app version available: $releaseInfo")
-                if (doesUserWantToUpdate(getString("header_app_update_available"), releaseInfo)) {
-                    downloadAppUpdate(releaseInfo)
-                } else {
-                    onUpdateSkipped()
-                }
+                promptForAppUpdate(getString("header_app_update_available"), releaseInfo, onUpdateSkipped)
             } else {
                 logger.info("Already on latest app version")
                 ConfigPersistence.setAppLastUpdateToNow()
@@ -79,9 +72,9 @@ class UpdateViewModel : ComposeViewModel() {
                 showInformation(
                     header = getString("header_mod_updates_available"),
                     content = getString("content_mod_updates_available", updates.joinToString { it.name }),
-                    buttons = arrayOf(UPDATE_BUTTON, ButtonType.CANCEL)
+                    buttons = arrayOf(AlertButton.UPDATE, AlertButton.CANCEL)
                 ) {
-                    if (it === UPDATE_BUTTON) {
+                    if (it == AlertButton.UPDATE) {
                         viewModelScope.launch {
                             downloadModUpdates(updates)
                         }
@@ -93,20 +86,27 @@ class UpdateViewModel : ComposeViewModel() {
         }
     }
 
-    private fun doesUserWantToUpdate(header: String, releaseInfo: ReleaseInfo): Boolean {
-        var action: ButtonType? = null
+    private fun promptForAppUpdate(header: String, releaseInfo: ReleaseInfo, onUpdateSkipped: () -> Unit) {
         showInformation(
             header = header,
             content = getString("msg_update_available", releaseInfo.name, releaseInfo.publishedAt),
-            buttons = arrayOf(WHATS_NEW_BUTTON, UPDATE_BUTTON, ButtonType.CANCEL)
-        ) {
-            action = it
+            buttons = arrayOf(AlertButton.WHATS_NEW, AlertButton.UPDATE, AlertButton.CANCEL)
+        ) { action ->
+            when (action) {
+                AlertButton.WHATS_NEW -> {
+                    DotaApplication.hostServices.showDocument(releaseInfo.htmlUrl)
+                    promptForAppUpdate(header, releaseInfo, onUpdateSkipped)
+                }
+
+                AlertButton.UPDATE -> {
+                    downloadAppUpdate(releaseInfo)
+                }
+
+                else -> {
+                    onUpdateSkipped()
+                }
+            }
         }
-        if (action === WHATS_NEW_BUTTON) {
-            DotaApplication.hostServices.showDocument(releaseInfo.htmlUrl)
-            return doesUserWantToUpdate(header, releaseInfo)
-        }
-        return action === UPDATE_BUTTON
     }
 
     private fun downloadAppUpdate(releaseInfo: ReleaseInfo) {
@@ -120,9 +120,10 @@ class UpdateViewModel : ComposeViewModel() {
                 showInformation(
                     header = getString("header_app_update_downloaded"),
                     content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
-                    buttons = arrayOf(ButtonType.FINISH)
-                )
-                exitProcess(0)
+                    buttons = arrayOf(AlertButton.FINISH)
+                ) {
+                    exitProcess(0)
+                }
             }
         )
     }
@@ -134,8 +135,8 @@ class UpdateViewModel : ComposeViewModel() {
         if (allSucceeded) {
             showInformation(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
         } else {
-            showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), RETRY_BUTTON, ButtonType.CANCEL) {
-                if (it === RETRY_BUTTON) {
+            showWarning(getString("header_mod_updates_failed"), getString("content_mod_updates_failed"), AlertButton.RETRY, AlertButton.CANCEL) {
+                if (it == AlertButton.RETRY) {
                     viewModelScope.launch {
                         downloadModUpdates(mods)
                     }
