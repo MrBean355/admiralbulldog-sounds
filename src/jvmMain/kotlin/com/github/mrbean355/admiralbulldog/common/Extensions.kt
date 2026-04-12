@@ -3,7 +3,6 @@ package com.github.mrbean355.admiralbulldog.common
 import com.github.mrbean355.admiralbulldog.DISTRIBUTION
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tornadofx.ViewModel
 import java.io.File
 import java.util.ResourceBundle
 
@@ -22,7 +21,7 @@ fun getString(key: String, vararg formatArgs: Any?): String {
 }
 
 /** Get a logger whose name is the simple name of the receiver class. */
-val ViewModel.logger: Logger
+val Any.logger: Logger
     get() = LoggerFactory.getLogger(this::class.java.simpleName)
 
 fun String.replaceFileSeparators(): String {

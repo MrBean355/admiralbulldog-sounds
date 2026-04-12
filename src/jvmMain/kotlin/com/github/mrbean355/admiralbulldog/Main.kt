@@ -1,7 +1,7 @@
 package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.arch.repo.hostUrl
-import tornadofx.launch
+import javafx.application.Application
 
 /** Program argument to point to a custom host. Points to prod if omitted. */
 private const val ARG_HOST_URL = "--host-url"
@@ -9,7 +9,7 @@ private const val ARG_HOST_URL = "--host-url"
 fun main(args: Array<String>) {
     if (checkJavaVersion() && checkOperatingSystem()) {
         setCustomHostUrl(args)
-        launch<DotaApplication>()
+        Application.launch(DotaApplication::class.java, *args)
     }
 }
 

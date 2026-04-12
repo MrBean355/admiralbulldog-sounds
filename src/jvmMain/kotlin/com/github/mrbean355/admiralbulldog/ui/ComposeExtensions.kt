@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.awt.ComposePanel
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.SwingDispatcher
+import com.github.mrbean355.admiralbulldog.common.getString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.awt.event.WindowAdapter
@@ -65,6 +66,10 @@ fun <VM : ComposeViewModel> openComposeScreen(
             }
 
             defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
+        }
+
+        if (title == getString("title_app")) {
+            prepareTrayIcon(frame)
         }
 
         CoroutineScope(SwingDispatcher).launch {

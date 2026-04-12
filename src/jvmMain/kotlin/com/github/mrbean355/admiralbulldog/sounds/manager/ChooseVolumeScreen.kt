@@ -1,65 +1,92 @@
 package com.github.mrbean355.admiralbulldog.sounds.manager
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.MAX_INDIVIDUAL_VOLUME
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.PlayIcon
+import com.github.mrbean355.admiralbulldog.common.PlayIconPainter
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.common.volumeSpinner
-import com.github.mrbean355.admiralbulldog.styles.AppStyles
-import javafx.scene.control.ButtonBar
-import javafx.scene.image.ImageView
-import tornadofx.Fragment
-import tornadofx.Scope
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.buttonbar
-import tornadofx.enableWhen
-import tornadofx.hbox
-import tornadofx.label
-import tornadofx.onChange
-import tornadofx.paddingAll
-import tornadofx.runLater
-import tornadofx.textfield
-import tornadofx.vbox
+import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 
-class ChooseVolumeScreen : Fragment(getString("title_choose_volume")) {
-    private val viewModel by inject<ChooseVolumeViewModel>(Scope(), params)
+@Composable
+fun ChooseVolumeScreen(viewModel: ChooseVolumeViewModel) {
+    val query by viewModel.query.collectAsState()
+    val volume by viewModel.volume.collectAsState()
+    val selectedSoundBite by viewModel.selectedSoundBite.collectAsState()
 
-    override val root = vbox(spacing = PADDING_SMALL) {
-        paddingAll = PADDING_MEDIUM
-        label(getString("label_search_sound_bite"))
-        hbox(spacing = PADDING_SMALL) {
-            textfield(viewModel.query) {
-                textProperty().onChange {
-                    // The caret moves to the start when auto-completing.
-                    runLater(this::end)
-                }
-            }
-            volumeSpinner(viewModel.volume, MAX_INDIVIDUAL_VOLUME)
-            button(graphic = ImageView(PlayIcon())) {
-                addClass(AppStyles.iconButton)
-                enableWhen(viewModel.hasSoundBite)
-                action {
-                    viewModel.onPlayClicked()
-                }
+    Column(
+        modifier = Modifier.padding(16.dp).width(350.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(getString("label_search_sound_bite"))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = { viewModel.onQueryChanged(it) },
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                placeholder = { Text(getString("prompt_search")) }
+            )
+
+            // Simple Volume Control
+            OutlinedTextField(
+                value = volume.toString(),
+                onValueChange = { it.toIntOrNull()?.let { v -> viewModel.onVolumeChanged(v.coerceIn(0, MAX_INDIVIDUAL_VOLUME)) } },
+                modifier = Modifier.width(80.dp),
+                singleLine = true,
+                label = { Text("%") }
+            )
+
+            IconButton(
+                onClick = { viewModel.onPlayClicked() },
+                enabled = selectedSoundBite != null
+            ) {
+                Icon(
+                    painter = PlayIconPainter(),
+                    contentDescription = getString("tooltip_play_locally")
+                )
             }
         }
-        buttonbar {
-            button(getString("btn_done"), ButtonBar.ButtonData.OK_DONE) {
-                enableWhen(viewModel.hasSoundBite)
-                action {
-                    viewModel.onDoneClicked()
-                    close()
-                }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = { viewModel.onDoneClicked() },
+                enabled = selectedSoundBite != null
+            ) {
+                Text(getString("btn_done"))
             }
         }
     }
+}
 
-    companion object {
-        fun params(name: String): Map<String, Any?> {
-            return mapOf("name" to name)
-        }
+fun openChooseVolumeScreen(initialName: String = "", onDone: () -> Unit = {}) {
+    openComposeScreen(
+        title = getString("title_choose_volume"),
+        viewModelFactory = { ChooseVolumeViewModel(initialName) },
+        onCloseRequest = onDone
+    ) { viewModel ->
+        ChooseVolumeScreen(viewModel)
     }
 }

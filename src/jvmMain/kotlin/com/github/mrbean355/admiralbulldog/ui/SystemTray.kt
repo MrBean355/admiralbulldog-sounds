@@ -4,34 +4,41 @@ import com.github.mrbean355.admiralbulldog.DotaApplication
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import javafx.application.Platform
-import javafx.application.Platform.runLater
-import javafx.stage.Stage
-import tornadofx.onChange
+import java.awt.Frame
 import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.SystemTray
 import java.awt.TrayIcon
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
+import javax.swing.JFrame
 
 private var trayIcon: TrayIcon? = null
 
 /** Prepare to show a [TrayIcon] when the app is minimized. */
-fun prepareTrayIcon(stage: Stage) {
+fun prepareTrayIcon(frame: JFrame) {
     if (!SystemTray.isSupported()) {
         return
     }
 
-    trayIcon = buildTrayIcon(stage)
+    trayIcon = buildTrayIcon(frame)
     refreshSystemTray()
 
-    stage.iconifiedProperty().onChange { minimised ->
-        if (minimised) onAppMinimised(stage) else onAppMaximised()
-    }
-    stage.setOnCloseRequest {
-        it.consume()
-        Platform.exit()
-    }
+    frame.addWindowListener(object : WindowAdapter() {
+        override fun windowIconified(e: WindowEvent?) {
+            onAppMinimised(frame)
+        }
+
+        override fun windowDeiconified(e: WindowEvent?) {
+            onAppMaximised()
+        }
+
+        override fun windowClosing(e: WindowEvent?) {
+            Platform.exit()
+        }
+    })
 }
 
 fun refreshSystemTray() {
@@ -45,10 +52,10 @@ fun refreshSystemTray() {
     }
 }
 
-private fun buildTrayIcon(stage: Stage): TrayIcon {
+private fun buildTrayIcon(frame: JFrame): TrayIcon {
     val popup = PopupMenu()
     MenuItem(getString("menu_show")).apply {
-        addActionListener { maximiseFromTray(stage) }
+        addActionListener { maximiseFromTray(frame) }
         popup.add(this)
     }
     MenuItem(getString("menu_close")).apply {
@@ -57,13 +64,13 @@ private fun buildTrayIcon(stage: Stage): TrayIcon {
     }
     return TrayIcon(getTrayImage(), getString("title_app"), popup).apply {
         isImageAutoSize = true
-        addActionListener { maximiseFromTray(stage) }
+        addActionListener { maximiseFromTray(frame) }
     }
 }
 
-private fun onAppMinimised(stage: Stage) {
+private fun onAppMinimised(frame: JFrame) {
     if (ConfigPersistence.isMinimizeToTray()) {
-        minimizeToTray(stage)
+        minimizeToTray(frame)
     }
     if (!ConfigPersistence.isAlwaysShowTrayIcon()) {
         SystemTray.getSystemTray().add(trayIcon)
@@ -83,21 +90,27 @@ private fun getTrayImage(): BufferedImage {
     return ImageIO.read(DotaApplication::class.java.classLoader.getResourceAsStream("bulldog.jpg"))
 }
 
-private fun maximiseFromTray(stage: Stage) {
-    runLater {
-        stage.isIconified = false
-        stage.show()
+private fun maximiseFromTray(frame: JFrame) {
+    SwingUtilities.invokeLater {
+        frame.extendedState = Frame.NORMAL
+        frame.isVisible = true
+        frame.toFront()
     }
 }
 
-private fun minimizeToTray(stage: Stage) {
-    runLater {
-        stage.hide()
+private fun minimizeToTray(frame: JFrame) {
+    SwingUtilities.invokeLater {
+        frame.isVisible = false
     }
 }
 
 private fun exitFromTray() {
-    runLater {
-        Platform.exit()
+    Platform.exit()
+}
+
+// Helper for maximiseFromTray and minimizeToTray if SwingUtilities is needed
+private object SwingUtilities {
+    fun invokeLater(block: () -> Unit) {
+        java.awt.EventQueue.invokeLater(block)
     }
 }

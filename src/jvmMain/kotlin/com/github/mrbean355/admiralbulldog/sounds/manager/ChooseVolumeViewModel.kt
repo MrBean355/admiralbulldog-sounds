@@ -1,57 +1,57 @@
 package com.github.mrbean355.admiralbulldog.sounds.manager
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.DEFAULT_INDIVIDUAL_VOLUME
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import javafx.beans.binding.Binding
-import javafx.beans.property.IntegerProperty
-import javafx.beans.property.ObjectProperty
-import tornadofx.intProperty
-import tornadofx.objectProperty
-import tornadofx.onChange
-import tornadofx.runLater
-import tornadofx.stringProperty
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class ChooseVolumeViewModel : AppViewModel() {
-    private var lastText = ""
-    private val soundBite: ObjectProperty<SoundBite> = objectProperty()
+class ChooseVolumeViewModel(initialName: String) : ComposeViewModel() {
+    private var lastText = initialName
 
-    val query = stringProperty((params["name"] as? String).orEmpty())
-    val hasSoundBite: Binding<Boolean> = soundBite.isNotNull
-    val volume: IntegerProperty = intProperty(DEFAULT_INDIVIDUAL_VOLUME)
+    private val _query = MutableStateFlow(initialName)
+    val query: StateFlow<String> = _query.asStateFlow()
+
+    private val _volume = MutableStateFlow(ConfigPersistence.getSoundBiteVolume(initialName) ?: DEFAULT_INDIVIDUAL_VOLUME)
+    val volume: StateFlow<Int> = _volume.asStateFlow()
+
+    private val _selectedSoundBite = MutableStateFlow<SoundBite?>(null)
+    val selectedSoundBite: StateFlow<SoundBite?> = _selectedSoundBite.asStateFlow()
 
     init {
-        query.onChange {
-            onQueryChanged(it.orEmpty())
+        if (initialName.isNotEmpty()) {
+            onQueryChanged(initialName)
         }
-        query.get().also {
-            // Load initial text & volume when editing.
-            if (it.isNotEmpty()) {
-                onQueryChanged(it)
-                volume.set(ConfigPersistence.getSoundBiteVolume(it) ?: DEFAULT_INDIVIDUAL_VOLUME)
+    }
+
+    fun onQueryChanged(text: String) {
+        _query.value = text
+        val isDeleting = text.length < lastText.length
+        if (!isDeleting && text.isNotEmpty()) {
+            val match = SoundBites.getSingleSoundBites().singleOrNull { it.name.startsWith(text, ignoreCase = true) }
+            if (match != null) {
+                _query.value = match.name
             }
         }
+        _selectedSoundBite.value = SoundBites.getSingleSoundBites().find { it.name == _query.value }
+        lastText = _query.value
+    }
+
+    fun onVolumeChanged(newVolume: Int) {
+        _volume.value = newVolume
     }
 
     fun onPlayClicked() {
-        soundBite.get().play(volume = volume.get())
+        _selectedSoundBite.value?.play(volume = _volume.value)
     }
 
     fun onDoneClicked() {
-        ConfigPersistence.addSoundBiteVolume(soundBite.get().name, volume.get())
-    }
-
-    private fun onQueryChanged(text: String) {
-        val isDeleting = text.length < lastText.length
-        if (!isDeleting) {
-            val match = SoundBites.getSingleSoundBites().singleOrNull { it.name.startsWith(text, ignoreCase = true) }
-            if (match != null) {
-                runLater { query.set(match.name) }
-            }
+        _selectedSoundBite.value?.let {
+            ConfigPersistence.addSoundBiteVolume(it.name, _volume.value)
+            requestWindowClose()
         }
-        soundBite.set(SoundBites.getSingleSoundBites().find { it.name == text })
-        lastText = text
     }
 }

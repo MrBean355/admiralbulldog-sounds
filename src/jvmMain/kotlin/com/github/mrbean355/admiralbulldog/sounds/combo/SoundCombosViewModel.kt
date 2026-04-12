@@ -1,25 +1,28 @@
 package com.github.mrbean355.admiralbulldog.sounds.combo
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.ObjectProperty
-import javafx.collections.ObservableList
-import tornadofx.booleanProperty
-import tornadofx.objectProperty
-import tornadofx.observableListOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class SoundCombosViewModel : AppViewModel() {
-    val items: ObservableList<ComboSoundBite> = observableListOf()
-    val selection: ObjectProperty<ComboSoundBite> = objectProperty()
-    val hasSelection: BooleanProperty = booleanProperty(true)
+class SoundCombosViewModel : ComposeViewModel() {
+    private val _items = MutableStateFlow<List<ComboSoundBite>>(emptyList())
+    val items: StateFlow<List<ComboSoundBite>> = _items.asStateFlow()
 
-    override fun onReady() {
+    private val _selectedItem = MutableStateFlow<ComboSoundBite?>(null)
+    val selectedItem: StateFlow<ComboSoundBite?> = _selectedItem.asStateFlow()
+
+    init {
         refreshItems()
+    }
+
+    fun onItemSelected(item: ComboSoundBite?) {
+        _selectedItem.value = item
     }
 
     fun onHelpClicked() {
@@ -27,23 +30,27 @@ class SoundCombosViewModel : AppViewModel() {
     }
 
     fun onRemoveClicked() {
-        ConfigPersistence.removeSoundCombo(selection.get())
-        SoundBites.refreshCombos()
-        refreshItems()
+        _selectedItem.value?.let {
+            ConfigPersistence.removeSoundCombo(it)
+            SoundBites.refreshCombos()
+            refreshItems()
+            _selectedItem.value = null
+        }
     }
 
     fun onAddClicked() {
-        find<CreateSoundComboScreen>().openModal(block = true, resizable = false)
-        refreshItems()
+        openCreateSoundComboScreen {
+            refreshItems()
+        }
     }
 
-    fun onListDoubleClicked() {
-        val name = selection.get() ?: return
-        find<CreateSoundComboScreen>(CreateSoundComboScreen.params(name)).openModal(block = true, resizable = false)
-        refreshItems()
+    fun onEditClicked(item: ComboSoundBite) {
+        openCreateSoundComboScreen(item) {
+            refreshItems()
+        }
     }
 
     private fun refreshItems() {
-        items.setAll(SoundBites.getComboSoundBites().sortedBy { it.name })
+        _items.value = SoundBites.getComboSoundBites().sortedBy { it.name }
     }
 }

@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import tornadofx.FX
 import kotlin.concurrent.timer
 import kotlin.system.exitProcess
 
@@ -38,7 +37,7 @@ private const val ANALYTICS_FREQUENCY_MS = 5 * 60 * 1_000L
 class MainViewModel : ComposeViewModel() {
     private val discordBotRepository = DiscordBotRepository()
     private val modRepository = DotaModRepository()
-    private val updateViewModel = FX.find(UpdateViewModel::class.java)
+    private val updateViewModel = UpdateViewModel()
 
     private val _isConnected = MutableStateFlow(false)
     val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
@@ -135,6 +134,11 @@ class MainViewModel : ComposeViewModel() {
             return
         }
         updateViewModel.checkForModUpdates()
+    }
+
+    override fun onCleared() {
+        updateViewModel.onCleared()
+        super.onCleared()
     }
 
     private fun sendHeartbeats() {

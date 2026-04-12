@@ -11,7 +11,6 @@ import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import javafx.scene.image.ImageView
 import javafx.stage.Window
-import tornadofx.FX
 import javax.swing.SwingUtilities
 
 val RETRY_BUTTON = ButtonType(getString("btn_retry"), ButtonBar.ButtonData.OK_DONE)
@@ -70,7 +69,7 @@ fun showAlert(
             val alert = Alert(type, content ?: "", *buttons)
             title?.let { alert.title = it }
             alert.headerText = header
-            (owner ?: FX.primaryStage)?.also { alert.initOwner(it) }
+            owner?.also { alert.initOwner(it) }
             graphic?.let { alert.graphic = it } ?: run {
                 alert.graphic = ImageView(
                     when (type) {

@@ -6,7 +6,6 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import javafx.application.HostServices
 import javafx.scene.control.ButtonType
-import tornadofx.runLater
 import java.io.File
 import java.net.BindException
 import kotlin.system.exitProcess
@@ -35,7 +34,7 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices) : Thr
     }
 
     private fun showDialog(header: String, content: String, exitAfterwards: Boolean = false) {
-        runLater {
+        javafx.application.Platform.runLater {
             showError(header, content, DISCORD_BUTTON, ButtonType.OK) {
                 if (it === DISCORD_BUTTON) {
                     hostServices.showDocument(URL_DISCORD_SERVER_INVITE)

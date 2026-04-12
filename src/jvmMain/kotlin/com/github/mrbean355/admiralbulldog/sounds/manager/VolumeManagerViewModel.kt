@@ -1,23 +1,27 @@
 package com.github.mrbean355.admiralbulldog.sounds.manager
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.common.Volume
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import javafx.beans.binding.Binding
-import javafx.beans.property.ObjectProperty
-import javafx.collections.ObservableList
-import tornadofx.objectProperty
-import tornadofx.observableListOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class VolumeManagerViewModel : AppViewModel() {
-    val items: ObservableList<Volume> = observableListOf()
-    val selection: ObjectProperty<Volume> = objectProperty()
-    val hasSelection: Binding<Boolean> = selection.isNotNull
+class VolumeManagerViewModel : ComposeViewModel() {
+    private val _items = MutableStateFlow<List<Volume>>(emptyList())
+    val items: StateFlow<List<Volume>> = _items.asStateFlow()
 
-    override fun onReady() {
+    private val _selectedItem = MutableStateFlow<Volume?>(null)
+    val selectedItem: StateFlow<Volume?> = _selectedItem.asStateFlow()
+
+    init {
         refreshItems()
+    }
+
+    fun onItemSelected(item: Volume?) {
+        _selectedItem.value = item
     }
 
     fun onHelpClicked() {
@@ -25,22 +29,28 @@ class VolumeManagerViewModel : AppViewModel() {
     }
 
     fun onRemoveVolumeClicked() {
-        ConfigPersistence.removeSoundBiteVolume(selection.get().name)
-        refreshItems()
+        _selectedItem.value?.let {
+            ConfigPersistence.removeSoundBiteVolume(it.name)
+            refreshItems()
+            _selectedItem.value = null
+        }
     }
 
     fun onAddVolumeClicked() {
-        find<ChooseVolumeScreen>().openModal(block = true, resizable = false)
-        refreshItems()
+        openChooseVolumeScreen {
+            refreshItems()
+        }
     }
 
-    fun onListDoubleClicked() {
-        val name = selection.get()?.name ?: return
-        find<ChooseVolumeScreen>(ChooseVolumeScreen.params(name)).openModal(block = true, resizable = false)
-        refreshItems()
+    fun onEditVolumeClicked(item: Volume) {
+        openChooseVolumeScreen(item.name) {
+            refreshItems()
+        }
     }
 
     private fun refreshItems() {
-        items.setAll(ConfigPersistence.getSoundBiteVolumes().map { Volume(it.key, it.value) }.sortedBy { it.name })
+        _items.value = ConfigPersistence.getSoundBiteVolumes()
+            .map { Volume(it.key, it.value) }
+            .sortedBy { it.name }
     }
 }

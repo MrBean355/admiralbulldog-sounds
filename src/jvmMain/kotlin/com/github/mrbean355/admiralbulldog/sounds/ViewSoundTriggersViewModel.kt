@@ -4,6 +4,7 @@ import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
+import com.github.mrbean355.admiralbulldog.sounds.manager.openSoundManagerScreen
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,8 +25,9 @@ class ViewSoundTriggersViewModel : ComposeViewModel() {
         }
     }
 
+
     fun onManageSoundsClicked() {
-        // TODO: openScreen<SoundManagerScreen>()
+        openSoundManagerScreen()
     }
 
     fun onHelpClicked() {

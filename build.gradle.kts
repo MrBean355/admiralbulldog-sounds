@@ -42,8 +42,8 @@ kotlin {
                 implementation("com.squareup.retrofit2:converter-gson:3.0.0")
                 implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
                 implementation("com.vdurmont:semver4j:3.1.0")
-                implementation("no.tornado:tornadofx:1.7.20")
                 implementation("com.github.mrbean355:dota2-gsi:2.5.0")
+                implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.20")
 
                 implementation("org.openjfx:javafx-base:$fxVersion:$currentPlatform")
                 implementation("org.openjfx:javafx-controls:$fxVersion:$currentPlatform")

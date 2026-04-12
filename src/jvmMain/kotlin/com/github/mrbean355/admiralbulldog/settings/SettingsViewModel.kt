@@ -8,17 +8,13 @@ import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.openSyncSoundBitesScreen
-import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import tornadofx.FX
 import java.awt.SystemTray
 
 class SettingsViewModel : ComposeViewModel() {
-    private val updateViewModel: UpdateViewModel by lazy {
-        FX.find(UpdateViewModel::class.java)
-    }
+    private val updateViewModel = UpdateViewModel()
 
     private val _appVolume = MutableStateFlow(ConfigPersistence.getVolume())
     val appVolume = _appVolume.asStateFlow()
@@ -48,7 +44,7 @@ class SettingsViewModel : ComposeViewModel() {
     val modUpdateFrequency = _modUpdateFrequency.asStateFlow()
 
     override fun onCleared() {
-        updateViewModel.onUndock()
+        updateViewModel.onCleared()
         super.onCleared()
     }
 
@@ -60,7 +56,6 @@ class SettingsViewModel : ComposeViewModel() {
     fun setDarkMode(enabled: Boolean) {
         _darkMode.value = enabled
         ConfigPersistence.setIsDarkMode(enabled)
-        reloadAppStyles()
     }
 
     fun setMinimizeToTray(minimize: Boolean) {

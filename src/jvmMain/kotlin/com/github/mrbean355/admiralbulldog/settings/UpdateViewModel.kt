@@ -1,7 +1,8 @@
 package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.DotaApplication
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.system.exitProcess
 
-class UpdateViewModel : AppViewModel() {
+class UpdateViewModel : ComposeViewModel() {
     private val gitHubRepository = GitHubRepository()
     private val dotaModRepository = DotaModRepository()
 
@@ -40,12 +41,6 @@ class UpdateViewModel : AppViewModel() {
         return ConfigPersistence.getModUpdateFrequency().lessThanTimeSince(ConfigPersistence.getModLastUpdateAt())
     }
 
-    /**
-     * Check if there's an app update available, prompting the user to download if there is.
-     * @param onError         called if the check fails.
-     * @param onUpdateSkipped invoked if the user chooses not to download the update.
-     * @param onNoUpdate      called if there's no update available, or the users skips the download.
-     */
     fun checkForAppUpdate(onError: () -> Unit = {}, onUpdateSkipped: () -> Unit = {}, onNoUpdate: () -> Unit = {}) {
         viewModelScope.launch {
             val resource = gitHubRepository.getLatestAppRelease()
@@ -108,7 +103,7 @@ class UpdateViewModel : AppViewModel() {
             action = it
         }
         if (action === WHATS_NEW_BUTTON) {
-            hostServices.showDocument(releaseInfo.htmlUrl)
+            DotaApplication.hostServices.showDocument(releaseInfo.htmlUrl)
             return doesUserWantToUpdate(header, releaseInfo)
         }
         return action === UPDATE_BUTTON
