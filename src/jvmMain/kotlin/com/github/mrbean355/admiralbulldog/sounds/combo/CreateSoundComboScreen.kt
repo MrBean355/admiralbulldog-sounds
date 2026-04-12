@@ -43,7 +43,7 @@ fun CreateSoundComboScreen(viewModel: CreateSoundComboViewModel) {
             value = name,
             onValueChange = { viewModel.onNameChanged(it) },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text(getString("label_combo_name")) },
+            label = { Text(getString("label_sound_combo_name")) },
             singleLine = true
         )
 
