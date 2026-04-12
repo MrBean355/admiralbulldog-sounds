@@ -1,38 +1,74 @@
 package com.github.mrbean355.admiralbulldog.ui
 
-import com.github.mrbean355.admiralbulldog.common.PADDING_LARGE
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH_SMALL
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposePanel
+import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.styles.AppStyles
-import javafx.geometry.Pos.CENTER
-import javafx.stage.StageStyle.UTILITY
-import tornadofx.Component
-import tornadofx.Fragment
-import tornadofx.addClass
-import tornadofx.label
-import tornadofx.paddingAll
-import tornadofx.progressindicator
-import tornadofx.vbox
+import java.awt.KeyboardFocusManager
+import java.awt.Window
+import java.awt.event.KeyEvent
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
+import javax.swing.JDialog
+import javax.swing.SwingUtilities
 
-/** Displays an indeterminate progress bar with label. Cannot be closed by the user. */
-class ProgressScreen : Fragment(getString("title_loading")) {
+/**
+ * A modal progress dialog.
+ */
+class ProgressDialog(owner: Window?) : JDialog(owner, getString("title_loading"), ModalityType.APPLICATION_MODAL) {
 
-    override val root = vbox(spacing = PADDING_MEDIUM, alignment = CENTER) {
-        prefWidth = WINDOW_WIDTH_SMALL
-        paddingAll = PADDING_LARGE
-        progressindicator()
-        label(getString("label_loading")) {
-            addClass(AppStyles.largeFont)
+    init {
+        val composePanel = ComposePanel()
+        composePanel.setContent {
+            MaterialTheme {
+                Surface {
+                    Column(
+                        modifier = Modifier.padding(24.dp).size(200.dp, 150.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                        Text(
+                            text = getString("label_loading"),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+            }
+        }
+        contentPane.add(composePanel)
+        isResizable = false
+        pack()
+        setLocationRelativeTo(owner)
+
+        // Prevent closing
+        addWindowListener(object : WindowAdapter() {
+            override fun windowClosing(e: WindowEvent?) {
+                // Do nothing
+            }
+        })
+
+        // Prevent escape closing
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher { event ->
+            event.id == KeyEvent.KEY_PRESSED && event.keyCode == KeyEvent.VK_ESCAPE && isVisible && isFocused
         }
     }
 }
 
 /** Show a progress screen which can't be closed by the user. */
-fun Component.showProgressScreen(): ProgressScreen {
-    return find<ProgressScreen>().apply {
-        openModal(stageStyle = UTILITY, escapeClosesWindow = false, resizable = false)?.also { stage ->
-            stage.setOnCloseRequest { it.consume() }
-        }
+fun showProgressScreen(owner: Window? = null): ProgressDialog {
+    val dialog = ProgressDialog(owner)
+    SwingUtilities.invokeLater {
+        dialog.isVisible = true
     }
+    return dialog
 }

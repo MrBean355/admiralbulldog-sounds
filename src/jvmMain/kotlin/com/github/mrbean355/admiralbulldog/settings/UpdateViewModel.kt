@@ -15,7 +15,7 @@ import com.github.mrbean355.admiralbulldog.common.logger
 import com.github.mrbean355.admiralbulldog.common.removeVersionPrefix
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.common.showWarning
-import com.github.mrbean355.admiralbulldog.common.update.DownloadUpdateScreen
+import com.github.mrbean355.admiralbulldog.common.update.openDownloadUpdateScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.showProgressScreen
 import com.vdurmont.semver4j.Semver
@@ -117,24 +117,25 @@ class UpdateViewModel : AppViewModel() {
     private fun downloadAppUpdate(releaseInfo: ReleaseInfo) {
         val assetInfo = releaseInfo.getAppAssetInfo() ?: return
 
-        find<DownloadUpdateScreen>(DownloadUpdateScreen.params(assetInfo, destination = "."))
-            .openModal(escapeClosesWindow = false, resizable = false)
-
-        subscribe<DownloadUpdateScreen.SuccessEvent>(times = 1) {
-            ConfigPersistence.setAppLastUpdateToNow()
-            showInformation(
-                header = getString("header_app_update_downloaded"),
-                content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
-                buttons = arrayOf(ButtonType.FINISH)
-            )
-            exitProcess(0)
-        }
+        openDownloadUpdateScreen(
+            assetInfo = assetInfo,
+            destination = ".",
+            onSuccess = {
+                ConfigPersistence.setAppLastUpdateToNow()
+                showInformation(
+                    header = getString("header_app_update_downloaded"),
+                    content = getString("msg_app_update_downloaded", File(assetInfo.name).absolutePath),
+                    buttons = arrayOf(ButtonType.FINISH)
+                )
+                exitProcess(0)
+            }
+        )
     }
 
     private suspend fun downloadModUpdates(mods: Collection<DotaMod>) {
-        val progressScreen = showProgressScreen()
+        val progressDialog = showProgressScreen()
         val allSucceeded = dotaModRepository.updateMods(mods)
-        progressScreen.close()
+        progressDialog.dispose()
         if (allSucceeded) {
             showInformation(getString("header_mod_updates_succeeded"), getString("content_mod_updates_succeeded"))
         } else {
