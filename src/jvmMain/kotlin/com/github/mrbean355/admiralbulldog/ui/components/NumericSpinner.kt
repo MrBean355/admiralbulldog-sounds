@@ -16,6 +16,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +35,8 @@ fun NumericSpinner(
     enabled: Boolean = true,
     onValueChange: (Int) -> Unit
 ) {
+    var textValue by remember(value) { mutableStateOf(value.toString()) }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth(),
@@ -50,8 +56,9 @@ fun NumericSpinner(
                 Text("-", fontWeight = FontWeight.Bold, fontSize = 20.sp)
             }
             OutlinedTextField(
-                value = value.toString(),
+                value = textValue,
                 onValueChange = {
+                    textValue = it
                     val newValue = it.toIntOrNull()
                     if (newValue != null && newValue in range) {
                         onValueChange(newValue)

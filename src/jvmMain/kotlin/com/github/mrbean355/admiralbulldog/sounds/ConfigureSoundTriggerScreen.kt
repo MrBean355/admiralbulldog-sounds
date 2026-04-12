@@ -1,39 +1,24 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.github.mrbean355.admiralbulldog.assets.SoundBites
 import com.github.mrbean355.admiralbulldog.common.MAX_BOUNTY_RUNE_TIMER
 import com.github.mrbean355.admiralbulldog.common.MAX_CHANCE
 import com.github.mrbean355.admiralbulldog.common.MAX_PERIOD
@@ -43,7 +28,6 @@ import com.github.mrbean355.admiralbulldog.common.MIN_CHANCE
 import com.github.mrbean355.admiralbulldog.common.MIN_PERIOD
 import com.github.mrbean355.admiralbulldog.common.MIN_RATE
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnBountyRunesSpawn
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.ui.components.LabeledCheckbox
@@ -62,18 +46,6 @@ fun ConfigureSoundTriggerScreen(viewModel: ConfigureSoundTriggerViewModel) {
     val minRate by viewModel.minRate.collectAsState()
     val maxRate by viewModel.maxRate.collectAsState()
     val soundBiteCount by viewModel.soundBiteCount.collectAsState()
-
-    var showSoundPicker by remember { mutableStateOf(false) }
-
-    if (showSoundPicker) {
-        SoundPickerDialog(
-            type = viewModel.type,
-            onDismiss = {
-                showSoundPicker = false
-                viewModel.refreshSoundBiteCount()
-            }
-        )
-    }
 
     Column(
         modifier = Modifier
@@ -172,7 +144,7 @@ fun ConfigureSoundTriggerScreen(viewModel: ConfigureSoundTriggerViewModel) {
                     onValueChange = { viewModel.setMaxRate(it) }
                 )
                 Button(
-                    onClick = { viewModel.onTestPlaybackSpeedClicked() },
+                    onClick = { openTestPlaybackSpeedScreen() },
                     enabled = enabled,
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                 ) {
@@ -189,7 +161,7 @@ fun ConfigureSoundTriggerScreen(viewModel: ConfigureSoundTriggerViewModel) {
                     Text(soundBiteCount.toString(), style = MaterialTheme.typography.titleMedium)
                 }
                 Button(
-                    onClick = { showSoundPicker = true },
+                    onClick = { openChooseSoundFilesScreen(viewModel.type) { viewModel.refreshSoundBiteCount() } },
                     enabled = enabled,
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                 ) {
@@ -198,68 +170,6 @@ fun ConfigureSoundTriggerScreen(viewModel: ConfigureSoundTriggerViewModel) {
             }
         }
     }
-}
-
-@Composable
-private fun SoundPickerDialog(type: SoundTriggerType, onDismiss: () -> Unit) {
-    val allSounds = remember { SoundBites.getAll() }
-    val initialSelection = remember { ConfigPersistence.getSoundsForType(type) }
-    val currentSelection = remember { initialSelection.toMutableStateList() }
-    var searchQuery by remember { mutableStateOf("") }
-
-    val filteredSounds = remember(searchQuery) {
-        if (searchQuery.isBlank()) allSounds
-        else allSounds.filter { it.name.contains(searchQuery, ignoreCase = true) }
-    }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(type.friendlyName) },
-        text = {
-            Column(modifier = Modifier.width(400.dp).height(500.dp)) {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    label = { Text(getString("prompt_search")) },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                val listState = rememberLazyListState()
-                LazyColumn(state = listState, modifier = Modifier.weight(1f)) {
-                    items(filteredSounds, key = { it.name }) { sound ->
-                        val isSelected = currentSelection.contains(sound)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    if (isSelected) currentSelection.remove(sound)
-                                    else currentSelection.add(sound)
-                                }
-                                .padding(vertical = 4.dp)
-                        ) {
-                            Checkbox(checked = isSelected, onCheckedChange = null)
-                            Text(sound.name, modifier = Modifier.padding(start = 8.dp))
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            Button(onClick = {
-                ConfigPersistence.saveSoundsForType(type, currentSelection.toList())
-                onDismiss()
-            }) {
-                Text(getString("btn_save"))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(getString("btn_cancel"))
-            }
-        }
-    )
 }
 
 @Preview

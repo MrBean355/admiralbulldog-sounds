@@ -20,6 +20,16 @@ val JavaFxDispatcher = object : CoroutineDispatcher() {
     }
 }
 
+val SwingDispatcher = object : CoroutineDispatcher() {
+    override fun isDispatchNeeded(context: CoroutineContext): Boolean {
+        return !java.awt.EventQueue.isDispatchThread()
+    }
+
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+        java.awt.EventQueue.invokeLater(block)
+    }
+}
+
 abstract class AppViewModel : ViewModel() {
     protected val viewModelScope = CoroutineScope(JavaFxDispatcher + SupervisorJob())
 

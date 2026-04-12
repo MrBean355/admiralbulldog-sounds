@@ -1,25 +1,34 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import javafx.beans.property.StringProperty
-import javafx.collections.ObservableList
-import tornadofx.observableListOf
-import tornadofx.onChange
-import tornadofx.stringProperty
+import com.github.mrbean355.admiralbulldog.common.DEFAULT_RATE
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
-class TestPlaybackSpeedViewModel : AppViewModel() {
-    val searchQuery: StringProperty = stringProperty()
-    val displayItems: ObservableList<SoundBite> = observableListOf(SoundBites.getAll())
+class TestPlaybackSpeedViewModel : ComposeViewModel() {
+    private val allSounds = SoundBites.getAll()
 
-    init {
-        searchQuery.onChange {
-            val query = it.orEmpty().trim()
-            val newItems = SoundBites.getAll().filter {
-                it.name.contains(query, ignoreCase = true)
-            }
-            displayItems.setAll(newItems)
-        }
+    private val _playbackRate = MutableStateFlow(DEFAULT_RATE)
+    val playbackRate: StateFlow<Int> = _playbackRate.asStateFlow()
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    val filteredSounds: StateFlow<List<SoundBite>> = combine(searchQuery, _playbackRate) { query, _ ->
+        allSounds.filter { it.name.contains(query.trim(), ignoreCase = true) }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, allSounds)
+
+    fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
+    }
+
+    fun onRateChanged(rate: Int) {
+        _playbackRate.value = rate
     }
 }

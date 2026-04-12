@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 abstract class ComposeViewModel {
-    protected val viewModelScope = CoroutineScope(JavaFxDispatcher + SupervisorJob())
+    protected val viewModelScope = CoroutineScope(SwingDispatcher + SupervisorJob())
 
     private val _requestWindowClose = MutableSharedFlow<Unit>()
     val requestWindowClose = _requestWindowClose.asSharedFlow()
