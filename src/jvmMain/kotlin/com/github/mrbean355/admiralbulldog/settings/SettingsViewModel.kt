@@ -7,7 +7,7 @@ import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
+import com.github.mrbean355.admiralbulldog.sounds.sync.openSyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
 import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,7 +101,7 @@ class SettingsViewModel : ComposeViewModel() {
     }
 
     fun onUpdateSoundsClicked() {
-        tornadofx.find<SyncSoundBitesScreen>().openModal(escapeClosesWindow = false, resizable = false)
+        openSyncSoundBitesScreen()
     }
 
     fun onCheckForModUpdateClicked() {

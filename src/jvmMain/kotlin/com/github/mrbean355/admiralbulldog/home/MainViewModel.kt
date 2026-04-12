@@ -26,8 +26,7 @@ import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
 import com.github.mrbean355.admiralbulldog.sounds.openViewSoundTriggersScreen
-import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
-import com.github.mrbean355.admiralbulldog.ui.openScreen
+import com.github.mrbean355.admiralbulldog.sounds.sync.openSyncSoundBitesScreen
 import javafx.beans.binding.Binding
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.binding.StringBinding
@@ -137,7 +136,7 @@ class MainViewModel : AppViewModel() {
 
     private fun checkForNewSounds() {
         if (updateViewModel.shouldCheckForNewSounds()) {
-            openScreen<SyncSoundBitesScreen>(escapeClosesWindow = false, block = true)
+            openSyncSoundBitesScreen()
         } else {
             SoundBites.checkForInvalidSounds()
         }

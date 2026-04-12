@@ -34,6 +34,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(compose.material3)
+                implementation(compose.materialIconsExtended)
 
                 implementation("com.google.code.gson:gson:2.13.2")
                 implementation("org.slf4j:slf4j-simple:2.0.17")
