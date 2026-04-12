@@ -2,16 +2,16 @@ package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.common.BulldogIcon
 import com.github.mrbean355.admiralbulldog.exception.UncaughtExceptionHandlerImpl
-import com.github.mrbean355.admiralbulldog.home.MainScreen
+import com.github.mrbean355.admiralbulldog.home.openMainScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.styles.AppStyles
 import com.github.mrbean355.admiralbulldog.styles.reloadAppStyles
-import com.github.mrbean355.admiralbulldog.ui.prepareTrayIcon
+import javafx.application.Platform
 import javafx.stage.Stage
 import tornadofx.App
 import kotlin.system.exitProcess
 
-class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(), stylesheet = arrayOf(AppStyles::class)) {
+class DotaApplication : App(icon = BulldogIcon(), stylesheet = arrayOf(AppStyles::class)) {
     companion object {
         lateinit var hostServices: javafx.application.HostServices
     }
@@ -25,7 +25,9 @@ class DotaApplication : App(primaryView = MainScreen::class, icon = BulldogIcon(
 
     override fun start(stage: Stage) {
         super.start(stage)
-        prepareTrayIcon(stage)
+        stage.hide()
+        Platform.setImplicitExit(!ConfigPersistence.isMinimizeToTray())
+        openMainScreen()
     }
 
     override fun stop() {

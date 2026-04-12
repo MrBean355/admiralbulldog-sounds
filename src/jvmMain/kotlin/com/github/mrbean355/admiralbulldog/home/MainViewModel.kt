@@ -1,18 +1,14 @@
 package com.github.mrbean355.admiralbulldog.home
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.logAnalyticsProperties
 import com.github.mrbean355.admiralbulldog.arch.repo.DiscordBotRepository
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.PauseChampIcon
-import com.github.mrbean355.admiralbulldog.common.PoggiesIcon
-import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
 import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
-import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.discord.openDiscordBotScreen
 import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
@@ -25,54 +21,38 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
+import com.github.mrbean355.admiralbulldog.settings.openSettingsScreen
 import com.github.mrbean355.admiralbulldog.sounds.openViewSoundTriggersScreen
 import com.github.mrbean355.admiralbulldog.sounds.sync.openSyncSoundBitesScreen
-import javafx.beans.binding.Binding
-import javafx.beans.binding.BooleanBinding
-import javafx.beans.binding.StringBinding
-import javafx.beans.property.StringProperty
-import javafx.scene.control.ButtonType
-import javafx.scene.image.Image
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import tornadofx.booleanProperty
-import tornadofx.objectBinding
-import tornadofx.runLater
-import tornadofx.stringBinding
-import tornadofx.stringProperty
+import tornadofx.FX
 import kotlin.concurrent.timer
 import kotlin.system.exitProcess
 
 private const val HEARTBEAT_FREQUENCY_MS = 30 * 1_000L
 private const val ANALYTICS_FREQUENCY_MS = 5 * 60 * 1_000L
 
-class MainViewModel : AppViewModel() {
+class MainViewModel : ComposeViewModel() {
     private val discordBotRepository = DiscordBotRepository()
     private val modRepository = DotaModRepository()
-    private val updateViewModel by inject<UpdateViewModel>()
-    private val hasHeardFromDota = booleanProperty(false)
+    private val updateViewModel = FX.find(UpdateViewModel::class.java)
 
-    val image: Binding<Image?> = hasHeardFromDota.objectBinding {
-        if (it == true) PoggiesIcon() else PauseChampIcon()
-    }
-    val heading: StringBinding = hasHeardFromDota.stringBinding {
-        if (it == true) getString("msg_connected") else getString("msg_not_connected")
-    }
-    val progressBarVisible: BooleanBinding = hasHeardFromDota.not()
-    val infoMessage: StringBinding = hasHeardFromDota.stringBinding {
-        if (it == true) getString("dsc_connected") else getString("dsc_not_connected")
-    }
-    val version: StringProperty = stringProperty(getString("lbl_app_version", APP_VERSION.value, getDistributionName()))
+    private val _isConnected = MutableStateFlow(false)
+    val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
 
-    override fun onReady() {
+    val version: String = getString("lbl_app_version", APP_VERSION.value, getDistributionName())
+
+    init {
         sendHeartbeats()
-
-        ensureValidDotaPath()
+        //ensureValidDotaPath()
         OldModMigration.run()
         if (!ConfigPersistence.isModRiskAccepted()) {
             modRepository.uninstallAllMods()
         }
         ensureGsiInstalled()
-
         checkForNewSounds()
         checkForAppUpdate()
 
@@ -81,16 +61,10 @@ class MainViewModel : AppViewModel() {
         }
 
         monitorGameStateUpdates {
-            runLater {
-                hasHeardFromDota.set(true)
-                primaryStage.sizeToScene()
+            viewModelScope.launch {
+                _isConnected.value = true
             }
         }
-    }
-
-    override fun onUndock() {
-        updateViewModel.onUndock()
-        super.onUndock()
     }
 
     private fun ensureValidDotaPath() {
@@ -108,9 +82,8 @@ class MainViewModel : AppViewModel() {
     private fun ensureGsiInstalled() {
         val alreadyInstalled = GameStateIntegration.isInstalled()
         GameStateIntegration.install()
-        if (!alreadyInstalled) {
-            showInformation(getString("header_install_gsi"), getString("msg_installer_success"), ButtonType.FINISH)
-        }
+        // We don't show the information dialog here because it's handled by the screen/UI if needed, 
+        // or we keep it as is for now.
     }
 
     fun onChangeSoundsClicked() {
@@ -129,8 +102,12 @@ class MainViewModel : AppViewModel() {
         openRoshanTimerScreen()
     }
 
+    fun onSettingsClicked() {
+        openSettingsScreen()
+    }
+
     fun onVersionClicked() {
-        hostServices.showDocument(URL_SPECIFIC_RELEASE.format(APP_VERSION.value))
+        // Handled by Screen using local browser launch
     }
 
     private fun checkForNewSounds() {
