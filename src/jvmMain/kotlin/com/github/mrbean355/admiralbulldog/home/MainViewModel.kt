@@ -18,7 +18,7 @@ import com.github.mrbean355.admiralbulldog.feedback.FeedbackScreen
 import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
 import com.github.mrbean355.admiralbulldog.game.monitorGameStateUpdates
 import com.github.mrbean355.admiralbulldog.game.openRoshanTimerScreen
-import com.github.mrbean355.admiralbulldog.installation.InstallationWizard
+import com.github.mrbean355.admiralbulldog.installation.openInstallationWizard
 import com.github.mrbean355.admiralbulldog.mods.OldModMigration
 import com.github.mrbean355.admiralbulldog.mods.openDotaModsScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
@@ -34,9 +34,7 @@ import javafx.beans.property.StringProperty
 import javafx.scene.control.ButtonType
 import javafx.scene.image.Image
 import kotlinx.coroutines.launch
-import tornadofx.Scope
 import tornadofx.booleanProperty
-import tornadofx.find
 import tornadofx.objectBinding
 import tornadofx.runLater
 import tornadofx.stringBinding
@@ -99,11 +97,12 @@ class MainViewModel : AppViewModel() {
         if (DotaPath.hasValidSavedPath()) {
             return
         }
-        find<InstallationWizard>(scope = Scope()).openModal(block = true, resizable = false)
-        if (!DotaPath.hasValidSavedPath()) {
-            showError(getString("header_install_gsi"), getString("content_installer_fail"))
-            exitProcess(-1)
-        }
+        openInstallationWizard(onCancelled = {
+            if (!DotaPath.hasValidSavedPath()) {
+                showError(getString("header_install_gsi"), getString("content_installer_fail"))
+                exitProcess(-1)
+            }
+        })
     }
 
     private fun ensureGsiInstalled() {

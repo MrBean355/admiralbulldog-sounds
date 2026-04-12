@@ -1,39 +1,49 @@
 package com.github.mrbean355.admiralbulldog.installation
 
-import com.github.mrbean355.admiralbulldog.common.PADDING_MEDIUM
-import com.github.mrbean355.admiralbulldog.common.PADDING_SMALL
-import com.github.mrbean355.admiralbulldog.common.PADDING_TINY
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.WIKI_GAME_FILES
 import com.github.mrbean355.admiralbulldog.common.getString
-import com.github.mrbean355.admiralbulldog.styles.AppStyles
-import tornadofx.Fragment
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.hyperlink
-import tornadofx.label
-import tornadofx.paddingLeft
-import tornadofx.paddingTop
-import tornadofx.textflow
-import tornadofx.vbox
+import java.awt.Desktop
+import java.net.URI
 
-class ShowRationaleStep : Fragment() {
+@Composable
+fun ShowRationaleStep() {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Text(getString("install_rationale_1"))
 
-    override val root = vbox(spacing = PADDING_SMALL) {
-        label(getString("install_rationale_1"))
-        textflow {
-            label(getString("install_example_1"))
-            label(getString("install_example_2")) {
-                paddingLeft = PADDING_TINY
-                addClass(AppStyles.boldFont)
+        Row {
+            Text(getString("install_example_1"))
+            Text(
+                text = getString("install_example_2"),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 4.dp)
+            )
+        }
+
+        Column {
+            Text(getString("install_rationale_2"))
+            TextButton(
+                onClick = {
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop.getDesktop().browse(URI(WIKI_GAME_FILES))
+                    }
+                },
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
+            ) {
+                Text(getString("install_rationale_3"), color = MaterialTheme.colorScheme.primary)
             }
         }
-        textflow {
-            paddingTop = PADDING_MEDIUM
-            label(getString("install_rationale_2"))
-            hyperlink(getString("install_rationale_3")) {
-                action { hostServices.showDocument(WIKI_GAME_FILES) }
-            }
-        }
-        label(getString("install_rationale_4"))
+
+        Text(getString("install_rationale_4"))
     }
 }
