@@ -1,85 +1,133 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.triggers.OnBountyRunesSpawn
 import com.github.mrbean355.admiralbulldog.triggers.OnHeal
 import com.github.mrbean355.admiralbulldog.triggers.OnWisdomRunesSpawn
 import com.github.mrbean355.admiralbulldog.triggers.Periodically
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
-import javafx.beans.binding.BooleanBinding
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.IntegerProperty
-import javafx.beans.property.StringProperty
-import tornadofx.booleanProperty
-import tornadofx.intProperty
-import tornadofx.onChange
-import tornadofx.stringProperty
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class ConfigureSoundTriggerViewModel : AppViewModel() {
-    private val type: SoundTriggerType by param()
+class ConfigureSoundTriggerViewModel(val type: SoundTriggerType) : ComposeViewModel() {
 
     /* Basic */
-    val title: StringProperty = stringProperty(type.friendlyName)
-    val description: StringProperty = stringProperty(type.description)
-    val enabled: BooleanProperty = booleanProperty(ConfigPersistence.isSoundTriggerEnabled(type))
-    val bountyRuneTimer: IntegerProperty = intProperty(ConfigPersistence.getBountyRuneTimer())
-    val showBountyRuneTimer: BooleanProperty = booleanProperty(type == OnBountyRunesSpawn::class)
-    val wisdomRuneTimer: IntegerProperty = intProperty(ConfigPersistence.getWisdomRuneTimer())
-    val showWisdomRuneTimer: BooleanProperty = booleanProperty(type == OnWisdomRunesSpawn::class)
-    val soundBiteCount = stringProperty(ConfigPersistence.getSoundsForType(type).size.toString())
+    val title: String = type.friendlyName
+    val description: String = type.description
+
+    private val _enabled = MutableStateFlow(ConfigPersistence.isSoundTriggerEnabled(type))
+    val enabled: StateFlow<Boolean> = _enabled.asStateFlow()
+
+    private val _bountyRuneTimer = MutableStateFlow(ConfigPersistence.getBountyRuneTimer())
+    val bountyRuneTimer: StateFlow<Int> = _bountyRuneTimer.asStateFlow()
+
+    val showBountyRuneTimer: Boolean = type == OnBountyRunesSpawn::class
+
+    private val _wisdomRuneTimer = MutableStateFlow(ConfigPersistence.getWisdomRuneTimer())
+    val wisdomRuneTimer: StateFlow<Int> = _wisdomRuneTimer.asStateFlow()
+
+    val showWisdomRuneTimer: Boolean = type == OnWisdomRunesSpawn::class
+
+    private val _soundBiteCount = MutableStateFlow(ConfigPersistence.getSoundsForType(type).size)
+    val soundBiteCount: StateFlow<Int> = _soundBiteCount.asStateFlow()
 
     /* Chance to play */
-    val showChance: BooleanProperty = booleanProperty(type != Periodically::class)
-    val showSmartChance: BooleanProperty = booleanProperty(type == OnHeal::class)
-    val useSmartChance: BooleanProperty = booleanProperty(ConfigPersistence.isUsingHealSmartChance())
-    val enableChanceSpinner: BooleanBinding = showSmartChance.not().or(useSmartChance.not())
-    val chance: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerChance(type))
+    val showChance: Boolean = type != Periodically::class
+    val showSmartChance: Boolean = type == OnHeal::class
+
+    private val _useSmartChance = MutableStateFlow(ConfigPersistence.isUsingHealSmartChance())
+    val useSmartChance: StateFlow<Boolean> = _useSmartChance.asStateFlow()
+
+    val enableChanceSpinner: Boolean get() = !showSmartChance || !_useSmartChance.value
+
+    private val _chance = MutableStateFlow(ConfigPersistence.getSoundTriggerChance(type))
+    val chance: StateFlow<Int> = _chance.asStateFlow()
 
     /* Periodic */
-    val showPeriod: BooleanBinding = showChance.not()
-    val minPeriod: IntegerProperty = intProperty(ConfigPersistence.getMinPeriod())
-    val maxPeriod: IntegerProperty = intProperty(ConfigPersistence.getMaxPeriod())
+    val showPeriod: Boolean = !showChance
+
+    private val _minPeriod = MutableStateFlow(ConfigPersistence.getMinPeriod())
+    val minPeriod: StateFlow<Int> = _minPeriod.asStateFlow()
+
+    private val _maxPeriod = MutableStateFlow(ConfigPersistence.getMaxPeriod())
+    val maxPeriod: StateFlow<Int> = _maxPeriod.asStateFlow()
 
     /* Playback rate */
-    val minRate: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerMinRate(type))
-    val maxRate: IntegerProperty = intProperty(ConfigPersistence.getSoundTriggerMaxRate(type))
+    private val _minRate = MutableStateFlow(ConfigPersistence.getSoundTriggerMinRate(type))
+    val minRate: StateFlow<Int> = _minRate.asStateFlow()
 
-    init {
-        enabled.onChange { ConfigPersistence.toggleSoundTrigger(type, it) }
-        bountyRuneTimer.onChange { ConfigPersistence.setBountyRuneTimer(it) }
-        wisdomRuneTimer.onChange { ConfigPersistence.setWisdomRuneTimer(it) }
-        useSmartChance.onChange { ConfigPersistence.setIsUsingHealSmartChance(it) }
-        chance.onChange { ConfigPersistence.setSoundTriggerChance(type, it) }
-        minPeriod.onChange {
-            ConfigPersistence.setMinPeriod(it)
-            if (it > maxPeriod.get()) {
-                maxPeriod.set(it)
-            }
+    private val _maxRate = MutableStateFlow(ConfigPersistence.getSoundTriggerMaxRate(type))
+    val maxRate: StateFlow<Int> = _maxRate.asStateFlow()
+
+    fun setEnabled(value: Boolean) {
+        _enabled.value = value
+        ConfigPersistence.toggleSoundTrigger(type, value)
+    }
+
+    fun setBountyRuneTimer(value: Int) {
+        _bountyRuneTimer.value = value
+        ConfigPersistence.setBountyRuneTimer(value)
+    }
+
+    fun setWisdomRuneTimer(value: Int) {
+        _wisdomRuneTimer.value = value
+        ConfigPersistence.setWisdomRuneTimer(value)
+    }
+
+    fun setUseSmartChance(value: Boolean) {
+        _useSmartChance.value = value
+        ConfigPersistence.setIsUsingHealSmartChance(value)
+    }
+
+    fun setChance(value: Int) {
+        _chance.value = value
+        ConfigPersistence.setSoundTriggerChance(type, value)
+    }
+
+    fun setMinPeriod(value: Int) {
+        _minPeriod.value = value
+        ConfigPersistence.setMinPeriod(value)
+        if (value > _maxPeriod.value) {
+            setMaxPeriod(value)
         }
-        maxPeriod.onChange {
-            ConfigPersistence.setMaxPeriod(it)
-            if (it < minPeriod.get()) {
-                minPeriod.set(it)
-            }
+    }
+
+    fun setMaxPeriod(value: Int) {
+        _maxPeriod.value = value
+        ConfigPersistence.setMaxPeriod(value)
+        if (value < _minPeriod.value) {
+            setMinPeriod(value)
         }
-        minRate.onChange {
-            ConfigPersistence.setSoundTriggerMinRate(type, it)
-            if (it > maxRate.get()) {
-                maxRate.set(it)
-            }
+    }
+
+    fun setMinRate(value: Int) {
+        _minRate.value = value
+        ConfigPersistence.setSoundTriggerMinRate(type, value)
+        if (value > _maxRate.value) {
+            setMaxRate(value)
         }
-        maxRate.onChange {
-            ConfigPersistence.setSoundTriggerMaxRate(type, it)
-            if (it < minRate.get()) {
-                minRate.set(it)
-            }
+    }
+
+    fun setMaxRate(value: Int) {
+        _maxRate.value = value
+        ConfigPersistence.setSoundTriggerMaxRate(type, value)
+        if (value < _minRate.value) {
+            setMinRate(value)
         }
     }
 
     fun onChooseSoundsClicked() {
-        find<ChooseSoundFilesScreen>(ChooseSoundFilesScreen.params(type))
-            .openModal(block = true, resizable = false)
-        soundBiteCount.set(ConfigPersistence.getSoundsForType(type).size.toString())
+        // TODO: Implement ChooseSoundFilesScreen in Compose or keep as bridge
+        // For now, let's assume we'll migrate it soon.
+    }
+
+    fun onTestPlaybackSpeedClicked() {
+        // TODO: Implement TestPlaybackSpeedScreen in Compose
+    }
+
+    fun refreshSoundBiteCount() {
+        _soundBiteCount.value = ConfigPersistence.getSoundsForType(type).size
     }
 }

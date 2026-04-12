@@ -25,7 +25,7 @@ import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.persistence.DotaPath
 import com.github.mrbean355.admiralbulldog.persistence.GameStateIntegration
 import com.github.mrbean355.admiralbulldog.settings.UpdateViewModel
-import com.github.mrbean355.admiralbulldog.sounds.ViewSoundTriggersScreen
+import com.github.mrbean355.admiralbulldog.sounds.openViewSoundTriggersScreen
 import com.github.mrbean355.admiralbulldog.sounds.sync.SyncSoundBitesScreen
 import com.github.mrbean355.admiralbulldog.ui.openScreen
 import javafx.beans.binding.Binding
@@ -116,7 +116,7 @@ class MainViewModel : AppViewModel() {
     }
 
     fun onChangeSoundsClicked() {
-        openScreen<ViewSoundTriggersScreen>()
+        openViewSoundTriggersScreen()
     }
 
     fun onDiscordBotClicked() {

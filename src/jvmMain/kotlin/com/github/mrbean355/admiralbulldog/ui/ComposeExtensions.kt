@@ -20,6 +20,7 @@ fun <VM : ComposeViewModel> openComposeScreen(
     viewModelClass: Class<VM>,
     title: String,
     viewModelFactory: () -> VM,
+    onCloseRequest: (() -> Unit)? = null,
     content: @Composable (VM) -> Unit
 ) {
     SwingUtilities.invokeLater {
@@ -48,6 +49,7 @@ fun <VM : ComposeViewModel> openComposeScreen(
                 override fun windowClosing(e: WindowEvent?) {
                     viewModel.onCleared()
                     openFrames.remove(viewModelClass)
+                    onCloseRequest?.invoke()
                 }
             })
 
@@ -76,7 +78,8 @@ fun <VM : ComposeViewModel> openComposeScreen(
 inline fun <reified VM : ComposeViewModel> openComposeScreen(
     title: String,
     noinline viewModelFactory: () -> VM,
+    noinline onCloseRequest: (() -> Unit)? = null,
     crossinline content: @Composable (VM) -> Unit
 ) {
-    openComposeScreen(VM::class.java, title, viewModelFactory) { content(it) }
+    openComposeScreen(VM::class.java, title, viewModelFactory, onCloseRequest) { content(it) }
 }

@@ -1,45 +1,31 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
-import com.github.mrbean355.admiralbulldog.arch.AppViewModel
+import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
-import com.github.mrbean355.admiralbulldog.sounds.manager.SoundManagerScreen
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
-import com.github.mrbean355.admiralbulldog.ui.openScreen
-import javafx.beans.property.ObjectProperty
-import javafx.beans.property.StringProperty
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
-import javafx.scene.paint.Color
-import tornadofx.objectProperty
-import tornadofx.stringProperty
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class ViewSoundTriggersViewModel : AppViewModel() {
-    private val text: Map<SoundTriggerType, StringProperty> = SOUND_TRIGGER_TYPES.associateWith { stringProperty() }
-    private val colours: Map<SoundTriggerType, ObjectProperty<Color>> = SOUND_TRIGGER_TYPES.associateWith { objectProperty() }
-
-    val normalBackground: Background = Background.EMPTY
-    val highlightedBackground: Background = Background(BackgroundFill(if (ConfigPersistence.isDarkMode()) Color.DARKSLATEGRAY else Color.LIGHTBLUE, null, null))
+class ViewSoundTriggersViewModel : ComposeViewModel() {
+    private val _triggerStates = MutableStateFlow<Map<SoundTriggerType, TriggerState>>(emptyMap())
+    val triggerStates: StateFlow<Map<SoundTriggerType, TriggerState>> = _triggerStates.asStateFlow()
 
     init {
         refresh()
     }
 
-    fun textProperty(type: SoundTriggerType): StringProperty = text.getValue(type)
-
-    fun textColourProperty(type: SoundTriggerType): ObjectProperty<Color> = colours.getValue(type)
-
     fun onConfigureClicked(type: SoundTriggerType) {
-        find<ConfigureSoundTriggerScreen>(params = ConfigureSoundTriggerScreen.params(type))
-            .openModal(block = true, resizable = false)
-
-        refresh()
+        openConfigureSoundTriggerScreen(type) {
+            refresh()
+        }
     }
 
     fun onManageSoundsClicked() {
-        openScreen<SoundManagerScreen>()
+        // TODO: openScreen<SoundManagerScreen>()
     }
 
     fun onHelpClicked() {
@@ -47,11 +33,11 @@ class ViewSoundTriggersViewModel : AppViewModel() {
     }
 
     private fun refresh() {
-        text.forEach { (type, prop) ->
-            prop.set(textFor(type))
-        }
-        colours.forEach { (type, prop) ->
-            prop.set(colourFor(type))
+        _triggerStates.value = SOUND_TRIGGER_TYPES.associateWith { type ->
+            TriggerState(
+                text = textFor(type),
+                isActive = isActiveFor(type)
+            )
         }
     }
 
@@ -61,15 +47,12 @@ class ViewSoundTriggersViewModel : AppViewModel() {
         else -> type.friendlyName
     }
 
-    private fun colourFor(type: SoundTriggerType): Color {
-        return if (ConfigPersistence.isSoundTriggerEnabled(type) && ConfigPersistence.getSoundsForType(type).isNotEmpty()) {
-            if (ConfigPersistence.isDarkMode()) {
-                Color.WHITE
-            } else {
-                Color.BLACK
-            }
-        } else {
-            Color.GRAY
-        }
+    private fun isActiveFor(type: SoundTriggerType): Boolean {
+        return ConfigPersistence.isSoundTriggerEnabled(type) && ConfigPersistence.getSoundsForType(type).isNotEmpty()
     }
+
+    data class TriggerState(
+        val text: String,
+        val isActive: Boolean
+    )
 }
