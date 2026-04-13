@@ -46,7 +46,7 @@ class MainViewModel : ComposeViewModel() {
 
     init {
         sendHeartbeats()
-        //ensureValidDotaPath()
+        ensureValidDotaPath()
         OldModMigration.run()
         if (!ConfigPersistence.isModRiskAccepted()) {
             modRepository.uninstallAllMods()
