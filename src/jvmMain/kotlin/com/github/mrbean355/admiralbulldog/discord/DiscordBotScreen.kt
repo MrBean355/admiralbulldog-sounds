@@ -36,6 +36,7 @@ import com.github.mrbean355.admiralbulldog.sounds.friendlyName
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.ui.components.LabeledCheckbox
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 import java.awt.Desktop
 import java.net.URI
 
@@ -150,10 +151,11 @@ private fun openUrl(url: String) {
     Desktop.getDesktop().browse(URI(url))
 }
 
+
 @Preview
 @Composable
 private fun DiscordBotScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             DiscordBotScreen(DiscordBotViewModel())
         }

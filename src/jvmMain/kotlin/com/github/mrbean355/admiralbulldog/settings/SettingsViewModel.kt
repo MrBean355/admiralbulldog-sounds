@@ -19,8 +19,6 @@ class SettingsViewModel : ComposeViewModel() {
     private val _appVolume = MutableStateFlow(ConfigPersistence.getVolume())
     val appVolume = _appVolume.asStateFlow()
 
-    private val _darkMode = MutableStateFlow(ConfigPersistence.isDarkMode())
-    val darkMode = _darkMode.asStateFlow()
 
     val traySupported = SystemTray.isSupported()
 
@@ -53,10 +51,6 @@ class SettingsViewModel : ComposeViewModel() {
         ConfigPersistence.setVolume(volume)
     }
 
-    fun setDarkMode(enabled: Boolean) {
-        _darkMode.value = enabled
-        ConfigPersistence.setIsDarkMode(enabled)
-    }
 
     fun setMinimizeToTray(minimize: Boolean) {
         _minimizeToTray.value = minimize

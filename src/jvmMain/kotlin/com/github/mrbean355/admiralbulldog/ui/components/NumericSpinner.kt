@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun NumericSpinner(
@@ -81,10 +81,11 @@ fun NumericSpinner(
     }
 }
 
+
 @Preview
 @Composable
 private fun NumericSpinnerPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             Column(modifier = Modifier.padding(16.dp)) {
                 NumericSpinner("Test Spinner", value = 50, range = 0..100) {}

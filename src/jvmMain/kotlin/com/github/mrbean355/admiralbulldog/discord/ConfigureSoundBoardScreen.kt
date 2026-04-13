@@ -38,6 +38,7 @@ import com.github.mrbean355.admiralbulldog.common.PlayIconPainter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun ConfigureSoundBoardScreen(viewModel: ConfigureSoundBoardViewModel, onCloseRequest: () -> Unit) {
@@ -125,10 +126,11 @@ fun ConfigureSoundBoardScreen(viewModel: ConfigureSoundBoardViewModel, onCloseRe
     }
 }
 
+
 @Preview
 @Composable
 private fun ConfigureSoundBoardScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             ConfigureSoundBoardScreen(ConfigureSoundBoardViewModel()) {}
         }

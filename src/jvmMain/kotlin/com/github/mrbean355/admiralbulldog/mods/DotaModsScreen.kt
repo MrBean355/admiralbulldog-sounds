@@ -47,6 +47,7 @@ import com.github.mrbean355.admiralbulldog.common.MonkaGigaIconPainter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun DotaModsScreen(viewModel: DotaModsViewModel) {
@@ -234,10 +235,11 @@ private fun AcceptModRiskDialog(onAccepted: () -> Unit, onRejected: () -> Unit) 
     )
 }
 
+
 @Preview
 @Composable
 private fun DotaModsScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             DotaModsScreen(DotaModsViewModel())
         }

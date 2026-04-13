@@ -19,6 +19,7 @@ import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.AlertButton
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 import java.awt.KeyboardFocusManager
 import java.awt.Window
 import java.awt.event.KeyEvent
@@ -26,6 +27,7 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.JDialog
 import javax.swing.SwingUtilities
+
 
 /**
  * A modal JDialog that displays Compose content.
@@ -43,7 +45,7 @@ class CommonDialog(
     init {
         val composePanel = ComposePanel()
         composePanel.setContent {
-            MaterialTheme {
+            BulldogTheme {
                 Surface {
                     DialogContent()
                 }

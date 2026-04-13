@@ -41,6 +41,7 @@ import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun ViewSoundTriggersScreen(viewModel: ViewSoundTriggersViewModel) {
@@ -123,10 +124,11 @@ private fun TriggerItem(text: String, isActive: Boolean, onClick: () -> Unit) {
     )
 }
 
+
 @Preview
 @Composable
 private fun ViewSoundTriggersScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             ViewSoundTriggersScreen(ViewSoundTriggersViewModel())
         }

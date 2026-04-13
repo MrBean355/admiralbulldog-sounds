@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
 import com.github.mrbean355.admiralbulldog.common.AddIconPainter
@@ -102,7 +103,7 @@ private fun ComboItem(
     val backgroundColor = if (isSelected) {
         MaterialTheme.colorScheme.primaryContainer
     } else {
-        androidx.compose.ui.graphics.Color.Transparent
+        Color.Transparent
     }
 
     Row(

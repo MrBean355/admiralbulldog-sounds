@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,6 +20,7 @@ import com.github.mrbean355.admiralbulldog.arch.AssetInfo
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun DownloadUpdateScreen(viewModel: DownloadUpdateViewModel) {
@@ -58,8 +60,8 @@ fun DownloadUpdateScreen(viewModel: DownloadUpdateViewModel) {
 @androidx.compose.desktop.ui.tooling.preview.Preview
 @Composable
 private fun DownloadUpdateScreenPreview() {
-    MaterialTheme {
-        androidx.compose.material3.Surface {
+    BulldogTheme {
+        Surface {
             DownloadUpdateScreen(
                 DownloadUpdateViewModel(
                     assetInfo = AssetInfo("bulldog.jar", "https://example.com"),

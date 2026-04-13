@@ -34,6 +34,7 @@ import com.github.mrbean355.admiralbulldog.common.MAX_RATE
 import com.github.mrbean355.admiralbulldog.common.MIN_RATE
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -125,10 +126,11 @@ fun SoundBoardScreen(viewModel: SoundBoardViewModel) {
     }
 }
 
+
 @Preview
 @Composable
 private fun SoundBoardScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             SoundBoardScreen(SoundBoardViewModel())
         }

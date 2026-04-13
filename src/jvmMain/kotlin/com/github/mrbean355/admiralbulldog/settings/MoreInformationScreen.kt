@@ -21,6 +21,7 @@ import com.github.mrbean355.admiralbulldog.common.URL_TELEGRAM_CHANNEL
 import com.github.mrbean355.admiralbulldog.common.URL_TWITCH_CHANNEL
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun MoreInformationScreen(viewModel: MoreInformationViewModel) {
@@ -62,10 +63,11 @@ fun MoreInformationScreen(viewModel: MoreInformationViewModel) {
     }
 }
 
+
 @Preview
 @Composable
 private fun MoreInformationScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             MoreInformationScreen(MoreInformationViewModel())
         }

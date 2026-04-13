@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun RoshanTimerScreen(viewModel: RoshanTimerViewModel) {
@@ -55,10 +56,11 @@ fun RoshanTimerScreen(viewModel: RoshanTimerViewModel) {
     }
 }
 
+
 @Preview
 @Composable
 private fun RoshanTimerScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             RoshanTimerScreen(RoshanTimerViewModel())
         }

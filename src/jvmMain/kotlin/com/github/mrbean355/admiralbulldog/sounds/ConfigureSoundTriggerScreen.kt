@@ -33,6 +33,7 @@ import com.github.mrbean355.admiralbulldog.triggers.SoundTriggerType
 import com.github.mrbean355.admiralbulldog.ui.components.LabeledCheckbox
 import com.github.mrbean355.admiralbulldog.ui.components.NumericSpinner
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun ConfigureSoundTriggerScreen(viewModel: ConfigureSoundTriggerViewModel) {
@@ -172,10 +173,11 @@ fun ConfigureSoundTriggerScreen(viewModel: ConfigureSoundTriggerViewModel) {
     }
 }
 
+
 @Preview
 @Composable
 private fun ConfigureSoundTriggerScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             ConfigureSoundTriggerScreen(ConfigureSoundTriggerViewModel(OnBountyRunesSpawn::class))
         }

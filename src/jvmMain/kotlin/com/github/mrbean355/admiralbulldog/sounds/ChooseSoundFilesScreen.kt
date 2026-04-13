@@ -39,6 +39,7 @@ import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.triggers.OnBountyRunesSpawn
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun ChooseSoundFilesScreen(viewModel: ChooseSoundFilesViewModel, onSaved: () -> Unit) {
@@ -129,10 +130,11 @@ fun ChooseSoundFilesScreen(viewModel: ChooseSoundFilesViewModel, onSaved: () -> 
     }
 }
 
+
 @Preview
 @Composable
 private fun ChooseSoundFilesScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             ChooseSoundFilesScreen(ChooseSoundFilesViewModel(OnBountyRunesSpawn::class)) {}
         }

@@ -1,6 +1,7 @@
 package com.github.mrbean355.admiralbulldog.home
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 import java.awt.Desktop
 import java.net.URI
 
@@ -57,17 +59,18 @@ fun MainScreen(viewModel: MainViewModel) {
         ) {
             // Status Icon
             val iconPainter = if (isConnected) PoggiesIconPainter() else PauseChampIconPainter()
-            androidx.compose.foundation.Image(
+            Image(
                 painter = iconPainter,
                 contentDescription = null,
-                modifier = Modifier.size(128.dp)
+                modifier = Modifier.size(96.dp)
             )
 
             // Heading
             Text(
                 text = if (isConnected) getString("msg_connected") else getString("msg_not_connected"),
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.ExtraBold,
+                color = if (isConnected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
 
             // Progress Bar / Info
@@ -101,22 +104,34 @@ fun MainScreen(viewModel: MainViewModel) {
 
             // Navigation Buttons
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = { viewModel.onChangeSoundsClicked() }) {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Button(
+                        onClick = { viewModel.onChangeSoundsClicked() },
+                        modifier = Modifier.width(160.dp).height(48.dp)
+                    ) {
                         Text(getString("btn_change_sounds"))
                     }
-                    Button(onClick = { viewModel.onDiscordBotClicked() }) {
+                    Button(
+                        onClick = { viewModel.onDiscordBotClicked() },
+                        modifier = Modifier.width(160.dp).height(48.dp)
+                    ) {
                         Text(getString("btn_discord_bot"))
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = { viewModel.onDotaModClicked() }) {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Button(
+                        onClick = { viewModel.onDotaModClicked() },
+                        modifier = Modifier.width(160.dp).height(48.dp)
+                    ) {
                         Text(getString("btn_dota_mods"))
                     }
-                    Button(onClick = { viewModel.onRoshanTimerClicked() }) {
+                    Button(
+                        onClick = { viewModel.onRoshanTimerClicked() },
+                        modifier = Modifier.width(160.dp).height(48.dp)
+                    ) {
                         Text(getString("btn_roshan_timer"))
                     }
                 }
@@ -151,10 +166,11 @@ fun MainScreen(viewModel: MainViewModel) {
     }
 }
 
+
 @Preview
 @Composable
 private fun MainScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             MainScreen(MainViewModel())
         }

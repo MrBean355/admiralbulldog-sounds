@@ -23,10 +23,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun FeedbackScreen(viewModel: FeedbackViewModel) {
@@ -106,11 +106,12 @@ object FeedbackScreen {
     fun shouldPrompt(): Boolean = FeedbackViewModel.shouldPrompt()
 }
 
+
 @Preview
 @Composable
 private fun FeedbackScreenPreview() {
-    MaterialTheme {
-        Surface(color = Color.White) {
+    BulldogTheme {
+        Surface {
             FeedbackScreen(FeedbackViewModel())
         }
     }

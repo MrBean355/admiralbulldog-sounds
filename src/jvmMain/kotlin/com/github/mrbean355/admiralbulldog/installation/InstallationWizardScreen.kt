@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun InstallationWizardScreen(viewModel: InstallationWizardViewModel, onCancelled: () -> Unit) {
@@ -99,10 +100,11 @@ fun InstallationWizardScreen(viewModel: InstallationWizardViewModel, onCancelled
     }
 }
 
+
 @Preview
 @Composable
 private fun InstallationWizardScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             InstallationWizardScreen(InstallationWizardViewModel()) {}
         }

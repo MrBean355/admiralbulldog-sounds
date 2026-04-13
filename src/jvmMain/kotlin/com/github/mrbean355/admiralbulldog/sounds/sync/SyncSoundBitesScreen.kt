@@ -43,6 +43,7 @@ import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -195,10 +196,11 @@ private fun SoundItem(name: String, sound: SoundBite?) {
     }
 }
 
+
 @Preview
 @Composable
 private fun SyncSoundBitesScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             SyncSoundBitesScreen(SyncSoundBitesViewModel())
         }

@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,6 +35,7 @@ import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.components.NumericSpinner
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun TestPlaybackSpeedScreen(viewModel: TestPlaybackSpeedViewModel) {
@@ -101,10 +101,11 @@ fun TestPlaybackSpeedScreen(viewModel: TestPlaybackSpeedViewModel) {
     }
 }
 
+
 @Preview
 @Composable
 private fun TestPlaybackSpeedScreenPreview() {
-    MaterialTheme {
+    BulldogTheme {
         Surface {
             TestPlaybackSpeedScreen(TestPlaybackSpeedViewModel())
         }

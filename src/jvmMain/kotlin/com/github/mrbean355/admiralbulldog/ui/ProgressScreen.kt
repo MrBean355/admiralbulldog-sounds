@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 import java.awt.KeyboardFocusManager
 import java.awt.Window
 import java.awt.event.KeyEvent
@@ -20,6 +21,7 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.JDialog
 import javax.swing.SwingUtilities
+
 
 /**
  * A modal progress dialog.
@@ -29,7 +31,7 @@ class ProgressDialog(owner: Window?) : JDialog(owner, getString("title_loading")
     init {
         val composePanel = ComposePanel()
         composePanel.setContent {
-            MaterialTheme {
+            BulldogTheme {
                 Surface {
                     Column(
                         modifier = Modifier.padding(24.dp).size(200.dp, 150.dp),

@@ -7,6 +7,7 @@ import androidx.compose.ui.awt.ComposePanel
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
 import com.github.mrbean355.admiralbulldog.arch.SwingDispatcher
 import com.github.mrbean355.admiralbulldog.common.getString
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.awt.event.WindowAdapter
@@ -36,7 +37,7 @@ fun <VM : ComposeViewModel> openComposeScreen(
         val frame = JFrame(title).apply {
             val composePanel = ComposePanel()
             composePanel.setContent {
-                MaterialTheme {
+                BulldogTheme {
                     Surface(color = MaterialTheme.colorScheme.background) {
                         content(viewModel)
                     }

@@ -30,6 +30,7 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.ui.components.LabeledCheckbox
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
@@ -49,8 +50,6 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             Text("${appVolume}%", modifier = Modifier.padding(start = 8.dp))
         }
 
-        val darkMode by viewModel.darkMode.collectAsState()
-        LabeledCheckbox(getString("label_dark_mode"), darkMode) { viewModel.setDarkMode(it) }
 
         if (viewModel.traySupported) {
             Text(getString("settings_header_system_tray"), style = MaterialTheme.typography.titleMedium)
@@ -140,6 +139,7 @@ fun UpdateRow(
     }
 }
 
+
 @Preview
 @Composable
 private fun SettingsScreenPreview() {
@@ -150,7 +150,7 @@ private fun SettingsScreenPreview() {
         // Ignore initialization errors during preview
     }
 
-    MaterialTheme {
+    BulldogTheme {
         SettingsScreen(SettingsViewModel())
     }
 }
