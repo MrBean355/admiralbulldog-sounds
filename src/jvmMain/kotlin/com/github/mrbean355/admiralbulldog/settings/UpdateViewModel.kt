@@ -2,14 +2,13 @@ package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
-import java.awt.Desktop
-import java.net.URI
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.arch.repo.GitHubRepository
 import com.github.mrbean355.admiralbulldog.common.AlertButton
+import com.github.mrbean355.admiralbulldog.common.browseUrl
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.logger
 import com.github.mrbean355.admiralbulldog.common.removeVersionPrefix
@@ -95,9 +94,7 @@ class UpdateViewModel : ComposeViewModel() {
         ) { action ->
             when (action) {
                 AlertButton.WHATS_NEW -> {
-                    if (Desktop.isDesktopSupported()) {
-                        Desktop.getDesktop().browse(URI(releaseInfo.htmlUrl))
-                    }
+                    browseUrl(releaseInfo.htmlUrl)
                     promptForAppUpdate(header, releaseInfo, onUpdateSkipped)
                 }
 

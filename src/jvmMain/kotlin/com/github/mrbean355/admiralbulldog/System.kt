@@ -2,11 +2,10 @@ package com.github.mrbean355.admiralbulldog
 
 import com.github.mrbean355.admiralbulldog.common.URL_JAVA_DOWNLOAD
 import com.github.mrbean355.admiralbulldog.common.URL_LATEST_RELEASE
+import com.github.mrbean355.admiralbulldog.common.browseUrl
 import com.github.mrbean355.admiralbulldog.common.getDistributionName
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.persistence.CONFIG_VERSION
-import java.awt.Desktop
-import java.net.URI
 import javax.swing.JOptionPane.ERROR_MESSAGE
 import javax.swing.JOptionPane.OK_CANCEL_OPTION
 import javax.swing.JOptionPane.OK_OPTION
@@ -80,9 +79,7 @@ private fun getJavaMajorVersion(): Int {
 }
 
 private fun tryBrowseUrl(url: String) {
-    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-        Desktop.getDesktop().browse(URI(url))
-    } else {
+    if (!browseUrl(url)) {
         showMessageDialog(null, getString("msg_visit_site_manually", url))
     }
 }

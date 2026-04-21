@@ -35,12 +35,11 @@ import com.github.mrbean355.admiralbulldog.common.PauseChampIconPainter
 import com.github.mrbean355.admiralbulldog.common.PoggiesIconPainter
 import com.github.mrbean355.admiralbulldog.common.URL_APP_INSTALLATION
 import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
+import com.github.mrbean355.admiralbulldog.common.browseUrl
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
-import java.awt.Desktop
-import java.net.URI
 
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
@@ -89,9 +88,7 @@ fun MainScreen(viewModel: MainViewModel) {
                             AlertButton.OK
                         ) { action ->
                             if (action == AlertButton.MORE_INFO) {
-                                if (Desktop.isDesktopSupported()) {
-                                    Desktop.getDesktop().browse(URI(URL_APP_INSTALLATION))
-                                }
+                                browseUrl(URL_APP_INSTALLATION)
                             }
                         }
                     }
@@ -146,9 +143,7 @@ fun MainScreen(viewModel: MainViewModel) {
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
-                    if (Desktop.isDesktopSupported()) {
-                        Desktop.getDesktop().browse(URI(URL_SPECIFIC_RELEASE.format(APP_VERSION.value)))
-                    }
+                    browseUrl(URL_SPECIFIC_RELEASE.format(APP_VERSION.value))
                 }
             )
         }

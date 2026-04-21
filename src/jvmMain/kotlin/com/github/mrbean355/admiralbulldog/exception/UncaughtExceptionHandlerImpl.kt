@@ -2,11 +2,10 @@ package com.github.mrbean355.admiralbulldog.exception
 
 import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
+import com.github.mrbean355.admiralbulldog.common.browseUrl
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
-import java.awt.Desktop
 import java.awt.EventQueue
-import java.net.URI
 import java.io.File
 import java.net.BindException
 import kotlin.system.exitProcess
@@ -38,9 +37,7 @@ class UncaughtExceptionHandlerImpl : Thread.UncaughtExceptionHandler {
         EventQueue.invokeLater {
             showError(header, content, AlertButton.DISCORD, AlertButton.OK) { action ->
                 if (action == AlertButton.DISCORD) {
-                    if (Desktop.isDesktopSupported()) {
-                        Desktop.getDesktop().browse(URI(URL_DISCORD_SERVER_INVITE))
-                    }
+                    browseUrl(URL_DISCORD_SERVER_INVITE)
                 }
                 if (exitAfterwards) {
                     exitProcess(-1)

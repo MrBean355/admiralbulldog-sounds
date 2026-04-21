@@ -1,13 +1,12 @@
 package com.github.mrbean355.admiralbulldog.mods
 
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
-import java.awt.Desktop
-import java.net.URI
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.repo.DotaModRepository
 import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.URL_MOD_INFO
 import com.github.mrbean355.admiralbulldog.common.URL_MOD_LAUNCH_OPTION
+import com.github.mrbean355.admiralbulldog.common.browseUrl
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
 import com.github.mrbean355.admiralbulldog.common.showInformation
@@ -79,9 +78,7 @@ class DotaModsViewModel : ComposeViewModel() {
             """.trimIndent(), AlertButton.MORE_INFO, AlertButton.OK
         ) {
             if (it == AlertButton.MORE_INFO) {
-                if (Desktop.isDesktopSupported()) {
-                    Desktop.getDesktop().browse(URI(mod.infoUrl))
-                }
+                browseUrl(mod.infoUrl)
             }
         }
     }
@@ -115,17 +112,13 @@ class DotaModsViewModel : ComposeViewModel() {
     fun onEnableClicked() {
         showInformation(getString("header_mod_launch_option"), getString("content_mod_launch_option"), AlertButton.MORE_INFO, AlertButton.OK) {
             if (it == AlertButton.MORE_INFO) {
-                if (Desktop.isDesktopSupported()) {
-                    Desktop.getDesktop().browse(URI(URL_MOD_LAUNCH_OPTION))
-                }
+                browseUrl(URL_MOD_LAUNCH_OPTION)
             }
         }
     }
 
     fun onAboutModdingClicked() {
-        if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().browse(URI(URL_MOD_INFO))
-        }
+        browseUrl(URL_MOD_INFO)
     }
 
     private suspend fun downloadMods(mods: Collection<DotaMod>) {

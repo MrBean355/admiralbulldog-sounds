@@ -12,9 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.WIKI_GAME_FILES
+import com.github.mrbean355.admiralbulldog.common.browseUrl
 import com.github.mrbean355.admiralbulldog.common.getString
-import java.awt.Desktop
-import java.net.URI
 
 @Composable
 fun ShowRationaleStep() {
@@ -33,11 +32,7 @@ fun ShowRationaleStep() {
         Column {
             Text(getString("install_rationale_2"))
             TextButton(
-                onClick = {
-                    if (Desktop.isDesktopSupported()) {
-                        Desktop.getDesktop().browse(URI(WIKI_GAME_FILES))
-                    }
-                },
+                onClick = { browseUrl(WIKI_GAME_FILES) },
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
             ) {
                 Text(getString("install_rationale_3"), color = MaterialTheme.colorScheme.primary)

@@ -1,5 +1,8 @@
 package com.github.mrbean355.admiralbulldog.common
 
+import java.awt.Desktop
+import java.net.URI
+
 private const val GITHUB = "https://github.com/MrBean355/admiralbulldog-sounds"
 
 const val URL_JAVA_DOWNLOAD = "https://www.java.com/en/download"
@@ -20,3 +23,12 @@ const val URL_PAYPAL = "https://paypal.me/mrbean355"
 
 /** Learn about which Dota files the app touches. */
 const val WIKI_GAME_FILES = "$GITHUB/wiki/Game-Files"
+
+fun browseUrl(url: String): Boolean {
+    return if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+        Desktop.getDesktop().browse(URI(url))
+        true
+    } else {
+        false
+    }
+}

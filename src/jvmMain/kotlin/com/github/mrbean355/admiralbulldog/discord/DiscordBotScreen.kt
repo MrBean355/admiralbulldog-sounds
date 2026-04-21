@@ -31,14 +31,13 @@ import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI_COMMANDS
 import com.github.mrbean355.admiralbulldog.common.YellowDotIconPainter
+import com.github.mrbean355.admiralbulldog.common.browseUrl
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.ui.components.LabeledCheckbox
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
-import java.awt.Desktop
-import java.net.URI
 
 @Composable
 fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
@@ -65,7 +64,7 @@ fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
                 text = getString("label_invite_discord_bot"),
                 color = MaterialTheme.colorScheme.primary,
                 textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable { openUrl(URL_DISCORD_BOT_INVITE) }
+                modifier = Modifier.clickable { browseUrl(URL_DISCORD_BOT_INVITE) }
             )
         }
 
@@ -131,7 +130,7 @@ fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
         ) {
-            Button(onClick = { openUrl(URL_DISCORD_WIKI_COMMANDS) }) {
+            Button(onClick = { browseUrl(URL_DISCORD_WIKI_COMMANDS) }) {
                 Text(getString("btn_discord_bot_commands"))
             }
             Button(
@@ -140,16 +139,13 @@ fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
             ) {
                 Text(getString("action_sound_board"))
             }
-            Button(onClick = { openUrl(URL_DISCORD_WIKI) }) {
+            Button(onClick = { browseUrl(URL_DISCORD_WIKI) }) {
                 Text(getString("btn_help"))
             }
         }
     }
 }
 
-private fun openUrl(url: String) {
-    Desktop.getDesktop().browse(URI(url))
-}
 
 
 @Preview
