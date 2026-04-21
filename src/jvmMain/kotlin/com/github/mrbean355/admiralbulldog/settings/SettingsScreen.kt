@@ -117,12 +117,12 @@ fun UpdateRow(
         var expanded by remember { mutableStateOf(false) }
         Box {
             OutlinedButton(onClick = { expanded = true }) {
-                Text(UpdateFrequencyStringConverter().toString(currentFreq) ?: "")
+                Text(currentFreq.getFriendlyName())
             }
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 frequencies.forEach { freq ->
                     DropdownMenuItem(
-                        text = { Text(UpdateFrequencyStringConverter().toString(freq) ?: "") },
+                        text = { Text(freq.getFriendlyName()) },
                         onClick = {
                             onFrequencySelected(freq)
                             expanded = false

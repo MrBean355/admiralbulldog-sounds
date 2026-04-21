@@ -6,8 +6,6 @@ import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency.DAILY
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency.MONTHLY
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency.NEVER
 import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency.WEEKLY
-import com.github.mrbean355.admiralbulldog.settings.UpdateFrequency.values
-import javafx.util.StringConverter
 import java.util.concurrent.TimeUnit.DAYS
 
 enum class UpdateFrequency {
@@ -33,20 +31,12 @@ fun UpdateFrequency.lessThanTimeSince(lastCheck: Long): Boolean {
     return timeSinceLastCheck >= checkAfterDuration
 }
 
-class UpdateFrequencyStringConverter : StringConverter<UpdateFrequency>() {
-
-    override fun toString(obj: UpdateFrequency?): String? {
-        obj ?: return null
-        return when (obj) {
-            ALWAYS -> getString("frequency_always")
-            DAILY -> getString("frequency_daily")
-            WEEKLY -> getString("frequency_weekly")
-            MONTHLY -> getString("frequency_monthly")
-            NEVER -> getString("frequency_never")
-        }
-    }
-
-    override fun fromString(str: String?): UpdateFrequency? {
-        return values().firstOrNull { toString(it) == str }
+fun UpdateFrequency.getFriendlyName(): String {
+    return when (this) {
+        ALWAYS -> getString("frequency_always")
+        DAILY -> getString("frequency_daily")
+        WEEKLY -> getString("frequency_weekly")
+        MONTHLY -> getString("frequency_monthly")
+        NEVER -> getString("frequency_never")
     }
 }
