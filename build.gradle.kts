@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.github.mrbean355"
-version = "1.16.0-SNAPSHOT"
+version = "2.0.0-SNAPSHOT"
 
 repositories {
     google()
