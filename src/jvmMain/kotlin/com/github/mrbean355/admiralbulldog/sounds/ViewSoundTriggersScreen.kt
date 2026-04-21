@@ -1,27 +1,19 @@
 package com.github.mrbean355.admiralbulldog.sounds
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,27 +42,14 @@ fun ViewSoundTriggersScreen(viewModel: ViewSoundTriggersViewModel) {
     Column(
         modifier = Modifier
             .width(WINDOW_WIDTH.dp)
-            .height(600.dp)
             .padding(16.dp)
     ) {
-        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-            val listState = rememberLazyListState()
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(SOUND_TRIGGER_TYPES.toList()) { type ->
-                    val state = triggerStates[type] ?: ViewSoundTriggersViewModel.TriggerState("", false)
-                    TriggerItem(
-                        text = state.text,
-                        isActive = state.isActive,
-                        onClick = { viewModel.onConfigureClicked(type) }
-                    )
-                }
-            }
-            VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(listState)
+        SOUND_TRIGGER_TYPES.forEach { type ->
+            val state = triggerStates[type] ?: ViewSoundTriggersViewModel.TriggerState("", false)
+            TriggerItem(
+                text = state.text,
+                isActive = state.isActive,
+                onClick = { viewModel.onConfigureClicked(type) }
             )
         }
 
