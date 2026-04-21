@@ -126,7 +126,6 @@ fun ConfigureSoundBoardScreen(viewModel: ConfigureSoundBoardViewModel, onCloseRe
     }
 }
 
-
 @Preview
 @Composable
 private fun ConfigureSoundBoardScreenPreview() {

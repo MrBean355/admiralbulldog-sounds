@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-
 abstract class ComposeViewModel {
     protected val viewModelScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 

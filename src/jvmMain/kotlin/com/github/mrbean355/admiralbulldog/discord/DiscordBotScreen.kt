@@ -146,8 +146,6 @@ fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
     }
 }
 
-
-
 @Preview
 @Composable
 private fun DiscordBotScreenPreview() {

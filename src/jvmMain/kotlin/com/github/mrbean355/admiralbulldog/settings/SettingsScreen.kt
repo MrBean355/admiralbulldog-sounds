@@ -139,7 +139,6 @@ fun UpdateRow(
     }
 }
 
-
 @Preview
 @Composable
 private fun SettingsScreenPreview() {

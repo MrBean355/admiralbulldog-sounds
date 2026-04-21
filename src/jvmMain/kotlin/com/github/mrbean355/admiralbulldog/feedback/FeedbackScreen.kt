@@ -106,7 +106,6 @@ object FeedbackScreen {
     fun shouldPrompt(): Boolean = FeedbackViewModel.shouldPrompt()
 }
 
-
 @Preview
 @Composable
 private fun FeedbackScreenPreview() {

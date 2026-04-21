@@ -161,7 +161,6 @@ fun MainScreen(viewModel: MainViewModel) {
     }
 }
 
-
 @Preview
 @Composable
 private fun MainScreenPreview() {

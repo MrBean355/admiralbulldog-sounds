@@ -124,7 +124,6 @@ private fun TriggerItem(text: String, isActive: Boolean, onClick: () -> Unit) {
     )
 }
 
-
 @Preview
 @Composable
 private fun ViewSoundTriggersScreenPreview() {

@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.window.*
+import androidx.compose.ui.window.Tray
+import androidx.compose.ui.window.rememberTrayState
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.home.MainViewModel
-import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 
 @Composable
 fun androidx.compose.ui.window.ApplicationScope.AppTray() {

@@ -235,7 +235,6 @@ private fun AcceptModRiskDialog(onAccepted: () -> Unit, onRejected: () -> Unit) 
     )
 }
 
-
 @Preview
 @Composable
 private fun DotaModsScreenPreview() {

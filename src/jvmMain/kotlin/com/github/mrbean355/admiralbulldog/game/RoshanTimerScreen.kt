@@ -56,7 +56,6 @@ fun RoshanTimerScreen(viewModel: RoshanTimerViewModel) {
     }
 }
 
-
 @Preview
 @Composable
 private fun RoshanTimerScreenPreview() {

@@ -30,7 +30,6 @@ fun LabeledCheckbox(
     }
 }
 
-
 @Preview
 @Composable
 private fun LabeledCheckboxPreview() {

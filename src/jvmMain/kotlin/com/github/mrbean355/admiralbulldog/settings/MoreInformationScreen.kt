@@ -63,7 +63,6 @@ fun MoreInformationScreen(viewModel: MoreInformationViewModel) {
     }
 }
 
-
 @Preview
 @Composable
 private fun MoreInformationScreenPreview() {

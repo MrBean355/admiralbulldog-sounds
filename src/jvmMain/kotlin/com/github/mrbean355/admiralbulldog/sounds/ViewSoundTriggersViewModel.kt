@@ -25,7 +25,6 @@ class ViewSoundTriggersViewModel : ComposeViewModel() {
         }
     }
 
-
     fun onManageSoundsClicked() {
         openSoundManagerScreen()
     }

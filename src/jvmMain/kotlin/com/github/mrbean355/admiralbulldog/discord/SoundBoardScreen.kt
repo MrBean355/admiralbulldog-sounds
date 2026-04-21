@@ -126,7 +126,6 @@ fun SoundBoardScreen(viewModel: SoundBoardViewModel) {
     }
 }
 
-
 @Preview
 @Composable
 private fun SoundBoardScreenPreview() {

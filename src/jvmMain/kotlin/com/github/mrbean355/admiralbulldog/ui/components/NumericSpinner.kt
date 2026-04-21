@@ -81,7 +81,6 @@ fun NumericSpinner(
     }
 }
 
-
 @Preview
 @Composable
 private fun NumericSpinnerPreview() {

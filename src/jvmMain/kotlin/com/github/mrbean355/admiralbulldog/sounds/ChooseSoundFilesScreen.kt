@@ -130,7 +130,6 @@ fun ChooseSoundFilesScreen(viewModel: ChooseSoundFilesViewModel, onSaved: () -> 
     }
 }
 
-
 @Preview
 @Composable
 private fun ChooseSoundFilesScreenPreview() {

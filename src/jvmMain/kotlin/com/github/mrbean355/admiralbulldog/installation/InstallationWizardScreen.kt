@@ -100,7 +100,6 @@ fun InstallationWizardScreen(viewModel: InstallationWizardViewModel, onCancelled
     }
 }
 
-
 @Preview
 @Composable
 private fun InstallationWizardScreenPreview() {

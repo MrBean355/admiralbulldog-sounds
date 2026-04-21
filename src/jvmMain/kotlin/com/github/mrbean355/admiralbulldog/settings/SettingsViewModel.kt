@@ -18,7 +18,6 @@ class SettingsViewModel : ComposeViewModel() {
     private val _appVolume = MutableStateFlow(ConfigPersistence.getVolume())
     val appVolume = _appVolume.asStateFlow()
 
-
     val traySupported = SystemTray.isSupported()
 
     private val _minimizeToTray = MutableStateFlow(ConfigPersistence.isMinimizeToTray())
@@ -49,7 +48,6 @@ class SettingsViewModel : ComposeViewModel() {
         _appVolume.value = volume
         ConfigPersistence.setVolume(volume)
     }
-
 
     fun setMinimizeToTray(minimize: Boolean) {
         _minimizeToTray.value = minimize

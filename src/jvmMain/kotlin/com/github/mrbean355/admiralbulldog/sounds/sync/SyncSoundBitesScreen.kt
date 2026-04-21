@@ -196,7 +196,6 @@ private fun SoundItem(name: String, sound: SoundBite?) {
     }
 }
 
-
 @Preview
 @Composable
 private fun SyncSoundBitesScreenPreview() {

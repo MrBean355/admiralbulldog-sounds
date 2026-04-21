@@ -101,7 +101,6 @@ fun TestPlaybackSpeedScreen(viewModel: TestPlaybackSpeedViewModel) {
     }
 }
 
-
 @Preview
 @Composable
 private fun TestPlaybackSpeedScreenPreview() {

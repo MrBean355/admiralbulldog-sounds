@@ -173,7 +173,6 @@ fun ConfigureSoundTriggerScreen(viewModel: ConfigureSoundTriggerViewModel) {
     }
 }
 
-
 @Preview
 @Composable
 private fun ConfigureSoundTriggerScreenPreview() {
