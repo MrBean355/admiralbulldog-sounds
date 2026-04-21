@@ -8,7 +8,6 @@ import com.github.mrbean355.admiralbulldog.common.showWarning
 import com.github.mrbean355.admiralbulldog.feedback.openFeedbackScreen
 import com.github.mrbean355.admiralbulldog.persistence.ConfigPersistence
 import com.github.mrbean355.admiralbulldog.sounds.sync.openSyncSoundBitesScreen
-import com.github.mrbean355.admiralbulldog.ui.refreshSystemTray
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.awt.SystemTray
@@ -55,13 +54,11 @@ class SettingsViewModel : ComposeViewModel() {
     fun setMinimizeToTray(minimize: Boolean) {
         _minimizeToTray.value = minimize
         ConfigPersistence.setMinimizeToTray(minimize)
-        refreshSystemTray()
     }
 
     fun setAlwaysShowTrayIcon(show: Boolean) {
         _alwaysShowTrayIcon.value = show
         ConfigPersistence.setAlwaysShowTrayIcon(show)
-        refreshSystemTray()
     }
 
     fun setAppUpdateFrequency(frequency: UpdateFrequency) {

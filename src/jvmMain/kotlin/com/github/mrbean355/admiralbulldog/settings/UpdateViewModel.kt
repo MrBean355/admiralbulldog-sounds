@@ -1,8 +1,9 @@
 package com.github.mrbean355.admiralbulldog.settings
 
 import com.github.mrbean355.admiralbulldog.APP_VERSION
-import com.github.mrbean355.admiralbulldog.DotaApplication
 import com.github.mrbean355.admiralbulldog.arch.ComposeViewModel
+import java.awt.Desktop
+import java.net.URI
 import com.github.mrbean355.admiralbulldog.arch.DotaMod
 import com.github.mrbean355.admiralbulldog.arch.ReleaseInfo
 import com.github.mrbean355.admiralbulldog.arch.getAppAssetInfo
@@ -94,7 +95,9 @@ class UpdateViewModel : ComposeViewModel() {
         ) { action ->
             when (action) {
                 AlertButton.WHATS_NEW -> {
-                    DotaApplication.hostServices.showDocument(releaseInfo.htmlUrl)
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop.getDesktop().browse(URI(releaseInfo.htmlUrl))
+                    }
                     promptForAppUpdate(header, releaseInfo, onUpdateSkipped)
                 }
 

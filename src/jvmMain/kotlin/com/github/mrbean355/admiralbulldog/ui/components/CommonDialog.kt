@@ -15,107 +15,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.AlertButton
-import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
-import java.awt.KeyboardFocusManager
-import java.awt.Window
-import java.awt.event.KeyEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
-import javax.swing.JDialog
-import javax.swing.SwingUtilities
-
-
-/**
- * A modal JDialog that displays Compose content.
- */
-class CommonDialog(
-    owner: Window?,
-    title: String,
-    private val header: String,
-    private val content: String?,
-    private val icon: @Composable () -> Painter,
-    private val buttons: List<AlertButton>,
-    private val onButtonClicked: (AlertButton) -> Unit
-) : JDialog(owner, title, ModalityType.APPLICATION_MODAL) {
-
-    init {
-        val composePanel = ComposePanel()
-        composePanel.setContent {
-            BulldogTheme {
-                Surface {
-                    DialogContent()
-                }
-            }
-        }
-        contentPane.add(composePanel)
-        isResizable = false
-        pack()
-        setLocationRelativeTo(owner)
-
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(e: WindowEvent?) {
-                onButtonClicked(AlertButton.CANCEL)
-            }
-        })
-
-        // Escape to close
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher { event ->
-            if (event.id == KeyEvent.KEY_PRESSED && event.keyCode == KeyEvent.VK_ESCAPE && isVisible && isFocused) {
-                dispatchEvent(WindowEvent(this, WindowEvent.WINDOW_CLOSING))
-                true
-            } else false
-        }
-    }
-
-    @Composable
-    private fun DialogContent() {
-        Column(
-            modifier = Modifier.padding(24.dp).widthIn(min = 300.dp, max = 500.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Image(
-                    painter = icon(),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-                Text(
-                    text = header,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-            content?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.End)
-            ) {
-                buttons.forEach { alertButton ->
-                    Button(onClick = {
-                        onButtonClicked(alertButton)
-                        dispose()
-                    }) {
-                        Text(alertButton.text)
-                    }
-                }
-            }
-        }
-    }
-}
+import com.github.mrbean355.admiralbulldog.ui.DialogEntry
+import com.github.mrbean355.admiralbulldog.ui.WindowManager
 
 fun showComposeAlert(
-    owner: Window?,
     title: String,
     header: String,
     content: String?,
@@ -123,8 +29,48 @@ fun showComposeAlert(
     buttons: List<AlertButton>,
     actionFn: (AlertButton) -> Unit
 ) {
-    SwingUtilities.invokeLater {
-        val dialog = CommonDialog(owner, title, header, content, icon, buttons, actionFn)
-        dialog.isVisible = true
-    }
+    WindowManager.openDialog(
+        DialogEntry(title) { entry ->
+            Surface {
+                Column(
+                    modifier = Modifier.padding(24.dp).widthIn(min = 300.dp, max = 500.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Image(
+                            painter = icon(),
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Text(
+                            text = header,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+                    content?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.End)
+                    ) {
+                        buttons.forEach { alertButton ->
+                            Button(onClick = {
+                                actionFn(alertButton)
+                                WindowManager.closeDialog(entry)
+                            }) {
+                                Text(alertButton.text)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    )
 }

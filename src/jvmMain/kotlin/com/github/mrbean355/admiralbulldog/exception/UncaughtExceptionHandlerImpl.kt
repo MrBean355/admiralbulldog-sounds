@@ -4,8 +4,9 @@ import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_SERVER_INVITE
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showError
-import javafx.application.HostServices
+import java.awt.Desktop
 import java.awt.EventQueue
+import java.net.URI
 import java.io.File
 import java.net.BindException
 import kotlin.system.exitProcess
@@ -14,7 +15,7 @@ import kotlin.system.exitProcess
  * [java.lang.Thread.UncaughtExceptionHandler] which creates a log file containing the stack trace with some additional
  * info. Also shows an alert to the user, asking them to report the issue on Discord.
  */
-class UncaughtExceptionHandlerImpl(private val hostServices: HostServices) : Thread.UncaughtExceptionHandler {
+class UncaughtExceptionHandlerImpl : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         if (e is BindException) {
@@ -37,7 +38,9 @@ class UncaughtExceptionHandlerImpl(private val hostServices: HostServices) : Thr
         EventQueue.invokeLater {
             showError(header, content, AlertButton.DISCORD, AlertButton.OK) { action ->
                 if (action == AlertButton.DISCORD) {
-                    hostServices.showDocument(URL_DISCORD_SERVER_INVITE)
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop.getDesktop().browse(URI(URL_DISCORD_SERVER_INVITE))
+                    }
                 }
                 if (exitAfterwards) {
                     exitProcess(-1)

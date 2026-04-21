@@ -181,10 +181,7 @@ fun openMainScreen() {
     openComposeScreen(
         title = getString("title_app"),
         viewModelFactory = { MainViewModel() },
-        escapeClosesWindow = false,
-        onCloseRequest = {
-            javafx.application.Platform.exit()
-        }
+        escapeClosesWindow = false
     ) { viewModel ->
         MainScreen(viewModel)
     }

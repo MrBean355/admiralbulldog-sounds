@@ -1,7 +1,6 @@
 package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.ui.components.showComposeAlert
-import java.awt.EventQueue
 
 /**
  * Project-specific alert buttons to decouple logic from JavaFX.
@@ -41,32 +40,24 @@ fun showAlert(
     title: String? = null,
     actionFn: (AlertButton) -> Unit = {}
 ) {
-    val show = {
-        showComposeAlert(
-            owner = null,
-            title = title ?: getString("title_app"),
-            header = header,
-            content = content,
-            buttons = if (buttons.isEmpty()) listOf(AlertButton.OK) else buttons.toList(),
-            icon = when (type) {
-                AlertType.INFORMATION -> {
-                    { MonkaHmmIconPainter() }
-                }
+    showComposeAlert(
+        title = title ?: getString("title_app"),
+        header = header,
+        content = content,
+        buttons = if (buttons.isEmpty()) listOf(AlertButton.OK) else buttons.toList(),
+        icon = when (type) {
+            AlertType.INFORMATION -> {
+                { MonkaHmmIconPainter() }
+            }
 
-                AlertType.WARNING -> {
-                    { MonkaSIconPainter() }
-                }
+            AlertType.WARNING -> {
+                { MonkaSIconPainter() }
+            }
 
-                AlertType.ERROR -> {
-                    { SadKekIconPainter() }
-                }
-            },
-            actionFn = actionFn
-        )
-    }
-    if (EventQueue.isDispatchThread()) {
-        show()
-    } else {
-        EventQueue.invokeLater(show)
-    }
+            AlertType.ERROR -> {
+                { SadKekIconPainter() }
+            }
+        },
+        actionFn = actionFn
+    )
 }
