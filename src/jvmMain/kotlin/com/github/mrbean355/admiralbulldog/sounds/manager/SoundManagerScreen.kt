@@ -53,7 +53,7 @@ fun SoundManagerScreen(viewModel: SoundManagerViewModel) {
     val items by viewModel.items.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier.size(width = 1000.dp, height = 600.dp).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Search & Filters
