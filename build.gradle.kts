@@ -43,7 +43,7 @@ kotlin {
                 implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
                 implementation("com.vdurmont:semver4j:3.1.0")
                 implementation("com.github.mrbean355:dota2-gsi:2.5.0")
-                implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.20")
+                implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.21")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.1")
 
                 implementation("org.openjfx:javafx-base:$fxVersion:$currentPlatform")
