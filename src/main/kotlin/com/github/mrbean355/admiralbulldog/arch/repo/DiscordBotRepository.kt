@@ -36,7 +36,7 @@ import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.io.FileOutputStream
 
-var hostUrl = "http://prod.upmccxmkjx.us-east-2.elasticbeanstalk.com:8090"
+var hostUrl = "https://discord-roons-bot-b319e9557565.herokuapp.com"
 
 class DiscordBotRepository {
     private val logger = LoggerFactory.getLogger(DiscordBotRepository::class.java)
