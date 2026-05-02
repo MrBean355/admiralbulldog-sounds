@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     kotlin("multiplatform") version "2.3.20"
     kotlin("plugin.compose") version "2.3.20"
-    id("org.jetbrains.compose") version "1.7.3"
+    id("org.jetbrains.compose") version "1.10.3"
 }
 
 group = "com.github.mrbean355"
