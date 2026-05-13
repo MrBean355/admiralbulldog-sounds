@@ -37,7 +37,7 @@ kotlin {
                 implementation(compose.materialIconsExtended)
 
                 implementation("com.google.code.gson:gson:2.13.2")
-                implementation("org.slf4j:slf4j-simple:2.0.17")
+                implementation("org.slf4j:slf4j-simple:2.0.18")
                 implementation("com.squareup.retrofit2:retrofit:3.0.0")
                 implementation("com.squareup.retrofit2:converter-gson:3.0.0")
                 implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
