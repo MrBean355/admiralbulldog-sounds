@@ -22,11 +22,11 @@ class OnMidasReady : SoundTrigger {
     }
 
     private fun Item.isMidasOffCooldown(): Boolean {
-        return name == "item_hand_of_midas" && cooldown == 0
+        val charges = charges ?: -1
+        return name == "item_hand_of_midas" && charges > 0
     }
 
     private fun Item.isMidasOnCooldown(): Boolean {
-        val cd = cooldown
-        return name == "item_hand_of_midas" && cd != null && cd > 0
+        return name == "item_hand_of_midas" && charges == 0
     }
 }
