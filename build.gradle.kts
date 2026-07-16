@@ -28,9 +28,14 @@ kotlin {
     jvm {
         compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
     }
-    
+
     sourceSets {
-        val jvmMain by getting {
+        getByName("commonMain") {
+            dependencies {
+                implementation("org.jetbrains.compose.components:components-resources:1.11.1")
+            }
+        }
+        getByName("jvmMain") {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation("org.jetbrains.compose.material3:material3:1.9.0")
@@ -52,7 +57,7 @@ kotlin {
                 implementation("org.openjfx:javafx-swing:$fxVersion:$currentPlatform")
             }
         }
-        val jvmTest by getting {
+        getByName("jvmTest") {
             dependencies {
                 implementation("junit:junit:4.13.2")
             }
@@ -70,7 +75,6 @@ val buildConfigTask = tasks.register<GenerateBuildConfigTask>("generateBuildConf
     platform = currentPlatform
 }
 
-val iconsTask = tasks.register<GenerateIconsTask>("generateIcons")
 
 tasks.withType<Jar> {
     archiveBaseName.set("admiralbulldog-sounds-$currentPlatform")
@@ -86,5 +90,5 @@ tasks.withType<Jar> {
 }
 
 tasks.named("compileKotlinJvm").configure {
-    dependsOn(buildConfigTask, iconsTask)
+    dependsOn(buildConfigTask)
 }

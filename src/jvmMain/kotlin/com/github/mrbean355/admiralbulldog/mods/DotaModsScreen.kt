@@ -42,12 +42,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.mrbean355.admiralbulldog.common.HelpIconPainter
-import com.github.mrbean355.admiralbulldog.common.MonkaGigaIconPainter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.help
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.monka_giga
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun DotaModsScreen(viewModel: DotaModsViewModel) {
@@ -115,7 +117,7 @@ fun DotaModsScreen(viewModel: DotaModsViewModel) {
                         )
                         IconButton(onClick = { viewModel.onAboutModClicked(mod) }) {
                             Icon(
-                                painter = HelpIconPainter(),
+                                painter = painterResource(Res.drawable.help),
                                 contentDescription = getString("tooltip_more_info"),
                                 modifier = Modifier.size(20.dp)
                             )
@@ -195,7 +197,7 @@ private fun AcceptModRiskDialog(onAccepted: () -> Unit, onRejected: () -> Unit) 
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = MonkaGigaIconPainter(),
+                        painter = painterResource(Res.drawable.monka_giga),
                         contentDescription = null,
                         modifier = Modifier.size(64.dp)
                     )

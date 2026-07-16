@@ -23,10 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.assets.ComboSoundBite
-import com.github.mrbean355.admiralbulldog.common.DeleteIconPainter
-import com.github.mrbean355.admiralbulldog.common.PlayIconPainter
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.delete
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.play
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CreateSoundComboScreen(viewModel: CreateSoundComboViewModel) {
@@ -83,7 +85,7 @@ fun CreateSoundComboScreen(viewModel: CreateSoundComboViewModel) {
                 ) {
                     Text(text = sound.name, modifier = Modifier.weight(1f))
                     IconButton(onClick = { viewModel.onRemoveClicked(index) }) {
-                        Icon(DeleteIconPainter(), contentDescription = null, modifier = Modifier.size(18.dp))
+                        Icon(painterResource(Res.drawable.delete), contentDescription = null, modifier = Modifier.size(18.dp))
                     }
                 }
             }
@@ -94,7 +96,7 @@ fun CreateSoundComboScreen(viewModel: CreateSoundComboViewModel) {
             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End)
         ) {
             IconButton(onClick = { viewModel.onPlayClicked() }, enabled = items.isNotEmpty()) {
-                Icon(PlayIconPainter(), contentDescription = null)
+                Icon(painterResource(Res.drawable.play), contentDescription = null)
             }
             Button(
                 onClick = { viewModel.onSaveClicked() },

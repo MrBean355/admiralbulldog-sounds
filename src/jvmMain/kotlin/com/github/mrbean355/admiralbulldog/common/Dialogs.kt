@@ -1,6 +1,11 @@
 package com.github.mrbean355.admiralbulldog.common
 
 import com.github.mrbean355.admiralbulldog.ui.components.showComposeAlert
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.monka_hmm
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.monka_s
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.sad_kek
+import org.jetbrains.compose.resources.painterResource
 
 /**
  * Project-specific alert buttons to decouple logic from JavaFX.
@@ -47,15 +52,15 @@ fun showAlert(
         buttons = if (buttons.isEmpty()) listOf(AlertButton.OK) else buttons.toList(),
         icon = when (type) {
             AlertType.INFORMATION -> {
-                { MonkaHmmIconPainter() }
+                { painterResource(Res.drawable.monka_hmm) }
             }
 
             AlertType.WARNING -> {
-                { MonkaSIconPainter() }
+                { painterResource(Res.drawable.monka_s) }
             }
 
             AlertType.ERROR -> {
-                { SadKekIconPainter() }
+                { painterResource(Res.drawable.sad_kek) }
             }
         },
         actionFn = actionFn

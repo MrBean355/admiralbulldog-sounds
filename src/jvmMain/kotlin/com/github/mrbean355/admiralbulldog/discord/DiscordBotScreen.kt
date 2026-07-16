@@ -24,13 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.mrbean355.admiralbulldog.common.GreenDotIconPainter
-import com.github.mrbean355.admiralbulldog.common.GreyDotIconPainter
-import com.github.mrbean355.admiralbulldog.common.RedDotIconPainter
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_BOT_INVITE
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI
 import com.github.mrbean355.admiralbulldog.common.URL_DISCORD_WIKI_COMMANDS
-import com.github.mrbean355.admiralbulldog.common.YellowDotIconPainter
 import com.github.mrbean355.admiralbulldog.common.browseUrl
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.sounds.friendlyName
@@ -38,6 +34,12 @@ import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.ui.components.LabeledCheckbox
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.green_dot
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.grey_dot
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.red_dot
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.yellow_dot
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
@@ -82,10 +84,10 @@ fun DiscordBotScreen(viewModel: DiscordBotViewModel) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             val painter = when (statusType) {
-                DiscordBotViewModel.Status.NEUTRAL -> GreyDotIconPainter()
-                DiscordBotViewModel.Status.GOOD -> GreenDotIconPainter()
-                DiscordBotViewModel.Status.BAD -> RedDotIconPainter()
-                DiscordBotViewModel.Status.LOADING -> YellowDotIconPainter()
+                DiscordBotViewModel.Status.NEUTRAL -> painterResource(Res.drawable.grey_dot)
+                DiscordBotViewModel.Status.GOOD -> painterResource(Res.drawable.green_dot)
+                DiscordBotViewModel.Status.BAD -> painterResource(Res.drawable.red_dot)
+                DiscordBotViewModel.Status.LOADING -> painterResource(Res.drawable.yellow_dot)
             }
             Image(
                 painter = painter,

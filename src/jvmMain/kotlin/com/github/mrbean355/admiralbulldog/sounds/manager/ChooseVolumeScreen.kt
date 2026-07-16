@@ -18,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.MAX_INDIVIDUAL_VOLUME
-import com.github.mrbean355.admiralbulldog.common.PlayIconPainter
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.play
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ChooseVolumeScreen(viewModel: ChooseVolumeViewModel) {
@@ -61,7 +63,7 @@ fun ChooseVolumeScreen(viewModel: ChooseVolumeViewModel) {
                 enabled = selectedSoundBite != null
             ) {
                 Icon(
-                    painter = PlayIconPainter(),
+                    painter = painterResource(Res.drawable.play),
                     contentDescription = getString("tooltip_play_locally")
                 )
             }

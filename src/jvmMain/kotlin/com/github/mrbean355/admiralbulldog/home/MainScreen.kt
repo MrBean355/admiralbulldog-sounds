@@ -29,9 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.common.AlertButton
-import com.github.mrbean355.admiralbulldog.common.PauseChampIconPainter
-import com.github.mrbean355.admiralbulldog.common.PoggiesIconPainter
-import com.github.mrbean355.admiralbulldog.common.SettingsIconPainter
 import com.github.mrbean355.admiralbulldog.common.URL_APP_INSTALLATION
 import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
 import com.github.mrbean355.admiralbulldog.common.browseUrl
@@ -39,6 +36,11 @@ import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.pause_champ
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.poggies
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.settings
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
@@ -56,7 +58,7 @@ fun MainScreen(viewModel: MainViewModel) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Status Icon
-            val iconPainter = if (isConnected) PoggiesIconPainter() else PauseChampIconPainter()
+            val iconPainter = if (isConnected) painterResource(Res.drawable.poggies) else painterResource(Res.drawable.pause_champ)
             Image(
                 painter = iconPainter,
                 contentDescription = null,
@@ -155,7 +157,7 @@ fun MainScreen(viewModel: MainViewModel) {
                 .padding(16.dp),
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ) {
-            Icon(SettingsIconPainter(), contentDescription = getString("tooltip_settings"))
+            Icon(painterResource(Res.drawable.settings), contentDescription = getString("tooltip_settings"))
         }
     }
 }

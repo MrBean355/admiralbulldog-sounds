@@ -30,19 +30,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
 import com.github.mrbean355.admiralbulldog.assets.SoundBites
-import com.github.mrbean355.admiralbulldog.common.PlayIconPainter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.common.showInformation
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.expand_less
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.expand_more
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.play
 import kotlinx.coroutines.flow.collectLatest
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun SyncSoundBitesScreen(viewModel: SyncSoundBitesViewModel) {
@@ -156,7 +159,7 @@ private fun CategoryHeader(label: String, items: Collection<String>) {
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
-                    painter = if (expanded) painterResource("expand_less.svg") else painterResource("expand_more.svg"),
+                    painter = if (expanded) painterResource(Res.drawable.expand_less) else painterResource(Res.drawable.expand_more),
                     contentDescription = null
                 )
             }
@@ -185,7 +188,7 @@ private fun SoundItem(name: String, sound: SoundBite?) {
                 modifier = Modifier.size(32.dp)
             ) {
                 Icon(
-                    painter = PlayIconPainter(),
+                    painter = painterResource(Res.drawable.play),
                     contentDescription = getString("tooltip_play_locally"),
                     modifier = Modifier.size(16.dp)
                 )

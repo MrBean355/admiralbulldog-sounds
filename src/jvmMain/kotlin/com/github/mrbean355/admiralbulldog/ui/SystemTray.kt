@@ -1,13 +1,13 @@
 package com.github.mrbean355.admiralbulldog.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.rememberTrayState
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.home.MainViewModel
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.bulldog
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun androidx.compose.ui.window.ApplicationScope.AppTray() {
@@ -23,10 +23,7 @@ fun androidx.compose.ui.window.ApplicationScope.AppTray() {
     */
 
     val trayState = rememberTrayState()
-    val icon = remember {
-        val resource = Thread.currentThread().contextClassLoader.getResourceAsStream("bulldog.jpg")
-        BitmapPainter(loadImageBitmap(resource!!))
-    }
+    val icon = painterResource(Res.drawable.bulldog)
 
     Tray(
         state = trayState,

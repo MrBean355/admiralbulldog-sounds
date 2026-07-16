@@ -34,11 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.mrbean355.admiralbulldog.common.PlayIconPainter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.play
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ConfigureSoundBoardScreen(viewModel: ConfigureSoundBoardViewModel, onCloseRequest: () -> Unit) {
@@ -86,7 +88,7 @@ fun ConfigureSoundBoardScreen(viewModel: ConfigureSoundBoardViewModel, onCloseRe
                             modifier = Modifier.size(32.dp)
                         ) {
                             Icon(
-                                painter = PlayIconPainter(),
+                                painter = painterResource(Res.drawable.play),
                                 contentDescription = getString("tooltip_play_locally"),
                                 modifier = Modifier.size(16.dp)
                             )

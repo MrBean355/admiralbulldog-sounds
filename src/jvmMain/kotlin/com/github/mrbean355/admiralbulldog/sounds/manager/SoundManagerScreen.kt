@@ -37,11 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.mrbean355.admiralbulldog.assets.SoundBite
-import com.github.mrbean355.admiralbulldog.common.PlayIconPainter
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.sounds.tableHeader
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.play
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun SoundManagerScreen(viewModel: SoundManagerViewModel) {
@@ -161,7 +163,7 @@ private fun SoundRow(sound: SoundBite, viewModel: SoundManagerViewModel) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             IconButton(onClick = { sound.play() }, modifier = Modifier.size(24.dp)) {
-                Icon(PlayIconPainter(), contentDescription = null)
+                Icon(painterResource(Res.drawable.play), contentDescription = null)
             }
             Text(text = sound.name, style = MaterialTheme.typography.bodyMedium)
         }

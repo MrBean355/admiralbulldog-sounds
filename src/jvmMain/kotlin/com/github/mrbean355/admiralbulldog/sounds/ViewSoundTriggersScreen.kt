@@ -28,12 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.mrbean355.admiralbulldog.common.HelpIconPainter
 import com.github.mrbean355.admiralbulldog.common.WINDOW_WIDTH
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.triggers.SOUND_TRIGGER_TYPES
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
 import com.github.mrbean355.admiralbulldog.ui.theme.BulldogTheme
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.help
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ViewSoundTriggersScreen(viewModel: ViewSoundTriggersViewModel) {
@@ -65,7 +67,7 @@ fun ViewSoundTriggersScreen(viewModel: ViewSoundTriggersViewModel) {
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = { viewModel.onHelpClicked() }) {
                 Icon(
-                    painter = HelpIconPainter(),
+                    painter = painterResource(Res.drawable.help),
                     contentDescription = getString("header_about_sound_triggers"),
                     modifier = Modifier.size(24.dp)
                 )

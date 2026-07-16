@@ -29,12 +29,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.unit.dp
-import com.github.mrbean355.admiralbulldog.common.AddIconPainter
-import com.github.mrbean355.admiralbulldog.common.DeleteIconPainter
-import com.github.mrbean355.admiralbulldog.common.HelpIconPainter
 import com.github.mrbean355.admiralbulldog.common.Volume
 import com.github.mrbean355.admiralbulldog.common.getString
 import com.github.mrbean355.admiralbulldog.ui.openComposeScreen
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.Res
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.add
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.delete
+import com.github.mrbean355.admiralbulldog_sounds.generated.resources.help
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun VolumeManagerScreen(viewModel: VolumeManagerViewModel) {
@@ -72,7 +74,7 @@ fun VolumeManagerScreen(viewModel: VolumeManagerViewModel) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             IconButton(onClick = { viewModel.onHelpClicked() }) {
-                Icon(HelpIconPainter(), contentDescription = null)
+                Icon(painterResource(Res.drawable.help), contentDescription = null)
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -81,11 +83,11 @@ fun VolumeManagerScreen(viewModel: VolumeManagerViewModel) {
                 onClick = { viewModel.onRemoveVolumeClicked() },
                 enabled = selectedItem != null
             ) {
-                Icon(DeleteIconPainter(), contentDescription = null)
+                Icon(painterResource(Res.drawable.delete), contentDescription = null)
             }
 
             IconButton(onClick = { viewModel.onAddVolumeClicked() }) {
-                Icon(AddIconPainter(), contentDescription = null)
+                Icon(painterResource(Res.drawable.add), contentDescription = null)
             }
         }
     }
