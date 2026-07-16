@@ -1,6 +1,5 @@
 package com.github.mrbean355.admiralbulldog.mods
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
@@ -41,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.common.HelpIconPainter
 import com.github.mrbean355.admiralbulldog.common.MonkaGigaIconPainter

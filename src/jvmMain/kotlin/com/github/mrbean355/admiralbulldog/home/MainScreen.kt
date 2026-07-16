@@ -1,6 +1,5 @@
 package com.github.mrbean355.admiralbulldog.home
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -28,11 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.mrbean355.admiralbulldog.APP_VERSION
 import com.github.mrbean355.admiralbulldog.common.AlertButton
 import com.github.mrbean355.admiralbulldog.common.PauseChampIconPainter
 import com.github.mrbean355.admiralbulldog.common.PoggiesIconPainter
+import com.github.mrbean355.admiralbulldog.common.SettingsIconPainter
 import com.github.mrbean355.admiralbulldog.common.URL_APP_INSTALLATION
 import com.github.mrbean355.admiralbulldog.common.URL_SPECIFIC_RELEASE
 import com.github.mrbean355.admiralbulldog.common.browseUrl
@@ -156,7 +155,7 @@ fun MainScreen(viewModel: MainViewModel) {
                 .padding(16.dp),
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ) {
-            Icon(Icons.Default.Settings, contentDescription = getString("tooltip_settings"))
+            Icon(SettingsIconPainter(), contentDescription = getString("tooltip_settings"))
         }
     }
 }

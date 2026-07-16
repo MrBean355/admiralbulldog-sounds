@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("multiplatform") version "2.3.20"
-    kotlin("plugin.compose") version "2.3.20"
-    id("org.jetbrains.compose") version "1.7.3"
+    kotlin("multiplatform") version "2.4.10"
+    kotlin("plugin.compose") version "2.4.10"
+    id("org.jetbrains.compose") version "1.11.1"
 }
 
 group = "com.github.mrbean355"
@@ -33,18 +33,17 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
-                implementation(compose.material3)
-                implementation(compose.materialIconsExtended)
+                implementation("org.jetbrains.compose.material3:material3:1.9.0")
 
-                implementation("com.google.code.gson:gson:2.13.2")
-                implementation("org.slf4j:slf4j-simple:2.0.17")
+                implementation("com.google.code.gson:gson:2.14.0")
+                implementation("org.slf4j:slf4j-simple:2.0.18")
                 implementation("com.squareup.retrofit2:retrofit:3.0.0")
                 implementation("com.squareup.retrofit2:converter-gson:3.0.0")
                 implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
                 implementation("com.vdurmont:semver4j:3.1.0")
-                implementation("com.github.mrbean355:dota2-gsi:2.5.0")
-                implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.20")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.1")
+                implementation("com.github.mrbean355:dota2-gsi:3.0.0")
+                implementation("org.jetbrains.kotlin:kotlin-reflect:2.4.10")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.11.0")
 
                 implementation("org.openjfx:javafx-base:$fxVersion:$currentPlatform")
                 implementation("org.openjfx:javafx-controls:$fxVersion:$currentPlatform")
